@@ -176,7 +176,8 @@ export const useEnergyData = () => {
         interconnectors: energyData.interconnectors,
         totalGeneration: energyData.totalGeneration,
         totalDemand: energyData.totalDemand,
-        lastUpdated: new Date(energyData.lastUpdated)
+        lastUpdated: new Date(energyData.lastUpdated),
+        dataFreshness: energyData.dataFreshness,
       });
 
       toast({
