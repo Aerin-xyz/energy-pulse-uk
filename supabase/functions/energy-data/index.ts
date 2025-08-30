@@ -11,28 +11,40 @@ type FetchOk<T=any>   = { ok: true;  data: T };
 type FetchErr         = { ok: false; status: number; body: string };
 type FetchResult<T=any> = FetchOk<T> | FetchErr;
 
-// --- helper: add ?format=json once & 406 self-heal ---
-function withJsonFormat(u: string): string {
-  try { const url = new URL(u); if (!url.searchParams.has("format")) url.searchParams.set("format","json"); return url.toString(); }
+// --- helper: enforce JSON, detect redirects, self-heal with ?format=json ---
+function addFormatJson(u: string): string {
+  try { const url = new URL(u); url.searchParams.set("format","json"); return url.toString(); }
   catch { return u.includes("?") ? `${u}&format=json` : `${u}?format=json`; }
 }
 
-async function fetchJSON(url: string): Promise<FetchResult> {
-  const base = { Accept: "application/json", "User-Agent": "ether-flow/1.0" } as Record<string,string>;
-  let res = await fetch(url, { headers: base, cache: "no-store" });
-  if (res.status === 406) {
-    const retryUrl = withJsonFormat(url);
-    const broaden = { ...base, Accept: "application/json, text/plain, */*" };
-    res = await fetch(retryUrl, { headers: broaden, cache: "no-store" });
+async function fetchJSONStrict(url: string) {
+  // First try: already include ?format=json to avoid weird content-negotiation paths
+  const url1 = addFormatJson(url);
+  const headers1 = { Accept: "application/json, text/plain, */*", "User-Agent": "ether-flow/1.0" };
+
+  let res = await fetch(url1, { headers: headers1, cache: "no-store", redirect: "follow" as RequestRedirect });
+  const finalUrl = (res as any).url as string | undefined;
+
+  // Reject redirects to non-API HTML endpoints
+  if ((res as any).redirected || (finalUrl && !finalUrl.includes("/bmrs/api/"))) {
+    const body = await res.text();
+    return { ok: false, status: res.status, body: body.slice(0, 400), redirectedTo: finalUrl };
   }
+
+  const ct = res.headers.get("content-type") || "";
   const text = await res.text();
+
+  // If not JSON, treat as error even if 200
+  if (!ct.toLowerCase().includes("json")) {
+    return { ok: false, status: res.status, body: text.slice(0, 400), contentType: ct };
+  }
+
   if (!res.ok) {
-    console.error("[BMRS] FAIL", { url, status: res.status, body: text.slice(0, 400) });
     return { ok: false, status: res.status, body: text.slice(0, 400) };
   }
-  // some endpoints mislabel content-type; try JSON parse anyway
+
   try { return { ok: true, data: JSON.parse(text) }; }
-  catch { return { ok: true, data: text as any }; }
+  catch { return { ok: false, status: 200, body: "Non-JSON parse on JSON content-type", sample: text.slice(0, 200) } }
 }
 
 // --- parsing helpers (defensive across field names) ---
@@ -87,7 +99,7 @@ serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
   // 1) Outturn (anchor)
-  const outturnR = await fetchJSON(`${BMRS}/generation/outturn/current`);
+  const outturnR = await fetchJSONStrict(`${BMRS}/generation/outturn/current`);
   if (!outturnR.ok) {
     return new Response(JSON.stringify({ error: "bmrs_outturn_current_failed", detail: outturnR }), {
       status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
@@ -102,7 +114,7 @@ serve(async (req) => {
   const { sp_from, sp_to } = pickSP(outRows);
 
   // 2) Interconnectors
-  const icR = await fetchJSON(`${BMRS}/generation/outturn/interconnectors`);
+  const icR = await fetchJSONStrict(`${BMRS}/generation/outturn/interconnectors`);
   if (!icR.ok) {
     return new Response(JSON.stringify({ error: "bmrs_interconnectors_failed", detail: icR }), {
       status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
@@ -117,7 +129,7 @@ serve(async (req) => {
   });
 
   // 3) Demand (national)
-  const demandR = await fetchJSON(`${BMRS}/demand/outturn/summary`);
+  const demandR = await fetchJSONStrict(`${BMRS}/demand/outturn/summary`);
   if (!demandR.ok) {
     return new Response(JSON.stringify({ error: "bmrs_demand_summary_failed", detail: demandR }), {
       status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
