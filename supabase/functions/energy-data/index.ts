@@ -115,7 +115,7 @@ serve(async (req) => {
   }
   const outRows = asArray(outturnR.data);
   if (outRows.length === 0) {
-    return new Response(JSON.stringify({ error: "bmrs_outturn_current_empty", sample: outturnR.data }), {
+    return new Response(JSON.stringify({ error: "bmrs_outturn_current_empty_after_json", sample: outturnR.data }), {
       status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
     });
   }
