@@ -5,7 +5,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const BMRS = "https://bmrs.elexon.co.uk/bmrs/api/v1";
+
 
 type FetchOk<T=any>   = { ok: true;  data: T };
 type FetchErr         = { ok: false; status: number; body: string };
