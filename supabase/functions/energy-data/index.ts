@@ -27,6 +27,7 @@ interface CarbonIntensityData {
 }
 
 const FUEL_TYPE_MAPPING: Record<string, string> = {
+  // BMRS fuel types
   'CCGT': 'Gas',
   'OCGT': 'Gas', 
   'OIL': 'Oil',
@@ -43,7 +44,18 @@ const FUEL_TYPE_MAPPING: Record<string, string> = {
   'BIOMASS': 'Biomass',
   'INTNEM': 'Imports',
   'INTELEC': 'Imports',
-  'INTNSL': 'Imports'
+  'INTNSL': 'Imports',
+  // Carbon Intensity API fuel types (lowercase)
+  'gas': 'Gas',
+  'coal': 'Coal',
+  'nuclear': 'Nuclear',
+  'wind': 'Wind',
+  'solar': 'Solar',
+  'hydro': 'Hydro',
+  'biomass': 'Biomass',
+  'imports': 'Imports',
+  'other': 'Other',
+  'oil': 'Oil'
 };
 
 const ENERGY_COLORS: Record<string, string> = {
@@ -61,63 +73,115 @@ const ENERGY_COLORS: Record<string, string> = {
 
 async function fetchBMRSData() {
   try {
-    const today = new Date().toISOString().split('T')[0];
-    const response = await fetch(
-      `https://api.bmreports.com/BMRS/FUELHH/v1?APIKey=&ServiceType=xml&SettlementDate=${today}`
-    );
-
+    // Use Carbon Intensity API as it's more reliable and provides generation mix
+    const response = await fetch('https://api.carbonintensity.org.uk/generation');
+    
     if (!response.ok) {
-      throw new Error(`BMRS API error: ${response.status}`);
+      throw new Error(`Carbon Intensity API error: ${response.status}`);
     }
 
-    const xmlText = await response.text();
+    const data = await response.json();
+    console.log('Carbon Intensity API response:', data);
     
-    // Parse XML to extract generation data
-    // For now, return realistic mock data that matches UK energy mix
-    return [
-      { fuelType: 'WIND', generation: 18500 },
-      { fuelType: 'GAS', generation: 2100 },
-      { fuelType: 'NUCLEAR', generation: 3700 },
-      { fuelType: 'BIOMASS', generation: 1200 },
-      { fuelType: 'HYDRO', generation: 800 },
-      { fuelType: 'SOLAR', generation: 1500 },
-      { fuelType: 'IMPORTS', generation: 500 },
-      { fuelType: 'OTHER', generation: 200 }
-    ];
+    // Extract generation mix data
+    const generationMix = data.data?.generationmix || [];
+    
+    // Convert percentage to MW (assuming ~30GW total generation as baseline)
+    const estimatedTotalGeneration = 30000; // MW baseline
+    
+    return generationMix.map((fuel: any) => ({
+      fuelType: fuel.fuel.toUpperCase(),
+      generation: Math.round((fuel.perc / 100) * estimatedTotalGeneration)
+    }));
+    
   } catch (error) {
-    console.error('BMRS fetch error:', error);
-    // Return fallback data
+    console.error('Carbon Intensity API fetch error:', error);
+    
+    // Try alternative BMRS endpoint
+    try {
+      const bmrsResponse = await fetch('https://data.elexon.co.uk/bmrs/api/v1/generation/outturn/summary/latest');
+      if (bmrsResponse.ok) {
+        const bmrsData = await bmrsResponse.json();
+        console.log('BMRS API response:', bmrsData);
+        
+        // Process BMRS data format
+        if (bmrsData.data && Array.isArray(bmrsData.data)) {
+          return bmrsData.data.map((item: any) => ({
+            fuelType: item.fuelType || 'OTHER',
+            generation: item.generation || 0
+          }));
+        }
+      }
+    } catch (bmrsError) {
+      console.error('BMRS API also failed:', bmrsError);
+    }
+    
+    // Final fallback with realistic current UK energy mix
+    console.log('Using fallback data');
     return [
-      { fuelType: 'WIND', generation: 18500 },
-      { fuelType: 'GAS', generation: 2100 },
-      { fuelType: 'NUCLEAR', generation: 3700 },
-      { fuelType: 'BIOMASS', generation: 1200 },
-      { fuelType: 'HYDRO', generation: 800 },
-      { fuelType: 'SOLAR', generation: 1500 },
-      { fuelType: 'IMPORTS', generation: 500 },
-      { fuelType: 'OTHER', generation: 200 }
+      { fuelType: 'gas', generation: 8500 },
+      { fuelType: 'wind', generation: 12000 },
+      { fuelType: 'nuclear', generation: 5200 },
+      { fuelType: 'biomass', generation: 2100 },
+      { fuelType: 'hydro', generation: 900 },
+      { fuelType: 'solar', generation: 1800 },
+      { fuelType: 'imports', generation: 2000 },
+      { fuelType: 'other', generation: 500 }
     ];
   }
 }
 
 async function fetchInterconnectorData() {
   try {
-    // In real implementation, this would call BMRS interconnector endpoints
-    // For now, return realistic interconnector flows
-    return [
-      { name: 'IFA', country: 'France', flow: -985, capacity: 2000 },
-      { name: 'BritNed', country: 'Netherlands', flow: 720, capacity: 1000 },
-      { name: 'NEMO', country: 'Belgium', flow: 890, capacity: 1000 },
-      { name: 'NSL', country: 'Norway', flow: 1380, capacity: 1400 },
-      { name: 'IFA2', country: 'France', flow: -456, capacity: 1000 },
-      { name: 'ElecLink', country: 'France', flow: 0, capacity: 1000 },
-      { name: 'Moyle', country: 'Northern Ireland', flow: 450, capacity: 500 },
-      { name: 'East-West', country: 'Republic of Ireland', flow: 380, capacity: 500 }
-    ];
+    // Try to fetch real interconnector data from BMRS
+    const response = await fetch('https://data.elexon.co.uk/bmrs/api/v1/balancing/interconnector/summary/latest');
+    
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Interconnector API response:', data);
+      
+      if (data.data && Array.isArray(data.data)) {
+        return data.data.map((item: any) => ({
+          name: item.interconnectorName || item.name || 'Unknown',
+          country: item.country || getCountryFromName(item.interconnectorName || item.name),
+          flow: item.flow || 0,
+          capacity: item.capacity || 1000
+        }));
+      }
+    }
+    
+    throw new Error('No valid interconnector data');
+    
   } catch (error) {
     console.error('Interconnector fetch error:', error);
-    return [];
+    
+    // Return realistic fallback data based on typical UK interconnector flows
+    return [
+      { name: 'IFA', country: 'France', flow: -750, capacity: 2000 },
+      { name: 'BritNed', country: 'Netherlands', flow: 650, capacity: 1000 },
+      { name: 'NEMO', country: 'Belgium', flow: 800, capacity: 1000 },
+      { name: 'NSL', country: 'Norway', flow: 1200, capacity: 1400 },
+      { name: 'IFA2', country: 'France', flow: -350, capacity: 1000 },
+      { name: 'ElecLink', country: 'France', flow: 150, capacity: 1000 },
+      { name: 'Moyle', country: 'Northern Ireland', flow: 400, capacity: 500 },
+      { name: 'East-West', country: 'Republic of Ireland', flow: 300, capacity: 500 }
+    ];
   }
+}
+
+function getCountryFromName(name: string): string {
+  const nameMap: Record<string, string> = {
+    'IFA': 'France',
+    'IFA2': 'France', 
+    'ElecLink': 'France',
+    'BritNed': 'Netherlands',
+    'NEMO': 'Belgium',
+    'NSL': 'Norway',
+    'Moyle': 'Northern Ireland',
+    'East-West': 'Republic of Ireland'
+  };
+  
+  return nameMap[name] || 'Unknown';
 }
 
 function processGenerationData(rawData: any[]) {
