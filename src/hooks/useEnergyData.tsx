@@ -78,49 +78,20 @@ const FUEL_TYPE_MAPPING: { [key: string]: string } = {
   'OTHER': 'Other'
 };
 
-// BMRS API endpoints
-const BMRS_BASE_URL = 'https://api.bmrs.ngeso.co.uk/api/v1';
-const API_KEY = 'demo'; // Using demo key for now - should be replaced with real key
+// Real API integration using Supabase Edge Function
+async function fetchEnergyData(): Promise<any> {
+  const response = await fetch('https://cxvjgpuytezomdlsayif.supabase.co/functions/v1/energy-data', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-async function fetchBMRSData(): Promise<BMRSResponse> {
-  const now = new Date();
-  const fromDate = new Date(now.getTime() - 30 * 60 * 1000); // 30 minutes ago
-  
-  const fromDateTime = fromDate.toISOString().slice(0, 16);
-  const toDateTime = now.toISOString().slice(0, 16);
-  
-  // Fetch generation data by fuel type
-  const response = await fetch(
-    `${BMRS_BASE_URL}/generation/outturn/summary?from=${fromDateTime}&to=${toDateTime}&format=json`,
-    {
-      headers: {
-        'Accept': 'application/json'
-      }
-    }
-  );
-  
   if (!response.ok) {
-    throw new Error(`BMRS API error: ${response.status} ${response.statusText}`);
+    throw new Error(`API error: ${response.status}`);
   }
-  
-  return await response.json();
-}
 
-async function fetchInterconnectorFlows(): Promise<InterconnectorFlow[]> {
-  // This would fetch from BMRS interconnector flows endpoint
-  // For now, return realistic mock data based on the live dashboard
-  return [
-    { startTime: new Date().toISOString(), quantity: 3800, interconnectorName: 'France (IFA)' },
-    { startTime: new Date().toISOString(), quantity: 882, interconnectorName: 'Netherlands (BritNed)' },
-    { startTime: new Date().toISOString(), quantity: 999, interconnectorName: 'Belgium (Nemolink)' },
-    { startTime: new Date().toISOString(), quantity: 724, interconnectorName: 'Denmark (Viking Link)' },
-    { startTime: new Date().toISOString(), quantity: 412, interconnectorName: 'Ireland (East-West)' },
-    { startTime: new Date().toISOString(), quantity: -527, interconnectorName: 'Ireland (Greenlink)' },
-    { startTime: new Date().toISOString(), quantity: -450, interconnectorName: 'Northern Ireland (Moyle)' },
-    { startTime: new Date().toISOString(), quantity: -1048, interconnectorName: 'Netherlands (Export)' },
-    { startTime: new Date().toISOString(), quantity: -788, interconnectorName: 'Belgium (Export)' },
-    { startTime: new Date().toISOString(), quantity: 0, interconnectorName: 'Norway (NSL)' }
-  ];
+  return await response.json();
 }
 
 function processGenerationData(bmrsData: BMRSResponse): { generationMix: GenerationData[], totalGeneration: number } {
@@ -181,38 +152,27 @@ export const useEnergyData = () => {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
-  const fetchEnergyData = useCallback(async () => {
+  const fetchAndSetEnergyData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
       
-      // For now, simulate API calls with realistic current UK grid data
-      // TODO: Replace with actual BMRS API calls once CORS/proxy is configured
-      console.log('Fetching energy data...');
+      console.log('Fetching energy data from API...');
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // Use realistic current UK generation data
-      const mockBMRSData: BMRSResponse = { data: [] };
-      const mockInterconnectorFlows = await fetchInterconnectorFlows();
-      
-      const { generationMix, totalGeneration } = processGenerationData(mockBMRSData);
-      const interconnectors = processInterconnectorData(mockInterconnectorFlows);
-      
-      const energyData: EnergyData = {
-        generationMix,
-        interconnectors,
-        totalGeneration,
-        totalDemand: 28.5, // Current UK demand from live dashboard
-        lastUpdated: new Date()
-      };
-      
-      setData(energyData);
-      
+      // Fetch data directly from our Edge Function
+      const energyData = await fetchEnergyData();
+
+      setData({
+        generationMix: energyData.generationMix,
+        interconnectors: energyData.interconnectors,
+        totalGeneration: energyData.totalGeneration,
+        totalDemand: energyData.totalDemand,
+        lastUpdated: new Date(energyData.lastUpdated)
+      });
+
       toast({
         title: "Data Updated",
-        description: `Live UK grid data refreshed at ${energyData.lastUpdated.toLocaleTimeString()}`,
+        description: `Live UK grid data refreshed at ${new Date().toLocaleTimeString()}`,
       });
       
     } catch (err) {
@@ -231,19 +191,19 @@ export const useEnergyData = () => {
 
   // Initial fetch
   useEffect(() => {
-    fetchEnergyData();
-  }, [fetchEnergyData]);
+    fetchAndSetEnergyData();
+  }, [fetchAndSetEnergyData]);
 
   // Auto-refresh every 5 minutes
   useEffect(() => {
-    const interval = setInterval(fetchEnergyData, 5 * 60 * 1000);
+    const interval = setInterval(fetchAndSetEnergyData, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [fetchEnergyData]);
+  }, [fetchAndSetEnergyData]);
 
   return {
     data,
     loading,
     error,
-    refetch: fetchEnergyData
+    refetch: fetchAndSetEnergyData
   };
 };

@@ -1,1 +1,4 @@
 project_id = "cxvjgpuytezomdlsayif"
+
+[functions.energy-data]
+verify_jwt = false
