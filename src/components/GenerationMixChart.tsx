@@ -61,9 +61,8 @@ export const GenerationMixChart = ({ data, totalGeneration }: GenerationMixChart
       </div>
       
       <div className="flex flex-col lg:flex-row items-center justify-center gap-8">
-        <div className="relative">
-          <ResponsiveContainer width={400} height={400}>
-            <PieChart>
+        <div className="relative w-[400px] h-[400px]">
+          <PieChart width={400} height={400}>
               <Pie
                 data={data}
                 cx="50%"
@@ -82,7 +81,6 @@ export const GenerationMixChart = ({ data, totalGeneration }: GenerationMixChart
               </Pie>
               <Tooltip content={<CustomTooltip />} />
             </PieChart>
-          </ResponsiveContainer>
           
           {/* Center text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
