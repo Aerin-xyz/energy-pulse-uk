@@ -84,6 +84,7 @@ async function fetchEnergyData(): Promise<any> {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
+      'Cache-Control': 'no-store'
     },
   });
 

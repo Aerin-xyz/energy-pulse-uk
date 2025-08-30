@@ -1,83 +1,68 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts"; // stick to 0.168.0 (Supabase scaffold)
-
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-
-
-type FetchOk<T=any>   = { ok: true;  data: T };
-type FetchErr         = { ok: false; status: number; body: string };
-type FetchResult<T=any> = FetchOk<T> | FetchErr;
-
-// --- helper: normalize, force JSON, and try multiple variants until we get JSON ---
 type StrictResult =
   | { ok: true; data: any; url: string; status: number; contentType: string; variant: string }
-  | { ok: false; url: string; status: number; reason: string; body?: string; contentType?: string; variant: string };
+  | { ok: false; url: string; status: number; reason: string; body?: string; contentType?: string; variant: string; redirectedTo?: string };
 
 function withFormat(u: string): string {
-  try { const url = new URL(u); url.searchParams.set("format","json"); return url.toString(); }
-  catch { return u.includes("?") ? `${u}&format=json` : `${u}?format=json`; }
+  try { 
+    const url = new URL(u); 
+    url.searchParams.set("format","json"); 
+    return url.toString(); 
+  }
+  catch { 
+    return u.includes("?") ? `${u}&format=json` : `${u}?format=json`; 
+  }
 }
 
 const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36";
+const HEADERS = {
+  Accept: "application/json, text/plain, */*",
+  "User-Agent": UA,
+  Origin: "https://bmrs.elexon.co.uk",
+  Referer: "https://bmrs.elexon.co.uk/",
+} as Record<string,string>;
 
 async function tryOnce(url: string, variant: string): Promise<StrictResult> {
-  const headers: Record<string,string> = {
-    Accept: "application/json, text/plain, */*",
-    "User-Agent": UA,
-    Origin: "https://bmrs.elexon.co.uk",
-    Referer: "https://bmrs.elexon.co.uk/",
-  };
-
-  const res = await fetch(url, { headers, cache: "no-store", redirect: "manual" as RequestRedirect });
+  const res = await fetch(url, { headers: HEADERS, cache: "no-store", redirect: "manual" as RequestRedirect });
   const ct  = res.headers.get("content-type") || "";
-  const txt = await res.text();
+  const text = await res.text();
 
   if (res.status >= 300 && res.status < 400) {
-    return { ok: false, url, status: res.status, reason: "redirect", body: txt.slice(0, 300), contentType: ct, variant };
+    return { ok: false, url, status: res.status, reason: "redirect", body: text.slice(0, 300), contentType: ct, variant, redirectedTo: res.headers.get("location") || "" };
   }
   if (!ct.toLowerCase().includes("json")) {
-    return { ok: false, url, status: res.status, reason: "non-json", body: txt.slice(0, 300), contentType: ct, variant };
+    return { ok: false, url, status: res.status, reason: "non-json", body: text.slice(0, 300), contentType: ct, variant };
   }
   if (!res.ok) {
-    return { ok: false, url, status: res.status, reason: "http-error", body: txt.slice(0, 300), contentType: ct, variant };
+    return { ok: false, url, status: res.status, reason: "http-error", body: text.slice(0, 300), contentType: ct, variant };
   }
-  try {
-    const data = JSON.parse(txt);
-    return { ok: true, data, url, status: res.status, contentType: ct, variant };
-  } catch {
-    return { ok: false, url, status: 200, reason: "json-parse-failed", body: txt.slice(0, 200), contentType: ct, variant };
+  try { 
+    return { ok: true, data: JSON.parse(text), url, status: res.status, contentType: ct, variant }; 
+  }
+  catch { 
+    return { ok: false, url, status: 200, reason: "json-parse-failed", body: text.slice(0, 200), contentType: ct, variant }; 
   }
 }
 
-// Try host + path fallbacks in this order: bmrs current → bmrs summary → dataset stream.
-// Optionally include data.elexon.co.uk mirror when allowMirror is true.
-async function fetchBMRSJsonResilient(path: string, allowMirror = false): Promise<StrictResult> {
-  const base = "https://bmrs.elexon.co.uk/bmrs/api/v1";
-  const isCurrent = path.includes("/current");
-
-  const variants: Array<{ v: string; url: string }> = [
-    { v: "bmrs-primary", url: withFormat(`${base}${path}`) },
-    ...(isCurrent ? [{ v: "bmrs-summary", url: withFormat(`${base}${path.replace("/current", "/summary")}`) }] : []),
-    ...(allowMirror ? [{ v: "mirror-primary", url: withFormat(`https://data.elexon.co.uk/bmrs/api/v1${path}`) }] : []),
-    ...(allowMirror && isCurrent ? [{ v: "mirror-summary", url: withFormat(`https://data.elexon.co.uk/bmrs/api/v1${path.replace("/current", "/summary")}`) }] : []),
+async function fetchBMRS(path: string): Promise<StrictResult> {
+  // Prefer SUMMARY (stable) → CURRENT → DATASET
+  const variants: { v: string; url: string }[] = [
+    { v: "insights-summary", url: withFormat(`https://bmrs.elexon.co.uk/bmrs/api/v1${path.replace("/current","/summary")}`) },
+    { v: "insights-current", url: withFormat(`https://bmrs.elexon.co.uk/bmrs/api/v1${path}`) },
   ];
+  if (path.startsWith("/generation/outturn")) {
+    variants.push({ v: "dataset-fuelhh-stream", url: withFormat(`https://bmrs.elexon.co.uk/bmrs/api/v1/datasets/FUELHH/stream?limit=200`) });
+  }
 
   for (const { v, url } of variants) {
     const r = await tryOnce(url, v);
     if (r.ok) return r;
   }
-
-  // Dataset fallback for generation outturn
-  if (path.startsWith("/generation/outturn")) {
-    const ds = withFormat(`${base}/datasets/FUELHH/stream?limit=50`);
-    const r  = await tryOnce(ds, "dataset-fuelhh-stream");
-    if (r.ok) return r;
-  }
-
-  return { ok: false, url: withFormat(`${base}${path}`), status: 502, reason: "all-variants-non-json", variant: "exhausted" };
+  return { ok: false, url: variants[0].url, status: 502, reason: "all-variants-non-json", variant: "exhausted" };
 }
 
 // --- parsing helpers (defensive across field names) ---
@@ -128,102 +113,191 @@ function normalizeFuel(f: string): string {
   return "Other";
 }
 
-serve(async (req) => {
-  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
-
-  // Parse opt-in mirror flag from query (?mirror=1 or true)
-  const { searchParams } = new URL(req.url);
-  const allowMirror = ["1","true","yes"].includes((searchParams.get("mirror") || "").toLowerCase());
-
-  // Outturn generation
-  const outturnR = await fetchBMRSJsonResilient(`/generation/outturn/current`, allowMirror);
-  if (!outturnR.ok) {
-    return new Response(JSON.stringify({ error: "bmrs_outturn_current_failed", detail: outturnR }), {
-      status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
+async function getLKG() {
+  try {
+    const supa = (await import("https://esm.sh/@supabase/supabase-js@2")).createClient(
+      Deno.env.get("SUPABASE_URL") ?? "", 
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+    const { data: lkg } = await supa
+      .from("energy_data_history")
+      .select("payload")
+      .order("as_of", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    return lkg?.payload;
+  } catch (e) {
+    console.warn("LKG fetch failed", e);
+    return null;
   }
-  const outRows = asArray(outturnR.data);
-  if (outRows.length === 0) {
-    return new Response(JSON.stringify({ error: "bmrs_outturn_empty_after_resolver", variant: outturnR.variant, sample: outturnR.data }), {
-      status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
-  }
-  // If summary variant returned multiple rows, pick the latest SP and use only rows from that SP
-  const byTo = (r: any) => new Date(r.spTo ?? r.toTime ?? r.timeTo ?? r.periodTo ?? r.to ?? 0).getTime();
-  const sorted = [...outRows].sort((a,b) => byTo(a) - byTo(b));
-  const latestSP = sorted[sorted.length - 1];
-  const latestTo = latestSP?.spTo ?? latestSP?.toTime ?? latestSP?.timeTo ?? latestSP?.periodTo ?? latestSP?.to;
-  const workingRows = latestTo ? outRows.filter(r => (r.spTo ?? r.toTime ?? r.timeTo ?? r.periodTo ?? r.to) === latestTo) : outRows;
-  const { sp_from, sp_to } = pickSP([latestSP]);
+}
 
-  const icR = await fetchBMRSJsonResilient(`/generation/outturn/interconnectors`, allowMirror);
-  if (!icR.ok) {
-    return new Response(JSON.stringify({ error: "bmrs_interconnectors_failed", detail: icR }), {
-      status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
-  }
-  const icRows = asArray(icR.data);
-  const interconnectors = icRows.map((r: any) => {
-    const name = r.interconnectorName ?? r.name ?? "Unknown";
-    const flow = numberish(r.flow, r.mw, r.value) ?? 0;   // + import / - export
-    const capacity = numberish(r.capacity, r.cap, r.maxCapacity);
-    return { name, country: r.country ?? "", flow, capacity };
-  });
-
-  const demandR = await fetchBMRSJsonResilient(`/demand/outturn/summary`, allowMirror);
-  if (!demandR.ok) {
-    return new Response(JSON.stringify({ error: "bmrs_demand_summary_failed", detail: demandR }), {
-      status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
-  }
-  const dRows = asArray(demandR.data);
-  const national = dRows.find((r: any) => String(r.region ?? r.area ?? "NATIONAL").toUpperCase().includes("NATIONAL")) ?? dRows[0] ?? {};
-  const totalDemandMW = numberish(national.demand, national.mw, national.value);
-  if (!Number.isFinite(totalDemandMW)) {
-    return new Response(JSON.stringify({ error: "bmrs_demand_no_national_value", sample: national }), {
-      status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
-    });
+Deno.serve(async (req) => {
+  // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
   }
 
-  // 4) Build generation mix (exclude IC & pumped)
-  let hvWindMW = 0, hvSolarMW = 0, pumpedMW = 0;
-  const mixTally: Record<string, number> = {};
-  for (const r of workingRows) {
-    const fuel = String(r.fuelType ?? r.fuel ?? r.fuel_type ?? "").toUpperCase();
-    const mw   = numberish(r.generation, r.mw, r.value) ?? 0;
+  try {
+    console.log('Fetching energy data from BMRS API...');
 
-    if (fuel.includes("PUMP")) { pumpedMW += mw; continue; }
-    if (fuel.includes("INTERCONNECT")) { continue; }
-
-    if (fuel.includes("WIND")) hvWindMW += mw;
-    if (fuel.includes("SOLAR")) hvSolarMW += mw;
-
-    if (!EXCLUDE_FROM_MIX.has(fuel)) {
-      const label = normalizeFuel(fuel);
-      mixTally[label] = (mixTally[label] || 0) + mw;
+    // A) OUTTURN (summary preferred)
+    const outturnR = await fetchBMRS("/generation/outturn/current");
+    if (!outturnR.ok) {
+      console.log('BMRS outturn failed, trying LKG...', outturnR);
+      const lkg = await getLKG();
+      if (lkg) {
+        return new Response(JSON.stringify({ 
+          ...lkg, 
+          meta: { isRealtime: false, note: "BMRS failed", detail: outturnR } 
+        }), {
+          headers: { "Content-Type": "application/json", ...corsHeaders }
+        });
+      }
+      return new Response(JSON.stringify({ error: "bmrs_outturn_failed", detail: outturnR }), {
+        status: 502, headers: { "Content-Type": "application/json", ...corsHeaders }
+      });
     }
-  }
 
-  const totalGenerationMW = Object.values(mixTally).reduce((s,v)=>s+v,0);
-  const generationMix = Object.entries(mixTally)
-    .map(([name, mw]) => ({
+    const outRows = asArray(outturnR.data);
+    if (outRows.length === 0) {
+      return new Response(JSON.stringify({ 
+        error: "bmrs_outturn_empty_after_resolver", 
+        variant: outturnR.variant, 
+        sample: outturnR.data 
+      }), {
+        status: 502, headers: { "Content-Type": "application/json", ...corsHeaders }
+      });
+    }
+
+    // If summary, pick latest SP
+    outRows.sort((a,b) => new Date(a.spTo ?? a.toTime ?? a.timeTo ?? 0).getTime() - new Date(b.spTo ?? b.toTime ?? b.timeTo ?? 0).getTime());
+    const latestSP = outRows[outRows.length - 1];
+
+    // B) INTERCONNECTORS
+    const icR = await fetchBMRS("/generation/outturn/interconnectors");
+    if (!icR.ok) {
+      console.log('BMRS interconnectors failed, trying LKG...', icR);
+      const lkg = await getLKG();
+      if (lkg) {
+        return new Response(JSON.stringify({ 
+          ...lkg, 
+          meta: { isRealtime: false, note: "BMRS IC failed", detail: icR } 
+        }), {
+          headers: { "Content-Type": "application/json", ...corsHeaders }
+        });
+      }
+      return new Response(JSON.stringify({ error: "bmrs_interconnectors_failed", detail: icR }), {
+        status: 502, headers: { "Content-Type": "application/json", ...corsHeaders }
+      });
+    }
+    const icRows = asArray(icR.data);
+
+    // C) DEMAND
+    const demandR = await fetchBMRS("/demand/outturn/summary");
+    if (!demandR.ok) {
+      console.log('BMRS demand failed, trying LKG...', demandR);
+      const lkg = await getLKG();
+      if (lkg) {
+        return new Response(JSON.stringify({ 
+          ...lkg, 
+          meta: { isRealtime: false, note: "BMRS demand failed", detail: demandR } 
+        }), {
+          headers: { "Content-Type": "application/json", ...corsHeaders }
+        });
+      }
+      return new Response(JSON.stringify({ error: "bmrs_demand_summary_failed", detail: demandR }), {
+        status: 502, headers: { "Content-Type": "application/json", ...corsHeaders }
+      });
+    }
+    const dRows = asArray(demandR.data);
+
+    // Process data as before...
+    const spFrom = latestSP.spFrom ?? latestSP.fromTime ?? latestSP.start ?? latestSP.timeFrom;
+    const spTo = latestSP.spTo ?? latestSP.toTime ?? latestSP.end ?? latestSP.timeTo;
+
+    // Build generation mix (exclude IC & pumped)
+    let totalGenerationMW = 0;
+    const mixTally: Record<string, number> = {};
+    
+    for (const r of outRows) {
+      const fuel = String(r.fuelType ?? r.fuel ?? r.fuel_type ?? "").toUpperCase();
+      const mw = numberish(r.generation, r.mw, r.value) ?? 0;
+      
+      if (!EXCLUDE_FROM_MIX.has(fuel) && mw > 0) {
+        const norm = normalizeFuel(fuel);
+        mixTally[norm] = (mixTally[norm] || 0) + mw;
+        totalGenerationMW += mw;
+      }
+    }
+
+    const generationMix = Object.entries(mixTally).map(([name, value]) => ({
       name,
-      value: Math.round(mw), // MW
-      percentage: totalGenerationMW ? Math.round((mw/totalGenerationMW)*100) : 0,
-      color: ENERGY_COLORS[name] || "#6b7280"
-    }))
-    .sort((a,b)=>b.value-a.value);
+      value: Math.round(value),
+      percentage: Math.round((value / totalGenerationMW) * 100),
+      color: ENERGY_COLORS[name] || ENERGY_COLORS.Other
+    })).sort((a, b) => b.value - a.value);
 
-  const response = {
-    generationMix,
-    interconnectors,
-    totalGeneration: Math.round((totalGenerationMW/1000) * 100) / 100, // GW
-    totalDemand:     Math.round((totalDemandMW/1000)     * 100) / 100, // GW
-    lastUpdated: sp_to ?? new Date().toISOString(),
-    dataFreshness: { source: "BMRS", spFrom: sp_from, spTo: sp_to }
-  };
+    // Process interconnectors
+    const interconnectors = icRows.map((ic: any) => ({
+      name: ic.interconnectorName ?? ic.name ?? "Unknown",
+      country: ic.country ?? "Unknown",
+      flow: Math.round(numberish(ic.flow, ic.value, ic.generation) ?? 0),
+      capacity: Math.round(numberish(ic.capacity, ic.maxCapacity) ?? 0)
+    }));
 
-  return new Response(JSON.stringify(response), {
-    headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" }
-  });
+    // Get total demand
+    const totalDemandMW = dRows.reduce((sum: number, d: any) => {
+      return sum + (numberish(d.demand, d.value, d.generation) ?? 0);
+    }, 0);
+
+    const payload = {
+      generationMix,
+      interconnectors,
+      totalGeneration: Math.round((totalGenerationMW/1000)*100)/100,
+      totalDemand: Math.round((totalDemandMW/1000)*100)/100,
+      lastUpdated: spTo ?? new Date().toISOString(),
+      dataFreshness: { source: "BMRS", spFrom, spTo, variant: outturnR.variant }
+    };
+
+    // Upsert LKG (best-effort)
+    try {
+      const supa = (await import("https://esm.sh/@supabase/supabase-js@2")).createClient(
+        Deno.env.get("SUPABASE_URL") ?? "", 
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+      await supa.from("energy_data_history").insert({ 
+        as_of: payload.lastUpdated, 
+        payload 
+      });
+    } catch (e) { 
+      console.warn("LKG insert failed", e); 
+    }
+
+    return new Response(JSON.stringify(payload), {
+      headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" }
+    });
+
+  } catch (error) {
+    console.error('Error in energy-data function:', error);
+    
+    // Try LKG on unexpected errors too
+    const lkg = await getLKG();
+    if (lkg) {
+      return new Response(JSON.stringify({ 
+        ...lkg, 
+        meta: { isRealtime: false, note: "Unexpected error", error: error.message } 
+      }), {
+        headers: { "Content-Type": "application/json", ...corsHeaders }
+      });
+    }
+
+    return new Response(JSON.stringify({ 
+      error: "internal_error", 
+      message: error.message 
+    }), {
+      status: 500,
+      headers: { ...corsHeaders, "Content-Type": "application/json" }
+    });
+  }
 });
