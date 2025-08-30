@@ -11,46 +11,73 @@ type FetchOk<T=any>   = { ok: true;  data: T };
 type FetchErr         = { ok: false; status: number; body: string };
 type FetchResult<T=any> = FetchOk<T> | FetchErr;
 
-// --- helper: enforce JSON, detect redirects, self-heal with ?format=json ---
-function addFormatJson(u: string): string {
+// --- helper: normalize, force JSON, and try multiple variants until we get JSON ---
+type StrictResult =
+  | { ok: true; data: any; url: string; status: number; contentType: string; variant: string }
+  | { ok: false; url: string; status: number; reason: string; body?: string; contentType?: string; variant: string };
+
+function withFormat(u: string): string {
   try { const url = new URL(u); url.searchParams.set("format","json"); return url.toString(); }
   catch { return u.includes("?") ? `${u}&format=json` : `${u}?format=json`; }
 }
 
-type StrictResult =
-  | { ok: true; data: any; url: string; status: number; contentType: string }
-  | { ok: false; url: string; status: number; reason: string; body?: string; redirectedTo?: string; contentType?: string };
+const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36";
 
-async function fetchJSON_STRICT(urlRaw: string): Promise<StrictResult> {
-  const url = addFormatJson(urlRaw);
-  const headers = { Accept: "application/json, text/plain, */*", "User-Agent": "ether-flow/1.0" };
+async function tryOnce(url: string, variant: string): Promise<StrictResult> {
+  const headers: Record<string,string> = {
+    Accept: "application/json, text/plain, */*",
+    "User-Agent": UA,
+    Origin: "https://bmrs.elexon.co.uk",
+    Referer: "https://bmrs.elexon.co.uk/",
+  };
 
-  // Important: do not auto-follow redirects; if we get a 30x we’ll see it.
   const res = await fetch(url, { headers, cache: "no-store", redirect: "manual" as RequestRedirect });
-  const ct = res.headers.get("content-type") || "";
-  const text = await res.text();
+  const ct  = res.headers.get("content-type") || "";
+  const txt = await res.text();
 
-  // If we were redirected to a non-API page, bail.
-  const loc = res.headers.get("location") || "";
   if (res.status >= 300 && res.status < 400) {
-    return { ok: false, url, status: res.status, reason: "redirect", redirectedTo: loc };
+    return { ok: false, url, status: res.status, reason: "redirect", body: txt.slice(0, 300), contentType: ct, variant };
   }
-
-  // If not JSON, treat as error even on 200 (this is your HTML page case)
   if (!ct.toLowerCase().includes("json")) {
-    return { ok: false, url, status: res.status, reason: "non-json", body: text.slice(0, 400), contentType: ct };
+    return { ok: false, url, status: res.status, reason: "non-json", body: txt.slice(0, 300), contentType: ct, variant };
   }
-
   if (!res.ok) {
-    return { ok: false, url, status: res.status, reason: "http-error", body: text.slice(0, 400), contentType: ct };
+    return { ok: false, url, status: res.status, reason: "http-error", body: txt.slice(0, 300), contentType: ct, variant };
+  }
+  try {
+    const data = JSON.parse(txt);
+    return { ok: true, data, url, status: res.status, contentType: ct, variant };
+  } catch {
+    return { ok: false, url, status: 200, reason: "json-parse-failed", body: txt.slice(0, 200), contentType: ct, variant };
+  }
+}
+
+// Try host + path fallbacks in this order: bmrs current → bmrs summary → dataset stream.
+// Optionally include data.elexon.co.uk mirror when allowMirror is true.
+async function fetchBMRSJsonResilient(path: string, allowMirror = false): Promise<StrictResult> {
+  const base = "https://bmrs.elexon.co.uk/bmrs/api/v1";
+  const isCurrent = path.includes("/current");
+
+  const variants: Array<{ v: string; url: string }> = [
+    { v: "bmrs-primary", url: withFormat(`${base}${path}`) },
+    ...(isCurrent ? [{ v: "bmrs-summary", url: withFormat(`${base}${path.replace("/current", "/summary")}`) }] : []),
+    ...(allowMirror ? [{ v: "mirror-primary", url: withFormat(`https://data.elexon.co.uk/bmrs/api/v1${path}`) }] : []),
+    ...(allowMirror && isCurrent ? [{ v: "mirror-summary", url: withFormat(`https://data.elexon.co.uk/bmrs/api/v1${path.replace("/current", "/summary")}`) }] : []),
+  ];
+
+  for (const { v, url } of variants) {
+    const r = await tryOnce(url, v);
+    if (r.ok) return r;
   }
 
-  try {
-    const data = JSON.parse(text);
-    return { ok: true, data, url, status: res.status, contentType: ct };
-  } catch {
-    return { ok: false, url, status: 200, reason: "json-parse-failed", body: text.slice(0, 200), contentType: ct };
+  // Dataset fallback for generation outturn
+  if (path.startsWith("/generation/outturn")) {
+    const ds = withFormat(`${base}/datasets/FUELHH/stream?limit=50`);
+    const r  = await tryOnce(ds, "dataset-fuelhh-stream");
+    if (r.ok) return r;
   }
+
+  return { ok: false, url: withFormat(`${base}${path}`), status: 502, reason: "all-variants-non-json", variant: "exhausted" };
 }
 
 // --- parsing helpers (defensive across field names) ---
@@ -104,10 +131,12 @@ function normalizeFuel(f: string): string {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
-  // ---------- use the strict fetcher with the correct base ----------
-  const BMRS_BASE = "https://bmrs.elexon.co.uk/bmrs/api/v1";
+  // Parse opt-in mirror flag from query (?mirror=1 or true)
+  const { searchParams } = new URL(req.url);
+  const allowMirror = ["1","true","yes"].includes((searchParams.get("mirror") || "").toLowerCase());
 
-  const outturnR = await fetchJSON_STRICT(`${BMRS_BASE}/generation/outturn/current`);
+  // Outturn generation
+  const outturnR = await fetchBMRSJsonResilient(`/generation/outturn/current`, allowMirror);
   if (!outturnR.ok) {
     return new Response(JSON.stringify({ error: "bmrs_outturn_current_failed", detail: outturnR }), {
       status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
@@ -121,7 +150,7 @@ serve(async (req) => {
   }
   const { sp_from, sp_to } = pickSP(outRows);
 
-  const icR = await fetchJSON_STRICT(`${BMRS_BASE}/generation/outturn/interconnectors`);
+  const icR = await fetchBMRSJsonResilient(`/generation/outturn/interconnectors`, allowMirror);
   if (!icR.ok) {
     return new Response(JSON.stringify({ error: "bmrs_interconnectors_failed", detail: icR }), {
       status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
@@ -135,7 +164,7 @@ serve(async (req) => {
     return { name, country: r.country ?? "", flow, capacity };
   });
 
-  const demandR = await fetchJSON_STRICT(`${BMRS_BASE}/demand/outturn/summary`);
+  const demandR = await fetchBMRSJsonResilient(`/demand/outturn/summary`, allowMirror);
   if (!demandR.ok) {
     return new Response(JSON.stringify({ error: "bmrs_demand_summary_failed", detail: demandR }), {
       status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
