@@ -10,9 +10,10 @@ interface InterconnectorData {
 
 interface InterconnectorFlowsProps {
   data: InterconnectorData[];
+  interconnectorStatus?: 'live' | 'cached' | 'unavailable';
 }
 
-export const InterconnectorFlows = ({ data }: InterconnectorFlowsProps) => {
+export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: InterconnectorFlowsProps) => {
   const totalImports = data.filter(item => item.flow > 0).reduce((sum, item) => sum + item.flow, 0);
   const totalExports = Math.abs(data.filter(item => item.flow < 0).reduce((sum, item) => sum + item.flow, 0));
 
@@ -21,8 +22,22 @@ export const InterconnectorFlows = ({ data }: InterconnectorFlowsProps) => {
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-bold text-card-foreground">Interconnector Flows</h2>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
-          <span className="text-sm text-muted-foreground">Live</span>
+          {interconnectorStatus === 'live' ? (
+            <>
+              <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
+              <span className="text-sm text-muted-foreground">Live</span>
+            </>
+          ) : interconnectorStatus === 'cached' ? (
+            <>
+              <div className="w-3 h-3 bg-orange-500 rounded-full"></div>
+              <span className="text-sm text-muted-foreground">Last Known</span>
+            </>
+          ) : (
+            <>
+              <div className="w-3 h-3 bg-muted rounded-full"></div>
+              <span className="text-sm text-muted-foreground">Unavailable</span>
+            </>
+          )}
         </div>
       </div>
 
@@ -47,9 +62,17 @@ export const InterconnectorFlows = ({ data }: InterconnectorFlowsProps) => {
 
       {/* Interconnector List */}
       <div className="space-y-3">
-        {data
-          .sort((a, b) => Math.abs(b.flow) - Math.abs(a.flow))
-          .map((interconnector, index) => {
+        {data.length === 0 ? (
+          <div className="text-center py-8 text-muted-foreground">
+            <p>No interconnector data available</p>
+            {interconnectorStatus === 'unavailable' && (
+              <p className="text-sm mt-1">Unable to fetch current interconnector flows</p>
+            )}
+          </div>
+        ) : (
+          data
+            .sort((a, b) => Math.abs(b.flow) - Math.abs(a.flow))
+            .map((interconnector, index) => {
             const isImport = interconnector.flow > 0;
             const flowValue = Math.abs(interconnector.flow);
             const utilization = (flowValue / interconnector.capacity) * 100;
@@ -88,7 +111,8 @@ export const InterconnectorFlows = ({ data }: InterconnectorFlowsProps) => {
                 </div>
               </div>
             );
-          })}
+            })
+        )}
       </div>
     </Card>
   );

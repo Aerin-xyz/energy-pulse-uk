@@ -271,6 +271,27 @@ Deno.serve(async (req) => {
     return null;
   }
 
+  // Helper to get last known interconnectors from LKG
+  async function getLastInterconnectorsFromLKG() {
+    try {
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+      const supa = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+      const { data: lkgRow } = await supa
+        .from("energy_data_history")
+        .select("payload")
+        .order("as_of", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (lkgRow?.payload?.interconnectors && Array.isArray(lkgRow.payload.interconnectors) && lkgRow.payload.interconnectors.length > 0) {
+        return lkgRow.payload.interconnectors;
+      }
+    } catch {}
+    return [];
+  }
+
   // Helper functions for parsing
   function pickNum(row: any, keys: string[]): number | undefined {
     for (const k of keys) {
@@ -340,10 +361,28 @@ Deno.serve(async (req) => {
         fetchInterconnectors(),
         fetchDemand(),
       ]);
-      if (DEBUG) dlog(true, "ic/demand in dataset mode:", { icOk: icR.ok, dOk: demandR.ok });
-
-      const interconnectors = icR.ok ? parseInterconnectors(icR.data) : [];
+      
+      let interconnectors = [];
+      let icSource = "live";
+      if (icR.ok) {
+        interconnectors = parseInterconnectors(icR.data);
+        icSource = "live";
+      } else {
+        // Fallback to last known interconnectors
+        interconnectors = await getLastInterconnectorsFromLKG();
+        icSource = interconnectors.length > 0 ? "lkg" : "none";
+      }
+      
       const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;
+      
+      if (DEBUG) dlog(true, "ic/demand in dataset mode:", { 
+        icOk: icR.ok, 
+        dOk: demandR.ok, 
+        icHost: (icR as any).host,
+        icCount: interconnectors.length,
+        icSample: interconnectors[0],
+        icSource 
+      });
 
       const latestSample = pickLatestSP(rows).slice(0, 2);
       const payload: any = {
@@ -353,9 +392,24 @@ Deno.serve(async (req) => {
         totalDemandMW: Math.round(totalDemand * 1000), // Convert GW to MW
         units: "MW",
         lastUpdated: new Date().toISOString(),
-        dataFreshness: { source: "BMRS", isRealtime: true, variant: "dataset-fuelhh-stream" },
+        dataFreshness: { 
+          source: "BMRS", 
+          isRealtime: true, 
+          variant: "dataset-fuelhh-stream",
+          interconnectorStatus: icSource === "live" ? "live" : icSource === "lkg" ? "cached" : "unavailable"
+        },
       };
-      if (DEBUG) payload.diagnostics = { variant: "dataset-fuelhh-stream", totalFuels: Object.keys(mixMW).length, totalMW, latestSample };
+      if (DEBUG) payload.diagnostics = { 
+        variant: "dataset-fuelhh-stream", 
+        totalFuels: Object.keys(mixMW).length, 
+        totalMW, 
+        latestSample,
+        icOk: icR.ok,
+        icHost: (icR as any).host,
+        icCount: interconnectors.length,
+        icSample: interconnectors[0],
+        icSource
+      };
 
       await insertLKG(payload.lastUpdated, payload, totalMW);
 
@@ -449,7 +503,17 @@ Deno.serve(async (req) => {
   })).sort((a, b) => b.value - a.value);
 
   // Interconnectors & Demand (best-effort)
-  const interconnectors = icR.ok ? parseInterconnectors(icR.data) : [];
+  let interconnectors = [];
+  let icSource = "live";
+  if (icR.ok) {
+    interconnectors = parseInterconnectors(icR.data);
+    icSource = "live";
+  } else {
+    // Fallback to last known interconnectors
+    interconnectors = await getLastInterconnectorsFromLKG();
+    icSource = interconnectors.length > 0 ? "lkg" : "none";
+  }
+  
   const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;
 
   const payload: any = {
@@ -459,9 +523,24 @@ Deno.serve(async (req) => {
     totalDemandMW: Math.round(totalDemand * 1000), // Convert GW to MW
     units: "MW",
     lastUpdated: new Date().toISOString(),
-    dataFreshness: { source: "BMRS", isRealtime: true, variant: genVariant },
+    dataFreshness: { 
+      source: "BMRS", 
+      isRealtime: true, 
+      variant: genVariant,
+      interconnectorStatus: icSource === "live" ? "live" : icSource === "lkg" ? "cached" : "unavailable"
+    },
   };
-  if (DEBUG) payload.diagnostics = { variant: genVariant, fuels: Object.keys(mixMW).length, totalMW, latestSample: diagSample };
+  if (DEBUG) payload.diagnostics = { 
+    variant: genVariant, 
+    fuels: Object.keys(mixMW).length, 
+    totalMW, 
+    latestSample: diagSample,
+    icOk: icR.ok,
+    icHost: (icR as any).host,
+    icCount: interconnectors.length,
+    icSample: interconnectors[0],
+    icSource
+  };
 
   await insertLKG(payload.lastUpdated, payload, totalMW);
 

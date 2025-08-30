@@ -30,6 +30,7 @@ interface EnergyData {
     spTo?: string | null;
     variant?: string;
     note?: string;
+    interconnectorStatus?: 'live' | 'cached' | 'unavailable';
   };
 }
 

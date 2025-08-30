@@ -109,7 +109,10 @@ export const EnergyDashboard = () => {
             />
 
             {/* Interconnector Flows */}
-            <InterconnectorFlows data={data.interconnectors} />
+          <InterconnectorFlows 
+            data={data.interconnectors} 
+            interconnectorStatus={data.dataFreshness?.interconnectorStatus}
+          />
           </div>
         ) : null}
       </main>
