@@ -3,27 +3,27 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, cache-control",
 };
 
+// BMRS base
+const BMRS_BASE = "https://bmrs.elexon.co.uk/bmrs/api/v1";
+
+// Strict result type for fetch attempts
 type StrictResult =
   | { ok: true; data: any; url: string; status: number; contentType: string; variant: string }
   | { ok: false; url: string; status: number; reason: string; body?: string; contentType?: string; variant: string; redirectedTo?: string };
 
 function withFormat(u: string): string {
-  try { 
-    const url = new URL(u); 
-    url.searchParams.set("format","json"); 
-    return url.toString(); 
-  }
-  catch { 
-    return u.includes("?") ? `${u}&format=json` : `${u}?format=json`; 
-  }
+  try { const url = new URL(u); url.searchParams.set("format","json"); return url.toString(); }
+  catch { return u.includes("?") ? `${u}&format=json` : `${u}?format=json`; }
 }
 
+// Slightly more browser-like headers to reduce WAF/SPAs
 const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36";
 const HEADERS = {
   Accept: "application/json, text/plain, */*",
   "User-Agent": UA,
   Origin: "https://bmrs.elexon.co.uk",
   Referer: "https://bmrs.elexon.co.uk/",
+  "Accept-Language": "en-GB,en;q=0.9",
 } as Record<string,string>;
 
 async function tryOnce(url: string, variant: string): Promise<StrictResult> {
@@ -40,22 +40,18 @@ async function tryOnce(url: string, variant: string): Promise<StrictResult> {
   if (!res.ok) {
     return { ok: false, url, status: res.status, reason: "http-error", body: text.slice(0, 300), contentType: ct, variant };
   }
-  try { 
-    return { ok: true, data: JSON.parse(text), url, status: res.status, contentType: ct, variant }; 
-  }
-  catch { 
-    return { ok: false, url, status: 200, reason: "json-parse-failed", body: text.slice(0, 200), contentType: ct, variant }; 
-  }
+  try { return { ok: true, data: JSON.parse(text), url, status: res.status, contentType: ct, variant }; }
+  catch { return { ok: false, url, status: 200, reason: "json-parse-failed", body: text.slice(0, 200), contentType: ct, variant }; }
 }
 
+// Prefer SUMMARY (more stable) → CURRENT → DATASET (FUELHH stream)
 async function fetchBMRS(path: string): Promise<StrictResult> {
-  // Prefer SUMMARY (stable) → CURRENT → DATASET
   const variants: { v: string; url: string }[] = [
-    { v: "insights-summary", url: withFormat(`https://bmrs.elexon.co.uk/bmrs/api/v1${path.replace("/current","/summary")}`) },
-    { v: "insights-current", url: withFormat(`https://bmrs.elexon.co.uk/bmrs/api/v1${path}`) },
+    { v: "insights-summary", url: withFormat(`${BMRS_BASE}${path.replace("/current","/summary")}`) },
+    { v: "insights-current", url: withFormat(`${BMRS_BASE}${path}`) },
   ];
   if (path.startsWith("/generation/outturn")) {
-    variants.push({ v: "dataset-fuelhh-stream", url: withFormat(`https://bmrs.elexon.co.uk/bmrs/api/v1/datasets/FUELHH/stream?limit=200`) });
+    variants.push({ v: "dataset-fuelhh-stream", url: withFormat(`${BMRS_BASE}/datasets/FUELHH/stream?limit=200`) });
   }
 
   for (const { v, url } of variants) {
@@ -65,42 +61,27 @@ async function fetchBMRS(path: string): Promise<StrictResult> {
   return { ok: false, url: variants[0].url, status: 502, reason: "all-variants-non-json", variant: "exhausted" };
 }
 
-// --- parsing helpers (defensive across field names) ---
+// Small helpers
 function asArray(x: any): any[] {
   if (!x) return [];
   if (Array.isArray(x)) return x;
-  if (Array.isArray((x as any).data)) return (x as any).data;
-  if ((x as any).result?.records && Array.isArray((x as any).result.records)) return (x as any).result.records;
+  if (Array.isArray(x.data)) return x.data;
+  if (x.result?.records && Array.isArray(x.result.records)) return x.result.records;
   return [];
 }
 
-function pickSP(rows: any[]) {
-  const r = rows[0] ?? {};
-  const sp_from = r.spFrom ?? r.fromTime ?? r.start ?? r.timeFrom ?? r.from ?? r.periodFrom;
-  const sp_to   = r.spTo   ?? r.toTime   ?? r.end   ?? r.timeTo   ?? r.to   ?? r.periodTo;
-  return { sp_from, sp_to };
-}
-
-function numberish(...candidates: any[]): number|undefined {
-  for (const c of candidates) {
-    const n = Number(c);
+function num(...c: any[]): number | undefined {
+  for (const v of c) {
+    const n = Number(v);
     if (Number.isFinite(n)) return n;
   }
   return undefined;
 }
 
-// --- colors (unchanged) ---
-const ENERGY_COLORS: Record<string,string> = {
-  Wind:"#10b981", Nuclear:"#f59e0b", Gas:"#ef4444", Coal:"#374151",
-  Hydro:"#3b82f6", Solar:"#fbbf24", Biomass:"#16a34a", Oil:"#1f2937", Other:"#6b7280"
-};
+// Colors for frontend charts
+const COLORS: Record<string,string> = { Wind:"#10b981", Nuclear:"#f59e0b", Gas:"#ef4444", Coal:"#374151", Hydro:"#3b82f6", Solar:"#fbbf24", Biomass:"#16a34a", Oil:"#1f2937", Other:"#6b7280" };
 
-const EXCLUDE_FROM_MIX = new Set([
-  "INTERCONNECTOR","INTERCONNECTORS","INTERCONNECTOR_EXPORT","INTERCONNECTOR_IMPORT",
-  "PUMPED_STORAGE","PS","INTFR","INTIRL","INTNED","INTEW","INTNEM","INTELEC","INTNSL"
-]);
-
-function normalizeFuel(f: string): string {
+function labelFuel(f: string): string {
   const t = (f||"").toUpperCase();
   if (t.includes("WIND")) return "Wind";
   if (t.includes("SOLAR")) return "Solar";
@@ -113,191 +94,147 @@ function normalizeFuel(f: string): string {
   return "Other";
 }
 
-async function getLKG() {
-  try {
-    const supa = (await import("https://esm.sh/@supabase/supabase-js@2")).createClient(
-      Deno.env.get("SUPABASE_URL") ?? "", 
-      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-    );
-    const { data: lkg } = await supa
-      .from("energy_data_history")
-      .select("payload")
-      .order("as_of", { ascending: false })
-      .limit(1)
-      .maybeSingle();
-    return lkg?.payload;
-  } catch (e) {
-    console.warn("LKG fetch failed", e);
-    return null;
-  }
-}
-
 Deno.serve(async (req) => {
-  // Handle CORS preflight requests
-  if (req.method === 'OPTIONS') {
+  if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
-  try {
-    console.log('Fetching energy data from BMRS API...');
+  // Try BMRS (summary → current → dataset)
+  const outturnR = await fetchBMRS("/generation/outturn/current");
+  const icR      = await fetchBMRS("/generation/outturn/interconnectors");
+  const demandR  = await fetchBMRS("/demand/outturn/summary");
 
-    // A) OUTTURN (summary preferred)
-    const outturnR = await fetchBMRS("/generation/outturn/current");
-    if (!outturnR.ok) {
-      console.log('BMRS outturn failed, trying LKG...', outturnR);
-      const lkg = await getLKG();
-      if (lkg) {
-        return new Response(JSON.stringify({ 
-          ...lkg, 
-          meta: { isRealtime: false, note: "BMRS failed", detail: outturnR } 
-        }), {
-          headers: { "Content-Type": "application/json", ...corsHeaders }
-        });
-      }
-      return new Response(JSON.stringify({ error: "bmrs_outturn_failed", detail: outturnR }), {
-        status: 502, headers: { "Content-Type": "application/json", ...corsHeaders }
-      });
-    }
+  const bmrsAllOk = outturnR.ok && icR.ok && demandR.ok;
 
-    const outRows = asArray(outturnR.data);
-    if (outRows.length === 0) {
-      return new Response(JSON.stringify({ 
-        error: "bmrs_outturn_empty_after_resolver", 
-        variant: outturnR.variant, 
-        sample: outturnR.data 
-      }), {
-        status: 502, headers: { "Content-Type": "application/json", ...corsHeaders }
-      });
-    }
-
-    // If summary, pick latest SP
-    outRows.sort((a,b) => new Date(a.spTo ?? a.toTime ?? a.timeTo ?? 0).getTime() - new Date(b.spTo ?? b.toTime ?? b.timeTo ?? 0).getTime());
-    const latestSP = outRows[outRows.length - 1];
-
-    // B) INTERCONNECTORS
-    const icR = await fetchBMRS("/generation/outturn/interconnectors");
-    if (!icR.ok) {
-      console.log('BMRS interconnectors failed, trying LKG...', icR);
-      const lkg = await getLKG();
-      if (lkg) {
-        return new Response(JSON.stringify({ 
-          ...lkg, 
-          meta: { isRealtime: false, note: "BMRS IC failed", detail: icR } 
-        }), {
-          headers: { "Content-Type": "application/json", ...corsHeaders }
-        });
-      }
-      return new Response(JSON.stringify({ error: "bmrs_interconnectors_failed", detail: icR }), {
-        status: 502, headers: { "Content-Type": "application/json", ...corsHeaders }
-      });
-    }
-    const icRows = asArray(icR.data);
-
-    // C) DEMAND
-    const demandR = await fetchBMRS("/demand/outturn/summary");
-    if (!demandR.ok) {
-      console.log('BMRS demand failed, trying LKG...', demandR);
-      const lkg = await getLKG();
-      if (lkg) {
-        return new Response(JSON.stringify({ 
-          ...lkg, 
-          meta: { isRealtime: false, note: "BMRS demand failed", detail: demandR } 
-        }), {
-          headers: { "Content-Type": "application/json", ...corsHeaders }
-        });
-      }
-      return new Response(JSON.stringify({ error: "bmrs_demand_summary_failed", detail: demandR }), {
-        status: 502, headers: { "Content-Type": "application/json", ...corsHeaders }
-      });
-    }
-    const dRows = asArray(demandR.data);
-
-    // Process data as before...
-    const spFrom = latestSP.spFrom ?? latestSP.fromTime ?? latestSP.start ?? latestSP.timeFrom;
-    const spTo = latestSP.spTo ?? latestSP.toTime ?? latestSP.end ?? latestSP.timeTo;
-
-    // Build generation mix (exclude IC & pumped)
-    let totalGenerationMW = 0;
-    const mixTally: Record<string, number> = {};
-    
-    for (const r of outRows) {
-      const fuel = String(r.fuelType ?? r.fuel ?? r.fuel_type ?? "").toUpperCase();
-      const mw = numberish(r.generation, r.mw, r.value) ?? 0;
-      
-      if (!EXCLUDE_FROM_MIX.has(fuel) && mw > 0) {
-        const norm = normalizeFuel(fuel);
-        mixTally[norm] = (mixTally[norm] || 0) + mw;
-        totalGenerationMW += mw;
-      }
-    }
-
-    const generationMix = Object.entries(mixTally).map(([name, value]) => ({
-      name,
-      value: Math.round(value),
-      percentage: Math.round((value / totalGenerationMW) * 100),
-      color: ENERGY_COLORS[name] || ENERGY_COLORS.Other
-    })).sort((a, b) => b.value - a.value);
-
-    // Process interconnectors
-    const interconnectors = icRows.map((ic: any) => ({
-      name: ic.interconnectorName ?? ic.name ?? "Unknown",
-      country: ic.country ?? "Unknown",
-      flow: Math.round(numberish(ic.flow, ic.value, ic.generation) ?? 0),
-      capacity: Math.round(numberish(ic.capacity, ic.maxCapacity) ?? 0)
-    }));
-
-    // Get total demand
-    const totalDemandMW = dRows.reduce((sum: number, d: any) => {
-      return sum + (numberish(d.demand, d.value, d.generation) ?? 0);
-    }, 0);
-
-    const payload = {
-      generationMix,
-      interconnectors,
-      totalGeneration: Math.round((totalGenerationMW/1000)*100)/100,
-      totalDemand: Math.round((totalDemandMW/1000)*100)/100,
-      lastUpdated: spTo ?? new Date().toISOString(),
-      dataFreshness: { source: "BMRS", spFrom, spTo, variant: outturnR.variant }
-    };
-
-    // Upsert LKG (best-effort)
+  // If any failed → LKG or stub
+  if (!bmrsAllOk) {
     try {
-      const supa = (await import("https://esm.sh/@supabase/supabase-js@2")).createClient(
-        Deno.env.get("SUPABASE_URL") ?? "", 
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+      const supa = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
       );
-      await supa.from("energy_data_history").insert({ 
-        as_of: payload.lastUpdated, 
-        payload 
-      });
-    } catch (e) { 
-      console.warn("LKG insert failed", e); 
+      const { data: lkgRow } = await supa
+        .from("energy_data_history")
+        .select("payload")
+        .order("as_of", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (lkgRow?.payload) {
+        const lkg = lkgRow.payload;
+        lkg.dataFreshness = {
+          ...(lkg.dataFreshness || {}),
+          isRealtime: false,
+          note: "BMRS unavailable; served last-known-good",
+          diagnostics: { outturn: outturnR, interconnectors: icR, demand: demandR }
+        };
+        return new Response(JSON.stringify(lkg), {
+          headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" }
+        });
+      }
+    } catch (e) {
+      console.warn("LKG read failed:", e);
     }
 
-    return new Response(JSON.stringify(payload), {
+    // No LKG yet → return a minimal stub (200, so UI never errors)
+    const stub = {
+      generationMix: [],
+      interconnectors: [],
+      totalGeneration: 0,
+      totalDemand: 0,
+      lastUpdated: new Date().toISOString(),
+      dataFreshness: {
+        source: "BMRS",
+        isRealtime: false,
+        note: "Stub payload: BMRS endpoints non-JSON on first run",
+        diagnostics: { outturn: outturnR, interconnectors: icR, demand: demandR }
+      }
+    };
+    return new Response(JSON.stringify(stub), {
       headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" }
     });
+  }
 
-  } catch (error) {
-    console.error('Error in energy-data function:', error);
-    
-    // Try LKG on unexpected errors too
-    const lkg = await getLKG();
-    if (lkg) {
-      return new Response(JSON.stringify({ 
-        ...lkg, 
-        meta: { isRealtime: false, note: "Unexpected error", error: error.message } 
-      }), {
-        headers: { "Content-Type": "application/json", ...corsHeaders }
-      });
-    }
+  // ---------- Parse SUCCESS path below ----------
 
-    return new Response(JSON.stringify({ 
-      error: "internal_error", 
-      message: error.message 
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, "Content-Type": "application/json" }
+  // OUTTURN rows (summary may return many; pick latest SP)
+  const outRows = asArray(outturnR.data);
+  if (outRows.length === 0) {
+    const stub = {
+      generationMix: [],
+      interconnectors: [],
+      totalGeneration: 0,
+      totalDemand: 0,
+      lastUpdated: new Date().toISOString(),
+      dataFreshness: { source: "BMRS", isRealtime: false, note: "Outturn rows empty after resolver" }
+    };
+    return new Response(JSON.stringify(stub), {
+      headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" }
     });
   }
+  outRows.sort((a,b) => new Date(a.spTo ?? a.toTime ?? a.timeTo ?? 0).getTime() - new Date(b.spTo ?? b.toTime ?? b.timeTo ?? 0).getTime());
+  const latest = outRows[outRows.length - 1];
+  const spFrom = latest.spFrom ?? latest.fromTime ?? latest.start ?? latest.timeFrom;
+  const spTo   = latest.spTo   ?? latest.toTime   ?? latest.end   ?? latest.timeTo;
+
+  // Build generation mix (exclude interconnectors + pumped)
+  const EXCLUDE = new Set(["INTERCONNECTOR", "INTERCONNECTORS", "INTERCONNECTOR_EXPORT", "INTERCONNECTOR_IMPORT", "PUMPED_STORAGE", "PS", "INTFR", "INTIRL", "INTNED", "INTEW", "INTNEM", "INTELEC", "INTNSL"]);
+  const mix: Record<string, number> = {};
+  for (const r of outRows) {
+    const fuel = String(r.fuelType ?? r.fuel ?? r.fuel_type ?? "").toUpperCase();
+    const mw   = num(r.generation, r.mw, r.value) ?? 0;
+    if (fuel.includes("PUMP") || fuel.includes("INTERCONNECT")) continue;
+    const L = labelFuel(fuel);
+    mix[L] = (mix[L] || 0) + mw;
+  }
+
+  const totalGenerationMW = Object.values(mix).reduce((s,v)=>s+v,0);
+  const generationMix = Object.entries(mix)
+    .map(([name, mw]) => ({
+      name,
+      value: Math.round(mw),
+      percentage: totalGenerationMW ? Math.round((mw/totalGenerationMW)*100) : 0,
+      color: COLORS[name] || "#6b7280"
+    }))
+    .sort((a,b)=>b.value-a.value);
+
+  // INTERCONNECTORS
+  const icRows = asArray(icR.data);
+  const interconnectors = icRows.map((r: any) => ({
+    name: r.interconnectorName ?? r.name ?? "Unknown",
+    country: r.country ?? "",
+    flow: num(r.flow, r.mw, r.value) ?? 0,       // + import / - export
+    capacity: num(r.capacity, r.cap, r.maxCapacity)
+  }));
+
+  // DEMAND (national)
+  const dRows = asArray(demandR.data);
+  const national = dRows.find((r: any) => String(r.region ?? r.area ?? "NATIONAL").toUpperCase().includes("NATIONAL")) ?? dRows[0] ?? {};
+  const totalDemandMW = num(national.demand, national.mw, national.value) ?? 0;
+
+  const payload = {
+    generationMix,
+    interconnectors,
+    totalGeneration: Math.round((totalGenerationMW/1000)*100)/100,
+    totalDemand:     Math.round((totalDemandMW/1000)*100)/100,
+    lastUpdated: spTo ?? new Date().toISOString(),
+    dataFreshness: { source: "BMRS", isRealtime: true, spFrom, spTo, variant: outturnR.variant }
+  };
+
+  // Upsert LKG only on real success (never write stubs)
+  try {
+    const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+    const supa = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+    );
+    await supa.from("energy_data_history").insert({ as_of: payload.lastUpdated, payload });
+  } catch (e) {
+    console.warn("LKG insert failed:", e);
+  }
+
+  return new Response(JSON.stringify(payload), {
+    headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" }
+  });
 });
