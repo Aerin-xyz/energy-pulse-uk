@@ -4,6 +4,8 @@ import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { useEnergyData } from '@/hooks/useEnergyData';
 import { Skeleton } from '@/components/ui/skeleton';
+import { StatusIndicator } from '@/components/StatusIndicator';
+import { OfflineOverlay } from '@/components/OfflineOverlay';
 
 export const EnergyDashboard = () => {
   const { data, loading, error, refetch } = useEnergyData();
@@ -25,6 +27,7 @@ export const EnergyDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <OfflineOverlay />
       {/* Header */}
       <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
@@ -35,7 +38,15 @@ export const EnergyDashboard = () => {
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-foreground">UK Energy Mix Dashboard</h1>
-                <p className="text-sm text-muted-foreground">Real-time electricity generation and flows</p>
+                <div className="flex items-center gap-3">
+                  <p className="text-sm text-muted-foreground">Real-time electricity generation and flows</p>
+                  {data && (
+                    <StatusIndicator 
+                      isRealtime={data.dataFreshness?.isRealtime}
+                      variant={data.dataFreshness?.variant}
+                    />
+                  )}
+                </div>
               </div>
             </div>
 
@@ -83,6 +94,13 @@ export const EnergyDashboard = () => {
           </div>
         ) : data ? (
           <div className="space-y-8">
+            {/* Show stub/LKG notice if no generation data */}
+            {data.generationMix.length === 0 && (
+              <div className="bg-muted/50 border border-border rounded-lg p-4 text-center">
+                <p className="text-muted-foreground">Awaiting live data (stub/LKG)</p>
+              </div>
+            )}
+            
             {/* Generation Mix Chart */}
             <GenerationMixChart 
               data={data.generationMix} 
