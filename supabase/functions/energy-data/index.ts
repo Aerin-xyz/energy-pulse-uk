@@ -364,34 +364,33 @@ Deno.serve(async (req) => {
       if (DEBUG) dlog(true, "Dataset fallback succeeded:", { totalMW: totalGenerationMW, fuels: Object.keys(mixMW).length });
     } else {
       if (DEBUG) dlog(true, "Dataset fallback failed:", { reason: ds.reason });
-    }
-  }
-    
-    // Try LKG before stub
-    try {
-      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-      const supa = createClient(
-        Deno.env.get("SUPABASE_URL") ?? "",
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-      );
-      const { data: lkgRow } = await supa
-        .from("energy_data_history")
-        .select("payload")
-        .order("as_of", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (lkgRow?.payload) {
-        const lkg = lkgRow.payload;
-        lkg.dataFreshness = { ...(lkg.dataFreshness||{}), isRealtime: false, note: "All sources failed; served LKG" };
-        if (DEBUG) lkg.diagnostics = { genVariant, resolverFailed: true, carbonIntensityFailed: true };
-        return new Response(JSON.stringify(lkg), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
-      }
-    } catch {}
+      
+      // Try LKG before stub
+      try {
+        const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+        const supa = createClient(
+          Deno.env.get("SUPABASE_URL") ?? "",
+          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+        );
+        const { data: lkgRow } = await supa
+          .from("energy_data_history")
+          .select("payload")
+          .order("as_of", { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (lkgRow?.payload) {
+          const lkg = lkgRow.payload;
+          lkg.dataFreshness = { ...(lkg.dataFreshness||{}), isRealtime: false, note: "All sources failed; served LKG" };
+          if (DEBUG) lkg.diagnostics = { genVariant, resolverFailed: true, datasetFailed: true };
+          return new Response(JSON.stringify(lkg), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
+        }
+      } catch {}
 
-    // Final stub (only if no LKG)
-    const stub = { generationMix: [], interconnectors: [], totalGeneration: 0, totalDemand: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: all sources failed", variant: genVariant } };
-    if (DEBUG) stub.diagnostics = { genVariant, allSourcesFailed: true };
-    return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
+      // Final stub (only if no LKG)
+      const stub = { generationMix: [], interconnectors: [], totalGeneration: 0, totalDemand: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: all sources failed", variant: genVariant } };
+      if (DEBUG) stub.diagnostics = { genVariant, allSourcesFailed: true };
+      return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
+    }
   }
 
   // Build generation mix
