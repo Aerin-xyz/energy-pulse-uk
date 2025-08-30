@@ -144,11 +144,17 @@ serve(async (req) => {
   }
   const outRows = asArray(outturnR.data);
   if (outRows.length === 0) {
-    return new Response(JSON.stringify({ error: "bmrs_outturn_current_empty_after_json", sample: outturnR.data }), {
+    return new Response(JSON.stringify({ error: "bmrs_outturn_empty_after_resolver", variant: outturnR.variant, sample: outturnR.data }), {
       status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
     });
   }
-  const { sp_from, sp_to } = pickSP(outRows);
+  // If summary variant returned multiple rows, pick the latest SP and use only rows from that SP
+  const byTo = (r: any) => new Date(r.spTo ?? r.toTime ?? r.timeTo ?? r.periodTo ?? r.to ?? 0).getTime();
+  const sorted = [...outRows].sort((a,b) => byTo(a) - byTo(b));
+  const latestSP = sorted[sorted.length - 1];
+  const latestTo = latestSP?.spTo ?? latestSP?.toTime ?? latestSP?.timeTo ?? latestSP?.periodTo ?? latestSP?.to;
+  const workingRows = latestTo ? outRows.filter(r => (r.spTo ?? r.toTime ?? r.timeTo ?? r.periodTo ?? r.to) === latestTo) : outRows;
+  const { sp_from, sp_to } = pickSP([latestSP]);
 
   const icR = await fetchBMRSJsonResilient(`/generation/outturn/interconnectors`, allowMirror);
   if (!icR.ok) {
@@ -182,7 +188,7 @@ serve(async (req) => {
   // 4) Build generation mix (exclude IC & pumped)
   let hvWindMW = 0, hvSolarMW = 0, pumpedMW = 0;
   const mixTally: Record<string, number> = {};
-  for (const r of outRows) {
+  for (const r of workingRows) {
     const fuel = String(r.fuelType ?? r.fuel ?? r.fuel_type ?? "").toUpperCase();
     const mw   = numberish(r.generation, r.mw, r.value) ?? 0;
 
