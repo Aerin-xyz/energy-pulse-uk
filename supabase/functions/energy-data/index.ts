@@ -11,9 +11,11 @@ function dlog(enabled: boolean, ...args: any[]) { if (enabled) console.log("[ene
 
 // Env flags
 const BMRS_FORCE_DATASET = (Deno.env.get("BMRS_FORCE_DATASET") || "").toLowerCase() === "true";
+const BMRS_PRIMARY_HOST = Deno.env.get("BMRS_PRIMARY_HOST") || "data.elexon.co.uk";
 
-// BMRS base
-const BMRS_BASE = "https://bmrs.elexon.co.uk/bmrs/api/v1";
+// BMRS hosts (primary and fallback)
+const DATA_HOST = "data.elexon.co.uk";
+const BMRS_HOST = "bmrs.elexon.co.uk";
 
 // Strict result type for fetch attempts
 type StrictResult =
@@ -28,11 +30,11 @@ function withFormat(u: string): string {
 // Browser-like headers reduce WAF surprises
 const UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123 Safari/537.36";
 const HEADERS = {
-  Accept: "application/json, text/plain, */*",
+  Accept: "application/json",
   "User-Agent": UA,
   Origin: "https://bmrs.elexon.co.uk",
   Referer: "https://bmrs.elexon.co.uk/",
-  "Accept-Language": "en-GB,en;q=0.9",
+  "Accept-Language": "en-GB",
 } as Record<string,string>;
 
 async function tryOnce(url: string, variant: string): Promise<StrictResult> {
@@ -53,12 +55,20 @@ async function tryOnce(url: string, variant: string): Promise<StrictResult> {
   catch { return { ok: false, url, status: 200, reason: "json-parse-failed", body: text.slice(0, 200), contentType: ct, variant }; }
 }
 
-// Resolver: prefer SUMMARY → CURRENT
+// Dual-host resolver: prefer DATA → BMRS, SUMMARY → CURRENT
 async function fetchBMRS(path: string): Promise<StrictResult> {
-  const variants: { v: string; url: string }[] = [
-    { v: "insights-summary", url: withFormat(`${BMRS_BASE}${path.replace("/current","/summary")}`) },
-    { v: "insights-current", url: withFormat(`${BMRS_BASE}${path}`) },
-  ];
+  const hosts = BMRS_PRIMARY_HOST === DATA_HOST ? [DATA_HOST, BMRS_HOST] : [BMRS_HOST, DATA_HOST];
+  const variants: { v: string; url: string }[] = [];
+  
+  for (const host of hosts) {
+    const base = `https://${host}/bmrs/api/v1`;
+    const hostPrefix = host === DATA_HOST ? "data" : "bmrs";
+    variants.push(
+      { v: `insights-summary@${hostPrefix}`, url: withFormat(`${base}${path.replace("/current","/summary")}`) },
+      { v: `insights-current@${hostPrefix}`, url: withFormat(`${base}${path}`) }
+    );
+  }
+  
   for (const { v, url } of variants) {
     const r = await tryOnce(url, v);
     if (r.ok) return r;
@@ -66,50 +76,64 @@ async function fetchBMRS(path: string): Promise<StrictResult> {
   return { ok: false, url: variants[0].url, status: 502, reason: "all-variants-non-json", variant: "exhausted" };
 }
 
-// Dedicated dataset fetcher (FUELHH stream)
+// Dedicated dataset fetcher (FUELHH stream) - try both hosts
 async function fetchFUELHHStream(limit = 200) {
-  const url = `https://bmrs.elexon.co.uk/bmrs/api/v1/datasets/FUELHH/stream?limit=${limit}&format=json`;
-  const res = await fetch(url, {
-    headers: HEADERS,
-    cache: "no-store",
-    redirect: "manual" as RequestRedirect,
-  });
-  const ct = res.headers.get("content-type") || "";
-  const text = await res.text();
-  if (!ct.toLowerCase().includes("json") || !res.ok) {
-    return { ok: false, status: res.status, reason: "fuelhh-non-json", contentType: ct, body: text.slice(0, 400) };
+  const hosts = BMRS_PRIMARY_HOST === DATA_HOST ? [DATA_HOST, BMRS_HOST] : [BMRS_HOST, DATA_HOST];
+  
+  for (const host of hosts) {
+    const url = `https://${host}/bmrs/api/v1/datasets/FUELHH/stream?limit=${limit}&format=json`;
+    const res = await fetch(url, {
+      headers: HEADERS,
+      cache: "no-store",
+      redirect: "manual" as RequestRedirect,
+    });
+    const ct = res.headers.get("content-type") || "";
+    const text = await res.text();
+    if (ct.toLowerCase().includes("json") && res.ok) {
+      try { 
+        return { ok: true, data: JSON.parse(text), host }; 
+      } catch { 
+        continue; // Try next host
+      }
+    }
   }
-  try { return { ok: true, data: JSON.parse(text) }; }
-  catch { return { ok: false, status: 200, reason: "fuelhh-parse-fail", body: text.slice(0, 200) }; }
+  return { ok: false, status: 502, reason: "fuelhh-all-hosts-failed" };
 }
 
-// Carbon Intensity API fallback
-async function fetchCarbonIntensity() {
-  const url = "https://api.carbonintensity.org.uk/intensity";
-  try {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) {
-      return { ok: false, status: res.status, reason: "carbon-api-error" };
-    }
-    const data = await res.json();
-    return { ok: true, data };
-  } catch (error) {
-    return { ok: false, status: 0, reason: "carbon-api-fetch-error", error: error.message };
+// Fetch interconnectors with dual host support
+async function fetchInterconnectors() {
+  const hosts = BMRS_PRIMARY_HOST === DATA_HOST ? [DATA_HOST, BMRS_HOST] : [BMRS_HOST, DATA_HOST];
+  
+  for (const host of hosts) {
+    const url = `https://${host}/bmrs/api/v1/balancing/interconnector/summary/latest?format=json`;
+    try {
+      const res = await fetch(url, { headers: HEADERS, cache: "no-store", redirect: "manual" as RequestRedirect });
+      const ct = res.headers.get("content-type") || "";
+      const text = await res.text();
+      if (ct.toLowerCase().includes("json") && res.ok) {
+        return { ok: true, data: JSON.parse(text), host };
+      }
+    } catch { continue; }
   }
+  return { ok: false, reason: "interconnectors-all-hosts-failed" };
 }
 
-async function fetchGenerationMix() {
-  const url = "https://api.carbonintensity.org.uk/generation";
-  try {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) {
-      return { ok: false, status: res.status, reason: "generation-api-error" };
-    }
-    const data = await res.json();
-    return { ok: true, data };
-  } catch (error) {
-    return { ok: false, status: 0, reason: "generation-api-fetch-error", error: error.message };
+// Fetch demand with dual host support
+async function fetchDemand() {
+  const hosts = BMRS_PRIMARY_HOST === DATA_HOST ? [DATA_HOST, BMRS_HOST] : [BMRS_HOST, DATA_HOST];
+  
+  for (const host of hosts) {
+    const url = `https://${host}/bmrs/api/v1/demand/outturn/summary?format=json`;
+    try {
+      const res = await fetch(url, { headers: HEADERS, cache: "no-store", redirect: "manual" as RequestRedirect });
+      const ct = res.headers.get("content-type") || "";
+      const text = await res.text();
+      if (ct.toLowerCase().includes("json") && res.ok) {
+        return { ok: true, data: JSON.parse(text), host };
+      }
+    } catch { continue; }
   }
+  return { ok: false, reason: "demand-all-hosts-failed" };
 }
 
 // Helpers: robust array extraction and flexible field picking
@@ -211,7 +235,7 @@ Deno.serve(async (req) => {
     const icRows = asArray(icData);
     return icRows.map((r: any) => ({
       name:     pickStr(r, ["interconnectorName","name","connector","id"]) || "Unknown",
-      country:  pickStr(r, ["country","counterparty","partner"]) || "",
+      country:  pickStr(r, ["country","counterparty","partner","area"]) || "",
       flow:     pickNum(r, ["flow","flowMW","mw","value","ieFlow","actualFlowMW"]) ?? 0,
       capacity: pickNum(r, ["capacity","cap","maxCapacity","capacityMW"]),
     }));
@@ -239,8 +263,8 @@ Deno.serve(async (req) => {
 
       // Try IC and Demand but don't fail payload if they break
       const [icR, demandR] = await Promise.all([
-        fetchBMRS("/generation/outturn/interconnectors"),
-        fetchBMRS("/demand/outturn/summary"),
+        fetchInterconnectors(),
+        fetchDemand(),
       ]);
       if (DEBUG) dlog(true, "ic/demand in dataset mode:", { icOk: icR.ok, dOk: demandR.ok });
 
@@ -289,10 +313,10 @@ Deno.serve(async (req) => {
   // Branch 2: Resolver → dataset → LKG → stub
   const [outturnR, icR, demandR] = await Promise.all([
     fetchBMRS("/generation/outturn/current"),
-    fetchBMRS("/generation/outturn/interconnectors"),
-    fetchBMRS("/demand/outturn/summary"),
+    fetchInterconnectors(),
+    fetchDemand(),
   ]);
-  if (DEBUG) dlog(true, "resolver results:", { outturn: { ok: outturnR.ok, variant: outturnR.variant, status: (outturnR as any).status }, ic: { ok: icR.ok, variant: icR.variant }, demand: { ok: demandR.ok, variant: demandR.variant } });
+  if (DEBUG) dlog(true, "resolver results:", { outturn: { ok: outturnR.ok, variant: outturnR.variant, status: (outturnR as any).status }, ic: { ok: icR.ok }, demand: { ok: demandR.ok } });
 
   // Parse generation from resolver if available; else dataset fallback
   let genVariant = "none";
@@ -328,48 +352,20 @@ Deno.serve(async (req) => {
   }
 
   if (totalGenerationMW === 0) {
-    // Try Carbon Intensity fallback
-    const [ciGenR, ciIntR] = await Promise.all([
-      fetchGenerationMix(),
-      fetchCarbonIntensity()
-    ]);
-    
-    if (ciGenR.ok && ciGenR.data?.data?.generationmix) {
-      if (DEBUG) dlog(true, "Carbon Intensity fallback:", { genOk: ciGenR.ok, intOk: ciIntR.ok });
-      
-      const ciMix = ciGenR.data.data.generationmix;
-      const ciMixMW: Record<string,number> = {};
-      let ciTotalMW = 0;
-      
-      for (const fuel of ciMix) {
-        const fuelName = mapFuelLabel(fuel.fuel || "");
-        const percentage = fuel.perc || 0;
-        // Use a reasonable demand estimate (45GW typical UK demand) to convert percentages to MW
-        const estimatedDemandMW = 45000;
-        const mw = (percentage / 100) * estimatedDemandMW;
-        ciMixMW[fuelName] = (ciMixMW[fuelName] || 0) + mw;
-        ciTotalMW += mw;
-      }
-      
-      const ciGenerationMix = Object.entries(ciMixMW).map(([name, mw]) => ({
-        name,
-        value: Math.round(mw as number),
-        percentage: Math.round(((mw as number)/ciTotalMW)*100),
-        color: COLORS[name] || "#6b7280",
-      })).sort((a,b)=>b.value-a.value);
-      
-      const ciPayload: any = {
-        generationMix: ciGenerationMix,
-        interconnectors: [], // Carbon Intensity doesn't provide interconnector data
-        totalGeneration: Math.round((ciTotalMW/1000)*100)/100,
-        totalDemand: Math.round((ciTotalMW/1000)*100)/100, // Approximate demand = generation
-        lastUpdated: ciGenR.data?.data?.from || new Date().toISOString(),
-        dataFreshness: { source: "Carbon Intensity", isRealtime: true, variant: "carbonintensity-fallback" },
-      };
-      if (DEBUG) ciPayload.diagnostics = { genVariant: "carbonintensity-fallback", fuels: Object.keys(ciMixMW).length, estimatedFromPercentages: true };
-      
-      return new Response(JSON.stringify(ciPayload), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
+    // Try dataset fallback
+    if (DEBUG) dlog(true, "Trying dataset fallback...");
+    const ds = await fetchFUELHHStream(200);
+    if (ds.ok) {
+      const parsed = parseFUELHH(ds.data, DEBUG);
+      mixMW = parsed.mixMW; 
+      totalGenerationMW = parsed.totalMW; 
+      spTo = parsed.spTo || null; 
+      genVariant = "dataset-fuelhh-stream";
+      if (DEBUG) dlog(true, "Dataset fallback succeeded:", { totalMW: totalGenerationMW, fuels: Object.keys(mixMW).length });
+    } else {
+      if (DEBUG) dlog(true, "Dataset fallback failed:", { reason: ds.reason });
     }
+  }
     
     // Try LKG before stub
     try {
@@ -392,8 +388,9 @@ Deno.serve(async (req) => {
       }
     } catch {}
 
-    // Final stub
+    // Final stub (only if no LKG)
     const stub = { generationMix: [], interconnectors: [], totalGeneration: 0, totalDemand: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: all sources failed", variant: genVariant } };
+    if (DEBUG) stub.diagnostics = { genVariant, allSourcesFailed: true };
     return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
   }
 
