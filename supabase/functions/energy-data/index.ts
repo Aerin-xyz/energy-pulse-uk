@@ -83,6 +83,35 @@ async function fetchFUELHHStream(limit = 200) {
   catch { return { ok: false, status: 200, reason: "fuelhh-parse-fail", body: text.slice(0, 200) }; }
 }
 
+// Carbon Intensity API fallback
+async function fetchCarbonIntensity() {
+  const url = "https://api.carbonintensity.org.uk/intensity";
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) {
+      return { ok: false, status: res.status, reason: "carbon-api-error" };
+    }
+    const data = await res.json();
+    return { ok: true, data };
+  } catch (error) {
+    return { ok: false, status: 0, reason: "carbon-api-fetch-error", error: error.message };
+  }
+}
+
+async function fetchGenerationMix() {
+  const url = "https://api.carbonintensity.org.uk/generation";
+  try {
+    const res = await fetch(url, { cache: "no-store" });
+    if (!res.ok) {
+      return { ok: false, status: res.status, reason: "generation-api-error" };
+    }
+    const data = await res.json();
+    return { ok: true, data };
+  } catch (error) {
+    return { ok: false, status: 0, reason: "generation-api-fetch-error", error: error.message };
+  }
+}
+
 // Helpers: robust array extraction and flexible field picking
 function asArray(x: any): any[] {
   if (!x) return [];
@@ -299,6 +328,49 @@ Deno.serve(async (req) => {
   }
 
   if (totalGenerationMW === 0) {
+    // Try Carbon Intensity fallback
+    const [ciGenR, ciIntR] = await Promise.all([
+      fetchGenerationMix(),
+      fetchCarbonIntensity()
+    ]);
+    
+    if (ciGenR.ok && ciGenR.data?.data?.generationmix) {
+      if (DEBUG) dlog(true, "Carbon Intensity fallback:", { genOk: ciGenR.ok, intOk: ciIntR.ok });
+      
+      const ciMix = ciGenR.data.data.generationmix;
+      const ciMixMW: Record<string,number> = {};
+      let ciTotalMW = 0;
+      
+      for (const fuel of ciMix) {
+        const fuelName = mapFuelLabel(fuel.fuel || "");
+        const percentage = fuel.perc || 0;
+        // Use a reasonable demand estimate (45GW typical UK demand) to convert percentages to MW
+        const estimatedDemandMW = 45000;
+        const mw = (percentage / 100) * estimatedDemandMW;
+        ciMixMW[fuelName] = (ciMixMW[fuelName] || 0) + mw;
+        ciTotalMW += mw;
+      }
+      
+      const ciGenerationMix = Object.entries(ciMixMW).map(([name, mw]) => ({
+        name,
+        value: Math.round(mw as number),
+        percentage: Math.round(((mw as number)/ciTotalMW)*100),
+        color: COLORS[name] || "#6b7280",
+      })).sort((a,b)=>b.value-a.value);
+      
+      const ciPayload: any = {
+        generationMix: ciGenerationMix,
+        interconnectors: [], // Carbon Intensity doesn't provide interconnector data
+        totalGeneration: Math.round((ciTotalMW/1000)*100)/100,
+        totalDemand: Math.round((ciTotalMW/1000)*100)/100, // Approximate demand = generation
+        lastUpdated: ciGenR.data?.data?.from || new Date().toISOString(),
+        dataFreshness: { source: "Carbon Intensity", isRealtime: true, variant: "carbonintensity-fallback" },
+      };
+      if (DEBUG) ciPayload.diagnostics = { genVariant: "carbonintensity-fallback", fuels: Object.keys(ciMixMW).length, estimatedFromPercentages: true };
+      
+      return new Response(JSON.stringify(ciPayload), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
+    }
+    
     // Try LKG before stub
     try {
       const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
@@ -314,8 +386,8 @@ Deno.serve(async (req) => {
         .maybeSingle();
       if (lkgRow?.payload) {
         const lkg = lkgRow.payload;
-        lkg.dataFreshness = { ...(lkg.dataFreshness||{}), isRealtime: false, note: "Resolver failed; served LKG" };
-        if (DEBUG) lkg.diagnostics = { genVariant, resolverFailed: true };
+        lkg.dataFreshness = { ...(lkg.dataFreshness||{}), isRealtime: false, note: "All sources failed; served LKG" };
+        if (DEBUG) lkg.diagnostics = { genVariant, resolverFailed: true, carbonIntensityFailed: true };
         return new Response(JSON.stringify(lkg), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
       }
     } catch {}
