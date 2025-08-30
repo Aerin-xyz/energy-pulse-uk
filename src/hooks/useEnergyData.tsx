@@ -115,6 +115,7 @@ export const useEnergyData = () => {
   const [data, setData] = useState<EnergyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [nextUpdateAt, setNextUpdateAt] = useState<Date | null>(null);
   const { toast } = useToast();
 
   const fetchAndSetEnergyData = useCallback(async () => {
@@ -144,6 +145,11 @@ export const useEnergyData = () => {
         lastUpdated: new Date(energyData.lastUpdated),
         dataFreshness: energyData.dataFreshness,
       });
+
+      // Calculate next update time (5 minutes from now)
+      const nextUpdate = new Date();
+      nextUpdate.setMinutes(nextUpdate.getMinutes() + 5);
+      setNextUpdateAt(nextUpdate);
 
       toast({
         title: "Data Updated",
@@ -175,10 +181,24 @@ export const useEnergyData = () => {
     return () => clearInterval(interval);
   }, [fetchAndSetEnergyData]);
 
+  // Refresh when tab becomes visible again
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        console.log('Tab became visible, refreshing data...');
+        fetchAndSetEnergyData();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [fetchAndSetEnergyData]);
+
   return {
     data,
     loading,
     error,
+    nextUpdateAt,
     refetch: fetchAndSetEnergyData
   };
 };

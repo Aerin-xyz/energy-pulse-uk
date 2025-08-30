@@ -6,10 +6,11 @@ import { useEnergyData } from '@/hooks/useEnergyData';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
+import { NextUpdateCountdown } from '@/components/NextUpdateCountdown';
 import { formatGWfromMW } from '@/lib/utils';
 
 export const EnergyDashboard = () => {
-  const { data, loading, error, refetch } = useEnergyData();
+  const { data, loading, error, nextUpdateAt, refetch } = useEnergyData();
 
   if (error) {
     return (
@@ -64,10 +65,13 @@ export const EnergyDashboard = () => {
                         <div className="font-bold text-foreground">{formatGWfromMW(data.totalDemandMW || 0)} GW</div>
                       </div>
                     </div>
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Clock className="w-4 h-4" />
-                    <span className="hidden sm:inline">Last updated: </span>
-                    <span>{data.lastUpdated.toLocaleTimeString()}</span>
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <Clock className="w-4 h-4" />
+                      <span className="hidden sm:inline">Last updated: </span>
+                      <span>{data.lastUpdated.toLocaleTimeString()}</span>
+                    </div>
+                    <NextUpdateCountdown nextUpdateAt={nextUpdateAt} />
                   </div>
                 </>
               )}
@@ -126,7 +130,7 @@ export const EnergyDashboard = () => {
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-              <span className="text-sm text-muted-foreground">Auto-refreshes every 5 minutes</span>
+              <span className="text-sm text-muted-foreground">Live data from BMRS every 5 minutes</span>
             </div>
           </div>
         </div>
