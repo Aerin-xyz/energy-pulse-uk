@@ -208,10 +208,17 @@ function parseFUELHHtoMW(rows: any[]) {
     const fuelRaw = r.FUEL_TYPE ?? r.FUELTYPE ?? r.fuel ?? r.fuelType ?? r.name ?? "";
     if (EXCLUDE.test(fuelRaw)) continue;
 
-    const mwh = Number(r.MWH ?? r.ENERGY_MWH);
-    if (!Number.isFinite(mwh)) continue;
+    // Prioritize generation field (already in MW), fallback to MWH conversion
+    let mw: number;
+    const generation = Number(r.generation);
+    if (Number.isFinite(generation)) {
+      mw = generation; // Already in MW
+    } else {
+      const mwh = Number(r.MWH ?? r.ENERGY_MWH);
+      if (!Number.isFinite(mwh)) continue;
+      mw = mwh * 2; // 30-min energy → MW
+    }
 
-    const mw = mwh * 2; // 30-min energy → MW
     const L = labelFuel(fuelRaw);
     mixMW[L] = (mixMW[L] || 0) + mw;
   }
@@ -310,14 +317,14 @@ Deno.serve(async (req) => {
       const mixMW = parseFUELHHtoMW(rows);
       const totalMW = Object.values(mixMW).reduce((s, v) => s + v, 0);
       
-      // Sanity guard
-      if (totalMW < 10_000 || totalMW > 80_000) {
-        if (DEBUG) dlog(true, "Implausible total MW:", totalMW);
+      // Sanity guard: UK typically generates 25-45 GW
+      if (totalMW < 15_000 || totalMW > 60_000) {
+        if (DEBUG) dlog(true, "Implausible total MW:", totalMW, "rawSample:", rows.slice(0, 2));
         const lkgResponse = await serveLKG("Implausible dataset total; served LKG");
         if (lkgResponse) return lkgResponse;
         
         const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: implausible dataset total", variant: "dataset-fuelhh-stream" } };
-        if (DEBUG) stub.diagnostics = { reason: "implausible-total", totalMW, variant: "dataset-fuelhh-stream" };
+        if (DEBUG) stub.diagnostics = { reason: "implausible-total", totalMW, variant: "dataset-fuelhh-stream", rawSample: rows.slice(0, 2) };
         return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
       }
 
@@ -397,14 +404,14 @@ Deno.serve(async (req) => {
     }
   }
 
-  // Sanity guard
-  if (totalMW < 10_000 || totalMW > 80_000) {
-    if (DEBUG) dlog(true, "Implausible total MW:", totalMW);
+  // Sanity guard: UK typically generates 25-45 GW
+  if (totalMW < 15_000 || totalMW > 60_000) {
+    if (DEBUG) dlog(true, "Implausible total MW:", totalMW, "diagSample:", diagSample);
     const lkgResponse = await serveLKG("Implausible total; served LKG");
     if (lkgResponse) return lkgResponse;
     
     const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: implausible total", variant: genVariant } };
-    if (DEBUG) stub.diagnostics = { reason: "implausible-total", totalMW, variant: genVariant };
+    if (DEBUG) stub.diagnostics = { reason: "implausible-total", totalMW, variant: genVariant, diagSample };
     return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
   }
 
