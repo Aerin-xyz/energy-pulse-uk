@@ -20,23 +20,22 @@ function addFormatJson(u: string): string {
 async function fetchJSONStrict(url: string) {
   // First try: already include ?format=json to avoid weird content-negotiation paths
   const url1 = addFormatJson(url);
-  const headers1 = { Accept: "application/json, text/plain, */*", "User-Agent": "ether-flow/1.0" };
+  const headers = { Accept: "application/json", "User-Agent": "ether-flow/1.0" } as Record<string,string>;
 
-  let res = await fetch(url1, { headers: headers1, cache: "no-store", redirect: "follow" as RequestRedirect });
-  const finalUrl = (res as any).url as string | undefined;
+  const res = await fetch(url1, { headers, cache: "no-store", redirect: "manual" as RequestRedirect });
 
-  // Reject redirects to non-API HTML endpoints
-  if ((res as any).redirected || (finalUrl && !finalUrl.includes("/bmrs/api/"))) {
-    const body = await res.text();
-    return { ok: false, status: res.status, body: body.slice(0, 400), redirectedTo: finalUrl };
+  // Treat any redirect as failure
+  if (res.status >= 300 && res.status < 400) {
+    const location = res.headers.get("location") || "";
+    return { ok: false, status: res.status, body: `Redirected to ${location || "unknown"}`, redirectedTo: location };
   }
 
-  const ct = res.headers.get("content-type") || "";
+  const ct = (res.headers.get("content-type") || "").toLowerCase();
   const text = await res.text();
 
-  // If not JSON, treat as error even if 200
-  if (!ct.toLowerCase().includes("json")) {
-    return { ok: false, status: res.status, body: text.slice(0, 400), contentType: ct };
+  // Reject non-JSON even on 200
+  if (!ct.includes("json")) {
+    return { ok: false, status: res.status, body: text.slice(0, 400), contentType: ct || "unknown" };
   }
 
   if (!res.ok) {
