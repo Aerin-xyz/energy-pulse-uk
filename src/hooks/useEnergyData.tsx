@@ -91,7 +91,9 @@ const FUEL_TYPE_MAPPING: { [key: string]: string } = {
 
 // Real API integration using Supabase Edge Function
 async function fetchEnergyData(): Promise<any> {
-  const response = await fetch('https://cxvjgpuytezomdlsayif.supabase.co/functions/v1/energy-data?debug=1', {
+  // Add cache-busting timestamp
+  const timestamp = new Date().getTime();
+  const response = await fetch(`https://cxvjgpuytezomdlsayif.supabase.co/functions/v1/energy-data?debug=1&t=${timestamp}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -103,60 +105,11 @@ async function fetchEnergyData(): Promise<any> {
     throw new Error(`API error: ${response.status}`);
   }
 
-  return await response.json();
+  const data = await response.json();
+  console.log('Raw API response:', data);
+  return data;
 }
 
-function processGenerationData(bmrsData: BMRSResponse): { generationMix: GenerationData[], totalGeneration: number } {
-  // Use realistic data based on current UK grid status
-  const realtimeGeneration = [
-    { name: 'Gas', value: 2.1 },
-    { name: 'Wind', value: 18.8 },
-    { name: 'Nuclear', value: 3.8 },
-    { name: 'Solar', value: 1.5 },
-    { name: 'Hydro', value: 0.1 },
-    { name: 'Biomass', value: 1.0 },
-    { name: 'Imports', value: 1.3 },
-    { name: 'Coal', value: 0.0 },
-    { name: 'PSH', value: -0.01 },
-    { name: 'Other', value: 0.2 }
-  ];
-
-  const total = realtimeGeneration.filter(item => item.value > 0).reduce((sum, item) => sum + item.value, 0);
-  
-  const generationMix = realtimeGeneration
-    .filter(item => item.value > 0.01) // Filter out very small values
-    .map(item => ({
-      name: item.name,
-      value: item.value,
-      percentage: (item.value / total) * 100,
-      color: ENERGY_COLORS[item.name as keyof typeof ENERGY_COLORS] || ENERGY_COLORS.Other
-    }))
-    .sort((a, b) => b.value - a.value); // Sort by generation amount
-
-  return { generationMix, totalGeneration: total };
-}
-
-function processInterconnectorData(flows: InterconnectorFlow[]): InterconnectorData[] {
-  const interconnectorMap: { [key: string]: { flow: number; capacity: number; country: string } } = {
-    'France (IFA)': { flow: 3800, capacity: 2000, country: 'France' },
-    'Netherlands (BritNed)': { flow: 882, capacity: 1000, country: 'Netherlands' },
-    'Belgium (Nemolink)': { flow: 999, capacity: 1000, country: 'Belgium' },
-    'Denmark (Viking Link)': { flow: 724, capacity: 1400, country: 'Denmark' },
-    'Ireland (East-West)': { flow: 412, capacity: 500, country: 'Ireland' },
-    'Ireland (Greenlink)': { flow: -527, capacity: 500, country: 'Ireland' },
-    'Northern Ireland (Moyle)': { flow: -450, capacity: 500, country: 'Northern Ireland' },
-    'Netherlands (Export)': { flow: -1048, capacity: 1000, country: 'Netherlands' },
-    'Belgium (Export)': { flow: -788, capacity: 1000, country: 'Belgium' },
-    'Norway (NSL)': { flow: 0, capacity: 1400, country: 'Norway' }
-  };
-
-  return Object.entries(interconnectorMap).map(([name, data]) => ({
-    name: name.split(' (')[1]?.replace(')', '') || name,
-    country: data.country,
-    flow: data.flow,
-    capacity: data.capacity
-  }));
-}
 
 export const useEnergyData = () => {
   const [data, setData] = useState<EnergyData | null>(null);
@@ -173,6 +126,13 @@ export const useEnergyData = () => {
       
       // Fetch data directly from our Edge Function
       const energyData = await fetchEnergyData();
+      console.log('Processed energy data:', {
+        generationMixLength: energyData.generationMix?.length,
+        interconnectorsLength: energyData.interconnectors?.length,
+        totalGenerationMW: energyData.totalGenerationMW,
+        dataFreshness: energyData.dataFreshness,
+        diagnostics: energyData.diagnostics
+      });
 
       setData({
         generationMix: energyData.generationMix,
