@@ -14,10 +14,35 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      energy_data_history: {
+        Row: {
+          as_of: string
+          created_at: string | null
+          id: string
+          payload: Json
+        }
+        Insert: {
+          as_of: string
+          created_at?: string | null
+          id?: string
+          payload: Json
+        }
+        Update: {
+          as_of?: string
+          created_at?: string | null
+          id?: string
+          payload?: Json
+        }
+        Relationships: []
+      }
     }
     Views: {
-      [_ in never]: never
+      energy_data_latest: {
+        Row: {
+          payload: Json | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
