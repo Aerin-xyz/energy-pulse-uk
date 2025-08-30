@@ -1,0 +1,101 @@
+import { RefreshCw, Zap, Clock } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { GenerationMixChart } from '@/components/GenerationMixChart';
+import { InterconnectorFlows } from '@/components/InterconnectorFlows';
+import { useEnergyData } from '@/hooks/useEnergyData';
+import { Skeleton } from '@/components/ui/skeleton';
+
+export const EnergyDashboard = () => {
+  const { data, loading, error, refetch } = useEnergyData();
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Failed to Load Data</h1>
+          <p className="text-muted-foreground mb-6">{error}</p>
+          <Button onClick={refetch} variant="outline">
+            <RefreshCw className="w-4 h-4 mr-2" />
+            Retry
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-gradient-energy rounded-lg">
+                <Zap className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-foreground">UK Energy Mix Dashboard</h1>
+                <p className="text-sm text-muted-foreground">Real-time electricity generation and flows</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4">
+              {data && (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Clock className="w-4 h-4" />
+                  <span>Last updated: {data.lastUpdated.toLocaleTimeString()}</span>
+                </div>
+              )}
+              
+              <Button 
+                onClick={refetch} 
+                disabled={loading}
+                variant="outline"
+                size="sm"
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                Refresh
+              </Button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="container mx-auto px-4 py-8">
+        {loading && !data ? (
+          <div className="space-y-8">
+            <Skeleton className="h-[500px] w-full" />
+            <Skeleton className="h-[400px] w-full" />
+          </div>
+        ) : data ? (
+          <div className="space-y-8">
+            {/* Generation Mix Chart */}
+            <GenerationMixChart 
+              data={data.generationMix} 
+              totalGeneration={data.totalGeneration}
+            />
+
+            {/* Interconnector Flows */}
+            <InterconnectorFlows data={data.interconnectors} />
+          </div>
+        ) : null}
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border bg-card/30 mt-16">
+        <div className="container mx-auto px-4 py-6">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div className="text-sm text-muted-foreground">
+              Data sources: BMRS Elexon Insights & National Grid ESO
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
+              <span className="text-sm text-muted-foreground">Auto-refreshes every 5 minutes</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};

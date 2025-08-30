@@ -61,7 +61,23 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				energy: {
+					gas: 'hsl(var(--energy-gas))',
+					solar: 'hsl(var(--energy-solar))',
+					wind: 'hsl(var(--energy-wind))',
+					nuclear: 'hsl(var(--energy-nuclear))',
+					hydro: 'hsl(var(--energy-hydro))',
+					coal: 'hsl(var(--energy-coal))',
+					biomass: 'hsl(var(--energy-biomass))',
+					imports: 'hsl(var(--energy-imports))',
+					exports: 'hsl(var(--energy-exports))'
 				}
+			},
+			backgroundImage: {
+				'gradient-energy': 'var(--gradient-energy)',
+				'gradient-card': 'var(--gradient-card)',
+				'gradient-glow': 'var(--gradient-glow)'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
