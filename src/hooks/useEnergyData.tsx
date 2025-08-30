@@ -20,6 +20,8 @@ interface EnergyData {
   interconnectors: InterconnectorData[];
   totalGeneration: number;
   totalDemand: number;
+  totalGenerationMW: number;
+  totalDemandMW: number;
   lastUpdated: Date;
   dataFreshness?: {
     source?: string;
@@ -174,8 +176,10 @@ export const useEnergyData = () => {
       setData({
         generationMix: energyData.generationMix,
         interconnectors: energyData.interconnectors,
-        totalGeneration: energyData.totalGeneration,
-        totalDemand: energyData.totalDemand,
+        totalGeneration: energyData.totalGeneration || (energyData.totalGenerationMW || 0) / 1000,
+        totalDemand: energyData.totalDemand || (energyData.totalDemandMW || 0) / 1000,
+        totalGenerationMW: energyData.totalGenerationMW || (energyData.totalGeneration || 0) * 1000,
+        totalDemandMW: energyData.totalDemandMW || (energyData.totalDemand || 0) * 1000,
         lastUpdated: new Date(energyData.lastUpdated),
         dataFreshness: energyData.dataFreshness,
       });

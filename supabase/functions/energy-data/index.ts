@@ -136,7 +136,7 @@ async function fetchDemand() {
   return { ok: false, reason: "demand-all-hosts-failed" };
 }
 
-// Helpers: robust array extraction and flexible field picking
+// Helpers: robust array extraction
 function asArray(x: any): any[] {
   if (!x) return [];
   if (Array.isArray(x)) return x;
@@ -145,68 +145,23 @@ function asArray(x: any): any[] {
   if ((x as any).items && Array.isArray((x as any).items)) return (x as any).items;
   return [];
 }
-function pickNum(row: any, keys: string[]): number | undefined {
-  for (const k of keys) {
-    const v = row?.[k];
-    const n = Number(v);
-    if (Number.isFinite(n)) return n;
-  }
-  return undefined;
-}
-function pickStr(row: any, keys: string[]): string | undefined {
-  for (const k of keys) {
-    const v = row?.[k];
-    if (typeof v === "string" && v.trim()) return v;
-  }
-  return undefined;
+
+type Variant = "insights-summary" | "insights-current" | "dataset-fuelhh-stream";
+
+function selectLatestWindow(rows: any[]): { latest: any[], spTo: string | null } {
+  const getTo = (r: any) =>
+    r.SP_END || r.SP_TO || r.SETTLEMENT_PERIOD_END || r.timeTo || r.spTo || r.periodEnd || r.validTo || null;
+  const sorted = [...rows].sort((a, b) => new Date(getTo(a) || 0).getTime() - new Date(getTo(b) || 0).getTime());
+  const lastTo = getTo(sorted.at(-1) || {}) || null;
+  return { latest: sorted.filter(r => getTo(r) === lastTo), spTo: lastTo };
 }
 
-// Extended helpers to pick with key tracking
-function pickNumWithKey(row: any, keys: string[]): { value?: number; key?: string } {
-  for (const k of keys) {
-    const v = row?.[k];
-    const n = Number(v);
-    if (Number.isFinite(n)) return { value: n, key: k };
-  }
-  return {};
-}
-function pickStrWithKey(row: any, keys: string[]): { value?: string; key?: string } {
-  for (const k of keys) {
-    const v = row?.[k];
-    if (typeof v === "string" && v.trim()) return { value: v, key: k };
-  }
-  return {};
-}
+const EXCLUDE = /INTERCONNECT|^INT|PUMP|^PS$/i;
 
-function normalizeFuelRow(row: any) {
-  const fuelPick = pickStrWithKey(row, ["fuelType","FUEL_TYPE","fuel","FUEL","FUELTYPE","name"]);
-  const genPick = pickNumWithKey(row, ["generation","GENERATION_MW","generationMW","mw","value","actual","power","powerMW","measuredMW"]);
-  let mw: number | null = null;
-  let mwKey: string | undefined;
-  let fromMWh = false;
+const COLORS: Record<string, string> = { Wind: "#10b981", Nuclear: "#f59e0b", Gas: "#ef4444", Coal: "#374151", Hydro: "#3b82f6", Solar: "#fbbf24", Biomass: "#16a34a", Oil: "#1f2937", Other: "#6b7280" };
 
-  if (typeof genPick.value === "number") {
-    mw = genPick.value;
-    mwKey = genPick.key;
-  } else {
-    const mwhPick = pickNumWithKey(row, ["MWH","ENERGY_MWH","mwh","energy"]);
-    if (typeof mwhPick.value === "number") {
-      mw = mwhPick.value * 2; // half-hour MWh → MW
-      mwKey = mwhPick.key;
-      fromMWh = true;
-    }
-  }
-
-  const fuelRaw = fuelPick.value || "Other";
-  const fuelLabel = mapFuelLabel(fuelRaw);
-  return { fuelRaw, fuelKey: fuelPick.key, mw, mwKey, fromMWh, fuelLabel };
-}
-
-// Colors for frontend charts
-const COLORS: Record<string,string> = { Wind:"#10b981", Nuclear:"#f59e0b", Gas:"#ef4444", Coal:"#374151", Hydro:"#3b82f6", Solar:"#fbbf24", Biomass:"#16a34a", Oil:"#1f2937", Other:"#6b7280" };
-
-function mapFuelLabel(f: string): string {
-  const t = (f||"").toUpperCase();
+function labelFuel(raw: string): string {
+  const t = (raw || "").toUpperCase();
   if (t.includes("WIND")) return "Wind";
   if (t.includes("SOLAR") || t.includes("PV")) return "Solar";
   if (t.includes("NUCLEAR")) return "Nuclear";
@@ -218,36 +173,37 @@ function mapFuelLabel(f: string): string {
   return "Other";
 }
 
-// Parse generation from FUELHH stream (MWh → MW)
-function parseFUELHH(data: any, DEBUG=false) {
-  const rows = asArray(data);
-  if (DEBUG) dlog(true, "FUELHH rows:", rows.length, "sample:", rows[0]);
-
-  rows.sort((a,b) => new Date(
-    pickStr(a, ["SP_END","SP_TO","SETTLEMENT_PERIOD_END","timeTo","spTo"]) || 0
-  ).getTime() - new Date(
-    pickStr(b, ["SP_END","SP_TO","SETTLEMENT_PERIOD_END","timeTo","spTo"]) || 0
-  ).getTime());
-
-  const lastEnd = pickStr(rows[rows.length-1] || {}, ["SP_END","SP_TO","SETTLEMENT_PERIOD_END","timeTo","spTo"]);
-  const latest = rows.filter(r =>
-    pickStr(r, ["SP_END","SP_TO","SETTLEMENT_PERIOD_END","timeTo","spTo"]) === lastEnd
-  );
-
+function parseInsightsMW(rows: any[]) {
+  const { latest } = selectLatestWindow(rows);
   const mixMW: Record<string, number> = {};
-  const sample = latest.slice(0, 3);
   for (const r of latest) {
-    const norm = normalizeFuelRow(r);
-    const t = (norm.fuelRaw || "").toUpperCase();
-    if (t.includes("INTERCONNECT") || t.startsWith("INT") || t.includes("PUMP") || t === "PS") continue;
-    if (norm.mw == null || !Number.isFinite(norm.mw)) continue;
-    const L = norm.fuelLabel;
-    mixMW[L] = (mixMW[L] || 0) + (norm.mw as number);
+    const fuelRaw = r.fuelType ?? r.fuel ?? r.FUEL_TYPE ?? r.name ?? "";
+    if (EXCLUDE.test(fuelRaw)) continue;
+    const mw = Number(r.generation ?? r.generationMW ?? r.GENERATION_MW);
+    if (Number.isFinite(mw)) {
+      const L = labelFuel(fuelRaw);
+      mixMW[L] = (mixMW[L] || 0) + mw; // already MW
+    }
   }
-
-  const totalMW = Object.values(mixMW).reduce((s,v)=>s+v,0);
-  return { mixMW, totalMW, spTo: lastEnd, sample };
+  return mixMW;
 }
+
+function parseFUELHHtoMW(rows: any[]) {
+  const { latest } = selectLatestWindow(rows);
+  const mixMW: Record<string, number> = {};
+  for (const r of latest) {
+    const fuelRaw = r.FUEL_TYPE ?? r.FUELTYPE ?? r.fuel ?? r.fuelType ?? r.name ?? "";
+    if (EXCLUDE.test(fuelRaw)) continue;
+    const mwh = Number(r.MWH ?? r.ENERGY_MWH);
+    if (Number.isFinite(mwh)) {
+      const mw = mwh * 2; // convert half-hour energy → MW
+      const L = labelFuel(fuelRaw);
+      mixMW[L] = (mixMW[L] || 0) + mw;
+    }
+  }
+  return mixMW;
+}
+
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -269,6 +225,29 @@ Deno.serve(async (req) => {
     } catch (e) {
       if (DEBUG) dlog(true, "LKG insert failed", e);
     }
+  }
+
+  // Helper to serve LKG data
+  async function serveLKG(note: string) {
+    try {
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+      const supa = createClient(
+        Deno.env.get("SUPABASE_URL") ?? "",
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
+      );
+      const { data: lkgRow } = await supa
+        .from("energy_data_history")
+        .select("payload")
+        .order("as_of", { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (lkgRow?.payload) {
+        const lkg = lkgRow.payload;
+        lkg.dataFreshness = { ...(lkg.dataFreshness || {}), isRealtime: false, note };
+        return new Response(JSON.stringify(lkg), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+      }
+    } catch {}
+    return null;
   }
 
   // Interconnectors and demand parsers (tolerant)
@@ -294,13 +273,29 @@ Deno.serve(async (req) => {
     if (DEBUG) dlog(true, "BMRS_FORCE_DATASET fetch:", { ok: (ds as any).ok, reason: (ds as any).reason });
 
     if (ds.ok) {
-      const parsed = parseFUELHH(ds.data, DEBUG);
-      const generationMix = Object.entries(parsed.mixMW).map(([name, mw]) => ({
+      const rows = asArray(ds.data);
+      if (DEBUG) dlog(true, "FUELHH rows:", rows.length, "sample:", rows[0]);
+      
+      const mixMW = parseFUELHHtoMW(rows);
+      const totalMW = Object.values(mixMW).reduce((s, v) => s + v, 0);
+      
+      // Sanity guard
+      if (totalMW < 5_000 || totalMW > 80_000) {
+        if (DEBUG) dlog(true, "Implausible total MW:", totalMW);
+        const lkgResponse = await serveLKG("Implausible dataset total; served LKG");
+        if (lkgResponse) return lkgResponse;
+        
+        const stub = { generationMix: [], interconnectors: [], totalGeneration: 0, totalDemand: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: implausible dataset total", variant: "dataset-fuelhh-stream" } };
+        if (DEBUG) stub.diagnostics = { reason: "implausible-total", totalMW };
+        return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+      }
+
+      const generationMix = Object.entries(mixMW).map(([name, mw]) => ({
         name,
-        value: Math.round(mw as number),
-        percentage: parsed.totalMW ? Math.round(((mw as number)/parsed.totalMW)*100) : 0,
+        value: Math.round(mw),
+        percentage: totalMW ? Math.round((mw / totalMW) * 100) : 0,
         color: COLORS[name] || "#6b7280",
-      })).sort((a,b)=>b.value-a.value);
+      })).sort((a, b) => b.value - a.value);
 
       // Try IC and Demand but don't fail payload if they break
       const [icR, demandR] = await Promise.all([
@@ -312,43 +307,28 @@ Deno.serve(async (req) => {
       const interconnectors = icR.ok ? parseInterconnectors(icR.data) : [];
       const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;
 
+      const { spTo } = selectLatestWindow(rows);
       const payload: any = {
         generationMix,
         interconnectors,
-        totalGeneration: Math.round((parsed.totalMW/1000)*100)/100,
-        totalDemand,
-        lastUpdated: parsed.spTo || new Date().toISOString(),
+        totalGenerationMW: Math.round(totalMW),
+        totalDemandMW: Math.round(totalDemand * 1000), // Convert GW to MW
+        lastUpdated: spTo || new Date().toISOString(),
         dataFreshness: { source: "BMRS", isRealtime: true, variant: "dataset-fuelhh-stream" },
       };
-      if (DEBUG) payload.diagnostics = { genVariant: "dataset-fuelhh-stream", totalFuels: Object.keys(parsed.mixMW).length, spTo: parsed.spTo, sample: parsed.sample };
+      if (DEBUG) payload.diagnostics = { genVariant: "dataset-fuelhh-stream", totalFuels: Object.keys(mixMW).length, totalMW, spTo, sample: rows.slice(0, 2) };
 
-      await insertLKG(payload.lastUpdated, payload, parsed.totalMW);
+      await insertLKG(payload.lastUpdated, payload, totalMW);
 
-      return new Response(JSON.stringify(payload), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
+      return new Response(JSON.stringify(payload), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
     }
 
     // dataset failed → try LKG → stub
-    try {
-      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-      const supa = createClient(
-        Deno.env.get("SUPABASE_URL") ?? "",
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-      );
-      const { data: lkgRow } = await supa
-        .from("energy_data_history")
-        .select("payload")
-        .order("as_of", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (lkgRow?.payload) {
-        const lkg = lkgRow.payload;
-        lkg.dataFreshness = { ...(lkg.dataFreshness||{}), isRealtime: false, note: "Dataset failed; served LKG" };
-        return new Response(JSON.stringify(lkg), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
-      }
-    } catch {}
+    const lkgResponse = await serveLKG("Dataset failed; served LKG");
+    if (lkgResponse) return lkgResponse;
 
-    const stub = { generationMix: [], interconnectors: [], totalGeneration: 0, totalDemand: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: dataset failed" } };
-    return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
+    const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: dataset failed" } };
+    return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
   }
 
   // Branch 2: Resolver → dataset → LKG → stub
@@ -360,92 +340,80 @@ Deno.serve(async (req) => {
   if (DEBUG) dlog(true, "resolver results:", { outturn: { ok: outturnR.ok, variant: outturnR.variant, status: (outturnR as any).status }, ic: { ok: icR.ok }, demand: { ok: demandR.ok } });
 
   // Parse generation from resolver if available; else dataset fallback
-  let genVariant = "none";
-  let mixMW: Record<string,number> = {};
-  let totalGenerationMW = 0;
+  let genVariant: Variant = "insights-current";
+  let mixMW: Record<string, number> = {};
+  let totalMW = 0;
   let spTo: string | null = null;
   let diagSample: any[] = [];
 
   if (outturnR.ok) {
-    genVariant = outturnR.variant;
+    genVariant = outturnR.variant as Variant;
     const outRows = asArray(outturnR.data);
     if (DEBUG) dlog(true, "outturn rows:", outRows.length, "sample:", outRows[0]);
 
-    outRows.sort((a,b)=> new Date(pickStr(a,["spTo","toTime","timeTo","periodEnd","validTo"])||0).getTime() - new Date(pickStr(b,["spTo","toTime","timeTo","periodEnd","validTo"])||0).getTime());
-    const lastEnd = pickStr(outRows[outRows.length-1]||{}, ["spTo","toTime","timeTo","periodEnd","validTo"]);
-    const latest = outRows.filter(r => pickStr(r,["spTo","toTime","timeTo","periodEnd","validTo"]) === lastEnd);
-
-    const sample = latest.slice(0, 3);
-    diagSample = sample;
-    for (const r of latest) {
-      const norm = normalizeFuelRow(r);
-      const t = (norm.fuelRaw || "").toUpperCase();
-      if (t.includes("INTERCONNECT") || t.startsWith("INT") || t.includes("PUMP") || t === "PS") continue;
-      if (norm.mw == null || !Number.isFinite(norm.mw)) continue;
-      const L = norm.fuelLabel;
-      mixMW[L] = (mixMW[L] || 0) + (norm.mw as number);
-    }
-    totalGenerationMW = Object.values(mixMW).reduce((s,v)=>s+v,0);
-    spTo = lastEnd || null;
+    mixMW = parseInsightsMW(outRows);
+    totalMW = Object.values(mixMW).reduce((s, v) => s + v, 0);
+    const { spTo: latestSpTo } = selectLatestWindow(outRows);
+    spTo = latestSpTo;
+    diagSample = outRows.slice(0, 2);
   } else {
     const ds = await fetchFUELHHStream(200);
     if (ds.ok) {
-      const parsed = parseFUELHH(ds.data, DEBUG);
-      mixMW = parsed.mixMW; totalGenerationMW = parsed.totalMW; spTo = parsed.spTo || null; genVariant = "dataset-fuelhh-stream";
-      diagSample = parsed.sample || [];
+      const rows = asArray(ds.data);
+      mixMW = parseFUELHHtoMW(rows);
+      totalMW = Object.values(mixMW).reduce((s, v) => s + v, 0);
+      const { spTo: latestSpTo } = selectLatestWindow(rows);
+      spTo = latestSpTo;
+      genVariant = "dataset-fuelhh-stream";
+      diagSample = rows.slice(0, 2);
     }
   }
 
-  if (totalGenerationMW === 0) {
+  // Sanity guard
+  if (totalMW < 5_000 || totalMW > 80_000) {
+    if (DEBUG) dlog(true, "Implausible total MW:", totalMW);
+    const lkgResponse = await serveLKG("Implausible total; served LKG");
+    if (lkgResponse) return lkgResponse;
+    
+    const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: implausible total", variant: genVariant } };
+    if (DEBUG) stub.diagnostics = { reason: "implausible-total", totalMW, genVariant };
+    return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+  }
+
+  if (totalMW === 0) {
     // Try dataset fallback
     if (DEBUG) dlog(true, "Trying dataset fallback...");
     const ds = await fetchFUELHHStream(200);
     if (ds.ok) {
-      const parsed = parseFUELHH(ds.data, DEBUG);
-      mixMW = parsed.mixMW; 
-      totalGenerationMW = parsed.totalMW; 
-      spTo = parsed.spTo || null; 
+      const rows = asArray(ds.data);
+      mixMW = parseFUELHHtoMW(rows);
+      totalMW = Object.values(mixMW).reduce((s, v) => s + v, 0);
+      const { spTo: latestSpTo } = selectLatestWindow(rows);
+      spTo = latestSpTo;
       genVariant = "dataset-fuelhh-stream";
-      diagSample = parsed.sample || [];
-      if (DEBUG) dlog(true, "Dataset fallback succeeded:", { totalMW: totalGenerationMW, fuels: Object.keys(mixMW).length });
+      diagSample = rows.slice(0, 2);
+      if (DEBUG) dlog(true, "Dataset fallback succeeded:", { totalMW, fuels: Object.keys(mixMW).length });
     } else {
       if (DEBUG) dlog(true, "Dataset fallback failed:", { reason: ds.reason });
       
       // Try LKG before stub
-      try {
-        const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
-        const supa = createClient(
-          Deno.env.get("SUPABASE_URL") ?? "",
-          Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
-        );
-        const { data: lkgRow } = await supa
-          .from("energy_data_history")
-          .select("payload")
-          .order("as_of", { ascending: false })
-          .limit(1)
-          .maybeSingle();
-        if (lkgRow?.payload) {
-          const lkg = lkgRow.payload;
-          lkg.dataFreshness = { ...(lkg.dataFreshness||{}), isRealtime: false, note: "All sources failed; served LKG" };
-          if (DEBUG) lkg.diagnostics = { genVariant, resolverFailed: true, datasetFailed: true };
-          return new Response(JSON.stringify(lkg), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
-        }
-      } catch {}
+      const lkgResponse = await serveLKG("All sources failed; served LKG");
+      if (lkgResponse) return lkgResponse;
 
       // Final stub (only if no LKG)
-      const stub = { generationMix: [], interconnectors: [], totalGeneration: 0, totalDemand: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: all sources failed", variant: genVariant } };
+      const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: all sources failed", variant: genVariant } };
       if (DEBUG) stub.diagnostics = { genVariant, allSourcesFailed: true };
-      return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
+      return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
     }
   }
 
   // Build generation mix
   const generationMix = Object.entries(mixMW).map(([name, mw]) => ({
     name,
-    value: Math.round(mw as number),
-    percentage: totalGenerationMW ? Math.round(((mw as number)/totalGenerationMW)*100) : 0,
+    value: Math.round(mw),
+    percentage: totalMW ? Math.round((mw / totalMW) * 100) : 0,
     color: COLORS[name] || "#6b7280",
-  })).sort((a,b)=>b.value-a.value);
+  })).sort((a, b) => b.value - a.value);
 
   // Interconnectors & Demand (best-effort)
   const interconnectors = icR.ok ? parseInterconnectors(icR.data) : [];
@@ -454,14 +422,14 @@ Deno.serve(async (req) => {
   const payload: any = {
     generationMix,
     interconnectors,
-    totalGeneration: Math.round((totalGenerationMW/1000)*100)/100,
-    totalDemand,
+    totalGenerationMW: Math.round(totalMW),
+    totalDemandMW: Math.round(totalDemand * 1000), // Convert GW to MW
     lastUpdated: spTo || new Date().toISOString(),
     dataFreshness: { source: "BMRS", isRealtime: true, variant: genVariant },
   };
-  if (DEBUG) payload.diagnostics = { genVariant, fuels: Object.keys(mixMW).length, spTo, sample: diagSample };
+  if (DEBUG) payload.diagnostics = { genVariant, fuels: Object.keys(mixMW).length, totalMW, spTo, sample: diagSample };
 
-  await insertLKG(payload.lastUpdated, payload, totalGenerationMW);
+  await insertLKG(payload.lastUpdated, payload, totalMW);
 
-  return new Response(JSON.stringify(payload), { headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" } });
+  return new Response(JSON.stringify(payload), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
 });

@@ -6,6 +6,7 @@ import { useEnergyData } from '@/hooks/useEnergyData';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
+import { formatGWfromMW } from '@/lib/utils';
 
 export const EnergyDashboard = () => {
   const { data, loading, error, refetch } = useEnergyData();
@@ -52,17 +53,17 @@ export const EnergyDashboard = () => {
 
             <div className="flex items-center gap-6">
               {data && (
-                <>
-                  <div className="hidden md:flex items-center gap-4 text-sm">
-                    <div className="text-center">
-                      <div className="text-xs text-muted-foreground">Generation</div>
-                      <div className="font-bold text-primary">{data.totalGeneration.toFixed(1)} GW</div>
+                  <>
+                    <div className="hidden md:flex items-center gap-4 text-sm">
+                      <div className="text-center">
+                        <div className="text-xs text-muted-foreground">Generation</div>
+                        <div className="font-bold text-primary">{formatGWfromMW(data.totalGenerationMW || 0)} GW</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-xs text-muted-foreground">Demand</div>
+                        <div className="font-bold text-foreground">{formatGWfromMW(data.totalDemandMW || 0)} GW</div>
+                      </div>
                     </div>
-                    <div className="text-center">
-                      <div className="text-xs text-muted-foreground">Demand</div>
-                      <div className="font-bold text-foreground">{data.totalDemand.toFixed(1)} GW</div>
-                    </div>
-                  </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Clock className="w-4 h-4" />
                     <span className="hidden sm:inline">Last updated: </span>
@@ -104,7 +105,7 @@ export const EnergyDashboard = () => {
             {/* Generation Mix Chart */}
             <GenerationMixChart 
               data={data.generationMix} 
-              totalGeneration={data.totalGeneration}
+              totalGenerationMW={data.totalGenerationMW || 0}
             />
 
             {/* Interconnector Flows */}

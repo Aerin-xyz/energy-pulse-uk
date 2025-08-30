@@ -1,5 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
 import { Card } from '@/components/ui/card';
+import { formatGWfromMW } from '@/lib/utils';
 
 interface GenerationData {
   name: string;
@@ -10,7 +11,7 @@ interface GenerationData {
 
 interface GenerationMixChartProps {
   data: GenerationData[];
-  totalGeneration: number;
+  totalGenerationMW: number;
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -19,7 +20,7 @@ const CustomTooltip = ({ active, payload }: any) => {
     return (
       <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
         <p className="text-card-foreground font-medium">{data.name}</p>
-        <p className="text-primary text-lg font-bold">{data.value.toFixed(1)} GW</p>
+        <p className="text-primary text-lg font-bold">{formatGWfromMW(data.value, 2)} GW</p>
         <p className="text-muted-foreground">{data.percentage.toFixed(1)}%</p>
       </div>
     );
@@ -49,7 +50,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export const GenerationMixChart = ({ data, totalGeneration }: GenerationMixChartProps) => {
+export const GenerationMixChart = ({ data, totalGenerationMW }: GenerationMixChartProps) => {
   return (
     <Card className="p-6 bg-gradient-card border-border">
       <div className="flex justify-between items-center mb-6">
@@ -85,7 +86,7 @@ export const GenerationMixChart = ({ data, totalGeneration }: GenerationMixChart
           {/* Center text */}
           <div className="absolute inset-0 flex flex-col items-center justify-center">
             <span className="text-3xl font-bold text-card-foreground">Total</span>
-            <span className="text-4xl font-bold text-primary">{totalGeneration.toFixed(1)} GW</span>
+            <span className="text-4xl font-bold text-primary">{formatGWfromMW(totalGenerationMW)} GW</span>
           </div>
         </div>
         
@@ -100,7 +101,7 @@ export const GenerationMixChart = ({ data, totalGeneration }: GenerationMixChart
               <div className="flex-1">
                 <span className="text-card-foreground font-medium">{item.name}</span>
                 <div className="text-sm text-muted-foreground">
-                  {item.value.toFixed(1)} GW ({item.percentage.toFixed(1)}%)
+                  {formatGWfromMW(item.value, 2)} GW ({item.percentage.toFixed(1)}%)
                 </div>
               </div>
             </div>
