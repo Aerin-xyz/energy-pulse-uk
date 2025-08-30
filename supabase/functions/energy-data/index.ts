@@ -148,12 +148,22 @@ function asArray(x: any): any[] {
 
 type Variant = "insights-summary" | "insights-current" | "dataset-fuelhh-stream";
 
-function selectLatestWindow(rows: any[]): { latest: any[], spTo: string | null } {
-  const getTo = (r: any) =>
-    r.SP_END || r.SP_TO || r.SETTLEMENT_PERIOD_END || r.timeTo || r.spTo || r.periodEnd || r.validTo || null;
-  const sorted = [...rows].sort((a, b) => new Date(getTo(a) || 0).getTime() - new Date(getTo(b) || 0).getTime());
-  const lastTo = getTo(sorted.at(-1) || {}) || null;
-  return { latest: sorted.filter(r => getTo(r) === lastTo), spTo: lastTo };
+function pickLatestSP(rows: any[]) {
+  const getDate = (r: any) => r.SETTLEMENT_DATE || r.settlementDate || r.SettlementDate;
+  const getSP = (r: any) => r.SETTLEMENT_PERIOD || r.settlementPeriod || r.SettlementPeriod;
+
+  // Normalise to comparable numeric key: YYYYMMDD * 100 + SP
+  const key = (r: any) => {
+    const d = String(getDate(r) ?? "").replace(/[-/]/g, "");         // "2025-08-30" → "20250830"
+    const sp = Number(getSP(r) ?? NaN);
+    if (!d || !Number.isFinite(sp)) return -1;
+    return Number(d) * 100 + sp;
+  };
+
+  // Find max key
+  let maxKey = -1;
+  for (const r of rows) { maxKey = Math.max(maxKey, key(r)); }
+  return rows.filter(r => key(r) === maxKey);
 }
 
 const EXCLUDE = /INTERCONNECT|^INT|PUMP|^PS$/i;
@@ -174,32 +184,36 @@ function labelFuel(raw: string): string {
 }
 
 function parseInsightsMW(rows: any[]) {
-  const { latest } = selectLatestWindow(rows);
+  const latest = pickLatestSP(rows);
   const mixMW: Record<string, number> = {};
+
   for (const r of latest) {
     const fuelRaw = r.fuelType ?? r.fuel ?? r.FUEL_TYPE ?? r.name ?? "";
     if (EXCLUDE.test(fuelRaw)) continue;
-    const mw = Number(r.generation ?? r.generationMW ?? r.GENERATION_MW);
-    if (Number.isFinite(mw)) {
-      const L = labelFuel(fuelRaw);
-      mixMW[L] = (mixMW[L] || 0) + mw; // already MW
-    }
+
+    const mw = Number(r.generation ?? r.generationMW ?? r.GENERATION_MW ?? r.value ?? r.actual);
+    if (!Number.isFinite(mw)) continue;
+
+    const L = labelFuel(fuelRaw);
+    mixMW[L] = (mixMW[L] || 0) + mw;  // already MW
   }
   return mixMW;
 }
 
 function parseFUELHHtoMW(rows: any[]) {
-  const { latest } = selectLatestWindow(rows);
+  const latest = pickLatestSP(rows);
   const mixMW: Record<string, number> = {};
+
   for (const r of latest) {
     const fuelRaw = r.FUEL_TYPE ?? r.FUELTYPE ?? r.fuel ?? r.fuelType ?? r.name ?? "";
     if (EXCLUDE.test(fuelRaw)) continue;
+
     const mwh = Number(r.MWH ?? r.ENERGY_MWH);
-    if (Number.isFinite(mwh)) {
-      const mw = mwh * 2; // convert half-hour energy → MW
-      const L = labelFuel(fuelRaw);
-      mixMW[L] = (mixMW[L] || 0) + mw;
-    }
+    if (!Number.isFinite(mwh)) continue;
+
+    const mw = mwh * 2; // 30-min energy → MW
+    const L = labelFuel(fuelRaw);
+    mixMW[L] = (mixMW[L] || 0) + mw;
   }
   return mixMW;
 }
@@ -250,6 +264,23 @@ Deno.serve(async (req) => {
     return null;
   }
 
+  // Helper functions for parsing
+  function pickNum(row: any, keys: string[]): number | undefined {
+    for (const k of keys) {
+      const v = row?.[k];
+      const n = Number(v);
+      if (Number.isFinite(n)) return n;
+    }
+    return undefined;
+  }
+  function pickStr(row: any, keys: string[]): string | undefined {
+    for (const k of keys) {
+      const v = row?.[k];
+      if (typeof v === "string" && v.trim()) return v;
+    }
+    return undefined;
+  }
+
   // Interconnectors and demand parsers (tolerant)
   function parseInterconnectors(icData: any) {
     const icRows = asArray(icData);
@@ -280,13 +311,13 @@ Deno.serve(async (req) => {
       const totalMW = Object.values(mixMW).reduce((s, v) => s + v, 0);
       
       // Sanity guard
-      if (totalMW < 5_000 || totalMW > 80_000) {
+      if (totalMW < 10_000 || totalMW > 80_000) {
         if (DEBUG) dlog(true, "Implausible total MW:", totalMW);
         const lkgResponse = await serveLKG("Implausible dataset total; served LKG");
         if (lkgResponse) return lkgResponse;
         
-        const stub = { generationMix: [], interconnectors: [], totalGeneration: 0, totalDemand: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: implausible dataset total", variant: "dataset-fuelhh-stream" } };
-        if (DEBUG) stub.diagnostics = { reason: "implausible-total", totalMW };
+        const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: implausible dataset total", variant: "dataset-fuelhh-stream" } };
+        if (DEBUG) stub.diagnostics = { reason: "implausible-total", totalMW, variant: "dataset-fuelhh-stream" };
         return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
       }
 
@@ -307,16 +338,17 @@ Deno.serve(async (req) => {
       const interconnectors = icR.ok ? parseInterconnectors(icR.data) : [];
       const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;
 
-      const { spTo } = selectLatestWindow(rows);
+      const latestSample = pickLatestSP(rows).slice(0, 2);
       const payload: any = {
         generationMix,
         interconnectors,
         totalGenerationMW: Math.round(totalMW),
         totalDemandMW: Math.round(totalDemand * 1000), // Convert GW to MW
-        lastUpdated: spTo || new Date().toISOString(),
+        units: "MW",
+        lastUpdated: new Date().toISOString(),
         dataFreshness: { source: "BMRS", isRealtime: true, variant: "dataset-fuelhh-stream" },
       };
-      if (DEBUG) payload.diagnostics = { genVariant: "dataset-fuelhh-stream", totalFuels: Object.keys(mixMW).length, totalMW, spTo, sample: rows.slice(0, 2) };
+      if (DEBUG) payload.diagnostics = { variant: "dataset-fuelhh-stream", totalFuels: Object.keys(mixMW).length, totalMW, latestSample };
 
       await insertLKG(payload.lastUpdated, payload, totalMW);
 
@@ -353,30 +385,26 @@ Deno.serve(async (req) => {
 
     mixMW = parseInsightsMW(outRows);
     totalMW = Object.values(mixMW).reduce((s, v) => s + v, 0);
-    const { spTo: latestSpTo } = selectLatestWindow(outRows);
-    spTo = latestSpTo;
-    diagSample = outRows.slice(0, 2);
+    diagSample = pickLatestSP(outRows).slice(0, 2);
   } else {
     const ds = await fetchFUELHHStream(200);
     if (ds.ok) {
       const rows = asArray(ds.data);
       mixMW = parseFUELHHtoMW(rows);
       totalMW = Object.values(mixMW).reduce((s, v) => s + v, 0);
-      const { spTo: latestSpTo } = selectLatestWindow(rows);
-      spTo = latestSpTo;
       genVariant = "dataset-fuelhh-stream";
-      diagSample = rows.slice(0, 2);
+      diagSample = pickLatestSP(rows).slice(0, 2);
     }
   }
 
   // Sanity guard
-  if (totalMW < 5_000 || totalMW > 80_000) {
+  if (totalMW < 10_000 || totalMW > 80_000) {
     if (DEBUG) dlog(true, "Implausible total MW:", totalMW);
     const lkgResponse = await serveLKG("Implausible total; served LKG");
     if (lkgResponse) return lkgResponse;
     
     const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: implausible total", variant: genVariant } };
-    if (DEBUG) stub.diagnostics = { reason: "implausible-total", totalMW, genVariant };
+    if (DEBUG) stub.diagnostics = { reason: "implausible-total", totalMW, variant: genVariant };
     return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
   }
 
@@ -388,10 +416,8 @@ Deno.serve(async (req) => {
       const rows = asArray(ds.data);
       mixMW = parseFUELHHtoMW(rows);
       totalMW = Object.values(mixMW).reduce((s, v) => s + v, 0);
-      const { spTo: latestSpTo } = selectLatestWindow(rows);
-      spTo = latestSpTo;
       genVariant = "dataset-fuelhh-stream";
-      diagSample = rows.slice(0, 2);
+      diagSample = pickLatestSP(rows).slice(0, 2);
       if (DEBUG) dlog(true, "Dataset fallback succeeded:", { totalMW, fuels: Object.keys(mixMW).length });
     } else {
       if (DEBUG) dlog(true, "Dataset fallback failed:", { reason: ds.reason });
@@ -402,7 +428,7 @@ Deno.serve(async (req) => {
 
       // Final stub (only if no LKG)
       const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: all sources failed", variant: genVariant } };
-      if (DEBUG) stub.diagnostics = { genVariant, allSourcesFailed: true };
+      if (DEBUG) stub.diagnostics = { variant: genVariant, allSourcesFailed: true };
       return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
     }
   }
@@ -424,10 +450,11 @@ Deno.serve(async (req) => {
     interconnectors,
     totalGenerationMW: Math.round(totalMW),
     totalDemandMW: Math.round(totalDemand * 1000), // Convert GW to MW
-    lastUpdated: spTo || new Date().toISOString(),
+    units: "MW",
+    lastUpdated: new Date().toISOString(),
     dataFreshness: { source: "BMRS", isRealtime: true, variant: genVariant },
   };
-  if (DEBUG) payload.diagnostics = { genVariant, fuels: Object.keys(mixMW).length, totalMW, spTo, sample: diagSample };
+  if (DEBUG) payload.diagnostics = { variant: genVariant, fuels: Object.keys(mixMW).length, totalMW, latestSample: diagSample };
 
   await insertLKG(payload.lastUpdated, payload, totalMW);
 
