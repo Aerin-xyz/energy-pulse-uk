@@ -17,33 +17,40 @@ function addFormatJson(u: string): string {
   catch { return u.includes("?") ? `${u}&format=json` : `${u}?format=json`; }
 }
 
-async function fetchJSONStrict(url: string) {
-  // First try: already include ?format=json to avoid weird content-negotiation paths
-  const url1 = addFormatJson(url);
-  const headers = { Accept: "application/json", "User-Agent": "ether-flow/1.0" } as Record<string,string>;
+type StrictResult =
+  | { ok: true; data: any; url: string; status: number; contentType: string }
+  | { ok: false; url: string; status: number; reason: string; body?: string; redirectedTo?: string; contentType?: string };
 
-  const res = await fetch(url1, { headers, cache: "no-store", redirect: "manual" as RequestRedirect });
+async function fetchJSON_STRICT(urlRaw: string): Promise<StrictResult> {
+  const url = addFormatJson(urlRaw);
+  const headers = { Accept: "application/json, text/plain, */*", "User-Agent": "ether-flow/1.0" };
 
-  // Treat any redirect as failure
-  if (res.status >= 300 && res.status < 400) {
-    const location = res.headers.get("location") || "";
-    return { ok: false, status: res.status, body: `Redirected to ${location || "unknown"}`, redirectedTo: location };
-  }
-
-  const ct = (res.headers.get("content-type") || "").toLowerCase();
+  // Important: do not auto-follow redirects; if we get a 30x we’ll see it.
+  const res = await fetch(url, { headers, cache: "no-store", redirect: "manual" as RequestRedirect });
+  const ct = res.headers.get("content-type") || "";
   const text = await res.text();
 
-  // Reject non-JSON even on 200
-  if (!ct.includes("json")) {
-    return { ok: false, status: res.status, body: text.slice(0, 400), contentType: ct || "unknown" };
+  // If we were redirected to a non-API page, bail.
+  const loc = res.headers.get("location") || "";
+  if (res.status >= 300 && res.status < 400) {
+    return { ok: false, url, status: res.status, reason: "redirect", redirectedTo: loc };
+  }
+
+  // If not JSON, treat as error even on 200 (this is your HTML page case)
+  if (!ct.toLowerCase().includes("json")) {
+    return { ok: false, url, status: res.status, reason: "non-json", body: text.slice(0, 400), contentType: ct };
   }
 
   if (!res.ok) {
-    return { ok: false, status: res.status, body: text.slice(0, 400) };
+    return { ok: false, url, status: res.status, reason: "http-error", body: text.slice(0, 400), contentType: ct };
   }
 
-  try { return { ok: true, data: JSON.parse(text) }; }
-  catch { return { ok: false, status: 200, body: "Non-JSON parse on JSON content-type", sample: text.slice(0, 200) } }
+  try {
+    const data = JSON.parse(text);
+    return { ok: true, data, url, status: res.status, contentType: ct };
+  } catch {
+    return { ok: false, url, status: 200, reason: "json-parse-failed", body: text.slice(0, 200), contentType: ct };
+  }
 }
 
 // --- parsing helpers (defensive across field names) ---
@@ -97,8 +104,10 @@ function normalizeFuel(f: string): string {
 serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
 
-  // 1) Outturn (anchor)
-  const outturnR = await fetchJSONStrict(`${BMRS}/generation/outturn/current`);
+  // ---------- use the strict fetcher with the correct base ----------
+  const BMRS_BASE = "https://bmrs.elexon.co.uk/bmrs/api/v1";
+
+  const outturnR = await fetchJSON_STRICT(`${BMRS_BASE}/generation/outturn/current`);
   if (!outturnR.ok) {
     return new Response(JSON.stringify({ error: "bmrs_outturn_current_failed", detail: outturnR }), {
       status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
@@ -112,8 +121,7 @@ serve(async (req) => {
   }
   const { sp_from, sp_to } = pickSP(outRows);
 
-  // 2) Interconnectors
-  const icR = await fetchJSONStrict(`${BMRS}/generation/outturn/interconnectors`);
+  const icR = await fetchJSON_STRICT(`${BMRS_BASE}/generation/outturn/interconnectors`);
   if (!icR.ok) {
     return new Response(JSON.stringify({ error: "bmrs_interconnectors_failed", detail: icR }), {
       status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
@@ -127,8 +135,7 @@ serve(async (req) => {
     return { name, country: r.country ?? "", flow, capacity };
   });
 
-  // 3) Demand (national)
-  const demandR = await fetchJSONStrict(`${BMRS}/demand/outturn/summary`);
+  const demandR = await fetchJSON_STRICT(`${BMRS_BASE}/demand/outturn/summary`);
   if (!demandR.ok) {
     return new Response(JSON.stringify({ error: "bmrs_demand_summary_failed", detail: demandR }), {
       status: 502, headers: { ...corsHeaders, "Content-Type": "application/json" }
