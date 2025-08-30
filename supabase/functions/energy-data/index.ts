@@ -61,19 +61,30 @@ async function fetchBMRS(path: string): Promise<StrictResult> {
   return { ok: false, url: variants[0].url, status: 502, reason: "all-variants-non-json", variant: "exhausted" };
 }
 
-// Small helpers
+// Helpers: robust array extraction and flexible field picking
 function asArray(x: any): any[] {
   if (!x) return [];
   if (Array.isArray(x)) return x;
-  if (Array.isArray(x.data)) return x.data;
-  if (x.result?.records && Array.isArray(x.result.records)) return x.result.records;
+  if (Array.isArray((x as any).data)) return (x as any).data;
+  if ((x as any).result?.records && Array.isArray((x as any).result.records)) return (x as any).result.records;
+  if ((x as any).items && Array.isArray((x as any).items)) return (x as any).items;
   return [];
 }
 
-function num(...c: any[]): number | undefined {
-  for (const v of c) {
-    const n = Number(v);
-    if (Number.isFinite(n)) return n;
+function pickNum(row: any, keys: string[]): number | undefined {
+  for (const k of keys) {
+    if (row && row[k] !== undefined && row[k] !== null) {
+      const n = Number(row[k]);
+      if (Number.isFinite(n)) return n;
+    }
+  }
+  return undefined;
+}
+
+function pickStr(row: any, keys: string[]): string | undefined {
+  for (const k of keys) {
+    const v = row?.[k];
+    if (typeof v === 'string' && v.trim().length) return v;
   }
   return undefined;
 }
@@ -99,10 +110,16 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const urlDebug = new URL(req.url).searchParams.get("debug") === "1";
+  function dlog(...args: any[]) { if (urlDebug) console.log("[energy-data DEBUG]", ...args); }
+
   // Try BMRS (summary → current → dataset)
   const outturnR = await fetchBMRS("/generation/outturn/current");
+  dlog("outturn fetch:", { variant: (outturnR as any).variant, ok: (outturnR as any).ok, status: (outturnR as any).status });
   const icR      = await fetchBMRS("/generation/outturn/interconnectors");
+  dlog("interconnectors fetch:", { variant: (icR as any).variant, ok: (icR as any).ok, status: (icR as any).status });
   const demandR  = await fetchBMRS("/demand/outturn/summary");
+  dlog("demand fetch:", { variant: (demandR as any).variant, ok: (demandR as any).ok, status: (demandR as any).status });
 
   const bmrsAllOk = outturnR.ok && icR.ok && demandR.ok;
 
@@ -158,8 +175,9 @@ Deno.serve(async (req) => {
 
   // ---------- Parse SUCCESS path below ----------
 
-  // OUTTURN rows (summary may return many; pick latest SP)
+  // OUTTURN rows (summary may return many; pick latest settlement window)
   const outRows = asArray(outturnR.data);
+  dlog("outturn variant:", (outturnR as any).variant, "rows:", outRows.length, "sample:", outRows[0]);
   if (outRows.length === 0) {
     const stub = {
       generationMix: [],
@@ -173,45 +191,65 @@ Deno.serve(async (req) => {
       headers: { ...corsHeaders, "Content-Type":"application/json", "Cache-Control":"no-store" }
     });
   }
-  outRows.sort((a,b) => new Date(a.spTo ?? a.toTime ?? a.timeTo ?? 0).getTime() - new Date(b.spTo ?? b.toTime ?? b.timeTo ?? 0).getTime());
-  const latest = outRows[outRows.length - 1];
-  const spFrom = latest.spFrom ?? latest.fromTime ?? latest.start ?? latest.timeFrom;
-  const spTo   = latest.spTo   ?? latest.toTime   ?? latest.end   ?? latest.timeTo;
 
-  // Build generation mix (exclude interconnectors + pumped)
-  const EXCLUDE = new Set(["INTERCONNECTOR", "INTERCONNECTORS", "INTERCONNECTOR_EXPORT", "INTERCONNECTOR_IMPORT", "PUMPED_STORAGE", "PS", "INTFR", "INTIRL", "INTNED", "INTEW", "INTNEM", "INTELEC", "INTNSL"]);
-  const mix: Record<string, number> = {};
-  for (const r of outRows) {
-    const fuel = String(r.fuelType ?? r.fuel ?? r.fuel_type ?? "").toUpperCase();
-    const mw   = num(r.generation, r.mw, r.value) ?? 0;
-    if (fuel.includes("PUMP") || fuel.includes("INTERCONNECT")) continue;
-    const L = labelFuel(fuel);
-    mix[L] = (mix[L] || 0) + mw;
+  outRows.sort((a,b) => new Date(pickStr(a, ["spTo","toTime","timeTo","periodEnd","validTo"]) || 0).getTime() - new Date(pickStr(b, ["spTo","toTime","timeTo","periodEnd","validTo"]) || 0).getTime());
+  const toMax = pickStr(outRows[outRows.length-1], ["spTo","toTime","timeTo","periodEnd","validTo"]);
+  const latestRows = outRows.filter(r => {
+    const toA = pickStr(r, ["spTo","toTime","timeTo","periodEnd","validTo"]);
+    return (toA || "") === (toMax || "");
+  });
+
+  // Build fuel mix (exclude interconnectors & pumped)
+  const EXCLUDE = /INTERCONNECT|INT[A-Z]*|PUMP|PUMPED|^PS$/i;
+  function labelFuel(f: string): string {
+    const t = f.toUpperCase();
+    if (t.includes("WIND")) return "Wind";
+    if (t.includes("SOLAR") || t.includes("PV")) return "Solar";
+    if (t.includes("NUCLEAR")) return "Nuclear";
+    if (t.includes("BIOMASS")) return "Biomass";
+    if (t.includes("HYDRO") || t === "NPSHYD") return "Hydro";
+    if (t === "CCGT" || t === "OCGT" || t.includes("GAS")) return "Gas";
+    if (t.includes("COAL")) return "Coal";
+    if (t.includes("OIL")) return "Oil";
+    return "Other";
   }
 
-  const totalGenerationMW = Object.values(mix).reduce((s,v)=>s+v,0);
-  const generationMix = Object.entries(mix)
+  const mixMW: Record<string, number> = {};
+  for (const r of latestRows) {
+    const fuelRaw = pickStr(r, ["fuelType","fuel","fuel_type","FUELTYPE","name"]) || "";
+    if (EXCLUDE.test(fuelRaw)) continue;
+    const mw = pickNum(r, ["generation","generationMW","mw","value","actual","power","powerMW","measuredMW"]) ?? 0;
+    const L = labelFuel(fuelRaw);
+    mixMW[L] = (mixMW[L] || 0) + mw;
+  }
+
+  const totalGenerationMW = Object.values(mixMW).reduce((s,v)=>s+v,0);
+  const generationMix = Object.entries(mixMW)
     .map(([name, mw]) => ({
       name,
-      value: Math.round(mw),
-      percentage: totalGenerationMW ? Math.round((mw/totalGenerationMW)*100) : 0,
+      value: Math.round(mw as number),
+      percentage: totalGenerationMW ? Math.round(((mw as number)/totalGenerationMW)*100) : 0,
       color: COLORS[name] || "#6b7280"
     }))
     .sort((a,b)=>b.value-a.value);
 
+  const spFrom = pickStr(latestRows[0], ["spFrom","fromTime","timeFrom","periodStart","validFrom"]) || null;
+  const spTo   = pickStr(latestRows[0], ["spTo","toTime","timeTo","periodEnd","validTo"]) || null;
+  dlog("mixMW total(MW):", totalGenerationMW, "spFrom:", spFrom, "spTo:", spTo);
+
   // INTERCONNECTORS
   const icRows = asArray(icR.data);
   const interconnectors = icRows.map((r: any) => ({
-    name: r.interconnectorName ?? r.name ?? "Unknown",
-    country: r.country ?? "",
-    flow: num(r.flow, r.mw, r.value) ?? 0,       // + import / - export
-    capacity: num(r.capacity, r.cap, r.maxCapacity)
+    name: pickStr(r, ["interconnectorName","name","connector","id"]) || "Unknown",
+    country: pickStr(r, ["country","counterparty","partner"]) || "",
+    flow: pickNum(r, ["flow","flowMW","mw","value","ieFlow","actualFlowMW"]) ?? 0,       // + import / - export
+    capacity: pickNum(r, ["capacity","cap","maxCapacity","capacityMW"]) 
   }));
 
   // DEMAND (national)
   const dRows = asArray(demandR.data);
-  const national = dRows.find((r: any) => String(r.region ?? r.area ?? "NATIONAL").toUpperCase().includes("NATIONAL")) ?? dRows[0] ?? {};
-  const totalDemandMW = num(national.demand, national.mw, national.value) ?? 0;
+  const national = dRows.find((r:any) => String(pickStr(r, ["region","area","name"]) || "NATIONAL").toUpperCase().includes("NATIONAL")) ?? dRows[0] ?? {};
+  const totalDemandMW = pickNum(national, ["demand","demandMW","mw","value","totalDemandMW"]) ?? 0;
 
   const payload = {
     generationMix,

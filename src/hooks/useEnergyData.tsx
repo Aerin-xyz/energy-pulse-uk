@@ -21,6 +21,14 @@ interface EnergyData {
   totalGeneration: number;
   totalDemand: number;
   lastUpdated: Date;
+  dataFreshness?: {
+    source?: string;
+    isRealtime?: boolean;
+    spFrom?: string | null;
+    spTo?: string | null;
+    variant?: string;
+    note?: string;
+  };
 }
 
 interface BMRSResponse {
@@ -80,7 +88,7 @@ const FUEL_TYPE_MAPPING: { [key: string]: string } = {
 
 // Real API integration using Supabase Edge Function
 async function fetchEnergyData(): Promise<any> {
-  const response = await fetch('https://cxvjgpuytezomdlsayif.supabase.co/functions/v1/energy-data', {
+  const response = await fetch('https://cxvjgpuytezomdlsayif.supabase.co/functions/v1/energy-data?debug=1', {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
