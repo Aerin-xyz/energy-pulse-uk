@@ -1,5 +1,5 @@
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, LabelList } from 'recharts';
 import { formatGWfromMW } from '@/lib/utils';
 
 interface GenerationData {
@@ -19,9 +19,9 @@ const CustomTooltip = ({ active, payload }: any) => {
     const data = payload[0].payload;
     return (
       <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
-        <p className="text-card-foreground font-medium">{data.name}</p>
-        <p className="text-primary text-lg font-bold">{formatGWfromMW(data.value, 2)} GW</p>
-        <p className="text-muted-foreground">{data.percentage.toFixed(1)}%</p>
+        <p className="text-muted-foreground text-xs">{data.name}</p>
+        <p className="font-bold text-sm">{formatGWfromMW(data.value, 2)} GW</p>
+        <p className="text-primary text-xs">{data.percentage}%</p>
       </div>
     );
   }
@@ -52,62 +52,70 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 export const GenerationMixChart = ({ data, totalGenerationMW }: GenerationMixChartProps) => {
   return (
-    <Card className="p-6 bg-gradient-card border-border">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-card-foreground">Generation Mix</h2>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
-          <span className="text-sm text-muted-foreground">Live</span>
-        </div>
-      </div>
-      
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-8">
-        <div className="relative w-[400px] h-[400px]">
-          <PieChart width={400} height={400}>
-              <Pie
-                data={data}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                label={renderCustomizedLabel}
-                outerRadius={160}
-                innerRadius={80}
-                fill="#8884d8"
-                dataKey="value"
-                stroke="none"
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip content={<CustomTooltip />} />
-            </PieChart>
-          
-          {/* Center text */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-3xl font-bold text-card-foreground">Total</span>
-            <span className="text-4xl font-bold text-primary">{formatGWfromMW(totalGenerationMW)} GW</span>
+    <Card>
+      <CardHeader>
+        <CardTitle>UK Generation Mix</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex flex-col lg:flex-row items-center gap-8">
+          <div className="relative w-[400px] h-[400px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={data}
+                  cx="50%"
+                  cy="50%"
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  outerRadius={160}
+                  innerRadius={80}
+                  fill="#8884d8"
+                  dataKey="value"
+                  stroke="none"
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip content={<CustomTooltip />} />
+              </PieChart>
+            </ResponsiveContainer>
+            
+            {/* Center text */}
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <text x={200} y={190} textAnchor="middle" dominantBaseline="middle" className="fill-foreground">
+                <tspan x={200} y={190 - 8} className="text-lg font-bold">
+                  {formatGWfromMW(totalGenerationMW)}
+                </tspan>
+                <tspan x={200} y={190 + 8} className="text-xs fill-muted-foreground">
+                  GW
+                </tspan>
+              </text>
+            </div>
           </div>
-        </div>
-        
-        {/* Legend */}
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-1">
-          {data.map((item, index) => (
-            <div key={index} className="flex items-center gap-3">
-              <div 
-                className="w-4 h-4 rounded-sm"
-                style={{ backgroundColor: item.color }}
-              />
-              <div className="flex-1">
-                <span className="text-card-foreground font-medium">{item.name}</span>
-                <div className="text-sm text-muted-foreground">
-                  {formatGWfromMW(item.value, 2)} GW ({item.percentage.toFixed(1)}%)
+          
+          {/* Legend */}
+          <div className="space-y-2 lg:space-y-3">
+            {data.map((item, index) => (
+              <div key={index} className="flex items-center gap-3">
+                <div 
+                  className="w-4 h-4 rounded-sm"
+                  style={{ backgroundColor: item.color }}
+                />
+                <div className="flex-1">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm">{item.name}</span>
+                    <div className="text-right">
+                      <div className="text-sm font-bold">{formatGWfromMW(item.value, 2)} GW</div>
+                      <div className="text-xs text-muted-foreground">{item.percentage}%</div>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
+      </CardContent>
     </Card>
   );
 };
