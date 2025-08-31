@@ -132,7 +132,8 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
       // Normalise into { t, mw }
       let rows: Array<{ t: string; mw: number }> = [];
       const data = Array.isArray(resp?.data) ? resp.data : (Array.isArray(resp) ? resp : []);
-      const cols = Array.isArray(resp?.columns) ? resp.columns : null;
+      // v4 uses `meta` for column names; v3 sometimes uses `columns`
+      const cols = Array.isArray(resp?.columns) ? resp.columns : (Array.isArray(resp?.meta) ? resp.meta : null);
       lastCols = cols;
 
       if (cols && data.length && Array.isArray(data[0])) {
