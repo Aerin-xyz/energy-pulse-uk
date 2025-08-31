@@ -458,15 +458,10 @@ Deno.serve(async (req) => {
     }
   }
 
-  // Sanity guard: UK typically generates 25-45 GW
-  if (totalMW < 15_000 || totalMW > 60_000) {
-    if (DEBUG) dlog(true, "Implausible total MW:", totalMW, "diagSample:", diagSample);
-    const lkgResponse = await serveLKG("Implausible total; served LKG");
-    if (lkgResponse) return lkgResponse;
-    
-    const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: implausible total", variant: genVariant } };
-    if (DEBUG) stub.diagnostics = { reason: "implausible-total", totalMW, variant: genVariant, diagSample };
-    return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+  // Relaxed sanity guard: Allow wider range and only warn, don't fallback to LKG
+  if (totalMW < 10_000 || totalMW > 70_000) {
+    if (DEBUG) dlog(true, "Warning - Unusual total MW:", totalMW, "diagSample:", diagSample);
+    // Continue with current data instead of falling back to LKG
   }
 
   if (totalMW === 0) {

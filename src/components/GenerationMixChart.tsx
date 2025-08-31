@@ -83,14 +83,14 @@ export const GenerationMixChart = ({ data, totalGenerationMW }: GenerationMixCha
             
             {/* Center text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <text x={200} y={190} textAnchor="middle" dominantBaseline="middle" className="fill-foreground">
-                <tspan x={200} y={190 - 8} className="text-lg font-bold">
+              <div className="text-center">
+                <div className="text-lg font-bold text-foreground">
                   {formatGWfromMW(totalGenerationMW)}
-                </tspan>
-                <tspan x={200} y={190 + 8} className="text-xs fill-muted-foreground">
+                </div>
+                <div className="text-xs text-muted-foreground">
                   GW
-                </tspan>
-              </text>
+                </div>
+              </div>
             </div>
           </div>
           
