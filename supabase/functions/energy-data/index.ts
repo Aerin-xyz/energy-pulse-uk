@@ -106,114 +106,66 @@ async function fetchEmbeddedWindESO(anchorDate: string, anchorSP: number): Promi
   return { mw, matched: aligned, reason: aligned ? "aligned" : "tolerated", row };
 }
 
-// PV Live embedded solar — choose nearest prior half-hour within 45 minutes
-async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Promise<{ mw: number; matched: boolean; reason: string; row?: any; }>
+// PV Live embedded solar — column-aware parser with 45m tolerance
+async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Promise<{ mw: number; matched: boolean; reason: string; debug?: { picked?: any; columns?: any } }>
 {
   try {
-    const anchor = new Date(anchorEndISO);
-    const start = new Date(anchor.getTime() - 3 * 60 * 60 * 1000);
-
-    const base = `https://api.pvlive.uk/pvlive/api/v4/gsp/0`;
-    const urlWindowed = `${base}?start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
-    const urlFallback = `${base}?updated_gmt_to=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
-
-    async function fetchPV(url: string, tag: string) {
-      try {
-        const res = await fetch(url, { headers: HEADERS, cache: "no-store" });
-        const ct = res.headers.get("content-type") || "";
-        const status = res.status;
-        const headersObj: Record<string, string> = {};
-        try { res.headers.forEach((v, k) => { headersObj[k] = v; }); } catch {}
-        const text = await res.text();
-        if (!ct.toLowerCase().includes("json")) {
-          dlog(debug, "PV Live non-json", { tag, url, status, ct });
-          return { ok: false, reason: "pv-non-json", ct, sample: text.slice(0, 400), url, tag, status, headers: headersObj };
-        }
-        let json: any;
-        try {
-          json = JSON.parse(text);
-        } catch {
-          dlog(debug, "PV Live JSON parse failed", { tag, url, status, ct });
-          return { ok: false, reason: "pv-json-parse-failed", sample: text.slice(0, 400), url, tag, ct, status, headers: headersObj };
-        }
-        const raw = Array.isArray(json?.data) ? json.data : [];
-        // Normalize various PV Live shapes to { t: ISOString, mw: number }
-        const normalize = (r: any) => {
-          if (Array.isArray(r)) {
-            return { t: r[0] ?? r.t ?? r.datetime_utc ?? r.datetime_gmt, mw: r[1] ?? r.generation_mw ?? r.value ?? r.mw };
-          }
-          const t = r.datetime_utc ?? r.datetime_gmt ?? r.gmt_datetime ?? r.timestamp_utc ?? r.ts ?? r.t;
-          const mw = r.generation_mw ?? r.generation ?? r.value ?? r.mw ?? r.power_mw;
-          return { t, mw };
-        };
-        const rows = raw.map(normalize).filter((r: any) => r && r.t !== undefined);
-        dlog(debug, "PV Live ok", { tag, url, status, ct, rows: rows.length, sample: rows.slice(0, 3) });
-        return { ok: true, rows, url, tag, ct, status };
-      } catch (e) {
-        dlog(debug, "PV Live fetch error", { tag, url, error: String(e) });
-        return { ok: false, reason: "pv-fetch-error", url, tag };
-      }
+    const url = 'https://api.pvlive.uk/pvlive/api/v4/gsp/0?limit=12';
+    const res = await fetch(url, { headers: HEADERS, cache: 'no-store' });
+    const ct = res.headers.get('content-type') || '';
+    if (!ct.toLowerCase().includes('json')) {
+      return { mw: 0, matched: false, reason: 'pv-no-json' };
     }
+    const resp: any = await res.json();
 
-    // Try without period first
-    let r: any = await fetchPV(urlWindowed, "windowed");
-    if (!(r.ok && r.rows && r.rows.length)) {
-      const r2: any = await fetchPV(urlFallback, "updated_gmt_to");
-      if (r2.ok && r2.rows && r2.rows.length) r = r2;
-      else {
-        // Try alternate period format PT30M
-        const urlWindowedAlt = `${base}?period=PT30M&start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
-        const urlFallbackAlt = `${base}?period=PT30M&updated_gmt_to=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
-        let r3: any = await fetchPV(urlWindowedAlt, "windowed@PT30M");
-        if (!(r3.ok && r3.rows && r3.rows.length)) {
-          const r4: any = await fetchPV(urlFallbackAlt, "updated_gmt_to@PT30M");
-          if (r4.ok && r4.rows && r4.rows.length) r3 = r4;
-        }
-        if (r3 && r3.ok && r3.rows && r3.rows.length) {
-          r = r3;
-        } else {
-          const err: any = r.ok ? (r2.ok ? r3 : r2) : r;
-          if (err?.reason === "pv-non-json") {
-            return { mw: 0, matched: false, reason: "pv-non-json", row: { note: "non-json", content_type: err.ct, status: err.status, headers: err.headers, sample: err.sample, url: err.url, source: err.tag } } as any;
-          }
-          if (err?.reason === "pv-json-parse-failed") {
-            return { mw: 0, matched: false, reason: "pv-json-parse-failed", row: { status: err.status, headers: err.headers, sample: err.sample, url: err.url, source: err.tag } } as any;
-          }
-          return { mw: 0, matched: false, reason: (err?.reason || "pv-no-data"), row: { url: err?.url, source: err?.tag } } as any;
-        }
+    // Normalise into { t, mw }
+    let rows: Array<{ t: string; mw: number }> = [];
+    const data = Array.isArray(resp?.data) ? resp.data : (Array.isArray(resp) ? resp : []);
+    const cols = Array.isArray(resp?.columns) ? resp.columns : null;
+
+    if (cols && data.length && Array.isArray(data[0])) {
+      const dtIdx = cols.indexOf('datetime_utc') >= 0 ? cols.indexOf('datetime_utc') : (cols.indexOf('datetime_gmt') >= 0 ? cols.indexOf('datetime_gmt') : -1);
+      const mwIdx = cols.indexOf('generation_mw') >= 0 ? cols.indexOf('generation_mw') : -1;
+      if (dtIdx === -1 || mwIdx === -1) {
+        return { mw: 0, matched: false, reason: 'pv-missing-columns', debug: { columns: cols } };
       }
-    }
-
-    const rows: any[] = r.rows as any[];
-    const anchorMs = anchor.getTime();
-
-    // Enrich with parsed timestamps and numeric MW
-    const enriched = rows.map((row: any) => {
-      const dt = new Date(row.t).getTime();
-      const mwNum = Number(row.mw);
-      return { ...row, _dt: dt, _mw: mwNum };
-    });
-
-    // Prefer rows with finite MW >= 0 and prior to anchor
-    const candidates = enriched.filter((x: any) => Number.isFinite(x._dt) && x._dt <= anchorMs && Number.isFinite(x._mw) && x._mw >= 0);
-
-    let best: any = null;
-    if (candidates.length) {
-      best = candidates.reduce((a: any, b: any) => (a._dt > b._dt ? a : b));
+      rows = data
+        .map((arr: any[]) => ({ t: arr[dtIdx], mw: num(arr[mwIdx]) }))
+        .filter(r => Number.isFinite(r.mw) && typeof r.t === 'string');
     } else {
-      // Fallback: check if there are any prior rows at all
-      const prior = enriched.filter((x: any) => Number.isFinite(x._dt) && x._dt <= anchorMs);
-      if (!prior.length) {
-        return { mw: 0, matched: false, reason: "pv-no-prior-row", row: { url: r.url, source: r.tag } };
-      }
-      return { mw: 0, matched: false, reason: "pv-no-finite-mw", row: { url: r.url, source: r.tag, priorRows: prior.length } };
+      rows = data
+        .map((r: any) => ({
+          t: r?.datetime_utc ?? r?.datetime_gmt ?? r?.t,
+          mw: num(r?.generation_mw ?? r?.mw ?? r?.value),
+        }))
+        .filter(r => Number.isFinite(r.mw) && typeof r.t === 'string');
     }
 
-    const within45m = (anchorMs - best._dt) <= 45 * 60 * 1000;
-    const mw = Math.max(0, best._mw);
-    return { mw, matched: within45m, reason: within45m ? "aligned" : "tolerated", row: { datetime_utc: new Date(best._dt).toISOString(), generation_mw: mw, source: r.tag, url: r.url } };
+    if (!rows.length) {
+      return { mw: 0, matched: false, reason: 'pv-no-finite-rows', debug: { columns: cols } };
+    }
+
+    // Pick the latest point at or before the anchor end, with ≤45 min tolerance
+    const anchor = new Date(anchorEndISO).getTime();
+    let best: { t: string; mw: number } | null = null;
+    let bestTs = -Infinity;
+    for (const r of rows) {
+      const ts = new Date(r.t).getTime();
+      if (Number.isFinite(ts) && ts <= anchor && ts > bestTs) {
+        best = r; bestTs = ts;
+      }
+    }
+
+    if (!best) {
+      return { mw: 0, matched: false, reason: 'pv-no-prior-match', debug: { columns: cols } };
+    }
+
+    const within45m = (anchor - bestTs) <= 45 * 60 * 1000;
+    const out = { mw: best.mw, matched: within45m, reason: within45m ? 'aligned' : 'tolerated', debug: { picked: best, columns: cols } };
+    if (debug) dlog(true, 'PV Live parsed', { rows: rows.length, picked: out.debug?.picked, columns: cols });
+    return out;
   } catch {
-    return { mw: 0, matched: false, reason: "pv-error" };
+    return { mw: 0, matched: false, reason: 'pv-error' };
   }
 }
 
@@ -262,6 +214,12 @@ function asArray(x: any): any[] {
   if ((x as any).items && Array.isArray((x as any).items)) return (x as any).items;
   return [];
 }
+
+// Safe number helper
+const num = (x: any) => {
+  const n = typeof x === 'string' ? Number(x) : (Number.isFinite(x) ? x : Number(x));
+  return Number.isFinite(n) ? n : NaN;
+};
 
 // Settlement period helpers
 function parseSettlementPeriod(r: any) {
@@ -650,7 +608,7 @@ Deno.serve(async (req) => {
         totalGenerationMW,
         anchor: { date: anchorDate, sp: anchorSP, endISO: anchorEndISO },
         wind: { matched: windEmb.matched, reason: windEmb.reason, mw: windEmb.mw },
-        solar: { matched: solarEmb.matched, reason: solarEmb.reason, mw: solarEmb.mw, row: (solarEmb as any).row, raw: (solarEmb as any).raw, contentType: (solarEmb as any).contentType },
+        solar: { reason: solarEmb.reason, matched: solarEmb.matched, mw: solarEmb.mw, columns: (solarEmb as any).debug?.columns ?? null, picked: (solarEmb as any).debug?.picked ?? null },
         icOk: icR.ok,
         icCount: interconnectors.length,
         icSource,
