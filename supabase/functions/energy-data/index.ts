@@ -193,24 +193,43 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
   return { mw: 0, matched: false, reason: sawJson ? 'pv-unexpected-shape' : 'pv-no-json', debug: { columns: lastCols } };
 }
 
-// Fetch interconnectors with dual host support
-async function fetchInterconnectors() {
+// Fetch interconnectors with multi-candidate strategy and detailed attempts
+async function fetchInterconnectorsEnhanced(debug = false): Promise<{ ok: boolean; data?: any; attempts: any[] }> {
+  const attempts: any[] = [];
   const hosts = [DATA_HOST, BMRS_HOST];
-  
-  for (const host of hosts) {
-    const url = `https://${host}/bmrs/api/v1/balancing/interconnector/summary/latest?format=json`;
-    try {
-      const res = await fetch(url, { headers: HEADERS, cache: "no-store", redirect: "manual" as RequestRedirect });
-      const ct = res.headers.get("content-type") || "";
-      const text = await res.text();
-      if (ct.toLowerCase().includes("json") && res.ok) {
-        return { ok: true, data: JSON.parse(text), host };
-      }
-    } catch { continue; }
-  }
-  return { ok: false, reason: "interconnectors-all-hosts-failed" };
-}
+  const candidates: { url: string; variant: string }[] = [];
 
+  for (const host of hosts) {
+    const base = `https://${host}/bmrs/api/v1`;
+    const tag = host === DATA_HOST ? 'data' : 'bmrs';
+    candidates.push(
+      { url: withFormat(`${base}/balancing/interconnector/summary/latest`), variant: `ic-summary-latest@${tag}` },
+      { url: withFormat(`${base}/balancing/interconnector/summary`),       variant: `ic-summary@${tag}` },
+      // Potential dataset streams (may 404; kept for discovery/diagnostics)
+      { url: withFormat(`${base}/datasets/INTERCONNECTOR/stream?limit=200`), variant: `dataset-interconnector@${tag}` },
+      { url: withFormat(`${base}/datasets/INTFLOW/stream?limit=200`),       variant: `dataset-intflow@${tag}` },
+    );
+  }
+
+  for (const c of candidates) {
+    const r = await tryOnce(c.url, c.variant);
+    attempts.push({
+      url: r.url,
+      variant: c.variant,
+      status: (r as any).status,
+      contentType: (r as any).contentType,
+      ok: r.ok,
+      reason: (r as any).reason,
+      redirectedTo: (r as any).redirectedTo || undefined,
+      preview: (r as any).body ? (r as any).body.slice(0, 180) : undefined,
+    });
+    if (r.ok) {
+      return { ok: true, data: r.data, attempts };
+    }
+  }
+
+  return { ok: false, attempts };
+}
 // Fetch demand with dual host support
 async function fetchDemand() {
   const hosts = [DATA_HOST, BMRS_HOST];
@@ -464,14 +483,30 @@ Deno.serve(async (req) => {
     return undefined;
   }
 
-  // Interconnectors and demand parsers (tolerant)
   function parseInterconnectors(icData: any) {
+    // Handle column+data array shapes
+    if ((Array.isArray(icData?.columns) || Array.isArray(icData?.meta)) && Array.isArray(icData?.data) && Array.isArray(icData.data[0])) {
+      const cols: string[] = Array.isArray(icData.columns) ? icData.columns : icData.meta;
+      const data: any[] = icData.data;
+      const mapped = data.map((arr: any[]) => {
+        const o: Record<string, any> = {};
+        for (let i = 0; i < cols.length; i++) o[cols[i]] = arr[i];
+        return o;
+      });
+      icData = mapped;
+    }
+
     const icRows = asArray(icData);
+    const toNumKeys = ["flow","flowMW","mw","value","ieFlow","actualFlowMW","actualFlow","netFlow","NET_FLOW","flow_value"];
+    const capKeys   = ["capacity","cap","maxCapacity","capacityMW","ratedCapacity","capacity_mw","MAX_CAPACITY_MW"];
+    const nameKeys  = ["interconnectorName","name","connector","id","interconnector","icName","IC_NAME"];
+    const ctryKeys  = ["country","counterparty","counterParty","partner","area","eic","EIC"];
+
     return icRows.map((r: any) => ({
-      name:     pickStr(r, ["interconnectorName","name","connector","id"]) || "Unknown",
-      country:  pickStr(r, ["country","counterparty","partner","area"]) || "",
-      flow:     pickNum(r, ["flow","flowMW","mw","value","ieFlow","actualFlowMW"]) ?? 0,
-      capacity: pickNum(r, ["capacity","cap","maxCapacity","capacityMW"]),
+      name:     pickStr(r, nameKeys) || "Unknown",
+      country:  pickStr(r, ctryKeys) || "",
+      flow:     pickNum(r, toNumKeys) ?? 0,
+      capacity: pickNum(r, capKeys),
     }));
   }
   function parseDemand(dData: any): number {
@@ -485,7 +520,7 @@ Deno.serve(async (req) => {
     // Fetch all data sources in parallel
     const [bmrsR, icR, demandR] = await Promise.all([
       fetchBMRSGeneration(),
-      fetchInterconnectors(),
+      fetchInterconnectorsEnhanced(DEBUG),
       fetchDemand(),
     ]);
 
@@ -588,12 +623,17 @@ Deno.serve(async (req) => {
       dlog(true, `Warning: Percentage sum deviation: ${percentageSum}% (expected 100%)`);
     }
 
-    // Interconnectors & Demand (best-effort)
+    // Interconnectors & Demand (best-effort with diagnostics)
     let interconnectors = [] as any[];
     let icSource = "live";
+    const icAttempts = (icR as any).attempts || [];
     if (icR.ok) {
       interconnectors = parseInterconnectors(icR.data);
-      icSource = "live";
+      if (!interconnectors.length) {
+        const lkgFallback = await getLastInterconnectorsFromLKG();
+        if (lkgFallback.length) { interconnectors = lkgFallback; icSource = "lkg"; }
+        else { icSource = "none"; }
+      }
     } else {
       interconnectors = await getLastInterconnectorsFromLKG();
       icSource = interconnectors.length > 0 ? "lkg" : "none";
@@ -649,6 +689,8 @@ Deno.serve(async (req) => {
         icOk: icR.ok,
         icCount: interconnectors.length,
         icSource,
+        icAttempts: ((icR as any).attempts || []).map((a: any) => ({ url: a.url, variant: a.variant, status: a.status, reason: a.reason, contentType: a.contentType, preview: a.preview })),
+        icSample: interconnectors.slice(0, 3),
       };
     }
 
