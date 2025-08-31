@@ -675,7 +675,6 @@ let variant = bmrsR.variant;
 let bmrsRows: any[] = [];
 let outturnVariant: "insights" | "dataset" = "insights";
 let latestOutturnRows: any[] = [];
-outturnVariant: "insights" | "dataset";
 
     if (!bmrsR.ok) {
       if (DEBUG) dlog(true, "BMRS failed, trying dataset fallback...");
