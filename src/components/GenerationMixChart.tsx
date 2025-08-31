@@ -18,6 +18,7 @@ interface GenerationMixChartProps {
     isRealtime?: boolean;
     variant?: string;
     interconnectorStatus?: string;
+    status?: string;
   };
   asOf?: {
     settlementDate?: string;
@@ -76,7 +77,9 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
         <div className="flex items-center justify-between">
           <CardTitle>UK Generation Mix</CardTitle>
           <Badge variant={dataFreshness?.isRealtime ? "default" : "secondary"}>
-            {dataFreshness?.isRealtime ? "Live" : "Delayed (LKG)"}
+            {dataFreshness?.status === "live" ? "Live" : 
+             dataFreshness?.status === "live-partial" ? "Live (partial)" :
+             "Delayed (LKG)"}
           </Badge>
         </div>
         {asOf?.settlementPeriod && (
