@@ -363,7 +363,7 @@ async function fetchICSummaryCandidates(anchor: { date: string; period: number }
   const attempts: any[] = [];
   for (const url of urls) {
     const res = await safeGetJson(url);
-    attempts.push({ url, ok: res.ok, status: res.status, ctype: res.contentType, reason: res.reason });
+    attempts.push({ url, ok: res.ok, status: res.status, ctype: res.contentType, reason: res.reason, variant: url.includes('/latest') ? 'summary-latest' : 'summary-bysp' });
     if (res.ok && Array.isArray(res.json?.data)) {
       const parsed = res.json.data
         .map(normalizeICSummaryRow)
@@ -627,16 +627,14 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Fetch all data sources in parallel
-    const [bmrsR, icR, demandR] = await Promise.all([
+    // Fetch data sources in parallel (BMRS + Demand; IC handled separately)
+    const [bmrsR, demandR] = await Promise.all([
       fetchBMRSGeneration(),
-      fetchInterconnectorsEnhanced(DEBUG),
       fetchDemand(),
     ]);
 
     if (DEBUG) dlog(true, "Data fetch results:", { 
       bmrs: { ok: bmrsR.ok, variant: bmrsR.variant, status: (bmrsR as any).status }, 
-      ic: { ok: icR.ok }, 
       demand: { ok: demandR.ok } 
     });
 
@@ -645,6 +643,7 @@ Deno.serve(async (req) => {
     let anchorSP = 0;
     let anchorDate = "";
     let variant = bmrsR.variant;
+    let bmrsRows: any[] = [];
 
     if (!bmrsR.ok) {
       if (DEBUG) dlog(true, "BMRS failed, trying dataset fallback...");
@@ -662,7 +661,7 @@ Deno.serve(async (req) => {
       }
     } else {
       // Parse BMRS HV generation
-      const bmrsRows = asArray(bmrsR.data);
+      bmrsRows = asArray(bmrsR.data);
       const parsed = parseBMRSHVGeneration(bmrsRows);
       hvByFuelMW = parsed.hvByFuelMW; anchorSP = parsed.anchorSP; anchorDate = parsed.anchorDate;
       if (DEBUG) dlog(true, "BMRS HV parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, sample: Object.entries(hvByFuelMW).slice(0, 3) });
@@ -733,21 +732,31 @@ Deno.serve(async (req) => {
       dlog(true, `Warning: Percentage sum deviation: ${percentageSum}% (expected 100%)`);
     }
 
-    // Interconnectors & Demand (best-effort with diagnostics)
-    let interconnectors = [] as any[];
-    let icSource = "live";
-    const icAttempts = (icR as any).attempts || [];
-    if (icR.ok) {
-      interconnectors = parseInterconnectors(icR.data);
-      if (!interconnectors.length) {
-        const lkgFallback = await getLastInterconnectorsFromLKG();
-        if (lkgFallback.length) { interconnectors = lkgFallback; icSource = "lkg"; }
-        else { icSource = "none"; }
+    // Interconnectors resolution: summary -> outturn fallback -> LKG
+    let interconnectors: any[] = [];
+    let icSource: string = "none";
+    let icAttempts: any[] = [];
+
+    const anchor = { date: anchorDate, period: anchorSP };
+    const icSummary = await fetchICSummaryCandidates(anchor);
+    interconnectors = icSummary.data;
+    icSource = icSummary.source;
+    icAttempts = icSummary.attempts || [];
+
+    if (!interconnectors.length && bmrsRows.length) {
+      const derived = deriveICFromOutturnRows(bmrsRows);
+      if (derived.length) {
+        interconnectors = derived;
+        icSource = "outturn-fallback";
       }
-    } else {
-      interconnectors = await getLastInterconnectorsFromLKG();
-      icSource = interconnectors.length > 0 ? "lkg" : "none";
     }
+
+    if (!interconnectors.length) {
+      const lkgList = await getLastInterconnectorsFromLKG();
+      if (lkgList.length) { interconnectors = lkgList; icSource = "lkg"; }
+      else { icSource = "none"; }
+    }
+
     const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;
 
     const fullLive = variant.startsWith("outturn-") && windEmb.matched && solarEmb.matched;
@@ -763,7 +772,7 @@ Deno.serve(async (req) => {
         source: "BMRS HV + ESO + PV Live",
         isRealtime: true,
         variant,
-        interconnectorStatus: icSource === "live" ? "live" : icSource === "lkg" ? "cached" : "unavailable",
+        interconnectorStatus: icSource === "lkg" ? "cached" : ((icSource === "summary" || icSource === "outturn-fallback") ? "live" : "unavailable"),
         status: fullLive ? "live" : "live-partial",
       },
       asOf: {
@@ -796,11 +805,12 @@ Deno.serve(async (req) => {
             return Number.isFinite(p) ? Math.round((eff - p) / 60000) : null;
           })()
         },
-        icOk: icR.ok,
+        icOk: interconnectors.length > 0,
         icCount: interconnectors.length,
         icSource,
-        icAttempts: ((icR as any).attempts || []).map((a: any) => ({ url: a.url, variant: a.variant, status: a.status, reason: a.reason, contentType: a.contentType, preview: a.preview })),
+        icAttempts: (icAttempts || []).map((a: any) => ({ url: a.url, variant: a.variant || (a.url?.includes('/latest') ? 'summary-latest' : 'summary-bysp'), status: a.status, reason: a.reason, contentType: a.contentType || a.ctype, preview: a.preview })),
         icSample: interconnectors.slice(0, 3),
+        ic: { icOk: interconnectors.length > 0, icCount: interconnectors.length, icSource, attempts: (icAttempts || []).slice(0,6) },
       };
     }
 
