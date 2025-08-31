@@ -72,16 +72,69 @@ async function fetchBMRSGeneration(): Promise<StrictResult> {
   return { ok: false, url: variants[0].url, status: 502, reason: "all-variants-failed", variant: "exhausted" };
 }
 
-// Fetch ESO embedded wind from CKAN API
-async function fetchESOEmbeddedWind(settlementDate: string, settlementPeriod: number): Promise<StrictResult> {
-  const url = `https://api.neso.energy/api/3/action/datastore_search?resource_id=177f6fa4-ae49-4182-81ea-0c6b35f26ca6&filters={"SETTLEMENT_DATE":"${settlementDate}","SETTLEMENT_PERIOD":${settlementPeriod}}&limit=1`;
-  return await tryOnce(url, "eso-embedded-wind");
+// Embedded wind (ESO CKAN) with tolerant filters
+async function fetchEmbeddedWindESO(anchorDate: string, anchorSP: number): Promise<{ mw: number; matched: boolean; reason: string; row?: any; }> {
+  const filters = encodeURIComponent(JSON.stringify({
+    SETTLEMENT_DATE: anchorDate,
+    SETTLEMENT_PERIOD: anchorSP
+  }));
+  const urlExact = `https://api.neso.energy/api/3/action/datastore_search?resource_id=177f6fa4-ae49-4182-81ea-0c6b35f26ca6&filters=${filters}&limit=1`;
+  const urlLatest = `https://api.neso.energy/api/3/action/datastore_search?resource_id=177f6fa4-ae49-4182-81ea-0c6b35f26ca6&limit=1&sort=_id desc`;
+
+  async function fetchFirst(url: string) {
+    try {
+      const res = await fetch(url, { headers: HEADERS, cache: "no-store" });
+      const ct = res.headers.get("content-type") || "";
+      if (!ct.toLowerCase().includes("json")) return null;
+      const json = await res.json();
+      const rows = (json?.result?.records && Array.isArray(json.result.records)) ? json.result.records : (Array.isArray(json?.data) ? json.data : []);
+      return rows && rows.length ? rows[0] : null;
+    } catch { return null; }
+  }
+
+  const row = await fetchFirst(urlExact) || await fetchFirst(urlLatest);
+  if (!row) return { mw: 0, matched: false, reason: "no-ckan-row" };
+
+  const mwRaw = row.EMBEDDED_WIND_GENERATION ?? row.embedded_wind_generation ?? row.EMBEDDED_WIND_MW ?? row.value;
+  const mw = Number(mwRaw);
+  if (!Number.isFinite(mw) || mw < 0) return { mw: 0, matched: false, reason: "no-mw" };
+
+  const rDate = String(row.SETTLEMENT_DATE ?? row.settlement_date ?? "").slice(0,10);
+  const rSP = Number(row.SETTLEMENT_PERIOD ?? row.settlement_period);
+  const aligned = (rDate === anchorDate && Number.isFinite(rSP) && Math.abs(rSP - anchorSP) <= 1);
+
+  return { mw, matched: aligned, reason: aligned ? "aligned" : "tolerated", row };
 }
 
-// Fetch PV Live embedded solar
-async function fetchPVLiveSolar(): Promise<StrictResult> {
-  const url = "https://api.pvlive.uk/pvlive/api/v4/gsp/0?limit=4&format=json";
-  return await tryOnce(url, "pvlive-solar");
+// PV Live embedded solar — choose nearest prior half-hour within 45 minutes
+async function fetchEmbeddedSolarPVLive(anchorEndISO: string): Promise<{ mw: number; matched: boolean; reason: string; row?: any; }> {
+  try {
+    const url = "https://api.pvlive.uk/pvlive/api/v4/gsp/0?limit=6";
+    const res = await fetch(url, { headers: HEADERS, cache: "no-store" });
+    const ct = res.headers.get("content-type") || "";
+    if (!ct.toLowerCase().includes("json")) return { mw: 0, matched: false, reason: "no-pv" };
+    const json = await res.json();
+    const raw = Array.isArray(json?.data) ? json.data : [];
+    if (!raw.length) return { mw: 0, matched: false, reason: "no-pv" };
+
+    const rows = raw.map((r: any) => Array.isArray(r) ? { t: r[0], mw: r[1] } : { t: r.datetime_utc, mw: r.generation_mw });
+    const anchor = new Date(anchorEndISO).getTime();
+
+    let best: any = null, bestDt = -Infinity;
+    for (const r of rows) {
+      const dt = new Date(r.t).getTime();
+      if (dt <= anchor && dt > bestDt) { best = r; bestDt = dt; }
+    }
+    if (!best) return { mw: 0, matched: false, reason: "no-prior-row" };
+
+    const within45m = (anchor - bestDt) <= 45 * 60 * 1000;
+    const mw = Number(best.mw);
+    if (!Number.isFinite(mw) || mw < 0) return { mw: 0, matched: false, reason: "no-mw" };
+
+    return { mw, matched: within45m, reason: within45m ? "aligned" : "tolerated", row: { datetime_utc: new Date(bestDt).toISOString(), generation_mw: mw } };
+  } catch {
+    return { mw: 0, matched: false, reason: "pv-error" };
+  }
 }
 
 // Fetch interconnectors with dual host support
@@ -224,6 +277,48 @@ function datetimeToSP(datetimeUTC: string): { date: string, period: number } {
   return { date: dateStr, period };
 }
 
+// Dataset fallback: FUELHH stream
+async function fetchFUELHHStream(limit = 200): Promise<StrictResult> {
+  const hosts = [DATA_HOST, BMRS_HOST];
+  for (const host of hosts) {
+    const url = `https://${host}/bmrs/api/v1/datasets/FUELHH/stream?limit=${limit}&format=json`;
+    const r = await tryOnce(url, `dataset-fuelhh-stream@${host === DATA_HOST ? 'data' : 'bmrs'}`);
+    if (r.ok) return r;
+  }
+  return { ok: false, url: '', status: 502, reason: 'fuelhh-all-hosts-failed', variant: 'exhausted' } as any;
+}
+
+function parseFUELHHtoMW(rows: any[]) {
+  const latest = pickLatestSP(rows);
+  const hvByFuelMW: Record<string, number> = {};
+  let anchorSP = 0;
+  let anchorDate = "";
+  for (const r of latest) {
+    const fuelRaw = r.FUEL_TYPE ?? r.FUELTYPE ?? r.fuel ?? r.fuelType ?? r.name ?? "";
+    if (EXCLUDE.test(fuelRaw)) continue;
+
+    let mw: number;
+    const generation = Number(r.generation);
+    if (Number.isFinite(generation)) {
+      mw = generation;
+    } else {
+      const mwh = Number(r.MWH ?? r.ENERGY_MWH);
+      if (!Number.isFinite(mwh)) continue;
+      mw = mwh * 2; // 30-min energy → MW
+    }
+    if (!(mw > 0)) continue;
+
+    const fuelLabel = labelFuel(fuelRaw);
+    hvByFuelMW[fuelLabel] = (hvByFuelMW[fuelLabel] || 0) + mw;
+
+    if (!anchorSP) {
+      anchorSP = parseSettlementPeriod(r);
+      anchorDate = parseSettlementDate(r);
+    }
+  }
+  return { hvByFuelMW, anchorSP, anchorDate };
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -338,183 +433,153 @@ Deno.serve(async (req) => {
       demand: { ok: demandR.ok } 
     });
 
-    // If BMRS fails, serve LKG or stub
+    // Resolve BMRS HV baseline → dataset fallback → LKG
+    let hvByFuelMW: Record<string, number> = {};
+    let anchorSP = 0;
+    let anchorDate = "";
+    let variant = bmrsR.variant;
+
     if (!bmrsR.ok) {
-      if (DEBUG) dlog(true, "BMRS failed, trying LKG...");
-      const lkgResponse = await serveLKG("BMRS unavailable; served LKG");
-      if (lkgResponse) return lkgResponse;
-      
-      // Final stub if no LKG
-      const stub = { 
-        generationMix: [], 
-        interconnectors: [], 
-        totalGenerationMW: 0, 
-        totalDemandMW: 0, 
-        lastUpdated: new Date().toISOString(), 
-        dataFreshness: { source: "BMRS", isRealtime: false, note: "BMRS unavailable", variant: "stub" } 
-      };
-      if (DEBUG) stub.diagnostics = { reason: "bmrs-failed", variant: "stub" };
-      return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+      if (DEBUG) dlog(true, "BMRS failed, trying dataset fallback...");
+      const ds = await fetchFUELHHStream(200);
+      if (ds.ok) {
+        const rows = asArray(ds.data);
+        const parsed = parseFUELHHtoMW(rows);
+        hvByFuelMW = parsed.hvByFuelMW; anchorSP = parsed.anchorSP; anchorDate = parsed.anchorDate; variant = "dataset-fuelhh-stream";
+      } else {
+        const lkgResponse = await serveLKG("BMRS unavailable; served LKG");
+        if (lkgResponse) return lkgResponse;
+        const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "BMRS unavailable", variant: "stub" } };
+        if (DEBUG) (stub as any).diagnostics = { reason: "bmrs-failed", variant: "stub" };
+        return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+      }
+    } else {
+      // Parse BMRS HV generation
+      const bmrsRows = asArray(bmrsR.data);
+      const parsed = parseBMRSHVGeneration(bmrsRows);
+      hvByFuelMW = parsed.hvByFuelMW; anchorSP = parsed.anchorSP; anchorDate = parsed.anchorDate;
+      if (DEBUG) dlog(true, "BMRS HV parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, sample: Object.entries(hvByFuelMW).slice(0, 3) });
+
+      // Sanity band on HV baseline; if out of range, try dataset fallback
+      const hvTotalNow = Object.values(hvByFuelMW).reduce((s, v) => s + v, 0);
+      if (!(hvTotalNow >= 10000 && hvTotalNow <= 80000)) {
+        if (DEBUG) dlog(true, "HV baseline out of band, trying dataset fallback", { hvTotalNow });
+        const ds = await fetchFUELHHStream(200);
+        if (ds.ok) {
+          const rows = asArray(ds.data);
+          const p2 = parseFUELHHtoMW(rows);
+          const hvTotal2 = Object.values(p2.hvByFuelMW).reduce((s, v) => s + v, 0);
+          if (hvTotal2 >= 10000 && hvTotal2 <= 80000) {
+            hvByFuelMW = p2.hvByFuelMW; anchorSP = p2.anchorSP; anchorDate = p2.anchorDate; variant = "dataset-fuelhh-stream";
+          } else {
+            if (DEBUG) dlog(true, "Dataset fallback also implausible", { hvTotal2 });
+            const lkgResponse = await serveLKG("HV baseline implausible; served LKG");
+            if (lkgResponse) return lkgResponse;
+            const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: HV implausible" } };
+            return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+          }
+        } else {
+          const lkgResponse = await serveLKG("HV baseline implausible; served LKG");
+          if (lkgResponse) return lkgResponse;
+          const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: HV implausible" } };
+          return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+        }
+      }
     }
 
-    // Parse BMRS HV generation
-    const bmrsRows = asArray(bmrsR.data);
-    const { hvByFuelMW, anchorSP, anchorDate } = parseBMRSHVGeneration(bmrsRows);
-    
-    if (DEBUG) dlog(true, "BMRS HV parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, sample: Object.entries(hvByFuelMW).slice(0, 3) });
+    // Compute anchor end ISO for the settlement period
+    const anchorDateTime = new Date(`${anchorDate}T00:00:00Z`);
+    anchorDateTime.setUTCMinutes((anchorSP - 1) * 30 + 30);
+    const anchorEndISO = anchorDateTime.toISOString();
 
-    // Fetch embedded wind and solar aligned to anchor SP
-    const [esoR, pvR] = await Promise.all([
-      fetchESOEmbeddedWind(anchorDate, anchorSP),
-      fetchPVLiveSolar(),
+    // Optional embedded feeds with tolerance
+    const [windEmb, solarEmb] = await Promise.all([
+      fetchEmbeddedWindESO(anchorDate, anchorSP),
+      fetchEmbeddedSolarPVLive(anchorEndISO),
     ]);
 
-    let embeddedWindMW = 0;
-    let embeddedSolarMW = 0;
-    let debugSamples: any = {};
+    const embeddedWindMW = windEmb.matched ? windEmb.mw : 0;
+    const embeddedSolarMW = solarEmb.matched ? solarEmb.mw : 0;
 
-    // Parse ESO embedded wind
-    if (esoR.ok) {
-      const esoRows = asArray(esoR.data);
-      const esoRow = esoRows.find((r: any) => 
-        parseSettlementDate(r) === anchorDate && parseSettlementPeriod(r) === anchorSP
-      ) || esoRows[0];
-      
-      if (esoRow) {
-        embeddedWindMW = Number(esoRow.EMBEDDED_WIND_GENERATION || esoRow.embedded_wind_generation || 0);
-        if (DEBUG) debugSamples.esoWind = { 
-          SETTLEMENT_DATE: esoRow.SETTLEMENT_DATE, 
-          SETTLEMENT_PERIOD: esoRow.SETTLEMENT_PERIOD, 
-          EMBEDDED_WIND_GENERATION: embeddedWindMW 
-        };
-      }
-    }
-
-    // Parse PV Live solar - align to anchor SP end time
-    if (pvR.ok) {
-      const pvRows = asArray(pvR.data);
-      // Calculate target datetime for anchor SP (end of period)
-      const anchorDateTime = new Date(`${anchorDate}T00:00:00Z`);
-      anchorDateTime.setUTCMinutes((anchorSP - 1) * 30 + 30); // End of settlement period
-      const targetDatetime = anchorDateTime.toISOString();
-      
-      const pvRow = pvRows.find((r: any) => r.datetime_utc === targetDatetime) || pvRows[0];
-      if (pvRow) {
-        embeddedSolarMW = Number(pvRow.generation_mw || 0);
-        if (DEBUG) debugSamples.pvSolar = { 
-          datetime_utc: pvRow.datetime_utc, 
-          generation_mw: embeddedSolarMW 
-        };
-      }
-    }
-
-    if (DEBUG) dlog(true, "Embedded generation:", { embeddedWindMW, embeddedSolarMW, esoOk: esoR.ok, pvOk: pvR.ok });
-
-    // Calculate total generation
+    // Totals (MW discipline)
     const hvTotalMW = Object.values(hvByFuelMW).reduce((sum, mw) => sum + mw, 0);
     const totalGenerationMW = hvTotalMW + embeddedWindMW + embeddedSolarMW;
 
     // Build generation mix
-    const generationMix = [];
-    
-    // Add BMRS HV fuels
+    const generationMix: any[] = [];
     for (const [fuel, mw] of Object.entries(hvByFuelMW)) {
       if (mw > 0) {
-        generationMix.push({
-          name: fuel,
-          value: Math.round(mw),
-          percentage: totalGenerationMW ? Math.round((mw / totalGenerationMW) * 100) : 0,
-          color: COLORS[fuel] || "#6b7280",
-        });
+        generationMix.push({ name: fuel, value: Math.round(mw), percentage: 0, color: COLORS[fuel] || "#6b7280" });
       }
     }
+    if (embeddedWindMW > 0) generationMix.push({ name: "LV Wind", value: Math.round(embeddedWindMW), percentage: 0, color: COLORS["LV Wind"] || "#059669" });
+    if (embeddedSolarMW > 0) generationMix.push({ name: "Solar", value: Math.round(embeddedSolarMW), percentage: 0, color: COLORS["Solar"] || "#fbbf24" });
 
-    // Add embedded wind if present
-    if (embeddedWindMW > 0) {
-      generationMix.push({
-        name: "LV Wind",
-        value: Math.round(embeddedWindMW),
-        percentage: totalGenerationMW ? Math.round((embeddedWindMW / totalGenerationMW) * 100) : 0,
-        color: COLORS["LV Wind"] || "#059669",
-      });
+    // Compute percentages now that total is final
+    for (const item of generationMix) {
+      item.percentage = totalGenerationMW ? Math.round((item.value / totalGenerationMW) * 100) : 0;
     }
-
-    // Add embedded solar if present
-    if (embeddedSolarMW > 0) {
-      generationMix.push({
-        name: "Solar",
-        value: Math.round(embeddedSolarMW),
-        percentage: totalGenerationMW ? Math.round((embeddedSolarMW / totalGenerationMW) * 100) : 0,
-        color: COLORS["Solar"] || "#fbbf24",
-      });
-    }
-
-    // Sort by value descending
     generationMix.sort((a, b) => b.value - a.value);
 
-    // Validate percentage sum
     const percentageSum = generationMix.reduce((sum, item) => sum + item.percentage, 0);
     if (Math.abs(percentageSum - 100) > 1.0) {
       dlog(true, `Warning: Percentage sum deviation: ${percentageSum}% (expected 100%)`);
     }
 
     // Interconnectors & Demand (best-effort)
-    let interconnectors = [];
+    let interconnectors = [] as any[];
     let icSource = "live";
     if (icR.ok) {
       interconnectors = parseInterconnectors(icR.data);
       icSource = "live";
     } else {
-      // Fallback to last known interconnectors
       interconnectors = await getLastInterconnectorsFromLKG();
       icSource = interconnectors.length > 0 ? "lkg" : "none";
     }
-    
     const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;
+
+    const fullLive = variant.startsWith("outturn-") && windEmb.matched && solarEmb.matched;
 
     const payload: any = {
       generationMix,
       interconnectors,
       totalGenerationMW: Math.round(totalGenerationMW),
-      totalDemandMW: Math.round(totalDemand * 1000), // Convert GW to MW
+      totalDemandMW: Math.round(totalDemand * 1000),
       units: "MW",
       lastUpdated: new Date().toISOString(),
-      dataFreshness: { 
-        source: "BMRS HV + ESO + PV Live", 
-        isRealtime: true, 
-        variant: bmrsR.variant,
-        interconnectorStatus: icSource === "live" ? "live" : icSource === "lkg" ? "cached" : "unavailable"
+      dataFreshness: {
+        source: "BMRS HV + ESO + PV Live",
+        isRealtime: true,
+        variant,
+        interconnectorStatus: icSource === "live" ? "live" : icSource === "lkg" ? "cached" : "unavailable",
+        status: fullLive ? "live" : "live-partial",
       },
       asOf: {
         settlementDate: anchorDate,
         settlementPeriod: anchorSP,
-        percentageSum
+        endISO: anchorEndISO,
+        percentageSum,
       }
     };
 
     if (DEBUG) {
-      payload.diagnostics = { 
-        variant: bmrsR.variant,
+      payload.diagnostics = {
+        variant,
         hvFuels: Object.keys(hvByFuelMW).length,
         hvTotalMW,
-        embeddedWindMW,
-        embeddedSolarMW,
         totalGenerationMW,
-        percentageSum,
-        bmrsSample: pickLatestSP(bmrsRows).slice(0, 2),
-        ...debugSamples,
+        anchor: { date: anchorDate, sp: anchorSP, endISO: anchorEndISO },
+        wind: { matched: windEmb.matched, reason: windEmb.reason, mw: windEmb.mw },
+        solar: { matched: solarEmb.matched, reason: solarEmb.reason, mw: solarEmb.mw },
         icOk: icR.ok,
-        icHost: (icR as any).host,
         icCount: interconnectors.length,
-        icSource
+        icSource,
       };
     }
 
     await insertLKG(payload.lastUpdated, payload, totalGenerationMW);
 
-    return new Response(JSON.stringify(payload), { 
-      headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } 
-    });
+    return new Response(JSON.stringify(payload), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
 
   } catch (error) {
     console.error('Error in energy-data function:', error);
