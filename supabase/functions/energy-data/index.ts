@@ -110,44 +110,69 @@ async function fetchEmbeddedWindESO(anchorDate: string, anchorSP: number): Promi
 async function fetchEmbeddedSolarPVLive(anchorEndISO: string): Promise<{ mw: number; matched: boolean; reason: string; row?: any; }>
 {
   try {
-    const url = "https://api.pvlive.uk/pvlive/api/v4/gsp/0?limit=6";
-    const res = await fetch(url, { headers: HEADERS, cache: "no-store" });
-    const ct = res.headers.get("content-type") || "";
-    const text = await res.text();
+    const anchor = new Date(anchorEndISO);
+    const start = new Date(anchor.getTime() - 3 * 60 * 60 * 1000);
 
-    // Non-JSON response
-    if (!ct.toLowerCase().includes("json")) {
-      return { mw: 0, matched: false, reason: "pv-non-json" , row: { note: "non-json", content_type: ct, sample: text.slice(0, 400) } } as any;
+    const urlWindowed = `https://api.pvlive.uk/pvlive/api/v4/gsp/0?period=HH&start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
+    const urlFallback = `https://api.pvlive.uk/pvlive/api/v4/gsp/0?period=HH&updated_gmt_to=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
+
+    async function fetchPV(url: string, tag: string) {
+      try {
+        const res = await fetch(url, { headers: HEADERS, cache: "no-store" });
+        const ct = res.headers.get("content-type") || "";
+        const text = await res.text();
+        if (!ct.toLowerCase().includes("json")) {
+          return { ok: false, reason: "pv-non-json", ct, sample: text.slice(0, 400), url, tag };
+        }
+        let json: any;
+        try {
+          json = JSON.parse(text);
+        } catch {
+          return { ok: false, reason: "pv-json-parse-failed", sample: text.slice(0, 400), url, tag, ct };
+        }
+        const raw = Array.isArray(json?.data) ? json.data : [];
+        const rows = raw.map((r: any) => Array.isArray(r) ? { t: r[0], mw: r[1] } : { t: r.datetime_utc, mw: r.generation_mw });
+        return { ok: true, rows, url, tag, ct };
+      } catch {
+        return { ok: false, reason: "pv-fetch-error", url, tag };
+      }
     }
 
-    // Try to parse JSON safely
-    let json: any;
-    try {
-      json = JSON.parse(text);
-    } catch {
-      return { mw: 0, matched: false, reason: "pv-json-parse-failed", row: { sample: text.slice(0, 400) } } as any;
+    let r: any = await fetchPV(urlWindowed, "windowed");
+    if (!(r.ok && r.rows && r.rows.length)) {
+      const r2: any = await fetchPV(urlFallback, "updated_gmt_to");
+      if (r2.ok && r2.rows && r2.rows.length) r = r2;
+      else {
+        const err: any = r.ok ? r2 : r;
+        if (err.reason === "pv-non-json") {
+          return { mw: 0, matched: false, reason: "pv-non-json", row: { note: "non-json", content_type: err.ct, sample: err.sample, url: err.url, source: err.tag } } as any;
+        }
+        if (err.reason === "pv-json-parse-failed") {
+          return { mw: 0, matched: false, reason: "pv-json-parse-failed", row: { sample: err.sample, url: err.url, source: err.tag } } as any;
+        }
+        return { mw: 0, matched: false, reason: (err.reason || "pv-no-data"), row: { url: err.url, source: err.tag } } as any;
+      }
     }
 
-    const raw = Array.isArray(json?.data) ? json.data : [];
-    if (!raw.length) return { mw: 0, matched: false, reason: "pv-no-data" };
+    const rows: any[] = r.rows as any[];
+    const anchorMs = anchor.getTime();
 
-    // Normalise rows (either array format or object format)
-    const rows = raw.map((r: any) => Array.isArray(r) ? { t: r[0], mw: r[1] } : { t: r.datetime_utc, mw: r.generation_mw });
-    const anchor = new Date(anchorEndISO).getTime();
-
-    // Choose the nearest prior half-hour within 45 minutes
     let best: any = null, bestDt = -Infinity;
-    for (const r of rows) {
-      const dt = new Date(r.t).getTime();
-      if (dt <= anchor && dt > bestDt) { best = r; bestDt = dt; }
+    for (const row of rows) {
+      const dt = new Date(row.t).getTime();
+      if (Number.isFinite(dt) && dt <= anchorMs && dt > bestDt) { best = row; bestDt = dt; }
     }
-    if (!best) return { mw: 0, matched: false, reason: "pv-no-prior-row" };
+    if (!best) {
+      return { mw: 0, matched: false, reason: "pv-no-prior-row", row: { url: r.url, source: r.tag } };
+    }
 
-    const within45m = (anchor - bestDt) <= 45 * 60 * 1000;
     const mw = Number(best.mw);
-    if (!Number.isFinite(mw) || mw < 0) return { mw: 0, matched: false, reason: "pv-no-mw" };
+    if (!Number.isFinite(mw) || mw < 0) {
+      return { mw: 0, matched: false, reason: "pv-no-mw", row: { url: r.url, source: r.tag } };
+    }
 
-    return { mw, matched: within45m, reason: within45m ? "aligned" : "tolerated", row: { datetime_utc: new Date(bestDt).toISOString(), generation_mw: mw } };
+    const within45m = (anchorMs - bestDt) <= 45 * 60 * 1000;
+    return { mw, matched: within45m, reason: within45m ? "aligned" : "tolerated", row: { datetime_utc: new Date(bestDt).toISOString(), generation_mw: mw, source: r.tag, url: r.url } };
   } catch {
     return { mw: 0, matched: false, reason: "pv-error" };
   }
