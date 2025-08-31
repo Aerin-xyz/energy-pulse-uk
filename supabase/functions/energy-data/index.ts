@@ -137,8 +137,17 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
           return { ok: false, reason: "pv-json-parse-failed", sample: text.slice(0, 400), url, tag, ct, status, headers: headersObj };
         }
         const raw = Array.isArray(json?.data) ? json.data : [];
-        const rows = raw.map((r: any) => Array.isArray(r) ? { t: r[0], mw: r[1] } : { t: r.datetime_utc, mw: r.generation_mw });
-        dlog(debug, "PV Live ok", { tag, url, status, ct, rows: rows.length });
+        // Normalize various PV Live shapes to { t: ISOString, mw: number }
+        const normalize = (r: any) => {
+          if (Array.isArray(r)) {
+            return { t: r[0] ?? r.t ?? r.datetime_utc ?? r.datetime_gmt, mw: r[1] ?? r.generation_mw ?? r.value ?? r.mw };
+          }
+          const t = r.datetime_utc ?? r.datetime_gmt ?? r.gmt_datetime ?? r.timestamp_utc ?? r.ts ?? r.t;
+          const mw = r.generation_mw ?? r.generation ?? r.value ?? r.mw ?? r.power_mw;
+          return { t, mw };
+        };
+        const rows = raw.map(normalize).filter((r: any) => r && r.t !== undefined);
+        dlog(debug, "PV Live ok", { tag, url, status, ct, rows: rows.length, sample: rows.slice(0, 3) });
         return { ok: true, rows, url, tag, ct, status };
       } catch (e) {
         dlog(debug, "PV Live fetch error", { tag, url, error: String(e) });
@@ -178,22 +187,31 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
     const rows: any[] = r.rows as any[];
     const anchorMs = anchor.getTime();
 
-    let best: any = null, bestDt = -Infinity;
-    for (const row of rows) {
+    // Enrich with parsed timestamps and numeric MW
+    const enriched = rows.map((row: any) => {
       const dt = new Date(row.t).getTime();
-      if (Number.isFinite(dt) && dt <= anchorMs && dt > bestDt) { best = row; bestDt = dt; }
-    }
-    if (!best) {
-      return { mw: 0, matched: false, reason: "pv-no-prior-row", row: { url: r.url, source: r.tag } };
+      const mwNum = Number(row.mw);
+      return { ...row, _dt: dt, _mw: mwNum };
+    });
+
+    // Prefer rows with finite MW >= 0 and prior to anchor
+    const candidates = enriched.filter((x: any) => Number.isFinite(x._dt) && x._dt <= anchorMs && Number.isFinite(x._mw) && x._mw >= 0);
+
+    let best: any = null;
+    if (candidates.length) {
+      best = candidates.reduce((a: any, b: any) => (a._dt > b._dt ? a : b));
+    } else {
+      // Fallback: check if there are any prior rows at all
+      const prior = enriched.filter((x: any) => Number.isFinite(x._dt) && x._dt <= anchorMs);
+      if (!prior.length) {
+        return { mw: 0, matched: false, reason: "pv-no-prior-row", row: { url: r.url, source: r.tag } };
+      }
+      return { mw: 0, matched: false, reason: "pv-no-finite-mw", row: { url: r.url, source: r.tag, priorRows: prior.length } };
     }
 
-    const mw = Number(best.mw);
-    if (!Number.isFinite(mw) || mw < 0) {
-      return { mw: 0, matched: false, reason: "pv-no-mw", row: { url: r.url, source: r.tag } };
-    }
-
-    const within45m = (anchorMs - bestDt) <= 45 * 60 * 1000;
-    return { mw, matched: within45m, reason: within45m ? "aligned" : "tolerated", row: { datetime_utc: new Date(bestDt).toISOString(), generation_mw: mw, source: r.tag, url: r.url } };
+    const within45m = (anchorMs - best._dt) <= 45 * 60 * 1000;
+    const mw = Math.max(0, best._mw);
+    return { mw, matched: within45m, reason: within45m ? "aligned" : "tolerated", row: { datetime_utc: new Date(best._dt).toISOString(), generation_mw: mw, source: r.tag, url: r.url } };
   } catch {
     return { mw: 0, matched: false, reason: "pv-error" };
   }
