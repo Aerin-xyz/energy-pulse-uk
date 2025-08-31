@@ -145,13 +145,14 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
       return { mw: 0, matched: false, reason: 'pv-no-finite-rows', debug: { columns: cols } };
     }
 
-    // Pick the latest point at or before the anchor end, with ≤45 min tolerance
-    const anchor = new Date(anchorEndISO).getTime();
+    // Pick the latest point at or before the period end, with ≤45 min tolerance (clamped to now)
+    const periodEnd = new Date(anchorEndISO).getTime();
+    const effectiveAnchor = Math.min(periodEnd, Date.now());
     let best: { t: string; mw: number } | null = null;
     let bestTs = -Infinity;
     for (const r of rows) {
       const ts = new Date(r.t).getTime();
-      if (Number.isFinite(ts) && ts <= anchor && ts > bestTs) {
+      if (Number.isFinite(ts) && ts <= periodEnd && ts > bestTs) {
         best = r; bestTs = ts;
       }
     }
@@ -160,7 +161,7 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
       return { mw: 0, matched: false, reason: 'pv-no-prior-match', debug: { columns: cols } };
     }
 
-    const within45m = (anchor - bestTs) <= 45 * 60 * 1000;
+    const within45m = (effectiveAnchor - bestTs) <= 45 * 60 * 1000;
     const out = { mw: best.mw, matched: within45m, reason: within45m ? 'aligned' : 'tolerated', debug: { picked: best, columns: cols } };
     if (debug) dlog(true, 'PV Live parsed', { rows: rows.length, picked: out.debug?.picked, columns: cols });
     return out;
@@ -608,7 +609,20 @@ Deno.serve(async (req) => {
         totalGenerationMW,
         anchor: { date: anchorDate, sp: anchorSP, endISO: anchorEndISO },
         wind: { matched: windEmb.matched, reason: windEmb.reason, mw: windEmb.mw },
-        solar: { reason: solarEmb.reason, matched: solarEmb.matched, mw: solarEmb.mw, columns: (solarEmb as any).debug?.columns ?? null, picked: (solarEmb as any).debug?.picked ?? null },
+        solar: { 
+          reason: solarEmb.reason, 
+          matched: solarEmb.matched, 
+          mw: solarEmb.mw, 
+          columns: (solarEmb as any).debug?.columns ?? null, 
+          picked: (solarEmb as any).debug?.picked ?? null,
+          anchorEndISO,
+          effectiveAnchorISO: new Date(Math.min(Date.parse(anchorEndISO), Date.now())).toISOString(),
+          deltaMinutes: (() => {
+            const p = Date.parse(((solarEmb as any).debug?.picked?.t) ?? "");
+            const eff = Math.min(Date.parse(anchorEndISO), Date.now());
+            return Number.isFinite(p) ? Math.round((eff - p) / 60000) : null;
+          })()
+        },
         icOk: icR.ok,
         icCount: interconnectors.length,
         icSource,
