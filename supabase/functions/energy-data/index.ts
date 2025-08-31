@@ -267,18 +267,22 @@ const num = (x: any) => {
 // ---- Interconnector helpers ----
 const IC_CODE_MAP: Record<string, { name: string; country: string; capacity?: number }> = {
   // France cluster
-  INTFR:  { name: "IFA",       country: "France",             capacity: 2000 },
-  INTFR2: { name: "IFA2",      country: "France",             capacity: 1000 },
-  INTELEC:{ name: "ElecLink",  country: "France",             capacity: 1000 },
+  INTFR:   { name: "IFA",          country: "France",             capacity: 2000 },
+  INTFR2:  { name: "IFA2",         country: "France",             capacity: 1000 },
+  INTELEC: { name: "ElecLink",     country: "France",             capacity: 1000 },
+  INTIFA2: { name: "IFA2",         country: "France",             capacity: 1000 }, // alt code seen in wild
   // Belgium
-  INTNEM: { name: "Nemo Link", country: "Belgium",            capacity: 1000 },
+  INTNEM:  { name: "Nemo Link",    country: "Belgium",            capacity: 1000 },
+  INTBEL:  { name: "Nemo Link",    country: "Belgium",            capacity: 1000 }, // legacy code variant
   // Netherlands
-  INTNED: { name: "BritNed",   country: "Netherlands",        capacity: 1000 },
+  INTNED:  { name: "BritNed",      country: "Netherlands",        capacity: 1000 },
   // Norway
-  INTNSL: { name: "NSL",       country: "Norway",             capacity: 1400 },
+  INTNSL:  { name: "NSL",          country: "Norway",             capacity: 1400 },
   // Ireland
-  INTEW:  { name: "EWIC",      country: "Ireland",            capacity: 500  },
-  INTIRL: { name: "Moyle",     country: "Northern Ireland",   capacity: 500  },
+  INTEW:   { name: "EWIC",         country: "Ireland",            capacity: 500  },
+  INTIRL:  { name: "Moyle",        country: "Northern Ireland",   capacity: 500  },
+  // Denmark
+  INTDK1:  { name: "Viking Link",  country: "Denmark",            capacity: 1400 },
 };
 
 function isInterconnectorCode(code?: string) {
@@ -323,6 +327,31 @@ function deriveICFromOutturnRows(rows: any[]) {
     const existing = byCode.get(code);
     const flow = (existing?.flow ?? 0) + mw;
     byCode.set(code, { code, name: map.name, country: map.country, flow, capacity: map.capacity ?? null });
+  }
+  return Array.from(byCode.values());
+}
+
+// Variant-aware derivation: insights rows are already MW; dataset rows are MWh per 30m → MW via ×2
+function deriveICFromOutturnRowsVariant(rows: any[], variant: "insights" | "dataset") {
+  const byCode = new Map<string, { code: string; name: string; country: string; flow: number; capacity: number | null }>();
+  for (const r of rows) {
+    const code = String(r.fuelType ?? r.FUEL_TYPE ?? r.FUELTYPE ?? r.code ?? "").toUpperCase();
+    if (!isInterconnectorCode(code)) continue;
+    const def = IC_CODE_MAP[code];
+    if (!def) continue;
+
+    let mw: number | null = null;
+    if (variant === "insights") {
+      mw = Number(r.generation ?? r.generationMW ?? r.GENERATION_MW ?? r.value ?? r.mw);
+    } else {
+      const mwh = Number(r.MWH ?? r.ENERGY_MWH ?? r.energy ?? r.VALUE ?? r.value);
+      mw = Number.isFinite(mwh) ? mwh * 2 : Number(r.generation ?? r.GENERATION_MW ?? NaN);
+    }
+    if (!Number.isFinite(mw)) continue;
+
+    const prev = byCode.get(code);
+    const flow = (prev?.flow ?? 0) + (mw as number);
+    byCode.set(code, { code, name: def.name, country: def.country, flow, capacity: def.capacity ?? null });
   }
   return Array.from(byCode.values());
 }
@@ -639,20 +668,25 @@ Deno.serve(async (req) => {
     });
 
     // Resolve BMRS HV baseline → dataset fallback → LKG
-    let hvByFuelMW: Record<string, number> = {};
-    let anchorSP = 0;
-    let anchorDate = "";
-    let variant = bmrsR.variant;
-    let bmrsRows: any[] = [];
+let hvByFuelMW: Record<string, number> = {};
+let anchorSP = 0;
+let anchorDate = "";
+let variant = bmrsR.variant;
+let bmrsRows: any[] = [];
+let outturnVariant: "insights" | "dataset" = "insights";
+let latestOutturnRows: any[] = [];
+outturnVariant: "insights" | "dataset";
 
     if (!bmrsR.ok) {
       if (DEBUG) dlog(true, "BMRS failed, trying dataset fallback...");
-      const ds = await fetchFUELHHStream(200);
-      if (ds.ok) {
-        const rows = asArray(ds.data);
-        const parsed = parseFUELHHtoMW(rows);
-        hvByFuelMW = parsed.hvByFuelMW; anchorSP = parsed.anchorSP; anchorDate = parsed.anchorDate; variant = "dataset-fuelhh-stream";
-      } else {
+const ds = await fetchFUELHHStream(200);
+if (ds.ok) {
+  const rows = asArray(ds.data);
+  const parsed = parseFUELHHtoMW(rows);
+  hvByFuelMW = parsed.hvByFuelMW; anchorSP = parsed.anchorSP; anchorDate = parsed.anchorDate; variant = "dataset-fuelhh-stream";
+  latestOutturnRows = pickLatestSP(rows);
+  outturnVariant = "dataset";
+} else {
         const lkgResponse = await serveLKG("BMRS unavailable; served LKG");
         if (lkgResponse) return lkgResponse;
         const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "BMRS unavailable", variant: "stub" } };
@@ -661,23 +695,27 @@ Deno.serve(async (req) => {
       }
     } else {
       // Parse BMRS HV generation
-      bmrsRows = asArray(bmrsR.data);
-      const parsed = parseBMRSHVGeneration(bmrsRows);
-      hvByFuelMW = parsed.hvByFuelMW; anchorSP = parsed.anchorSP; anchorDate = parsed.anchorDate;
-      if (DEBUG) dlog(true, "BMRS HV parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, sample: Object.entries(hvByFuelMW).slice(0, 3) });
+bmrsRows = asArray(bmrsR.data);
+const parsed = parseBMRSHVGeneration(bmrsRows);
+hvByFuelMW = parsed.hvByFuelMW; anchorSP = parsed.anchorSP; anchorDate = parsed.anchorDate;
+latestOutturnRows = pickLatestSP(bmrsRows);
+outturnVariant = "insights";
+if (DEBUG) dlog(true, "BMRS HV parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, sample: Object.entries(hvByFuelMW).slice(0, 3) });
 
       // Sanity band on HV baseline; if out of range, try dataset fallback
       const hvTotalNow = Object.values(hvByFuelMW).reduce((s, v) => s + v, 0);
       if (!(hvTotalNow >= 10000 && hvTotalNow <= 80000)) {
         if (DEBUG) dlog(true, "HV baseline out of band, trying dataset fallback", { hvTotalNow });
-        const ds = await fetchFUELHHStream(200);
-        if (ds.ok) {
-          const rows = asArray(ds.data);
-          const p2 = parseFUELHHtoMW(rows);
-          const hvTotal2 = Object.values(p2.hvByFuelMW).reduce((s, v) => s + v, 0);
-          if (hvTotal2 >= 10000 && hvTotal2 <= 80000) {
-            hvByFuelMW = p2.hvByFuelMW; anchorSP = p2.anchorSP; anchorDate = p2.anchorDate; variant = "dataset-fuelhh-stream";
-          } else {
+const ds = await fetchFUELHHStream(200);
+if (ds.ok) {
+  const rows = asArray(ds.data);
+  const p2 = parseFUELHHtoMW(rows);
+  const hvTotal2 = Object.values(p2.hvByFuelMW).reduce((s, v) => s + v, 0);
+  if (hvTotal2 >= 10000 && hvTotal2 <= 80000) {
+    hvByFuelMW = p2.hvByFuelMW; anchorSP = p2.anchorSP; anchorDate = p2.anchorDate; variant = "dataset-fuelhh-stream";
+    latestOutturnRows = pickLatestSP(rows);
+    outturnVariant = "dataset";
+  } else {
             if (DEBUG) dlog(true, "Dataset fallback also implausible", { hvTotal2 });
             const lkgResponse = await serveLKG("HV baseline implausible; served LKG");
             if (lkgResponse) return lkgResponse;
@@ -732,30 +770,37 @@ Deno.serve(async (req) => {
       dlog(true, `Warning: Percentage sum deviation: ${percentageSum}% (expected 100%)`);
     }
 
-    // Interconnectors resolution: summary -> outturn fallback -> LKG
-    let interconnectors: any[] = [];
-    let icSource: string = "none";
-    let icAttempts: any[] = [];
+// Interconnectors resolution: summary -> outturn fallback -> LKG
+let interconnectors: any[] = [];
+let icSource: string = "none";
+let icAttempts: any[] = [];
+let interconnectorStatus: "live" | "fallback-outturn" | "cached" | "none" = "none";
 
-    const anchor = { date: anchorDate, period: anchorSP };
-    const icSummary = await fetchICSummaryCandidates(anchor);
-    interconnectors = icSummary.data;
-    icSource = icSummary.source;
-    icAttempts = icSummary.attempts || [];
+const anchor = { date: anchorDate, period: anchorSP };
+const icSummary = await fetchICSummaryCandidates(anchor);
+icAttempts = icSummary.attempts || [];
+if (Array.isArray(icSummary.data) && icSummary.data.length) {
+  interconnectors = icSummary.data;
+  icSource = "summary";
+  interconnectorStatus = "live";
+}
 
-    if (!interconnectors.length && bmrsRows.length) {
-      const derived = deriveICFromOutturnRows(bmrsRows);
-      if (derived.length) {
-        interconnectors = derived;
-        icSource = "outturn-fallback";
-      }
-    }
+// Outturn fallback using the exact rows used for HV (variant-aware)
+if (!interconnectors.length && latestOutturnRows.length) {
+  const derived = deriveICFromOutturnRowsVariant(latestOutturnRows, outturnVariant);
+  if (derived.length) {
+    interconnectors = derived;
+    icSource = `outturn-${outturnVariant}`;
+    interconnectorStatus = "fallback-outturn";
+  }
+}
 
-    if (!interconnectors.length) {
-      const lkgList = await getLastInterconnectorsFromLKG();
-      if (lkgList.length) { interconnectors = lkgList; icSource = "lkg"; }
-      else { icSource = "none"; }
-    }
+// LKG carry-forward if still empty
+if (!interconnectors.length) {
+  const lkgList = await getLastInterconnectorsFromLKG();
+  if (lkgList.length) { interconnectors = lkgList; icSource = "lkg"; interconnectorStatus = "cached"; }
+  else { icSource = "none"; interconnectorStatus = "none"; }
+}
 
     const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;
 
@@ -768,13 +813,13 @@ Deno.serve(async (req) => {
       totalDemandMW: Math.round(totalDemand * 1000),
       units: "MW",
       lastUpdated: new Date().toISOString(),
-      dataFreshness: {
-        source: "BMRS HV + ESO + PV Live",
-        isRealtime: true,
-        variant,
-        interconnectorStatus: icSource === "lkg" ? "cached" : ((icSource === "summary" || icSource === "outturn-fallback") ? "live" : "unavailable"),
-        status: fullLive ? "live" : "live-partial",
-      },
+dataFreshness: {
+  source: "BMRS HV + ESO + PV Live",
+  isRealtime: true,
+  variant,
+  interconnectorStatus,
+  status: fullLive ? "live" : "live-partial",
+},
       asOf: {
         settlementDate: anchorDate,
         settlementPeriod: anchorSP,
@@ -783,38 +828,49 @@ Deno.serve(async (req) => {
       }
     };
 
-    if (DEBUG) {
-      payload.diagnostics = {
-        variant,
-        hvFuels: Object.keys(hvByFuelMW).length,
-        hvTotalMW,
-        totalGenerationMW,
-        anchor: { date: anchorDate, sp: anchorSP, endISO: anchorEndISO },
-        wind: { matched: windEmb.matched, reason: windEmb.reason, mw: windEmb.mw },
-        solar: { 
-          reason: solarEmb.reason, 
-          matched: solarEmb.matched, 
-          mw: solarEmb.mw, 
-          columns: (solarEmb as any).debug?.columns ?? null, 
-          picked: (solarEmb as any).debug?.picked ?? null,
-          anchorEndISO,
-          effectiveAnchorISO: new Date(Math.min(Date.parse(anchorEndISO), Date.now())).toISOString(),
-          deltaMinutes: (() => {
-            const p = Date.parse(((solarEmb as any).debug?.picked?.t) ?? "");
-            const eff = Math.min(Date.parse(anchorEndISO), Date.now());
-            return Number.isFinite(p) ? Math.round((eff - p) / 60000) : null;
-          })()
-        },
-        icOk: interconnectors.length > 0,
-        icCount: interconnectors.length,
-        icSource,
-        icAttempts: (icAttempts || []).map((a: any) => ({ url: a.url, variant: a.variant || (a.url?.includes('/latest') ? 'summary-latest' : 'summary-bysp'), status: a.status, reason: a.reason, contentType: a.contentType || a.ctype, preview: a.preview })),
-        icSample: interconnectors.slice(0, 3),
-        ic: { icOk: interconnectors.length > 0, icCount: interconnectors.length, icSource, attempts: (icAttempts || []).slice(0,6) },
-      };
-    }
+if (DEBUG) {
+  payload.diagnostics = {
+    variant,
+    hvFuels: Object.keys(hvByFuelMW).length,
+    hvTotalMW,
+    totalGenerationMW,
+    anchor: { date: anchorDate, sp: anchorSP, endISO: anchorEndISO },
+    wind: { matched: windEmb.matched, reason: windEmb.reason, mw: windEmb.mw },
+    solar: { 
+      reason: solarEmb.reason, 
+      matched: solarEmb.matched, 
+      mw: solarEmb.mw, 
+      columns: (solarEmb as any).debug?.columns ?? null, 
+      picked: (solarEmb as any).debug?.picked ?? null,
+      anchorEndISO,
+      effectiveAnchorISO: new Date(Math.min(Date.parse(anchorEndISO), Date.now())).toISOString(),
+      deltaMinutes: (() => {
+        const p = Date.parse(((solarEmb as any).debug?.picked?.t) ?? "");
+        const eff = Math.min(Date.parse(anchorEndISO), Date.now());
+        return Number.isFinite(p) ? Math.round((eff - p) / 60000) : null;
+      })()
+    },
+    icOk: interconnectors.length > 0,
+    icCount: interconnectors.length,
+    icSource,
+    icStatus: interconnectorStatus,
+    icAttempts: (icAttempts || []).map((a: any) => ({ url: a.url, variant: a.variant || (a.url?.includes('/latest') ? 'summary-latest' : 'summary-bysp'), status: a.status, reason: a.reason, contentType: a.contentType || a.ctype, preview: a.preview })),
+    icSample: interconnectors.slice(0, 3),
+    ic: { icOk: interconnectors.length > 0, icCount: interconnectors.length, icSource, status: interconnectorStatus, attempts: (icAttempts || []).slice(0,6) },
+  };
+}
 
-    await insertLKG(payload.lastUpdated, payload, totalGenerationMW);
+// Ensure we never regress LKG: carry forward ICs if empty before persisting
+if (!Array.isArray(payload.interconnectors) || payload.interconnectors.length === 0) {
+  try {
+    const lastIC = await getLastInterconnectorsFromLKG();
+    if (lastIC && lastIC.length) {
+      payload.interconnectors = lastIC;
+      payload.dataFreshness = { ...(payload.dataFreshness || {}), interconnectorStatus: "cached" };
+    }
+  } catch {}
+}
+await insertLKG(payload.lastUpdated, payload, totalGenerationMW);
 
     return new Response(JSON.stringify(payload), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
 
