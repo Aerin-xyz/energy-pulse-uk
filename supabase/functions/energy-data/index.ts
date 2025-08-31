@@ -109,65 +109,87 @@ async function fetchEmbeddedWindESO(anchorDate: string, anchorSP: number): Promi
 // PV Live embedded solar — column-aware parser with 45m tolerance
 async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Promise<{ mw: number; matched: boolean; reason: string; debug?: { picked?: any; columns?: any } }>
 {
-  try {
-    const url = 'https://api.pvlive.uk/pvlive/api/v4/gsp/0?limit=12';
-    const res = await fetch(url, { headers: HEADERS, cache: 'no-store' });
-    const ct = res.headers.get('content-type') || '';
-    if (!ct.toLowerCase().includes('json')) {
-      return { mw: 0, matched: false, reason: 'pv-no-json' };
-    }
-    const resp: any = await res.json();
+  const candidates = [
+    { url: 'https://api.pvlive.uk/pvlive/api/v4/gsp/0?limit=12', tag: 'pvlive-uk-v4' },
+    { url: 'https://api0.solar.sheffield.ac.uk/pvlive/v3/gsp/0?limit=12', tag: 'sheffield-api0-v3' },
+    { url: 'https://api1.solar.sheffield.ac.uk/pvlive/v3/gsp/0?limit=12', tag: 'sheffield-api1-v3' },
+    { url: 'https://api2.solar.sheffield.ac.uk/pvlive/v3/gsp/0?limit=12', tag: 'sheffield-api2-v3' },
+  ];
 
-    // Normalise into { t, mw }
-    let rows: Array<{ t: string; mw: number }> = [];
-    const data = Array.isArray(resp?.data) ? resp.data : (Array.isArray(resp) ? resp : []);
-    const cols = Array.isArray(resp?.columns) ? resp.columns : null;
+  let sawJson = false;
+  let lastCols: any = null;
 
-    if (cols && data.length && Array.isArray(data[0])) {
-      const dtIdx = cols.indexOf('datetime_utc') >= 0 ? cols.indexOf('datetime_utc') : (cols.indexOf('datetime_gmt') >= 0 ? cols.indexOf('datetime_gmt') : -1);
-      const mwIdx = cols.indexOf('generation_mw') >= 0 ? cols.indexOf('generation_mw') : -1;
-      if (dtIdx === -1 || mwIdx === -1) {
-        return { mw: 0, matched: false, reason: 'pv-missing-columns', debug: { columns: cols } };
+  for (const c of candidates) {
+    try {
+      const res = await fetch(c.url, { headers: HEADERS, cache: 'no-store' });
+      const ct = res.headers.get('content-type') || '';
+      const text = await res.text();
+      if (debug) dlog(true, 'PV Live attempt', { tag: c.tag, status: res.status, contentType: ct, preview: text.slice(0, 180) });
+      if (!ct.toLowerCase().includes('json') || !res.ok) continue;
+      sawJson = true;
+      const resp: any = JSON.parse(text);
+
+      // Normalise into { t, mw }
+      let rows: Array<{ t: string; mw: number }> = [];
+      const data = Array.isArray(resp?.data) ? resp.data : (Array.isArray(resp) ? resp : []);
+      const cols = Array.isArray(resp?.columns) ? resp.columns : null;
+      lastCols = cols;
+
+      if (cols && data.length && Array.isArray(data[0])) {
+        const idxDtUtc = cols.indexOf('datetime_utc');
+        const idxDtGmt = cols.indexOf('datetime_gmt');
+        const dtIdx = idxDtUtc >= 0 ? idxDtUtc : (idxDtGmt >= 0 ? idxDtGmt : -1);
+        const mwIdx = cols.indexOf('generation_mw');
+        if (dtIdx === -1 || mwIdx === -1) {
+          if (debug) dlog(true, 'PV Live missing columns', { tag: c.tag, columns: cols });
+          continue;
+        }
+        rows = data
+          .map((arr: any[]) => ({ t: arr[dtIdx], mw: num(arr[mwIdx]) }))
+          .filter(r => Number.isFinite(r.mw) && typeof r.t === 'string');
+      } else {
+        rows = data
+          .map((r: any) => ({
+            t: r?.datetime_utc ?? r?.datetime_gmt ?? r?.t,
+            mw: num(r?.generation_mw ?? r?.mw ?? r?.value),
+          }))
+          .filter(r => Number.isFinite(r.mw) && typeof r.t === 'string');
       }
-      rows = data
-        .map((arr: any[]) => ({ t: arr[dtIdx], mw: num(arr[mwIdx]) }))
-        .filter(r => Number.isFinite(r.mw) && typeof r.t === 'string');
-    } else {
-      rows = data
-        .map((r: any) => ({
-          t: r?.datetime_utc ?? r?.datetime_gmt ?? r?.t,
-          mw: num(r?.generation_mw ?? r?.mw ?? r?.value),
-        }))
-        .filter(r => Number.isFinite(r.mw) && typeof r.t === 'string');
-    }
 
-    if (!rows.length) {
-      return { mw: 0, matched: false, reason: 'pv-no-finite-rows', debug: { columns: cols } };
-    }
-
-    // Pick the latest point at or before the period end, with ≤45 min tolerance (clamped to now)
-    const periodEnd = new Date(anchorEndISO).getTime();
-    const effectiveAnchor = Math.min(periodEnd, Date.now());
-    let best: { t: string; mw: number } | null = null;
-    let bestTs = -Infinity;
-    for (const r of rows) {
-      const ts = new Date(r.t).getTime();
-      if (Number.isFinite(ts) && ts <= periodEnd && ts > bestTs) {
-        best = r; bestTs = ts;
+      if (!rows.length) {
+        if (debug) dlog(true, 'PV Live no finite rows', { tag: c.tag, columns: cols });
+        continue;
       }
-    }
 
-    if (!best) {
-      return { mw: 0, matched: false, reason: 'pv-no-prior-match', debug: { columns: cols } };
-    }
+      // Pick the latest point at or before the period end, with ≤45 min tolerance (clamped to now)
+      const periodEnd = new Date(anchorEndISO).getTime();
+      const effectiveAnchor = Math.min(periodEnd, Date.now());
+      let best: { t: string; mw: number } | null = null;
+      let bestTs = -Infinity;
+      for (const r of rows) {
+        const ts = new Date(r.t).getTime();
+        if (Number.isFinite(ts) && ts <= periodEnd && ts > bestTs) {
+          best = r; bestTs = ts;
+        }
+      }
 
-    const within45m = (effectiveAnchor - bestTs) <= 45 * 60 * 1000;
-    const out = { mw: best.mw, matched: within45m, reason: within45m ? 'aligned' : 'tolerated', debug: { picked: best, columns: cols } };
-    if (debug) dlog(true, 'PV Live parsed', { rows: rows.length, picked: out.debug?.picked, columns: cols });
-    return out;
-  } catch {
-    return { mw: 0, matched: false, reason: 'pv-error' };
+      if (!best) {
+        if (debug) dlog(true, 'PV Live no prior match', { tag: c.tag });
+        continue;
+      }
+
+      const within45m = (effectiveAnchor - bestTs) <= 45 * 60 * 1000;
+      const out = { mw: best.mw, matched: within45m, reason: within45m ? 'aligned' : 'tolerated', debug: { picked: best, columns: lastCols } };
+      if (debug) dlog(true, 'PV Live parsed', { tag: c.tag, rows: rows.length, picked: out.debug?.picked, columns: lastCols });
+      return out;
+    } catch (e) {
+      if (debug) dlog(true, 'PV Live error', { tag: c.tag, error: (e as Error)?.message });
+      continue;
+    }
   }
+
+  // If all attempts failed
+  return { mw: 0, matched: false, reason: sawJson ? 'pv-unexpected-shape' : 'pv-no-json', debug: { columns: lastCols } };
 }
 
 // Fetch interconnectors with dual host support
