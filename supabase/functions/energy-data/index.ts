@@ -113,8 +113,8 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string): Promise<{ mw: num
     const anchor = new Date(anchorEndISO);
     const start = new Date(anchor.getTime() - 3 * 60 * 60 * 1000);
 
-    const urlWindowed = `https://api.pvlive.uk/pvlive/api/v4/gsp/0?period=HH&start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
-    const urlFallback = `https://api.pvlive.uk/pvlive/api/v4/gsp/0?period=HH&updated_gmt_to=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
+    const urlWindowed = `https://api.pvlive.uk/pvlive/api/v4/gsp/0?period=30&start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
+    const urlFallback = `https://api.pvlive.uk/pvlive/api/v4/gsp/0?period=30&updated_gmt_to=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
 
     async function fetchPV(url: string, tag: string) {
       try {
