@@ -32,6 +32,11 @@ interface EnergyData {
     note?: string;
     interconnectorStatus?: 'live' | 'cached' | 'unavailable';
   };
+  asOf?: {
+    settlementDate?: string;
+    settlementPeriod?: number;
+    percentageSum?: number;
+  };
 }
 
 interface BMRSResponse {
@@ -144,6 +149,7 @@ export const useEnergyData = () => {
         totalDemandMW: energyData.totalDemandMW || (energyData.totalDemand || 0) * 1000,
         lastUpdated: new Date(energyData.lastUpdated),
         dataFreshness: energyData.dataFreshness,
+        asOf: energyData.asOf,
       });
 
       // Calculate next update time (5 minutes from now)

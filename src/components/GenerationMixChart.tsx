@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, LabelList } from 'recharts';
 import { formatGWfromMW } from '@/lib/utils';
 
@@ -12,6 +13,17 @@ interface GenerationData {
 interface GenerationMixChartProps {
   data: GenerationData[];
   totalGenerationMW: number;
+  dataFreshness?: {
+    source?: string;
+    isRealtime?: boolean;
+    variant?: string;
+    interconnectorStatus?: string;
+  };
+  asOf?: {
+    settlementDate?: string;
+    settlementPeriod?: number;
+    percentageSum?: number;
+  };
 }
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -50,11 +62,29 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-export const GenerationMixChart = ({ data, totalGenerationMW }: GenerationMixChartProps) => {
+export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asOf }: GenerationMixChartProps) => {
+  // Format settlement period time
+  const formatSPTime = (sp: number) => {
+    const startMinutes = (sp - 1) * 30;
+    const hours = Math.floor(startMinutes / 60);
+    const minutes = startMinutes % 60;
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
   return (
     <Card>
       <CardHeader>
-        <CardTitle>UK Generation Mix</CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle>UK Generation Mix</CardTitle>
+          <Badge variant={dataFreshness?.isRealtime ? "default" : "secondary"}>
+            {dataFreshness?.isRealtime ? "Live" : "Delayed (LKG)"}
+          </Badge>
+        </div>
+        {asOf?.settlementPeriod && (
+          <p className="text-sm text-muted-foreground">
+            As of {asOf.settlementPeriod && formatSPTime(asOf.settlementPeriod)} SP {asOf.settlementPeriod}
+            {asOf.settlementDate && ` on ${new Date(asOf.settlementDate).toLocaleDateString()}`}
+          </p>
+        )}
       </CardHeader>
       <CardContent>
         <div className="flex flex-col lg:flex-row items-center gap-8">
@@ -88,7 +118,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW }: GenerationMixCha
                   {formatGWfromMW(totalGenerationMW)}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  GW
+                  Generation (incl. embedded)
                 </div>
               </div>
             </div>
