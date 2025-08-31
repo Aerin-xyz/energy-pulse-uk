@@ -110,10 +110,10 @@ async function fetchEmbeddedWindESO(anchorDate: string, anchorSP: number): Promi
 async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Promise<{ mw: number; matched: boolean; reason: string; debug?: { picked?: any; columns?: any } }>
 {
   const candidates = [
-    { url: 'https://api.pvlive.uk/pvlive/api/v4/gsp/0?limit=12', tag: 'pvlive-uk-v4' },
-    { url: 'https://api0.solar.sheffield.ac.uk/pvlive/v3/gsp/0?limit=12', tag: 'sheffield-api0-v3' },
-    { url: 'https://api1.solar.sheffield.ac.uk/pvlive/v3/gsp/0?limit=12', tag: 'sheffield-api1-v3' },
-    { url: 'https://api2.solar.sheffield.ac.uk/pvlive/v3/gsp/0?limit=12', tag: 'sheffield-api2-v3' },
+    { url: 'https://api.pvlive.uk/pvlive/api/v4/gsp/0?data_format=json', tag: 'pvlive-uk-v4' },
+    { url: 'https://api0.solar.shef.ac.uk/pvlive/v3/gsp/0', tag: 'sheffield-api0-v3' },
+    { url: 'https://api1.solar.shef.ac.uk/pvlive/v3/gsp/0', tag: 'sheffield-api1-v3' },
+    { url: 'https://api2.solar.shef.ac.uk/pvlive/v3/gsp/0', tag: 'sheffield-api2-v3' },
   ];
 
   let sawJson = false;
