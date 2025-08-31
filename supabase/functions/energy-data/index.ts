@@ -107,29 +107,45 @@ async function fetchEmbeddedWindESO(anchorDate: string, anchorSP: number): Promi
 }
 
 // PV Live embedded solar — choose nearest prior half-hour within 45 minutes
-async function fetchEmbeddedSolarPVLive(anchorEndISO: string): Promise<{ mw: number; matched: boolean; reason: string; row?: any; }> {
+async function fetchEmbeddedSolarPVLive(anchorEndISO: string): Promise<{ mw: number; matched: boolean; reason: string; row?: any; }>
+{
   try {
     const url = "https://api.pvlive.uk/pvlive/api/v4/gsp/0?limit=6";
     const res = await fetch(url, { headers: HEADERS, cache: "no-store" });
     const ct = res.headers.get("content-type") || "";
-    if (!ct.toLowerCase().includes("json")) return { mw: 0, matched: false, reason: "no-pv" };
-    const json = await res.json();
-    const raw = Array.isArray(json?.data) ? json.data : [];
-    if (!raw.length) return { mw: 0, matched: false, reason: "no-pv" };
+    const text = await res.text();
 
+    // Non-JSON response
+    if (!ct.toLowerCase().includes("json")) {
+      return { mw: 0, matched: false, reason: "pv-non-json" , row: { note: "non-json", content_type: ct, sample: text.slice(0, 400) } } as any;
+    }
+
+    // Try to parse JSON safely
+    let json: any;
+    try {
+      json = JSON.parse(text);
+    } catch {
+      return { mw: 0, matched: false, reason: "pv-json-parse-failed", row: { sample: text.slice(0, 400) } } as any;
+    }
+
+    const raw = Array.isArray(json?.data) ? json.data : [];
+    if (!raw.length) return { mw: 0, matched: false, reason: "pv-no-data" };
+
+    // Normalise rows (either array format or object format)
     const rows = raw.map((r: any) => Array.isArray(r) ? { t: r[0], mw: r[1] } : { t: r.datetime_utc, mw: r.generation_mw });
     const anchor = new Date(anchorEndISO).getTime();
 
+    // Choose the nearest prior half-hour within 45 minutes
     let best: any = null, bestDt = -Infinity;
     for (const r of rows) {
       const dt = new Date(r.t).getTime();
       if (dt <= anchor && dt > bestDt) { best = r; bestDt = dt; }
     }
-    if (!best) return { mw: 0, matched: false, reason: "no-prior-row" };
+    if (!best) return { mw: 0, matched: false, reason: "pv-no-prior-row" };
 
     const within45m = (anchor - bestDt) <= 45 * 60 * 1000;
     const mw = Number(best.mw);
-    if (!Number.isFinite(mw) || mw < 0) return { mw: 0, matched: false, reason: "no-mw" };
+    if (!Number.isFinite(mw) || mw < 0) return { mw: 0, matched: false, reason: "pv-no-mw" };
 
     return { mw, matched: within45m, reason: within45m ? "aligned" : "tolerated", row: { datetime_utc: new Date(bestDt).toISOString(), generation_mw: mw } };
   } catch {
@@ -513,7 +529,7 @@ Deno.serve(async (req) => {
       }
     }
     if (embeddedWindMW > 0) generationMix.push({ name: "LV Wind", value: Math.round(embeddedWindMW), percentage: 0, color: COLORS["LV Wind"] || "#059669" });
-    if (embeddedSolarMW > 0) generationMix.push({ name: "Solar", value: Math.round(embeddedSolarMW), percentage: 0, color: COLORS["Solar"] || "#fbbf24" });
+    generationMix.push({ name: "Solar", value: Math.round(embeddedSolarMW), percentage: 0, color: COLORS["Solar"] || "#fbbf24" });
 
     // Compute percentages now that total is final
     for (const item of generationMix) {
@@ -570,7 +586,7 @@ Deno.serve(async (req) => {
         totalGenerationMW,
         anchor: { date: anchorDate, sp: anchorSP, endISO: anchorEndISO },
         wind: { matched: windEmb.matched, reason: windEmb.reason, mw: windEmb.mw },
-        solar: { matched: solarEmb.matched, reason: solarEmb.reason, mw: solarEmb.mw },
+        solar: { matched: solarEmb.matched, reason: solarEmb.reason, mw: solarEmb.mw, row: (solarEmb as any).row, raw: (solarEmb as any).raw, contentType: (solarEmb as any).contentType },
         icOk: icR.ok,
         icCount: interconnectors.length,
         icSource,
