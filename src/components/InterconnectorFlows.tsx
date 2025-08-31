@@ -89,7 +89,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                       {interconnector.country} ({interconnector.name})
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      Capacity: {interconnector.capacity} MW
+                      Capacity: {interconnector.capacity && interconnector.capacity > 0 ? `${interconnector.capacity} MW` : 'n/a'}
                     </div>
                   </div>
                 </div>
@@ -105,9 +105,11 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                       {flowValue.toFixed(0)} MW
                     </span>
                   </div>
-                  <div className="text-sm text-muted-foreground">
-                    {utilization.toFixed(1)}% utilization
-                  </div>
+                  {interconnector.capacity && interconnector.capacity > 0 && (
+                    <div className="text-sm text-muted-foreground">
+                      {utilization.toFixed(1)}% utilization
+                    </div>
+                  )}
                 </div>
               </div>
             );

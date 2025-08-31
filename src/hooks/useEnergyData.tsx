@@ -140,6 +140,15 @@ export const useEnergyData = () => {
         diagnostics: energyData.diagnostics
       });
 
+      // Debug summary for interconnectors
+      console.info('Interconnector debug:', {
+        status: energyData.dataFreshness?.interconnectorStatus,
+        count: energyData.diagnostics?.icCount || 0,
+        ok: energyData.diagnostics?.icOk,
+        source: energyData.diagnostics?.icSource,
+        firstAttempt: energyData.diagnostics?.icAttempts?.[0]?.variant || 'none'
+      });
+
       setData({
         generationMix: energyData.generationMix,
         interconnectors: energyData.interconnectors,
