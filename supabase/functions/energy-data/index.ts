@@ -264,6 +264,116 @@ const num = (x: any) => {
   return Number.isFinite(n) ? n : NaN;
 };
 
+// ---- Interconnector helpers ----
+const IC_CODE_MAP: Record<string, { name: string; country: string; capacity?: number }> = {
+  // France cluster
+  INTFR:  { name: "IFA",       country: "France",             capacity: 2000 },
+  INTFR2: { name: "IFA2",      country: "France",             capacity: 1000 },
+  INTELEC:{ name: "ElecLink",  country: "France",             capacity: 1000 },
+  // Belgium
+  INTNEM: { name: "Nemo Link", country: "Belgium",            capacity: 1000 },
+  // Netherlands
+  INTNED: { name: "BritNed",   country: "Netherlands",        capacity: 1000 },
+  // Norway
+  INTNSL: { name: "NSL",       country: "Norway",             capacity: 1400 },
+  // Ireland
+  INTEW:  { name: "EWIC",      country: "Ireland",            capacity: 500  },
+  INTIRL: { name: "Moyle",     country: "Northern Ireland",   capacity: 500  },
+};
+
+function isInterconnectorCode(code?: string) {
+  if (!code) return false;
+  const u = code.toUpperCase();
+  return u.startsWith("INT") && (u in IC_CODE_MAP);
+}
+
+// Normalize an “interconnector summary” row from BMRS
+function normalizeICSummaryRow(r: any) {
+  const code = (r.fuelType || r.code || r.icCode || r.InterconnectorCode || "").toUpperCase();
+  const map = IC_CODE_MAP[code];
+  if (!map) return null;
+
+  const mw =
+    num(r.flow_mw) ?? num(r.flow) ?? num(r.mw) ?? num(r.value) ?? num(r.generation);
+  if (!Number.isFinite(mw)) return null;
+
+  return {
+    code,
+    name: map.name,
+    country: map.country,
+    flow: mw, // MW; positive = import to GB
+    capacity: map.capacity ?? num(r.capacity) ?? null,
+  };
+}
+
+// Fallback: derive interconnectors from Generation Outturn Summary rows
+function deriveICFromOutturnRows(rows: any[]) {
+  const byCode = new Map<string, { code: string; name: string; country: string; flow: number; capacity: number | null }>();
+  for (const r of rows) {
+    const code = String(r.fuelType || (r.FUEL_TYPE ?? r.FUELTYPE) || "").toUpperCase();
+    if (!isInterconnectorCode(code)) continue;
+
+    const map = IC_CODE_MAP[code];
+    if (!map) continue;
+
+    const mw =
+      num(r.generation) ?? num(r.GENERATION_MW) ?? num(r.mw) ?? num(r.MWH) ?? NaN;
+    if (!Number.isFinite(mw)) continue;
+
+    const existing = byCode.get(code);
+    const flow = (existing?.flow ?? 0) + mw;
+    byCode.set(code, { code, name: map.name, country: map.country, flow, capacity: map.capacity ?? null });
+  }
+  return Array.from(byCode.values());
+}
+
+// Strict JSON fetch that rejects HTML shells
+async function safeGetJson(url: string): Promise<{ ok: boolean; status: number; contentType: string; json?: any; reason?: string }> {
+  try {
+    const res = await fetch(url, { headers: HEADERS, cache: "no-store", redirect: "manual" as RequestRedirect });
+    const contentType = res.headers.get("content-type") || "";
+    const text = await res.text();
+    if (!contentType.toLowerCase().includes("json")) {
+      return { ok: false, status: res.status, contentType, reason: "non-json" };
+    }
+    if (!res.ok) {
+      return { ok: false, status: res.status, contentType, reason: "http-error" };
+    }
+    try {
+      const json = JSON.parse(text);
+      return { ok: true, status: res.status, contentType, json };
+    } catch {
+      return { ok: false, status: res.status, contentType, reason: "json-parse-failed" };
+    }
+  } catch (e) {
+    return { ok: false, status: 0, contentType: "", reason: (e as Error)?.message || "fetch-error" };
+  }
+}
+
+async function fetchICSummaryCandidates(anchor: { date: string; period: number }) {
+  const hosts = [
+    "https://data.elexon.co.uk",
+    "https://bmrs.elexon.co.uk",
+  ];
+  const urls: string[] = [];
+  for (const host of hosts) {
+    urls.push(`${host}/bmrs/api/v1/balancing/interconnector/summary/latest?format=json`);
+    urls.push(`${host}/bmrs/api/v1/balancing/interconnector/summary?settlementDate=${encodeURIComponent(anchor.date)}&settlementPeriod=${anchor.period}&format=json`);
+  }
+  const attempts: any[] = [];
+  for (const url of urls) {
+    const res = await safeGetJson(url);
+    attempts.push({ url, ok: res.ok, status: res.status, ctype: res.contentType, reason: res.reason });
+    if (res.ok && Array.isArray(res.json?.data)) {
+      const parsed = res.json.data
+        .map(normalizeICSummaryRow)
+        .filter(Boolean);
+      if (parsed.length) return { data: parsed, source: "summary", attempts };
+    }
+  }
+  return { data: [] as any[], source: "none", attempts };
+}
+
 // Settlement period helpers
 function parseSettlementPeriod(r: any) {
   return Number(r.SETTLEMENT_PERIOD || r.settlementPeriod || r.SettlementPeriod || 0);
