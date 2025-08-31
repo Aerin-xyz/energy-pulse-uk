@@ -107,50 +107,71 @@ async function fetchEmbeddedWindESO(anchorDate: string, anchorSP: number): Promi
 }
 
 // PV Live embedded solar — choose nearest prior half-hour within 45 minutes
-async function fetchEmbeddedSolarPVLive(anchorEndISO: string): Promise<{ mw: number; matched: boolean; reason: string; row?: any; }>
+async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Promise<{ mw: number; matched: boolean; reason: string; row?: any; }>
 {
   try {
     const anchor = new Date(anchorEndISO);
     const start = new Date(anchor.getTime() - 3 * 60 * 60 * 1000);
 
-    const urlWindowed = `https://api.pvlive.uk/pvlive/api/v4/gsp/0?period=30&start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
-    const urlFallback = `https://api.pvlive.uk/pvlive/api/v4/gsp/0?period=30&updated_gmt_to=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
+    const base = `https://api.pvlive.uk/pvlive/api/v4/gsp/0`;
+    const urlWindowed = `${base}?start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
+    const urlFallback = `${base}?updated_gmt_to=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
 
     async function fetchPV(url: string, tag: string) {
       try {
         const res = await fetch(url, { headers: HEADERS, cache: "no-store" });
         const ct = res.headers.get("content-type") || "";
+        const status = res.status;
+        const headersObj: Record<string, string> = {};
+        try { res.headers.forEach((v, k) => { headersObj[k] = v; }); } catch {}
         const text = await res.text();
         if (!ct.toLowerCase().includes("json")) {
-          return { ok: false, reason: "pv-non-json", ct, sample: text.slice(0, 400), url, tag };
+          dlog(debug, "PV Live non-json", { tag, url, status, ct });
+          return { ok: false, reason: "pv-non-json", ct, sample: text.slice(0, 400), url, tag, status, headers: headersObj };
         }
         let json: any;
         try {
           json = JSON.parse(text);
         } catch {
-          return { ok: false, reason: "pv-json-parse-failed", sample: text.slice(0, 400), url, tag, ct };
+          dlog(debug, "PV Live JSON parse failed", { tag, url, status, ct });
+          return { ok: false, reason: "pv-json-parse-failed", sample: text.slice(0, 400), url, tag, ct, status, headers: headersObj };
         }
         const raw = Array.isArray(json?.data) ? json.data : [];
         const rows = raw.map((r: any) => Array.isArray(r) ? { t: r[0], mw: r[1] } : { t: r.datetime_utc, mw: r.generation_mw });
-        return { ok: true, rows, url, tag, ct };
-      } catch {
+        dlog(debug, "PV Live ok", { tag, url, status, ct, rows: rows.length });
+        return { ok: true, rows, url, tag, ct, status };
+      } catch (e) {
+        dlog(debug, "PV Live fetch error", { tag, url, error: String(e) });
         return { ok: false, reason: "pv-fetch-error", url, tag };
       }
     }
 
+    // Try without period first
     let r: any = await fetchPV(urlWindowed, "windowed");
     if (!(r.ok && r.rows && r.rows.length)) {
       const r2: any = await fetchPV(urlFallback, "updated_gmt_to");
       if (r2.ok && r2.rows && r2.rows.length) r = r2;
       else {
-        const err: any = r.ok ? r2 : r;
-        if (err.reason === "pv-non-json") {
-          return { mw: 0, matched: false, reason: "pv-non-json", row: { note: "non-json", content_type: err.ct, sample: err.sample, url: err.url, source: err.tag } } as any;
+        // Try alternate period format PT30M
+        const urlWindowedAlt = `${base}?period=PT30M&start=${encodeURIComponent(start.toISOString())}&end=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
+        const urlFallbackAlt = `${base}?period=PT30M&updated_gmt_to=${encodeURIComponent(anchor.toISOString())}&data_format=json`;
+        let r3: any = await fetchPV(urlWindowedAlt, "windowed@PT30M");
+        if (!(r3.ok && r3.rows && r3.rows.length)) {
+          const r4: any = await fetchPV(urlFallbackAlt, "updated_gmt_to@PT30M");
+          if (r4.ok && r4.rows && r4.rows.length) r3 = r4;
         }
-        if (err.reason === "pv-json-parse-failed") {
-          return { mw: 0, matched: false, reason: "pv-json-parse-failed", row: { sample: err.sample, url: err.url, source: err.tag } } as any;
+        if (r3 && r3.ok && r3.rows && r3.rows.length) {
+          r = r3;
+        } else {
+          const err: any = r.ok ? (r2.ok ? r3 : r2) : r;
+          if (err?.reason === "pv-non-json") {
+            return { mw: 0, matched: false, reason: "pv-non-json", row: { note: "non-json", content_type: err.ct, status: err.status, headers: err.headers, sample: err.sample, url: err.url, source: err.tag } } as any;
+          }
+          if (err?.reason === "pv-json-parse-failed") {
+            return { mw: 0, matched: false, reason: "pv-json-parse-failed", row: { status: err.status, headers: err.headers, sample: err.sample, url: err.url, source: err.tag } } as any;
+          }
+          return { mw: 0, matched: false, reason: (err?.reason || "pv-no-data"), row: { url: err?.url, source: err?.tag } } as any;
         }
-        return { mw: 0, matched: false, reason: (err.reason || "pv-no-data"), row: { url: err.url, source: err.tag } } as any;
       }
     }
 
@@ -536,7 +557,7 @@ Deno.serve(async (req) => {
     // Optional embedded feeds with tolerance
     const [windEmb, solarEmb] = await Promise.all([
       fetchEmbeddedWindESO(anchorDate, anchorSP),
-      fetchEmbeddedSolarPVLive(anchorEndISO),
+      fetchEmbeddedSolarPVLive(anchorEndISO, DEBUG),
     ]);
 
     const embeddedWindMW = windEmb.matched ? windEmb.mw : 0;
