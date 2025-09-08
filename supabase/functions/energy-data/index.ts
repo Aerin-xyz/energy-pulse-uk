@@ -193,9 +193,176 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
   return { mw: 0, matched: false, reason: sawJson ? 'pv-unexpected-shape' : 'pv-no-json', debug: { columns: lastCols } };
 }
 
-// Fetch interconnectors with multi-candidate strategy and detailed attempts
-async function fetchInterconnectorsEnhanced(debug = false): Promise<{ ok: boolean; data?: any; attempts: any[] }> {
+/**
+ * Fetches ENTSO-E physical flows for interconnectors.
+ * Returns flow data by interconnector code if successful.
+ */
+async function fetchEntsoePhysicalFlows(): Promise<{
+  flows?: Record<string, number>;
+  ok: boolean;
+  reason?: string;
+  status?: number;
+}> {
+  const apiToken = Deno.env.get('ENTSOE_API_TOKEN');
+  if (!apiToken) {
+    return { ok: false, reason: 'no-api-token' };
+  }
+
+  try {
+    // Get current datetime in ENTSO-E format (YYYYMMDDHHMM)
+    const now = new Date();
+    now.setMinutes(now.getMinutes() - 60); // 1 hour ago for data availability
+    const dateFrom = now.toISOString().slice(0, 16).replace(/[-:T]/g, '').slice(0, 12);
+    const dateTo = now.toISOString().slice(0, 16).replace(/[-:T]/g, '').slice(0, 12);
+
+    // ENTSO-E domain codes for GB interconnectors
+    const borders = [
+      { from: '10YGB----------A', to: '10YFR-RTE------C', codes: ['INTFR', 'INTIFA2', 'INTELEC'] }, // GB-FR
+      { from: '10YGB----------A', to: '10YBE----------2', codes: ['INTNEM'] }, // GB-BE  
+      { from: '10YGB----------A', to: '10YNL----------L', codes: ['INTNED'] }, // GB-NL
+      { from: '10YGB----------A', to: '10YNO-0--------C', codes: ['INTNSL'] }, // GB-NO
+      { from: '10YGB----------A', to: '10Y1001A1001A59C', codes: ['INTIRL'] }, // GB-IE (Moyle to NI)
+    ];
+
+    const flows: Record<string, number> = {};
+    let totalAttempts = 0;
+    let successfulAttempts = 0;
+
+    for (const border of borders) {
+      try {
+        totalAttempts++;
+        const url = `https://web-api.tp.entsoe.eu/api?` +
+          `securityToken=${apiToken}&` +
+          `documentType=A11&` +
+          `in_Domain=${border.from}&` +
+          `out_Domain=${border.to}&` +
+          `periodStart=${dateFrom}&` +
+          `periodEnd=${dateTo}`;
+
+        const response = await fetch(url, {
+          headers: { 'Accept': 'application/xml' },
+          signal: AbortSignal.timeout(10000)
+        });
+
+        if (!response.ok) {
+          continue;
+        }
+
+        const xmlText = await response.text();
+        
+        // Simple XML parsing for TimeSeries data
+        const timeSeriesMatch = xmlText.match(/<TimeSeries>[\s\S]*?<\/TimeSeries>/);
+        if (!timeSeriesMatch) {
+          continue;
+        }
+
+        // Extract the latest flow value
+        const quantityMatches = [...xmlText.matchAll(/<quantity>(-?\d+(?:\.\d+)?)<\/quantity>/g)];
+        if (quantityMatches.length === 0) {
+          continue;
+        }
+
+        // Get the most recent value
+        const latestFlow = parseFloat(quantityMatches[quantityMatches.length - 1][1]);
+        
+        // Distribute flow proportionally across interconnectors for this border
+        const flowPerIC = latestFlow / border.codes.length;
+        border.codes.forEach(code => {
+          flows[code] = Math.round(flowPerIC);
+        });
+
+        successfulAttempts++;
+
+      } catch (e) {
+        continue;
+      }
+    }
+
+    if (successfulAttempts > 0) {
+      return { flows, ok: true };
+    }
+
+    return { ok: false, reason: 'no-successful-borders' };
+
+  } catch (e) {
+    return { ok: false, reason: e.message };
+  }
+}
+
+/**
+ * Fetches interconnector data with enhanced strategies and fallbacks.
+ * Priority: ENTSO-E → BMRS summary → Outturn-derived → LKG
+ */
+async function fetchInterconnectorsEnhanced(debug = false): Promise<{
+  ok: boolean; 
+  data?: any; 
+  attempts: any[];
+  source?: string;
+  status?: string;
+  interconnectors?: any[];
+}> {
   const attempts: any[] = [];
+
+  // Strategy 1: ENTSO-E Physical Flows (Primary - Real-time)
+  if (debug) dlog(true, "Trying ENTSO-E physical flows...");
+  const entsoeResult = await fetchEntsoePhysicalFlows();
+  
+  if (entsoeResult.ok && entsoeResult.flows) {
+    // Convert ENTSO-E flows to interconnector format
+    const interconnectors: any[] = [];
+    
+    // Map flows to our interconnector structure
+    const icMap: Record<string, { name: string; country: string; capacity: number }> = {
+      'INTFR': { name: 'IFA', country: 'France', capacity: 2000 },
+      'INTIFA2': { name: 'IFA2', country: 'France', capacity: 1000 },
+      'INTELEC': { name: 'ElecLink', country: 'France', capacity: 1000 },
+      'INTNEM': { name: 'Nemo Link', country: 'Belgium', capacity: 1000 },
+      'INTNED': { name: 'BritNed', country: 'Netherlands', capacity: 1000 },
+      'INTNSL': { name: 'NSL', country: 'Norway', capacity: 1400 },
+      'INTIRL': { name: 'Moyle', country: 'Northern Ireland', capacity: 500 },
+      'INTEW': { name: 'EWIC', country: 'Ireland', capacity: 500 }
+    };
+
+    Object.entries(entsoeResult.flows).forEach(([code, flow]) => {
+      const ic = icMap[code];
+      if (ic) {
+        interconnectors.push({
+          code,
+          name: ic.name,
+          country: ic.country,
+          flow: flow,
+          capacity: ic.capacity
+        });
+      }
+    });
+
+    // Add any missing interconnectors with zero flow (EWIC not in ENTSO-E)
+    Object.entries(icMap).forEach(([code, ic]) => {
+      if (!entsoeResult.flows![code]) {
+        interconnectors.push({
+          code,
+          name: ic.name,
+          country: ic.country,
+          flow: 0,
+          capacity: ic.capacity
+        });
+      }
+    });
+
+    if (debug) dlog(true, `ENTSO-E success: ${interconnectors.length} interconnectors`);
+    return {
+      ok: true,
+      data: interconnectors,
+      attempts,
+      source: "entso-e-physical",
+      status: "live",
+      interconnectors
+    };
+  }
+
+  if (debug) dlog(true, `ENTSO-E failed: ${entsoeResult.reason}, falling back to BMRS...`);
+
+  // Strategy 2: BMRS Summary (existing logic)
   const hosts = [DATA_HOST, BMRS_HOST];
   const candidates: { url: string; variant: string }[] = [];
 
@@ -205,9 +372,6 @@ async function fetchInterconnectorsEnhanced(debug = false): Promise<{ ok: boolea
     candidates.push(
       { url: withFormat(`${base}/balancing/interconnector/summary/latest`), variant: `ic-summary-latest@${tag}` },
       { url: withFormat(`${base}/balancing/interconnector/summary`),       variant: `ic-summary@${tag}` },
-      // Potential dataset streams (may 404; kept for discovery/diagnostics)
-      { url: withFormat(`${base}/datasets/INTERCONNECTOR/stream?limit=200`), variant: `dataset-interconnector@${tag}` },
-      { url: withFormat(`${base}/datasets/INTFLOW/stream?limit=200`),       variant: `dataset-intflow@${tag}` },
     );
   }
 
@@ -224,11 +388,11 @@ async function fetchInterconnectorsEnhanced(debug = false): Promise<{ ok: boolea
       preview: (r as any).body ? (r as any).body.slice(0, 180) : undefined,
     });
     if (r.ok) {
-      return { ok: true, data: r.data, attempts };
+      return { ok: true, data: r.data, attempts, source: "bmrs-summary", status: "live" };
     }
   }
 
-  return { ok: false, attempts };
+  return { ok: false, attempts, source: "none", status: "unavailable" };
 }
 // Fetch demand with dual host support
 async function fetchDemand() {
@@ -775,30 +939,53 @@ let icSource: string = "none";
 let icAttempts: any[] = [];
 let interconnectorStatus: "live" | "fallback-outturn" | "cached" | "none" = "none";
 
-const anchor = { date: anchorDate, period: anchorSP };
-const icSummary = await fetchICSummaryCandidates(anchor);
-icAttempts = icSummary.attempts || [];
-if (Array.isArray(icSummary.data) && icSummary.data.length) {
-  interconnectors = icSummary.data;
-  icSource = "summary";
-  interconnectorStatus = "live";
-}
-
-// Outturn fallback using the exact rows used for HV (variant-aware)
-if (!interconnectors.length && latestOutturnRows.length) {
-  const derived = deriveICFromOutturnRowsVariant(latestOutturnRows, outturnVariant);
-  if (derived.length) {
-    interconnectors = derived;
-    icSource = `outturn-${outturnVariant}`;
-    interconnectorStatus = "fallback-outturn";
+try {
+  // Use enhanced interconnector fetching with ENTSO-E integration
+  const icResult = await fetchInterconnectorsEnhanced(DEBUG);
+  icAttempts = icResult.attempts;
+  
+  if (icResult.ok && icResult.interconnectors) {
+    interconnectors = icResult.interconnectors;
+    icSource = icResult.source || "entso-e-physical";
+    interconnectorStatus = "live";
+  } else if (icResult.ok && icResult.data) {
+    // Handle BMRS summary data format
+    const normalizedData = Array.isArray(icResult.data) 
+      ? icResult.data.map(normalizeICSummaryRow).filter(Boolean)
+      : asArray(icResult.data).map(normalizeICSummaryRow).filter(Boolean);
+    
+    if (normalizedData.length) {
+      interconnectors = normalizedData;
+      icSource = icResult.source || "bmrs-summary";
+      interconnectorStatus = "live";
+    }
   }
-}
-
-// LKG carry-forward if still empty
-if (!interconnectors.length) {
-  const lkgList = await getLastInterconnectorsFromLKG();
-  if (lkgList.length) { interconnectors = lkgList; icSource = "lkg"; interconnectorStatus = "cached"; }
-  else { icSource = "none"; interconnectorStatus = "none"; }
+  
+  // Fallback to outturn derivation if still no data
+  if (!interconnectors.length && latestOutturnRows.length) {
+    if (DEBUG) dlog(true, "Enhanced IC fetch failed, trying outturn derivation...");
+    const derived = deriveICFromOutturnRowsVariant(latestOutturnRows, outturnVariant);
+    if (derived.length) {
+      interconnectors = derived;
+      icSource = `outturn-${outturnVariant}`;
+      interconnectorStatus = "fallback-outturn";
+    }
+  }
+  
+  // Final fallback: LKG carry-forward
+  if (!interconnectors.length) {
+    const lkgList = await getLastInterconnectorsFromLKG();
+    if (lkgList.length) { 
+      interconnectors = lkgList; 
+      icSource = "lkg"; 
+      interconnectorStatus = "cached"; 
+    } else { 
+      icSource = "none"; 
+      interconnectorStatus = "none"; 
+    }
+  }
+} catch (e) {
+  if (DEBUG) dlog(true, `IC resolution error: ${e.message}`);
 }
 
     const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;

@@ -128,7 +128,7 @@ export const EnergyDashboard = () => {
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-sm text-muted-foreground">
-              Data sources: BMRS HV + ESO embedded wind + PV Live solar
+              Data sources: BMRS HV + ESO embedded wind + PV Live solar + ENTSO-E interconnectors
             </div>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
