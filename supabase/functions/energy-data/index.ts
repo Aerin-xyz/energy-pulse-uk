@@ -451,10 +451,22 @@ const ENTSOE_BORDERS = [
   { name: "Belgium",          eic: "10YBE----------2" },
   { name: "Netherlands",      eic: "10YNL----------L" },
   { name: "Norway",           eic: "10YNO-2--------T" }, // NO2 zone (NSL)
+  { name: "Northern Ireland", eic: "10Y1001A1001A59C" }, // Moyle (SONI)
   { name: "Ireland (SEM)",    eic: "10YIE-1001A00010" },
   { name: "Denmark DK1",      eic: "10YDK-1--------W" }, // Viking Link
   { name: "Denmark DK2",      eic: "10YDK-2--------M" }
 ];
+
+// Optional static capacity hints per border (MW)
+const CAPACITY_HINTS: Record<string, number> = {
+  France: 4000,              // IFA (2000) + IFA2 (1000) + ElecLink (1000)
+  Belgium: 1000,             // Nemo Link
+  Netherlands: 1000,         // BritNed
+  Norway: 1400,              // NSL
+  "Northern Ireland": 500,  // Moyle
+  Ireland: 500,              // EWIC
+  "Denmark DK1": 1400,      // Viking Link
+};
 
 function pad2(n:number){ return n.toString().padStart(2,"0"); }
 function floorTo15m(d: Date) {
@@ -1080,20 +1092,44 @@ try {
     const now = new Date();
     const results = await Promise.all(ENTSOE_BORDERS.map(b => entsoeNetForBorderMW(token, b.eic, now)));
 
-    interconnectors = ENTSOE_BORDERS.map((b, i) => ({
-      name: b.name.includes("(") ? b.name.split(" (")[0] : b.name,
-      country: b.name.includes("(") ? b.name.split(" (")[0] : b.name,
-      flow: results[i]?.ok ? results[i].netMW : 0, // MW; + = import to GB
-      capacity: null,
-      asOf: results[i]?.t || null,
-    }));
+    // Fetch last known ICs once for per-border backfill
+    const lkgList = await getLastInterconnectorsFromLKG();
+
+    const backfilled: string[] = [];
+    const built: Array<{ name:string; country:string; flow:number; capacity:number|null; asOf?:string|null }> = [];
+
+    ENTSOE_BORDERS.forEach((b, i) => {
+      const baseName = b.name.includes("(") ? b.name.split(" (")[0] : b.name; // strip qualifiers
+      const r = results[i];
+      let flow = 0;
+      let asOf: string | null = null;
+      let capacity = (CAPACITY_HINTS as any)[baseName] ?? null;
+
+      if (r && r.ok) {
+        flow = r.netMW;
+        asOf = r.t;
+      } else if (Array.isArray(lkgList) && lkgList.length) {
+        const match = lkgList.find((ic: any) => (ic.country || ic.name) === baseName);
+        if (match) {
+          flow = Number(match.flow) || 0;
+          asOf = match.asOf ?? null;
+          capacity = (Number.isFinite(match.capacity) ? match.capacity : capacity);
+          backfilled.push(baseName);
+        }
+      }
+
+      built.push({ name: baseName, country: baseName, flow, capacity, asOf });
+    });
+
+    interconnectors = built;
 
     const okCount = results.filter(r => r && r.ok).length;
-    interconnectorStatus = okCount > 0 ? "live" : "unavailable";
+    const backfillCount = backfilled.length;
+    interconnectorStatus = okCount > 0 ? "live" : (backfillCount > 0 ? "cached" : "unavailable");
 
     if (DEBUG) {
-      icDiag.ok = okCount > 0;
-      icDiag.status = okCount > 0 ? "live" : "none";
+      icDiag.ok = okCount > 0 || backfillCount > 0;
+      icDiag.status = interconnectorStatus;
       icDiag.tries = results.map((r, i) => ({
         border: ENTSOE_BORDERS[i].name,
         ok: !!r?.ok,
@@ -1101,10 +1137,11 @@ try {
         intoGB: r?.detail?.intoGB || null,
         fromGB: r?.detail?.fromGB || null,
       }));
+      icDiag.backfilled = backfilled;
     }
   }
 
-  // LKG fallback if no live data or no token
+  // LKG fallback if no live data or no token produced anything
   if (!interconnectors.length || interconnectorStatus === "unavailable") {
     const lkgList = await getLastInterconnectorsFromLKG();
     if (Array.isArray(lkgList) && lkgList.length) {
