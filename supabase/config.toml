@@ -2,3 +2,6 @@ project_id = "cxvjgpuytezomdlsayif"
 
 [functions.energy-data]
 verify_jwt = false
+
+[functions.entsoe-health]
+verify_jwt = false
