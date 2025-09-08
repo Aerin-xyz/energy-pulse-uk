@@ -425,14 +425,14 @@ async function fetchDemand() {
   return { ok: false, reason: "demand-all-hosts-failed" };
 }
 
-// Helpers: robust array extraction
+// Helpers: robust array extraction (wrap singletons)
 function asArray(x: any): any[] {
-  if (!x) return [];
+  if (x == null) return [];
   if (Array.isArray(x)) return x;
   if (Array.isArray((x as any).data)) return (x as any).data;
   if ((x as any).result?.records && Array.isArray((x as any).result.records)) return (x as any).result.records;
   if ((x as any).items && Array.isArray((x as any).items)) return (x as any).items;
-  return [];
+  return [x];
 }
 
 // Safe number helper
@@ -450,7 +450,7 @@ const ENTSOE_BORDERS = [
   { name: "France",           eic: "10YFR-RTE------C" },
   { name: "Belgium",          eic: "10YBE----------2" },
   { name: "Netherlands",      eic: "10YNL----------L" },
-  { name: "Norway",           eic: "10YNO-0--------C" }, // aggregate; refine to NO2 if needed
+  { name: "Norway",           eic: "10YNO-2--------T" }, // NO2 zone (NSL)
   { name: "Ireland (SEM)",    eic: "10YIE-1001A00010" },
   { name: "Denmark DK1",      eic: "10YDK-1--------W" }, // Viking Link
   { name: "Denmark DK2",      eic: "10YDK-2--------M" }
@@ -523,7 +523,7 @@ const a11Cache = new Map<string, { expiry: number; value: any }>();
 
 async function entsoeA11(token: string, inDomain: string, outDomain: string, start: Date, end: Date) {
   const periodStart = toPeriod(floorTo15m(start));
-  const periodEnd   = toPeriod(floorTo15m(end));
+  const periodEnd   = toPeriod(new Date(floorTo15m(end).getTime() + 15 * 60 * 1000));
   const url = `${ENTSOE_BASE}?securityToken=${encodeURIComponent(token)}&documentType=A11&in_Domain=${inDomain}&out_Domain=${outDomain}&periodStart=${periodStart}&periodEnd=${periodEnd}`;
 
   const now = Date.now();
