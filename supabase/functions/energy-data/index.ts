@@ -492,9 +492,15 @@ function parseEntsoeA11(xml: string) {
     const doc: any = parser.parse(xml);
     if (!doc) return { ok:false, points:[], meta:{ reason:"no-doc" } };
 
-    // Acknowledgement?
+    // Acknowledgement? Extract reason(s)
     if (doc.Acknowledgement_MarketDocument) {
-      return { ok:false, points:[], meta:{ reason:"acknowledgement" } };
+      const ack = doc.Acknowledgement_MarketDocument;
+      const reasons = asArray(ack.Reason || ack.reason || []);
+      const reasonTexts = reasons
+        .map((r: any) => r.text || r.reasonText || r.description || r.message || r.code)
+        .filter(Boolean);
+      const reasonCodes = reasons.map((r: any) => r.code).filter(Boolean);
+      return { ok:false, points:[], meta:{ reason:"acknowledgement", reasonText: reasonTexts.join(" | ") || undefined, reasonCodes } };
     }
 
     const pmd = doc.Publication_MarketDocument;
@@ -536,7 +542,7 @@ const a11Cache = new Map<string, { expiry: number; value: any }>();
 async function entsoeA11(token: string, inDomain: string, outDomain: string, start: Date, end: Date) {
   const periodStart = toPeriod(floorTo15m(start));
   const periodEnd   = toPeriod(new Date(floorTo15m(end).getTime() + 15 * 60 * 1000));
-  const url = `${ENTSOE_BASE}?securityToken=${encodeURIComponent(token)}&documentType=A11&in_Domain=${inDomain}&out_Domain=${outDomain}&periodStart=${periodStart}&periodEnd=${periodEnd}`;
+  const url = `${ENTSOE_BASE}?securityToken=${encodeURIComponent(token)}&documentType=A11&processType=A16&in_Domain=${inDomain}&out_Domain=${outDomain}&periodStart=${periodStart}&periodEnd=${periodEnd}`;
 
   const now = Date.now();
   const cached = a11Cache.get(url);
@@ -558,8 +564,8 @@ async function entsoeA11(token: string, inDomain: string, outDomain: string, sta
 
 // Compute net GB imports for a border at the latest aligned timestamp: net = partner->GB minus GB->partner
 async function entsoeNetForBorderMW(token: string, partnerEIC: string, now: Date) {
-  // Query a 2-hour window to be safe
-  const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+  // Query a 3-hour window to be safe
+  const start = new Date(now.getTime() - 3 * 60 * 60 * 1000);
   const end   = now;
 
   const intoGB = await entsoeA11(token, partnerEIC, GB_EIC, start, end);
@@ -1134,6 +1140,7 @@ try {
         border: ENTSOE_BORDERS[i].name,
         ok: !!r?.ok,
         t: r?.t || null,
+        reasonText: r?.detail?.intoGB?.reasonText || r?.detail?.fromGB?.reasonText || null,
         intoGB: r?.detail?.intoGB || null,
         fromGB: r?.detail?.fromGB || null,
       }));
