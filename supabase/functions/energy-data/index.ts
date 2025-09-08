@@ -1,3 +1,5 @@
+import { XMLParser } from "https://esm.sh/fast-xml-parser@4.4.0";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, cache-control",
@@ -464,38 +466,55 @@ function toPeriod(d: Date) {
   return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}`;
 }
 
-// Minimal safe XML parse using DOMParser (available in Deno)
+// Minimal XML parse using fast-xml-parser
 function parseEntsoeA11(xml: string) {
-  const dom = new DOMParser().parseFromString(xml, "application/xml");
-  if (!dom) return { ok:false, points:[], meta:{ reason:"no-dom" } };
+  try {
+    const parser = new XMLParser({
+      ignoreAttributes: false,
+      attributeNamePrefix: '',
+      allowBooleanAttributes: true,
+      parseTagValue: true,
+      parseAttributeValue: true,
+      trimValues: true,
+    });
+    const doc: any = parser.parse(xml);
+    if (!doc) return { ok:false, points:[], meta:{ reason:"no-doc" } };
 
-  // Acknowledgement?
-  if (dom.getElementsByTagName("Acknowledgement_MarketDocument").length) {
-    return { ok:false, points:[], meta:{ reason:"acknowledgement" } };
-  }
-
-  const series = Array.from(dom.getElementsByTagName("TimeSeries"));
-  const points: Array<{ t: string; quantity: number }> = [];
-
-  for (const ts of series) {
-    const period = ts.getElementsByTagName("Period")[0];
-    if (!period) continue;
-    const ti = period.getElementsByTagName("timeInterval")[0];
-    const startISO = ti?.getElementsByTagName("start")[0]?.textContent || "";
-    const resolution = period.getElementsByTagName("resolution")[0]?.textContent || "PT60M";
-    const stepMin = resolution === "PT15M" ? 15 : 60;
-
-    const rawPts = Array.from(period.getElementsByTagName("Point"));
-    for (const p of rawPts) {
-      const pos = Number(p.getElementsByTagName("position")[0]?.textContent || "0"); // 1-based
-      const qty = Number(p.getElementsByTagName("quantity")[0]?.textContent || "NaN");
-      if (!startISO || !Number.isFinite(qty)) continue;
-      const t0 = new Date(startISO).getTime();
-      const t = new Date(t0 + (pos - 1) * stepMin * 60 * 1000).toISOString();
-      points.push({ t, quantity: qty });
+    // Acknowledgement?
+    if (doc.Acknowledgement_MarketDocument) {
+      return { ok:false, points:[], meta:{ reason:"acknowledgement" } };
     }
+
+    const pmd = doc.Publication_MarketDocument;
+    if (!pmd) return { ok:false, points:[], meta:{ reason:"no-pmd" } };
+
+    const series = asArray(pmd.TimeSeries);
+    const points: Array<{ t: string; quantity: number }> = [];
+
+    for (const ts of series) {
+      const periods = asArray(ts.Period);
+      for (const period of periods) {
+        const ti = period.timeInterval || {};
+        const startISO = ti.start || "";
+        const resolution = period.resolution || "PT60M";
+        const stepMin = String(resolution).includes("15") ? 15 : 60;
+
+        const rawPts = asArray(period.Point);
+        for (const p of rawPts) {
+          const pos = Number(p.position ?? p.pos ?? 0); // 1-based
+          const qty = Number(p.quantity ?? p.q ?? NaN);
+          if (!startISO || !Number.isFinite(qty) || !(pos > 0)) continue;
+          const t0 = new Date(startISO).getTime();
+          if (!Number.isFinite(t0)) continue;
+          const t = new Date(t0 + (pos - 1) * stepMin * 60 * 1000).toISOString();
+          points.push({ t, quantity: qty });
+        }
+      }
+    }
+    return { ok: points.length > 0, points, meta:{ count: points.length } };
+  } catch (e) {
+    return { ok:false, points:[], meta:{ reason:"xml-parse-error", error: (e as Error)?.message } };
   }
-  return { ok: points.length > 0, points, meta:{ count: points.length } };
 }
 
 // Tiny in-memory cache to respect rate limits
