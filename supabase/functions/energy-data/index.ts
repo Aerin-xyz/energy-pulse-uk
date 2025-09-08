@@ -439,6 +439,112 @@ const num = (x: any) => {
   return Number.isFinite(n) ? n : NaN;
 };
 
+// ---------- ENTSO-E A11 helpers ----------
+const ENTSOE_BASE = "https://web-api.tp.entsoe.eu/api";
+const GB_EIC = "10YGB----------A";
+
+// Borders to report (can extend later)
+const ENTSOE_BORDERS = [
+  { name: "France",           eic: "10YFR-RTE------C" },
+  { name: "Belgium",          eic: "10YBE----------2" },
+  { name: "Netherlands",      eic: "10YNL----------L" },
+  { name: "Norway",           eic: "10YNO-0--------C" }, // aggregate; refine to NO2 if needed
+  { name: "Ireland (SEM)",    eic: "10YIE-1001A00010" },
+  { name: "Denmark DK1",      eic: "10YDK-1--------W" }, // Viking Link
+  { name: "Denmark DK2",      eic: "10YDK-2--------M" }
+];
+
+function pad2(n:number){ return n.toString().padStart(2,"0"); }
+function floorTo15m(d: Date) {
+  const copy = new Date(d);
+  copy.setUTCMinutes(Math.floor(copy.getUTCMinutes()/15)*15, 0, 0);
+  return copy;
+}
+function toPeriod(d: Date) {
+  return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}`;
+}
+
+// Minimal safe XML parse using DOMParser (available in Deno)
+function parseEntsoeA11(xml: string) {
+  const dom = new DOMParser().parseFromString(xml, "application/xml");
+  if (!dom) return { ok:false, points:[], meta:{ reason:"no-dom" } };
+
+  // Acknowledgement?
+  if (dom.getElementsByTagName("Acknowledgement_MarketDocument").length) {
+    return { ok:false, points:[], meta:{ reason:"acknowledgement" } };
+  }
+
+  const series = Array.from(dom.getElementsByTagName("TimeSeries"));
+  const points: Array<{ t: string; quantity: number }> = [];
+
+  for (const ts of series) {
+    const period = ts.getElementsByTagName("Period")[0];
+    if (!period) continue;
+    const ti = period.getElementsByTagName("timeInterval")[0];
+    const startISO = ti?.getElementsByTagName("start")[0]?.textContent || "";
+    const resolution = period.getElementsByTagName("resolution")[0]?.textContent || "PT60M";
+    const stepMin = resolution === "PT15M" ? 15 : 60;
+
+    const rawPts = Array.from(period.getElementsByTagName("Point"));
+    for (const p of rawPts) {
+      const pos = Number(p.getElementsByTagName("position")[0]?.textContent || "0"); // 1-based
+      const qty = Number(p.getElementsByTagName("quantity")[0]?.textContent || "NaN");
+      if (!startISO || !Number.isFinite(qty)) continue;
+      const t0 = new Date(startISO).getTime();
+      const t = new Date(t0 + (pos - 1) * stepMin * 60 * 1000).toISOString();
+      points.push({ t, quantity: qty });
+    }
+  }
+  return { ok: points.length > 0, points, meta:{ count: points.length } };
+}
+
+// Tiny in-memory cache to respect rate limits
+const A11_TTL_MS = 1000 * 100; // ~100s
+const a11Cache = new Map<string, { expiry: number; value: any }>();
+
+async function entsoeA11(token: string, inDomain: string, outDomain: string, start: Date, end: Date) {
+  const periodStart = toPeriod(floorTo15m(start));
+  const periodEnd   = toPeriod(floorTo15m(end));
+  const url = `${ENTSOE_BASE}?securityToken=${encodeURIComponent(token)}&documentType=A11&in_Domain=${inDomain}&out_Domain=${outDomain}&periodStart=${periodStart}&periodEnd=${periodEnd}`;
+
+  const now = Date.now();
+  const cached = a11Cache.get(url);
+  if (cached && cached.expiry > now) return cached.value;
+
+  const res = await fetch(url, { headers: { "Accept": "application/xml" }, redirect: "manual" as RequestRedirect, cache: "no-store" });
+  const text = await res.text();
+  const isXML = (res.headers.get("content-type") || "").includes("xml");
+  if (!isXML) {
+    const value = { ok:false, points:[], meta:{ status:res.status, reason:"non-xml", url } };
+    a11Cache.set(url, { expiry: now + A11_TTL_MS, value });
+    return value;
+  }
+  const parsed = parseEntsoeA11(text);
+  const value = { ok: parsed.ok, points: parsed.points, meta: { ...parsed.meta, status: res.status, url } };
+  a11Cache.set(url, { expiry: now + A11_TTL_MS, value });
+  return value;
+}
+
+// Compute net GB imports for a border at the latest aligned timestamp: net = partner->GB minus GB->partner
+async function entsoeNetForBorderMW(token: string, partnerEIC: string, now: Date) {
+  // Query a 2-hour window to be safe
+  const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+  const end   = now;
+
+  const intoGB = await entsoeA11(token, partnerEIC, GB_EIC, start, end);
+  const fromGB = await entsoeA11(token, GB_EIC, partnerEIC, start, end);
+
+  const timestamps = new Set<string>();
+  intoGB.points.forEach((p: any) => timestamps.add(p.t));
+  fromGB.points.forEach((p: any) => timestamps.add(p.t));
+  const latestT = Array.from(timestamps).sort().pop() || null;
+  if (!latestT) return { ok:false, t:null, netMW:0, detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta } };
+
+  const a = intoGB.points.filter((p: any) => p.t === latestT).reduce((s:number,p:any) => s + p.quantity, 0);
+  const b = fromGB.points.filter((p: any) => p.t === latestT).reduce((s:number,p:any) => s + p.quantity, 0);
+  return { ok: true, t: latestT, netMW: Math.round(a - b), detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta } };
+}
+
 // ---- Interconnector helpers ----
 const IC_CODE_MAP: Record<string, { name: string; country: string; capacity?: number }> = {
   // France cluster
@@ -944,55 +1050,48 @@ if (ds.ok) {
       dlog(true, `Warning: Percentage sum deviation: ${percentageSum}% (expected 100%)`);
     }
 
-// Interconnectors resolution: summary -> outturn fallback -> LKG
-let interconnectors: any[] = [];
-let icSource: string = "none";
-let icAttempts: any[] = [];
-let interconnectorStatus: "live" | "fallback-outturn" | "cached" | "none" = "none";
+// Interconnector flows via ENTSO-E A11 → LKG fallback
+let interconnectors: Array<{ name:string; country:string; flow:number; capacity:number|null; asOf?:string|null }> = [];
+let interconnectorStatus: "live" | "cached" | "unavailable" = "unavailable";
+let icDiag: any = { source: "entsoe-a11", ok: false, tries: [] as any[], status: "none" };
 
 try {
-  // Use enhanced interconnector fetching with ENTSO-E integration
-  const icResult = await fetchInterconnectorsEnhanced(DEBUG);
-  icAttempts = icResult.attempts;
-  
-  if (icResult.ok && icResult.interconnectors) {
-    interconnectors = icResult.interconnectors;
-    icSource = icResult.source || "entso-e-physical";
-    interconnectorStatus = "live";
-  } else if (icResult.ok && icResult.data) {
-    // Handle BMRS summary data format
-    const normalizedData = Array.isArray(icResult.data) 
-      ? icResult.data.map(normalizeICSummaryRow).filter(Boolean)
-      : asArray(icResult.data).map(normalizeICSummaryRow).filter(Boolean);
-    
-    if (normalizedData.length) {
-      interconnectors = normalizedData;
-      icSource = icResult.source || "bmrs-summary";
-      interconnectorStatus = "live";
+  const token = (Deno.env.get("ENTSOE_TOKEN") || Deno.env.get("ENTSOE_API_TOKEN") || "").trim();
+  if (token) {
+    const now = new Date();
+    const results = await Promise.all(ENTSOE_BORDERS.map(b => entsoeNetForBorderMW(token, b.eic, now)));
+
+    interconnectors = ENTSOE_BORDERS.map((b, i) => ({
+      name: b.name.includes("(") ? b.name.split(" (")[0] : b.name,
+      country: b.name.includes("(") ? b.name.split(" (")[0] : b.name,
+      flow: results[i]?.ok ? results[i].netMW : 0, // MW; + = import to GB
+      capacity: null,
+      asOf: results[i]?.t || null,
+    }));
+
+    const okCount = results.filter(r => r && r.ok).length;
+    interconnectorStatus = okCount > 0 ? "live" : "unavailable";
+
+    if (DEBUG) {
+      icDiag.ok = okCount > 0;
+      icDiag.status = okCount > 0 ? "live" : "none";
+      icDiag.tries = results.map((r, i) => ({
+        border: ENTSOE_BORDERS[i].name,
+        ok: !!r?.ok,
+        t: r?.t || null,
+        intoGB: r?.detail?.intoGB || null,
+        fromGB: r?.detail?.fromGB || null,
+      }));
     }
   }
-  
-  // Fallback to outturn derivation if still no data
-  if (!interconnectors.length && latestOutturnRows.length) {
-    if (DEBUG) dlog(true, "Enhanced IC fetch failed, trying outturn derivation...");
-    const derived = deriveICFromOutturnRowsVariant(latestOutturnRows, outturnVariant);
-    if (derived.length) {
-      interconnectors = derived;
-      icSource = `outturn-${outturnVariant}`;
-      interconnectorStatus = "fallback-outturn";
-    }
-  }
-  
-  // Final fallback: LKG carry-forward
-  if (!interconnectors.length) {
+
+  // LKG fallback if no live data or no token
+  if (!interconnectors.length || interconnectorStatus === "unavailable") {
     const lkgList = await getLastInterconnectorsFromLKG();
-    if (lkgList.length) { 
-      interconnectors = lkgList; 
-      icSource = "lkg"; 
-      interconnectorStatus = "cached"; 
-    } else { 
-      icSource = "none"; 
-      interconnectorStatus = "none"; 
+    if (Array.isArray(lkgList) && lkgList.length) {
+      interconnectors = lkgList;
+      interconnectorStatus = "cached";
+      if (DEBUG) icDiag.status = "cached";
     }
   }
 } catch (e) {
@@ -1049,11 +1148,11 @@ if (DEBUG) {
     },
     icOk: interconnectors.length > 0,
     icCount: interconnectors.length,
-    icSource,
+    icSource: "entsoe-a11",
     icStatus: interconnectorStatus,
-    icAttempts: (icAttempts || []).map((a: any) => ({ url: a.url, variant: a.variant || (a.url?.includes('/latest') ? 'summary-latest' : 'summary-bysp'), status: a.status, reason: a.reason, contentType: a.contentType || a.ctype, preview: a.preview })),
+    icAttempts: icDiag.tries,
     icSample: interconnectors.slice(0, 3),
-    ic: { icOk: interconnectors.length > 0, icCount: interconnectors.length, icSource, status: interconnectorStatus, attempts: (icAttempts || []).slice(0,6) },
+    ic: { ok: icDiag.ok, count: interconnectors.length, source: "entsoe-a11", status: icDiag.status, tries: icDiag.tries },
   };
 }
 
