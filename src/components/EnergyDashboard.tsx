@@ -7,6 +7,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
 import { NextUpdateCountdown } from '@/components/NextUpdateCountdown';
+import { DiagnosticsPanel } from '@/components/DiagnosticsPanel';
 import { formatGWfromMW } from '@/lib/utils';
 
 export const EnergyDashboard = () => {
@@ -92,6 +93,8 @@ export const EnergyDashboard = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
+        <DiagnosticsPanel />
+        
         {loading && !data ? (
           <div className="space-y-8">
             <Skeleton className="h-[500px] w-full" />
