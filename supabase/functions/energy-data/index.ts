@@ -209,19 +209,24 @@ async function fetchEntsoePhysicalFlows(): Promise<{
   }
 
   try {
-    // Get current datetime in ENTSO-E format (YYYYMMDDHHMM)
-    const now = new Date();
-    now.setMinutes(now.getMinutes() - 60); // 1 hour ago for data availability
-    const dateFrom = now.toISOString().slice(0, 16).replace(/[-:T]/g, '').slice(0, 12);
-    const dateTo = now.toISOString().slice(0, 16).replace(/[-:T]/g, '').slice(0, 12);
+    // Build ENTSO-E period using UTC time: last 2 hours to ensure data availability
+    const formatEntsoe = (d: Date) =>
+      `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}` +
+      `${String(d.getUTCHours()).padStart(2, '0')}${String(d.getUTCMinutes()).padStart(2, '0')}`;
 
-    // ENTSO-E domain codes for GB interconnectors
+    const periodEndUtc = new Date();
+    const periodStartUtc = new Date(periodEndUtc.getTime() - 2 * 60 * 60 * 1000); // 2h window
+    const dateFrom = formatEntsoe(periodStartUtc);
+    const dateTo = formatEntsoe(periodEndUtc);
+
+    // ENTSO-E domain codes for GB interconnectors (Borders)
     const borders = [
-      { from: '10YGB----------A', to: '10YFR-RTE------C', codes: ['INTFR', 'INTIFA2', 'INTELEC'] }, // GB-FR
-      { from: '10YGB----------A', to: '10YBE----------2', codes: ['INTNEM'] }, // GB-BE  
+      { from: '10YGB----------A', to: '10YFR-RTE------C', codes: ['INTFR', 'INTIFA2', 'INTELEC'] }, // GB-FR cluster
+      { from: '10YGB----------A', to: '10YBE----------2', codes: ['INTNEM'] }, // GB-BE
       { from: '10YGB----------A', to: '10YNL----------L', codes: ['INTNED'] }, // GB-NL
       { from: '10YGB----------A', to: '10YNO-0--------C', codes: ['INTNSL'] }, // GB-NO
-      { from: '10YGB----------A', to: '10Y1001A1001A59C', codes: ['INTIRL'] }, // GB-IE (Moyle to NI)
+      { from: '10YGB----------A', to: '10Y1001A1001A59C', codes: ['INTIRL'] }, // GB-NI (Moyle)
+      { from: '10YGB----------A', to: '10YIE-1001A00010', codes: ['INTEW'] }, // GB-IE (EWIC)
     ];
 
     const flows: Record<string, number> = {};
@@ -234,17 +239,20 @@ async function fetchEntsoePhysicalFlows(): Promise<{
         const url = `https://web-api.tp.entsoe.eu/api?` +
           `securityToken=${apiToken}&` +
           `documentType=A11&` +
+          `processType=A16&` +
           `in_Domain=${border.from}&` +
           `out_Domain=${border.to}&` +
           `periodStart=${dateFrom}&` +
           `periodEnd=${dateTo}`;
 
         const response = await fetch(url, {
-          headers: { 'Accept': 'application/xml' },
-          signal: AbortSignal.timeout(10000)
+          headers: { 'Accept': 'application/xml, text/xml' },
+          signal: AbortSignal.timeout(12000)
         });
 
         if (!response.ok) {
+          const preview = (await response.text()).slice(0, 180);
+          dlog(true, 'ENTSO-E border failed', { url, status: response.status, preview });
           continue;
         }
 
@@ -253,19 +261,21 @@ async function fetchEntsoePhysicalFlows(): Promise<{
         // Simple XML parsing for TimeSeries data
         const timeSeriesMatch = xmlText.match(/<TimeSeries>[\s\S]*?<\/TimeSeries>/);
         if (!timeSeriesMatch) {
+          dlog(true, 'ENTSO-E no TimeSeries', { url });
           continue;
         }
 
         // Extract the latest flow value
         const quantityMatches = [...xmlText.matchAll(/<quantity>(-?\d+(?:\.\d+)?)<\/quantity>/g)];
         if (quantityMatches.length === 0) {
+          dlog(true, 'ENTSO-E no quantities', { url });
           continue;
         }
 
-        // Get the most recent value
+        // Most recent value
         const latestFlow = parseFloat(quantityMatches[quantityMatches.length - 1][1]);
         
-        // Distribute flow proportionally across interconnectors for this border
+        // Distribute flow across interconnectors for this border
         const flowPerIC = latestFlow / border.codes.length;
         border.codes.forEach(code => {
           flows[code] = Math.round(flowPerIC);
@@ -274,6 +284,7 @@ async function fetchEntsoePhysicalFlows(): Promise<{
         successfulAttempts++;
 
       } catch (e) {
+        dlog(true, 'ENTSO-E border error', { error: (e as Error)?.message });
         continue;
       }
     }
@@ -285,7 +296,7 @@ async function fetchEntsoePhysicalFlows(): Promise<{
     return { ok: false, reason: 'no-successful-borders' };
 
   } catch (e) {
-    return { ok: false, reason: e.message };
+    return { ok: false, reason: (e as Error).message };
   }
 }
 
