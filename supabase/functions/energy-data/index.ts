@@ -216,10 +216,10 @@ async function fetchEntsoePhysicalFlows(): Promise<{
       `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}` +
       `${String(d.getUTCHours()).padStart(2, '0')}${String(d.getUTCMinutes()).padStart(2, '0')}`;
 
-    const periodEndUtc = new Date();
-    const periodStartUtc = new Date(periodEndUtc.getTime() - 2 * 60 * 60 * 1000); // 2h window
-    const dateFrom = formatEntsoe(periodStartUtc);
-    const dateTo = formatEntsoe(periodEndUtc);
+    const endAligned = floorTo15m(new Date());
+    const startAligned = new Date(endAligned.getTime() - 2 * 60 * 60 * 1000);
+    const dateFrom = toPeriod(startAligned);
+    const dateTo = toPeriod(new Date(endAligned.getTime() + 15 * 60 * 1000));
 
     // ENTSO-E domain codes for GB interconnectors (Borders)
     const borders = [
@@ -241,7 +241,6 @@ async function fetchEntsoePhysicalFlows(): Promise<{
         const url = `https://web-api.tp.entsoe.eu/api?` +
           `securityToken=${apiToken}&` +
           `documentType=A11&` +
-          `processType=A16&` +
           `in_Domain=${border.from}&` +
           `out_Domain=${border.to}&` +
           `periodStart=${dateFrom}&` +
@@ -450,10 +449,11 @@ const ENTSOE_BORDERS = [
   { name: "France",           eic: "10YFR-RTE------C" },
   { name: "Belgium",          eic: "10YBE----------2" },
   { name: "Netherlands",      eic: "10YNL----------L" },
-  { name: "Norway",           eic: "10YNO-2--------T" }, // NO2 zone (NSL)
-  { name: "Northern Ireland", eic: "10Y1001A1001A59C" }, // Moyle (SONI)
+  // Use SEM bidding zone for Ireland
+  { name: "Norway",           eic: "10YNO-0--------C" },
   { name: "Ireland (SEM)",    eic: "10YIE-1001A00010" },
-  { name: "Denmark DK1",      eic: "10YDK-1--------W" }, // Viking Link
+  { name: "Denmark DK1",      eic: "10YDK-1--------W" },
+  { name: "Denmark DK2",      eic: "10YDK-2--------M" },
 ];
 
 // Optional static capacity hints per border (MW)
@@ -541,7 +541,7 @@ const a11Cache = new Map<string, { expiry: number; value: any }>();
 async function entsoeA11(token: string, inDomain: string, outDomain: string, start: Date, end: Date) {
   const periodStart = toPeriod(floorTo15m(start));
   const periodEnd   = toPeriod(new Date(floorTo15m(end).getTime() + 15 * 60 * 1000));
-  const url = `${ENTSOE_BASE}?securityToken=${encodeURIComponent(token)}&documentType=A11&processType=A16&in_Domain=${inDomain}&out_Domain=${outDomain}&periodStart=${periodStart}&periodEnd=${periodEnd}`;
+  const url = `${ENTSOE_BASE}?securityToken=${encodeURIComponent(token)}&documentType=A11&in_Domain=${inDomain}&out_Domain=${outDomain}&periodStart=${periodStart}&periodEnd=${periodEnd}`;
 
   const now = Date.now();
   const cached = a11Cache.get(url);
