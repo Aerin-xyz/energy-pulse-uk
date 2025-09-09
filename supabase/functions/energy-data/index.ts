@@ -454,7 +454,6 @@ const ENTSOE_BORDERS = [
   { name: "Northern Ireland", eic: "10Y1001A1001A59C" }, // Moyle (SONI)
   { name: "Ireland (SEM)",    eic: "10YIE-1001A00010" },
   { name: "Denmark DK1",      eic: "10YDK-1--------W" }, // Viking Link
-  { name: "Denmark DK2",      eic: "10YDK-2--------M" }
 ];
 
 // Optional static capacity hints per border (MW)
@@ -568,18 +567,28 @@ async function entsoeNetForBorderMW(token: string, partnerEIC: string, now: Date
   const start = new Date(now.getTime() - 3 * 60 * 60 * 1000);
   const end   = now;
 
-  const intoGB = await entsoeA11(token, partnerEIC, GB_EIC, start, end);
-  const fromGB = await entsoeA11(token, GB_EIC, partnerEIC, start, end);
+  let intoGB = await entsoeA11(token, partnerEIC, GB_EIC, start, end);
+  let fromGB = await entsoeA11(token, GB_EIC, partnerEIC, start, end);
+
+  // If we received no points or an acknowledgement, retry once with a conservative end time (previous 15-min slot)
+  const noPoints = (r: any) => !r?.ok || !(Array.isArray(r.points) && r.points.length > 0);
+  let secondChance = false;
+  if (noPoints(intoGB) || noPoints(fromGB)) {
+    secondChance = true;
+    const endPrev15 = new Date(floorTo15m(end).getTime() - 15 * 60 * 1000);
+    intoGB = await entsoeA11(token, partnerEIC, GB_EIC, start, endPrev15);
+    fromGB = await entsoeA11(token, GB_EIC, partnerEIC, start, endPrev15);
+  }
 
   const timestamps = new Set<string>();
   intoGB.points.forEach((p: any) => timestamps.add(p.t));
   fromGB.points.forEach((p: any) => timestamps.add(p.t));
   const latestT = Array.from(timestamps).sort().pop() || null;
-  if (!latestT) return { ok:false, t:null, netMW:0, detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta } };
+  if (!latestT) return { ok:false, t:null, netMW:0, detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta, secondChance } };
 
   const a = intoGB.points.filter((p: any) => p.t === latestT).reduce((s:number,p:any) => s + p.quantity, 0);
   const b = fromGB.points.filter((p: any) => p.t === latestT).reduce((s:number,p:any) => s + p.quantity, 0);
-  return { ok: true, t: latestT, netMW: Math.round(a - b), detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta } };
+  return { ok: true, t: latestT, netMW: Math.round(a - b), detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta, secondChance } };
 }
 
 // ---- Interconnector helpers ----
@@ -1098,43 +1107,63 @@ try {
     const now = new Date();
     const results = await Promise.all(ENTSOE_BORDERS.map(b => entsoeNetForBorderMW(token, b.eic, now)));
 
+    // Per-border fallback: BMRS summary for the current anchor
+    const summaryRes = await fetchICSummaryCandidates({ date: anchorDate, period: anchorSP });
+    const summaryRows: any[] = Array.isArray((summaryRes as any)?.data) ? (summaryRes as any).data : [];
+
     // Fetch last known ICs once for per-border backfill
     const lkgList = await getLastInterconnectorsFromLKG();
 
     const backfilled: string[] = [];
-    const built: Array<{ name:string; country:string; flow:number; capacity:number|null; asOf?:string|null }> = [];
+    const usedBMRS: string[] = [];
+    const usedENTSOE: string[] = [];
 
-    ENTSOE_BORDERS.forEach((b, i) => {
+    const built = ENTSOE_BORDERS.map((b, i) => {
       const baseName = b.name.includes("(") ? b.name.split(" (")[0] : b.name; // strip qualifiers
       const r = results[i];
       let flow = 0;
       let asOf: string | null = null;
       let capacity = (CAPACITY_HINTS as any)[baseName] ?? null;
+      let source: 'entsoe' | 'bmrs' | 'lkg' | 'none' = 'none';
 
       if (r && r.ok) {
         flow = r.netMW;
         asOf = r.t;
-      } else if (Array.isArray(lkgList) && lkgList.length) {
-        const match = lkgList.find((ic: any) => (ic.country || ic.name) === baseName);
-        if (match) {
-          flow = Number(match.flow) || 0;
-          asOf = match.asOf ?? null;
-          capacity = (Number.isFinite(match.capacity) ? match.capacity : capacity);
-          backfilled.push(baseName);
+        source = 'entsoe';
+        usedENTSOE.push(baseName);
+      } else {
+        // Try BMRS summary per-border
+        const matchBMRS = summaryRows.find((row: any) => (row.country === baseName) || String(row.name || '').includes(baseName));
+        if (matchBMRS) {
+          flow = Math.round(Number(matchBMRS.flow) || 0);
+          if (Number.isFinite(matchBMRS.capacity)) capacity = Number(matchBMRS.capacity);
+          asOf = null; // BMRS summary does not include exact timestamp
+          source = 'bmrs';
+          usedBMRS.push(baseName);
+        } else if (Array.isArray(lkgList) && lkgList.length) {
+          const match = lkgList.find((ic: any) => (ic.country || ic.name) === baseName);
+          if (match) {
+            flow = Number(match.flow) || 0;
+            asOf = match.asOf ?? null;
+            capacity = (Number.isFinite(match.capacity) ? match.capacity : capacity);
+            backfilled.push(baseName);
+            source = 'lkg';
+          }
         }
       }
 
-      built.push({ name: baseName, country: baseName, flow, capacity, asOf });
+      return { name: baseName, country: baseName, flow, capacity, asOf, __source: source };
     });
 
-    interconnectors = built;
+    interconnectors = built.map(({ __source, ...rest }) => rest);
 
-    const okCount = results.filter(r => r && r.ok).length;
+    const okCount = usedENTSOE.length;
+    const bmrsCount = usedBMRS.length;
     const backfillCount = backfilled.length;
-    interconnectorStatus = okCount > 0 ? "live" : (backfillCount > 0 ? "cached" : "unavailable");
+    interconnectorStatus = (okCount + bmrsCount) > 0 ? "live" : (backfillCount > 0 ? "cached" : "unavailable");
 
     if (DEBUG) {
-      icDiag.ok = okCount > 0 || backfillCount > 0;
+      icDiag.ok = (okCount + bmrsCount) > 0 || backfillCount > 0;
       icDiag.status = interconnectorStatus;
       icDiag.tries = results.map((r, i) => ({
         border: ENTSOE_BORDERS[i].name,
@@ -1145,6 +1174,8 @@ try {
         fromGB: r?.detail?.fromGB || null,
       }));
       icDiag.backfilled = backfilled;
+      icDiag.sourcesByBorder = built.map((b: any) => ({ name: b.name, source: b.__source }));
+      icDiag.sourceCounts = { entsoe: okCount, bmrs: bmrsCount, lkg: backfillCount };
     }
   }
 
@@ -1211,11 +1242,19 @@ if (DEBUG) {
     },
     icOk: interconnectors.length > 0,
     icCount: interconnectors.length,
-    icSource: "entsoe-a11",
+    icSource: ((icDiag?.sourceCounts?.entsoe || 0) > 0 && (icDiag?.sourceCounts?.bmrs || 0) > 0)
+      ? 'mixed'
+      : ((icDiag?.sourceCounts?.entsoe || 0) > 0
+        ? 'entsoe-a11'
+        : ((icDiag?.sourceCounts?.bmrs || 0) > 0 ? 'bmrs-summary' : (interconnectorStatus === 'cached' ? 'lkg' : 'none'))),
     icStatus: interconnectorStatus,
     icAttempts: icDiag.tries,
     icSample: interconnectors.slice(0, 3),
-    ic: { ok: icDiag.ok, count: interconnectors.length, source: "entsoe-a11", status: icDiag.status, tries: icDiag.tries },
+    ic: { ok: icDiag.ok, count: interconnectors.length, source: ((icDiag?.sourceCounts?.entsoe || 0) > 0 && (icDiag?.sourceCounts?.bmrs || 0) > 0)
+      ? 'mixed'
+      : ((icDiag?.sourceCounts?.entsoe || 0) > 0
+        ? 'entsoe-a11'
+        : ((icDiag?.sourceCounts?.bmrs || 0) > 0 ? 'bmrs-summary' : (icDiag.status === 'cached' ? 'lkg' : 'none'))), status: icDiag.status, tries: icDiag.tries, sourcesByBorder: icDiag.sourcesByBorder },
   };
 }
 
