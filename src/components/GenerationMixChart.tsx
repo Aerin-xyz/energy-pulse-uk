@@ -83,10 +83,15 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
           </Badge>
         </div>
         {asOf?.settlementPeriod && (
-          <p className="text-sm text-muted-foreground">
-            As of {asOf.settlementPeriod && formatSPTime(asOf.settlementPeriod)} SP {asOf.settlementPeriod}
-            {asOf.settlementDate && ` on ${new Date(asOf.settlementDate).toLocaleDateString()}`}
-          </p>
+          <div className="space-y-1">
+            <p className="text-sm text-muted-foreground">
+              As of {asOf.settlementPeriod && formatSPTime(asOf.settlementPeriod)} (SP {asOf.settlementPeriod})
+              {asOf.settlementDate && ` on ${new Date(asOf.settlementDate).toLocaleDateString()}`}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Mix updates each settlement period (every 30 min); values may fast-follow embedded Solar
+            </p>
+          </div>
         )}
       </CardHeader>
       <CardContent>
