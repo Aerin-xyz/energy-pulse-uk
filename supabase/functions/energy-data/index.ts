@@ -1117,7 +1117,12 @@ try {
     const backfilled: string[] = [];
     const usedBMRS: string[] = [];
     const usedENTSOE: string[] = [];
+    const usedOutturn: string[] = [];
 
+    // Prepare outturn-derived IC flows (from BMRS HV outturn rows)
+    const outturnDerived = deriveICFromOutturnRowsVariant(latestOutturnRows, outturnVariant);
+    const outturnByCode: Record<string, number> = {};
+    outturnDerived.forEach(ic => { outturnByCode[ic.code] = Math.round(ic.flow); });
     const built = ENTSOE_BORDERS.map((b, i) => {
       const baseName = b.name.includes("(") ? b.name.split(" (")[0] : b.name; // strip qualifiers
       const r = results[i];
@@ -1140,14 +1145,25 @@ try {
           asOf = null; // BMRS summary does not include exact timestamp
           source = 'bmrs';
           usedBMRS.push(baseName);
-        } else if (Array.isArray(lkgList) && lkgList.length) {
-          const match = lkgList.find((ic: any) => (ic.country || ic.name) === baseName);
-          if (match) {
-            flow = Number(match.flow) || 0;
-            asOf = match.asOf ?? null;
-            capacity = (Number.isFinite(match.capacity) ? match.capacity : capacity);
-            backfilled.push(baseName);
-            source = 'lkg';
+        } else {
+          // Outturn-derived fallback for NI and Ireland borders
+          const borderToCode: Record<string, string> = { 'Northern Ireland': 'INTIRL', 'Ireland': 'INTEW' };
+          const code = borderToCode[baseName];
+          const otFlow = code ? outturnByCode[code] : undefined;
+          if (Number.isFinite(otFlow)) {
+            flow = otFlow as number;
+            asOf = anchorEndISO;
+            source = 'outturn';
+            usedOutturn.push(baseName);
+          } else if (Array.isArray(lkgList) && lkgList.length) {
+            const match = lkgList.find((ic: any) => (ic.country || ic.name) === baseName);
+            if (match) {
+              flow = Number(match.flow) || 0;
+              asOf = match.asOf ?? null;
+              capacity = (Number.isFinite(match.capacity) ? match.capacity : capacity);
+              backfilled.push(baseName);
+              source = 'lkg';
+            }
           }
         }
       }
@@ -1159,11 +1175,12 @@ try {
 
     const okCount = usedENTSOE.length;
     const bmrsCount = usedBMRS.length;
+    const outturnCount = usedOutturn.length;
     const backfillCount = backfilled.length;
-    interconnectorStatus = (okCount + bmrsCount) > 0 ? "live" : (backfillCount > 0 ? "cached" : "unavailable");
+    interconnectorStatus = (okCount + bmrsCount + outturnCount) > 0 ? "live" : (backfillCount > 0 ? "cached" : "unavailable");
 
     if (DEBUG) {
-      icDiag.ok = (okCount + bmrsCount) > 0 || backfillCount > 0;
+      icDiag.ok = (okCount + bmrsCount + outturnCount) > 0 || backfillCount > 0;
       icDiag.status = interconnectorStatus;
       icDiag.tries = results.map((r, i) => ({
         border: ENTSOE_BORDERS[i].name,
@@ -1175,7 +1192,7 @@ try {
       }));
       icDiag.backfilled = backfilled;
       icDiag.sourcesByBorder = built.map((b: any) => ({ name: b.name, source: b.__source }));
-      icDiag.sourceCounts = { entsoe: okCount, bmrs: bmrsCount, lkg: backfillCount };
+      icDiag.sourceCounts = { entsoe: okCount, bmrs: bmrsCount, outturn: outturnCount, lkg: backfillCount };
     }
   }
 
@@ -1242,19 +1259,35 @@ if (DEBUG) {
     },
     icOk: interconnectors.length > 0,
     icCount: interconnectors.length,
-    icSource: ((icDiag?.sourceCounts?.entsoe || 0) > 0 && (icDiag?.sourceCounts?.bmrs || 0) > 0)
+    icSource: (
+      ((icDiag?.sourceCounts?.entsoe || 0) > 0 ? 1 : 0) +
+      ((icDiag?.sourceCounts?.bmrs || 0) > 0 ? 1 : 0) +
+      ((icDiag?.sourceCounts?.outturn || 0) > 0 ? 1 : 0)
+    ) > 1
       ? 'mixed'
       : ((icDiag?.sourceCounts?.entsoe || 0) > 0
         ? 'entsoe-a11'
-        : ((icDiag?.sourceCounts?.bmrs || 0) > 0 ? 'bmrs-summary' : (interconnectorStatus === 'cached' ? 'lkg' : 'none'))),
+        : ((icDiag?.sourceCounts?.bmrs || 0) > 0
+          ? 'bmrs-summary'
+          : ((icDiag?.sourceCounts?.outturn || 0) > 0
+            ? 'outturn'
+            : (interconnectorStatus === 'cached' ? 'lkg' : 'none')))),
     icStatus: interconnectorStatus,
     icAttempts: icDiag.tries,
     icSample: interconnectors.slice(0, 3),
-    ic: { ok: icDiag.ok, count: interconnectors.length, source: ((icDiag?.sourceCounts?.entsoe || 0) > 0 && (icDiag?.sourceCounts?.bmrs || 0) > 0)
+    ic: { ok: icDiag.ok, count: interconnectors.length, source: (
+      ((icDiag?.sourceCounts?.entsoe || 0) > 0 ? 1 : 0) +
+      ((icDiag?.sourceCounts?.bmrs || 0) > 0 ? 1 : 0) +
+      ((icDiag?.sourceCounts?.outturn || 0) > 0 ? 1 : 0)
+    ) > 1
       ? 'mixed'
       : ((icDiag?.sourceCounts?.entsoe || 0) > 0
         ? 'entsoe-a11'
-        : ((icDiag?.sourceCounts?.bmrs || 0) > 0 ? 'bmrs-summary' : (icDiag.status === 'cached' ? 'lkg' : 'none'))), status: icDiag.status, tries: icDiag.tries, sourcesByBorder: icDiag.sourcesByBorder },
+        : ((icDiag?.sourceCounts?.bmrs || 0) > 0
+          ? 'bmrs-summary'
+          : ((icDiag?.sourceCounts?.outturn || 0) > 0
+            ? 'outturn'
+            : (icDiag.status === 'cached' ? 'lkg' : 'none')))), status: icDiag.status, tries: icDiag.tries, sourcesByBorder: icDiag.sourcesByBorder },
   };
 }
 
