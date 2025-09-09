@@ -63,6 +63,68 @@ export const DiagnosticsPanel = () => {
     }
   };
 
+  const testEntsoeIreland = async () => {
+    setLoadingHealth(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('entsoe-health', {
+        body: { 
+          in_Domain: '10Y1001A1001A59C', // IE (Ireland)
+          out_Domain: '10YGB----------A', // GB
+          minutesBack: 180, // 3 hours back
+          alignQuarter: true
+        }
+      });
+      if (error) throw error;
+      setHealthResult(data);
+      toast({
+        title: "ENTSO-E Ireland test completed",
+        description: data.ok ? "EWIC interconnector data available" : "Issues with Ireland data",
+        variant: data.ok ? "default" : "destructive",
+      });
+    } catch (error) {
+      console.error('ENTSO-E Ireland test failed:', error);
+      setHealthResult({ error: error.message });
+      toast({
+        title: "ENTSO-E Ireland test failed",
+        description: "Failed to test Ireland border",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingHealth(false);
+    }
+  };
+
+  const testEntsoeNorthernIreland = async () => {
+    setLoadingHealth(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('entsoe-health', {
+        body: { 
+          in_Domain: '10Y1001A1001A016', // Northern Ireland
+          out_Domain: '10YGB----------A', // GB
+          minutesBack: 180, // 3 hours back
+          alignQuarter: true
+        }
+      });
+      if (error) throw error;
+      setHealthResult(data);
+      toast({
+        title: "ENTSO-E Northern Ireland test completed",
+        description: data.ok ? "Moyle interconnector data available" : "Issues with Northern Ireland data",
+        variant: data.ok ? "default" : "destructive",
+      });
+    } catch (error) {
+      console.error('ENTSO-E Northern Ireland test failed:', error);
+      setHealthResult({ error: error.message });
+      toast({
+        title: "ENTSO-E Northern Ireland test failed",
+        description: "Failed to test Northern Ireland border",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingHealth(false);
+    }
+  };
+
   return (
     <Card className="mb-6">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -80,28 +142,58 @@ export const DiagnosticsPanel = () => {
         
         <CollapsibleContent>
           <CardContent className="space-y-4">
-            <div className="flex gap-2">
-              <Button
-                onClick={runHealthCheck}
-                disabled={loadingHealth}
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <Zap className="w-4 h-4" />
-                {loadingHealth ? 'Testing...' : 'Run ENTSO-E Health Check'}
-              </Button>
+            <div className="space-y-2">
+              <div className="flex gap-2 flex-wrap">
+                <Button
+                  onClick={runHealthCheck}
+                  disabled={loadingHealth}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Zap className="w-4 h-4" />
+                  {loadingHealth ? 'Testing...' : 'Run ENTSO-E Health Check'}
+                </Button>
+                
+                <Button
+                  onClick={runEnergyDebug}
+                  disabled={loadingEnergy}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <TestTube className="w-4 h-4" />
+                  {loadingEnergy ? 'Fetching...' : 'Fetch Energy-Data (Debug)'}
+                </Button>
+              </div>
               
-              <Button
-                onClick={runEnergyDebug}
-                disabled={loadingEnergy}
-                variant="outline"
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <TestTube className="w-4 h-4" />
-                {loadingEnergy ? 'Fetching...' : 'Fetch Energy-Data (Debug)'}
-              </Button>
+              <div className="flex gap-2 flex-wrap">
+                <Button
+                  onClick={testEntsoeIreland}
+                  disabled={loadingHealth}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Zap className="w-4 h-4" />
+                  {loadingHealth ? 'Testing...' : 'Test ENTSO-E: Ireland (EWIC)'}
+                </Button>
+                
+                <Button
+                  onClick={testEntsoeNorthernIreland}
+                  disabled={loadingHealth}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <Zap className="w-4 h-4" />
+                  {loadingHealth ? 'Testing...' : 'Test ENTSO-E: Northern Ireland (Moyle)'}
+                </Button>
+              </div>
+              
+              <p className="text-xs text-muted-foreground">
+                Note: "Invalid time interval" errors are common with ENTSO-E A11 data - this indicates the requested time window is not available yet.
+              </p>
             </div>
 
             {healthResult && (

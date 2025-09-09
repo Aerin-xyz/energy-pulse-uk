@@ -46,18 +46,51 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify(body), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Defaults: test GB-FR border over last 2h window
-    const inDomain = qp('in_Domain', '10YGB----------A');
-    const outDomain = qp('out_Domain', '10YFR-RTE------C');
+    // Check if we have a JSON body with border-specific parameters
+    let inDomain = qp('in_Domain', '10YGB----------A');
+    let outDomain = qp('out_Domain', '10YFR-RTE------C');
+    let periodStart: string;
+    let periodEnd: string;
 
     const formatEntsoe = (d: Date) =>
       `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}` +
       `${String(d.getUTCHours()).padStart(2, '0')}${String(d.getUTCMinutes()).padStart(2, '0')}`;
 
-    const now = new Date();
-    const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
-    const periodStart = qp('periodStart', formatEntsoe(start));
-    const periodEnd = qp('periodEnd', formatEntsoe(now));
+    if (req.method === 'POST') {
+      try {
+        const body = await req.json();
+        if (body.in_Domain) inDomain = body.in_Domain;
+        if (body.out_Domain) outDomain = body.out_Domain;
+        
+        const minutesBack = body.minutesBack || 120; // Default 2 hours
+        const alignQuarter = body.alignQuarter || false;
+        
+        const now = new Date();
+        let endTime = new Date(now.getTime() - minutesBack * 60 * 1000);
+        let startTime = new Date(endTime.getTime() - 15 * 60 * 1000); // 15 minute window
+        
+        if (alignQuarter) {
+          // Align to quarter-hour boundaries
+          endTime.setUTCMinutes(Math.floor(endTime.getUTCMinutes() / 15) * 15, 0, 0);
+          startTime = new Date(endTime.getTime() - 15 * 60 * 1000);
+        }
+        
+        periodStart = formatEntsoe(startTime);
+        periodEnd = formatEntsoe(endTime);
+      } catch {
+        // Fall back to query parameters
+        const now = new Date();
+        const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+        periodStart = qp('periodStart', formatEntsoe(start));
+        periodEnd = qp('periodEnd', formatEntsoe(now));
+      }
+    } else {
+      // GET request - use query parameters
+      const now = new Date();
+      const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+      periodStart = qp('periodStart', formatEntsoe(start));
+      periodEnd = qp('periodEnd', formatEntsoe(now));
+    }
 
     const entsoeUrl = `https://web-api.tp.entsoe.eu/api?` +
       `securityToken=${token}&` +
