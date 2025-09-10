@@ -2,6 +2,7 @@ import { RefreshCw, Zap, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
+import { EUGenerationMix } from '@/components/EUGenerationMix';
 import { useEnergyData } from '@/hooks/useEnergyData';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatusIndicator } from '@/components/StatusIndicator';
@@ -122,6 +123,9 @@ export const EnergyDashboard = () => {
             data={data.interconnectors} 
             interconnectorStatus={data.dataFreshness?.interconnectorStatus}
           />
+
+            {/* EU Generation Mix */}
+            <EUGenerationMix data={data.euGenerationMix || []} />
           </div>
         ) : null}
       </main>

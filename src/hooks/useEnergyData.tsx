@@ -15,9 +15,17 @@ interface InterconnectorData {
   capacity: number;
 }
 
+interface EUCountryGeneration {
+  country: string;
+  totalMW: number;
+  fuelMix: Record<string, number>;
+  timestamp: string;
+}
+
 interface EnergyData {
   generationMix: GenerationData[];
   interconnectors: InterconnectorData[];
+  euGenerationMix?: EUCountryGeneration[];
   totalGeneration: number;
   totalDemand: number;
   totalGenerationMW: number;
@@ -152,6 +160,7 @@ export const useEnergyData = () => {
       setData({
         generationMix: energyData.generationMix,
         interconnectors: energyData.interconnectors,
+        euGenerationMix: energyData.euGenerationMix || [],
         totalGeneration: energyData.totalGeneration || (energyData.totalGenerationMW || 0) / 1000,
         totalDemand: energyData.totalDemand || (energyData.totalDemandMW || 0) / 1000,
         totalGenerationMW: energyData.totalGenerationMW || (energyData.totalGeneration || 0) * 1000,

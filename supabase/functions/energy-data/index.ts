@@ -195,6 +195,93 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
   return { mw: 0, matched: false, reason: sawJson ? 'pv-unexpected-shape' : 'pv-no-json', debug: { columns: lastCols } };
 }
 
+// EU Generation Mix from ENTSO-E A75 (Actual Generation Per Type)
+async function fetchEUGenerationMix(): Promise<any[]> {
+  const token = Deno.env.get("ENTSOE_API_TOKEN");
+  if (!token) return [];
+
+  // Major EU countries/bidding zones for generation data
+  const euCountries = [
+    { name: "Germany", eic: "10Y1001A1001A83F" },
+    { name: "France", eic: "10YFR-RTE------C" },
+    { name: "Spain", eic: "10YES-REE------0" },
+    { name: "Italy", eic: "10YIT-GRTN-----B" },
+    { name: "Netherlands", eic: "10YNL----------L" },
+    { name: "Belgium", eic: "10YBE----------2" },
+    { name: "Poland", eic: "10YPL-AREA-----S" },
+    { name: "Austria", eic: "10YAT-APG------L" },
+    { name: "Denmark", eic: "10Y1001A1001A65H" },
+    { name: "Sweden", eic: "10YSE-1--------K" },
+    { name: "Norway", eic: "10YNO-2--------T" },
+    { name: "Finland", eic: "10YFI-1--------U" }
+  ];
+
+  const now = new Date();
+  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const startStr = yesterday.toISOString().slice(0, 10).replace(/-/g, '') + "0000";
+  const endStr = now.toISOString().slice(0, 10).replace(/-/g, '') + "2300";
+
+  const generationData = [];
+
+  for (const country of euCountries) {
+    try {
+      const url = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A75&processType=A16&in_Domain=${country.eic}&periodStart=${startStr}&periodEnd=${endStr}`;
+      
+      const response = await fetch(url, {
+        headers: { "User-Agent": UA },
+        cache: "no-store"
+      });
+
+      if (response.ok) {
+        const xmlText = await response.text();
+        const parser = new XMLParser({
+          ignoreAttributes: false,
+          attributeNamePrefix: "@_"
+        });
+        
+        const parsed = parser.parse(xmlText);
+        const doc = parsed?.Publication_MarketDocument;
+        
+        if (doc?.TimeSeries) {
+          const timeSeries = Array.isArray(doc.TimeSeries) ? doc.TimeSeries : [doc.TimeSeries];
+          
+          let totalGeneration = 0;
+          const fuelMix: Record<string, number> = {};
+
+          for (const series of timeSeries) {
+            const fuelType = series?.MktPSRType?.psrType || "Unknown";
+            const period = Array.isArray(series?.Period) ? series.Period[series.Period.length - 1] : series?.Period;
+            
+            if (period?.Point) {
+              const points = Array.isArray(period.Point) ? period.Point : [period.Point];
+              const latestPoint = points[points.length - 1];
+              const quantity = parseFloat(latestPoint?.quantity || "0");
+              
+              if (quantity > 0) {
+                fuelMix[fuelType] = (fuelMix[fuelType] || 0) + quantity;
+                totalGeneration += quantity;
+              }
+            }
+          }
+
+          if (totalGeneration > 0) {
+            generationData.push({
+              country: country.name,
+              totalMW: Math.round(totalGeneration),
+              fuelMix: fuelMix,
+              timestamp: new Date().toISOString()
+            });
+          }
+        }
+      }
+    } catch (error) {
+      console.log(`[energy-data] Failed to fetch generation for ${country.name}:`, error);
+    }
+  }
+
+  return generationData;
+}
+
 /**
  * Fetches ENTSO-E physical flows using the new enhanced method.
  * Uses standardized ENTSOE_BORDERS configuration with proper interconnector mapping.
@@ -1030,10 +1117,11 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Fetch data sources in parallel (BMRS + Demand; IC handled separately)
-    const [bmrsR, demandR] = await Promise.all([
+    // Fetch data sources in parallel (BMRS + Demand + EU Generation; IC handled separately)
+    const [bmrsR, demandR, euGenerationMix] = await Promise.all([
       fetchBMRSGeneration(),
       fetchDemand(),
+      fetchEUGenerationMix(),
     ]);
 
     if (DEBUG) dlog(true, "Data fetch results:", { 
@@ -1184,6 +1272,7 @@ try {
     const payload: any = {
       generationMix,
       interconnectors,
+      euGenerationMix,
       totalGenerationMW: Math.round(totalGenerationMW),
       totalDemandMW: Math.round(totalDemand * 1000),
       units: "MW",
