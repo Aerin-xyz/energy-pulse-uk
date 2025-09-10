@@ -278,8 +278,88 @@ async function fetchEntsoePhysicalFlows(): Promise<{
 }
 
 /**
- * Fetches interconnector data with enhanced strategies and fallbacks.
- * Priority: ENTSO-E → BMRS summary → Outturn-derived → LKG
+ * Fetches all possible interconnectors showing their current status.
+ * Returns all ENTSOE_BORDERS regardless of whether they have live data.
+ */
+async function fetchAllInterconnectorsWithStatus(debug = false): Promise<{
+  ok: boolean; 
+  attempts: any[];
+  status: string;
+  interconnectors: any[];
+}> {
+  const attempts: any[] = [];
+  const allInterconnectors: any[] = [];
+
+  // Strategy 1: Try to get live ENTSO-E data for all borders
+  const apiToken = Deno.env.get('ENTSOE_API_TOKEN');
+  const hasEntsoeToken = Boolean(apiToken);
+  
+  if (hasEntsoeToken && debug) dlog(true, "Trying ENTSO-E physical flows for all interconnectors...");
+  
+  const now = new Date();
+  
+  // Process each possible interconnector
+  for (const border of ENTSOE_BORDERS) {
+    const capacity = CAPACITY_HINTS[border.name] || null;
+    
+    let flow = 0;
+    let interconnectorStatus: "live" | "offline" | "unavailable" = "unavailable";
+    
+    if (hasEntsoeToken) {
+      try {
+        const result = await entsoeNetForBorderMW(apiToken, border.eic, border.mtuMin, now);
+        
+        attempts.push({
+          border: border.name,
+          eic: border.eic,
+          ok: result.ok,
+          netMW: result.netMW,
+          reason: result.reason || undefined,
+          timestamp: result.t || undefined
+        });
+
+        if (result.ok && Number.isFinite(result.netMW)) {
+          flow = result.netMW;
+          interconnectorStatus = "live";
+        } else {
+          interconnectorStatus = "offline";
+        }
+      } catch (e) {
+        attempts.push({
+          border: border.name,
+          eic: border.eic,
+          ok: false,
+          reason: (e as Error)?.message || 'unknown-error'
+        });
+        interconnectorStatus = "unavailable";
+      }
+    }
+    
+    allInterconnectors.push({
+      name: border.displayName,
+      country: border.country,
+      flow: flow,
+      capacity: capacity,
+      status: interconnectorStatus,
+      borderName: border.name // For debugging
+    });
+  }
+
+  const liveCount = allInterconnectors.filter(ic => ic.status === "live").length;
+  const overallStatus = liveCount > 0 ? "live" : (hasEntsoeToken ? "cached" : "unavailable");
+  
+  if (debug) dlog(true, `All interconnectors processed: ${liveCount}/${allInterconnectors.length} live`);
+
+  return {
+    ok: true,
+    attempts,
+    status: overallStatus,
+    interconnectors: allInterconnectors
+  };
+}
+
+/**
+ * Legacy function for backward compatibility
  */
 async function fetchInterconnectorsEnhanced(debug = false): Promise<{
   ok: boolean; 
@@ -289,59 +369,16 @@ async function fetchInterconnectorsEnhanced(debug = false): Promise<{
   status?: string;
   interconnectors?: any[];
 }> {
-  const attempts: any[] = [];
-
-  // Strategy 1: ENTSO-E Physical Flows (Primary - Real-time)
-  if (debug) dlog(true, "Trying ENTSO-E physical flows...");
-  const entsoeResult = await fetchEntsoePhysicalFlows();
+  const result = await fetchAllInterconnectorsWithStatus(debug);
   
-  if (entsoeResult.ok && entsoeResult.interconnectors) {
-    attempts.push(...(entsoeResult.attempts || []));
-    
-    if (debug) dlog(true, `ENTSO-E success: ${entsoeResult.interconnectors.length} interconnectors`);
-    return {
-      ok: true,
-      data: entsoeResult.interconnectors,
-      attempts,
-      source: "entso-e-physical",
-      status: "live",
-      interconnectors: entsoeResult.interconnectors
-    };
-  }
-
-  if (debug) dlog(true, `ENTSO-E failed: ${entsoeResult.reason}, falling back to BMRS...`);
-
-  // Strategy 2: BMRS Summary (existing logic)
-  const hosts = [DATA_HOST, BMRS_HOST];
-  const candidates: { url: string; variant: string }[] = [];
-
-  for (const host of hosts) {
-    const base = `https://${host}/bmrs/api/v1`;
-    const tag = host === DATA_HOST ? 'data' : 'bmrs';
-    candidates.push(
-      { url: withFormat(`${base}/balancing/interconnector/summary/latest`), variant: `ic-summary-latest@${tag}` },
-      { url: withFormat(`${base}/balancing/interconnector/summary`),       variant: `ic-summary@${tag}` },
-    );
-  }
-
-  for (const c of candidates) {
-    const r = await tryOnce(c.url, c.variant);
-    attempts.push({
-      url: r.url,
-      variant: c.variant,
-      status: (r as any).status,
-      contentType: (r as any).contentType,
-      ok: r.ok,
-      reason: (r as any).reason,
-      redirectedTo: (r as any).redirectedTo || undefined,
-      preview: (r as any).body ? (r as any).body.slice(0, 180) : undefined,
-    });
-    if (r.ok) {
-      return { ok: true, data: r.data, attempts, source: "bmrs-summary", status: "live" };
-    }
-  }
-
-  return { ok: false, attempts, source: "none", status: "unavailable" };
+  return {
+    ok: result.ok,
+    data: result.interconnectors,
+    attempts: result.attempts,
+    source: "entso-e-enhanced",
+    status: result.status,
+    interconnectors: result.interconnectors
+  };
 }
 // Fetch demand with dual host support
 async function fetchDemand() {
@@ -1106,60 +1143,38 @@ if (ds.ok) {
       dlog(true, `Warning: Percentage sum deviation: ${percentageSum}% (expected 100%)`);
     }
 
-// Interconnector flows via enhanced strategy (ENTSO-E → BMRS → LKG fallback)
-let interconnectors: Array<{ name:string; country:string; flow:number; capacity:number|null; asOf?:string|null }> = [];
+// Interconnector flows - now showing all possible interconnectors with status
+let interconnectors: Array<{ name:string; country:string; flow:number; capacity:number|null; status?:'live'|'offline'|'unavailable'; asOf?:string|null }> = [];
 let interconnectorStatus: "live" | "cached" | "unavailable" = "unavailable";
 let icDiag: any = { source: "enhanced", ok: false, tries: [] as any[], status: "none" };
 
 try {
-  // Use the enhanced interconnector fetch strategy
-  const icResult = await fetchInterconnectorsEnhanced(DEBUG);
+  // Use the new enhanced method that shows all possible interconnectors
+  const icResult = await fetchAllInterconnectorsWithStatus(DEBUG);
   
-  if (icResult.ok && icResult.interconnectors) {
-    interconnectors = icResult.interconnectors;
-    interconnectorStatus = (icResult.status as "live" | "cached" | "unavailable") || "live";
-    
-    if (DEBUG) {
-      icDiag.ok = true;
-      icDiag.status = interconnectorStatus;
-      icDiag.source = icResult.source;
-      icDiag.tries = icResult.attempts || [];
-      icDiag.count = interconnectors.length;
-    }
-  } else {
-    // Enhanced method failed → try Last Known Good (LKG) fallback
-    if (DEBUG) dlog(true, "Enhanced interconnector fetch failed, trying LKG fallback", { reason: icResult.reason });
-    
-    const lkgList = await getLastInterconnectorsFromLKG();
-    if (Array.isArray(lkgList) && lkgList.length) {
-      interconnectors = lkgList;
-      interconnectorStatus = "cached";
-      
-      if (DEBUG) {
-        icDiag.ok = true;
-        icDiag.status = "cached";
-        icDiag.source = "lkg-fallback";
-        icDiag.tries = [{ reason: icResult.reason || "enhanced-failed" }];
-        icDiag.count = interconnectors.length;
-      }
-    } else {
-      if (DEBUG) {
-        icDiag.tries = icResult.attempts || [{ reason: icResult.reason || "no-data" }];
-      }
-    }
-  }
-
-  // LKG fallback if no live data or no token produced anything
-  if (!interconnectors.length || interconnectorStatus === "unavailable") {
-    const lkgList = await getLastInterconnectorsFromLKG();
-    if (Array.isArray(lkgList) && lkgList.length) {
-      interconnectors = lkgList;
-      interconnectorStatus = "cached";
-      if (DEBUG) icDiag.status = "cached";
-    }
+  interconnectors = icResult.interconnectors; // Always populated with all borders
+  interconnectorStatus = icResult.status;
+  
+  if (DEBUG) {
+    icDiag.ok = true;
+    icDiag.status = interconnectorStatus;
+    icDiag.source = "entso-e-all-borders";
+    icDiag.tries = icResult.attempts || [];
+    icDiag.count = interconnectors.length;
+    icDiag.liveCount = interconnectors.filter(ic => ic.status === 'live').length;
   }
 } catch (e) {
   if (DEBUG) dlog(true, `IC resolution error: ${e.message}`);
+  
+  // Fallback: show all interconnectors as unavailable
+  interconnectors = ENTSOE_BORDERS.map(border => ({
+    name: border.displayName,
+    country: border.country,
+    flow: 0,
+    capacity: CAPACITY_HINTS[border.name] || null,
+    status: 'unavailable' as const
+  }));
+  interconnectorStatus = "unavailable";
 }
 
     const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;

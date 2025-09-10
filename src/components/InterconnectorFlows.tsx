@@ -6,6 +6,7 @@ interface InterconnectorData {
   country: string;
   flow: number; // Positive = import, Negative = export
   capacity: number;
+  status?: 'live' | 'offline' | 'unavailable';
 }
 
 interface InterconnectorFlowsProps {
@@ -71,19 +72,50 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
           </div>
         ) : (
           data
-            .sort((a, b) => Math.abs(b.flow) - Math.abs(a.flow))
+            .sort((a, b) => {
+              // Sort by status first (live > offline > unavailable), then by flow magnitude
+              const statusOrder = { live: 3, offline: 2, unavailable: 1 };
+              const aStatus = statusOrder[a.status || 'unavailable'];
+              const bStatus = statusOrder[b.status || 'unavailable'];
+              if (aStatus !== bStatus) return bStatus - aStatus;
+              return Math.abs(b.flow) - Math.abs(a.flow);
+            })
             .map((interconnector, index) => {
             const isImport = interconnector.flow > 0;
             const flowValue = Math.abs(interconnector.flow);
             const utilization = (flowValue / interconnector.capacity) * 100;
+            const isActive = interconnector.status === 'live' && flowValue > 0;
+            const isOffline = interconnector.status === 'offline';
+            const isUnavailable = interconnector.status === 'unavailable';
             
             return (
               <div
                 key={index}
-                className="flex items-center justify-between p-4 bg-secondary/30 border border-border rounded-lg hover:bg-secondary/40 transition-colors"
+                className={`flex items-center justify-between p-4 border rounded-lg transition-colors ${
+                  isActive 
+                    ? 'bg-secondary/30 border-border hover:bg-secondary/40' 
+                    : isOffline
+                    ? 'bg-orange-500/10 border-orange-500/30 hover:bg-orange-500/20'
+                    : 'bg-muted/20 border-muted hover:bg-muted/30'
+                }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full ${isImport ? 'bg-energy-imports' : 'bg-energy-exports'}`} />
+                  <div className="flex items-center gap-2">
+                    {/* Flow direction indicator */}
+                    {isActive && (
+                      <div className={`w-3 h-3 rounded-full ${isImport ? 'bg-energy-imports' : 'bg-energy-exports'}`} />
+                    )}
+                    
+                    {/* Status indicator */}
+                    <div className={`w-2 h-2 rounded-full ${
+                      interconnector.status === 'live' 
+                        ? 'bg-primary animate-pulse' 
+                        : interconnector.status === 'offline'
+                        ? 'bg-orange-500'
+                        : 'bg-muted'
+                    }`} />
+                  </div>
+                  
                   <div>
                     <div className="font-medium text-card-foreground">
                       {interconnector.name}
@@ -95,19 +127,34 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                 </div>
 
                 <div className="text-right">
-                  <div className="flex items-center gap-2">
-                    {isImport ? (
-                      <ArrowDownLeft className="w-4 h-4 text-energy-imports" />
-                    ) : (
-                      <ArrowUpRight className="w-4 h-4 text-energy-exports" />
-                    )}
-                    <span className={`text-lg font-bold ${isImport ? 'text-energy-imports' : 'text-energy-exports'}`}>
-                      {flowValue.toFixed(0)} MW
-                    </span>
-                  </div>
-                  {interconnector.capacity && interconnector.capacity > 0 && (
-                    <div className="text-sm text-muted-foreground">
-                      {utilization.toFixed(1)}% utilization
+                  {isActive ? (
+                    <>
+                      <div className="flex items-center gap-2">
+                        {isImport ? (
+                          <ArrowDownLeft className="w-4 h-4 text-energy-imports" />
+                        ) : (
+                          <ArrowUpRight className="w-4 h-4 text-energy-exports" />
+                        )}
+                        <span className={`text-lg font-bold ${isImport ? 'text-energy-imports' : 'text-energy-exports'}`}>
+                          {flowValue.toFixed(0)} MW
+                        </span>
+                      </div>
+                      {interconnector.capacity && interconnector.capacity > 0 && (
+                        <div className="text-sm text-muted-foreground">
+                          {utilization.toFixed(1)}% utilization
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <div className="text-right">
+                      <span className={`text-sm font-medium ${
+                        isOffline ? 'text-orange-500' : 'text-muted-foreground'
+                      }`}>
+                        {isOffline ? 'Offline' : 'Unavailable'}
+                      </span>
+                      <div className="text-xs text-muted-foreground mt-1">
+                        {isOffline ? 'No current flow' : 'No data'}
+                      </div>
                     </div>
                   )}
                 </div>
