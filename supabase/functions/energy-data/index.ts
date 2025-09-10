@@ -196,9 +196,9 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
 }
 
 // EU Generation Mix from ENTSO-E A75 (Actual Generation Per Type)
-async function fetchEUGenerationMix(): Promise<any[]> {
+async function fetchEUGenerationMix(debug = false): Promise<any[]> {
   const token = Deno.env.get("ENTSOE_API_TOKEN");
-  if (!token) return [];
+  if (!token) { if (debug) dlog(true, 'EU mix: missing ENTSOE_API_TOKEN'); return []; }
 
   // Major EU countries/bidding zones for generation data
   const euCountries = [
@@ -221,65 +221,64 @@ async function fetchEUGenerationMix(): Promise<any[]> {
   const startStr = yesterday.toISOString().slice(0, 10).replace(/-/g, '') + "0000";
   const endStr = now.toISOString().slice(0, 10).replace(/-/g, '') + "2300";
 
-  const generationData = [];
+  if (debug) dlog(true, 'EU mix fetch start', { countries: euCountries.length, window: { start: startStr, end: endStr } });
 
-  for (const country of euCountries) {
-    try {
-      const url = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A75&processType=A16&in_Domain=${country.eic}&periodStart=${startStr}&periodEnd=${endStr}`;
-      
-      const response = await fetch(url, {
-        headers: { "User-Agent": UA },
-        cache: "no-store"
-      });
+  // Simple timeout helper
+  const raceTimeout = (ms: number) => new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms));
 
-      if (response.ok) {
-        const xmlText = await response.text();
-        const parser = new XMLParser({
-          ignoreAttributes: false,
-          attributeNamePrefix: "@_"
-        });
-        
+  async function fetchCountry(country: { name: string; eic: string }) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const url = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A75&processType=A16&in_Domain=${country.eic}&periodStart=${startStr}&periodEnd=${endStr}`;
+        const res = (await Promise.race([
+          fetch(url, { headers: { "User-Agent": UA }, cache: "no-store" }),
+          raceTimeout(6000),
+        ])) as Response;
+
+        if (!res || !res.ok) throw new Error(`http ${res?.status}`);
+        const xmlText = await res.text();
+        const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
         const parsed = parser.parse(xmlText);
         const doc = parsed?.Publication_MarketDocument;
-        
-        if (doc?.TimeSeries) {
-          const timeSeries = Array.isArray(doc.TimeSeries) ? doc.TimeSeries : [doc.TimeSeries];
-          
-          let totalGeneration = 0;
-          const fuelMix: Record<string, number> = {};
+        if (!doc?.TimeSeries) throw new Error('no-timeseries');
 
-          for (const series of timeSeries) {
-            const fuelType = series?.MktPSRType?.psrType || "Unknown";
-            const period = Array.isArray(series?.Period) ? series.Period[series.Period.length - 1] : series?.Period;
-            
-            if (period?.Point) {
-              const points = Array.isArray(period.Point) ? period.Point : [period.Point];
-              const latestPoint = points[points.length - 1];
-              const quantity = parseFloat(latestPoint?.quantity || "0");
-              
-              if (quantity > 0) {
-                fuelMix[fuelType] = (fuelMix[fuelType] || 0) + quantity;
-                totalGeneration += quantity;
-              }
-            }
-          }
+        const timeSeries = Array.isArray(doc.TimeSeries) ? doc.TimeSeries : [doc.TimeSeries];
+        let total = 0;
+        const fuelMix: Record<string, number> = {};
 
-          if (totalGeneration > 0) {
-            generationData.push({
-              country: country.name,
-              totalMW: Math.round(totalGeneration),
-              fuelMix: fuelMix,
-              timestamp: new Date().toISOString()
-            });
+        for (const series of timeSeries) {
+          const fuelType = series?.MktPSRType?.psrType || 'Unknown';
+          const period = Array.isArray(series?.Period) ? series.Period[series.Period.length - 1] : series?.Period;
+          const points = period?.Point ? (Array.isArray(period.Point) ? period.Point : [period.Point]) : [];
+          if (!points.length) continue;
+          const latestPoint = points[points.length - 1];
+          const q = parseFloat(latestPoint?.quantity || '0');
+          if (Number.isFinite(q) && q > 0) {
+            fuelMix[fuelType] = (fuelMix[fuelType] || 0) + q;
+            total += q;
           }
         }
+
+        if (total > 0) {
+          const out = { country: country.name, totalMW: Math.round(total), fuelMix, timestamp: new Date().toISOString() };
+          if (debug) dlog(true, 'EU mix country', { country: country.name, totalMW: out.totalMW, fuels: Object.keys(fuelMix).length });
+          return out;
+        }
+        throw new Error('no-positive-quantity');
+      } catch (e) {
+        if (debug) dlog(true, 'EU mix attempt failed', { country: country.name, attempt, error: (e as Error)?.message });
+        if (attempt === 2) return null;
+        await new Promise(r => setTimeout(r, 200 * attempt));
       }
-    } catch (error) {
-      console.log(`[energy-data] Failed to fetch generation for ${country.name}:`, error);
     }
+    return null;
   }
 
-  return generationData;
+  const results = await Promise.allSettled(euCountries.map(c => fetchCountry(c)));
+  const data = results.map(r => (r.status === 'fulfilled' ? r.value : null)).filter(Boolean) as any[];
+
+  if (debug) dlog(true, 'EU mix done', { countriesOk: data.length, countriesTried: euCountries.length });
+  return data;
 }
 
 /**
@@ -1121,7 +1120,7 @@ Deno.serve(async (req) => {
     const [bmrsR, demandR, euGenerationMix] = await Promise.all([
       fetchBMRSGeneration(),
       fetchDemand(),
-      fetchEUGenerationMix(),
+      fetchEUGenerationMix(DEBUG),
     ]);
 
     if (DEBUG) dlog(true, "Data fetch results:", { 

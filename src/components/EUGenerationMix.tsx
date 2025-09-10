@@ -60,7 +60,26 @@ const fuelTypeNames: Record<string, string> = {
 
 export const EUGenerationMix = ({ data }: EUGenerationMixProps) => {
   if (!data || data.length === 0) {
-    return null;
+    return (
+      <Card className="p-6 bg-gradient-card border-border">
+        <CardHeader className="pb-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 bg-gradient-energy rounded-lg">
+              <Zap className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-card-foreground">EU Energy Generation Mix</h2>
+              <p className="text-sm text-muted-foreground">No EU data available right now</p>
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="text-sm text-muted-foreground text-center">
+            We’ll show EU country generation as soon as ENTSO-E responds.
+          </div>
+        </CardContent>
+      </Card>
+    );
   }
 
   // Sort countries by total generation
