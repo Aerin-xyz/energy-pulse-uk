@@ -446,13 +446,13 @@ const GB_EIC = "10YGB----------A";
 
 // Borders to report (can extend later)
 const ENTSOE_BORDERS = [
-  { name: "France",           eic: "10YFR-RTE------C" },
-  { name: "Belgium",          eic: "10YBE----------2" },
-  { name: "Netherlands",      eic: "10YNL----------L" },
-  { name: "Norway",           eic: "10YNO-2--------T" },
-  { name: "Ireland (SEM)",    eic: "10YIE-1001A00010" },
-  { name: "Denmark DK1",      eic: "10YDK-1--------W" },
-  { name: "Denmark DK2",      eic: "10YDK-2--------M" },
+  { name: "France",           eic: "10YFR-RTE------C",  mtuMin: 15 },
+  { name: "Belgium",          eic: "10YBE----------2",  mtuMin: 15 },
+  { name: "Netherlands",      eic: "10YNL----------L",  mtuMin: 15 },
+  { name: "Norway",           eic: "10YNO-2--------T",  mtuMin: 15 },
+  { name: "Ireland (SEM)",    eic: "10YIE-1001A00010", mtuMin: 30 },
+  { name: "Denmark DK1",      eic: "10YDK-1--------W",  mtuMin: 15 },
+  { name: "Denmark DK2",      eic: "10YDK-2--------M",  mtuMin: 15 },
 ];
 
 // Optional static capacity hints per border (MW)
@@ -474,6 +474,27 @@ function floorTo15m(d: Date) {
 }
 function toPeriod(d: Date) {
   return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}`;
+}
+
+// MTU helpers
+function alignDown(date: Date, stepMin: number) {
+  const d = new Date(date);
+  const m = d.getUTCMinutes();
+  const alignedMin = Math.floor(m / stepMin) * stepMin;
+  d.setUTCMinutes(alignedMin, 0, 0);
+  return d;
+}
+function addMinutes(d: Date, mins: number) {
+  return new Date(d.getTime() + mins * 60 * 1000);
+}
+
+// Extract acknowledgement reason (if any)
+function ackReason(xml: string) {
+  try {
+    const dom = new DOMParser().parseFromString(xml, "application/xml");
+    const txt = dom?.getElementsByTagName("Reason")[0]?.getElementsByTagName("text")[0]?.textContent;
+    return txt || null;
+  } catch { return null; }
 }
 
 // Minimal XML parse using fast-xml-parser
@@ -560,50 +581,74 @@ async function entsoeA11(token: string, inDomain: string, outDomain: string, sta
   return value;
 }
 
+// Low-level A11 request without caching; used by retry builder
+async function entsoeA11Raw(token: string, inDomain: string, outDomain: string, start: Date, end: Date) {
+  const periodStart = toPeriod(start);
+  const periodEnd   = toPeriod(end);
+  const url = `${ENTSOE_BASE}?securityToken=${encodeURIComponent(token)}&documentType=A11&in_Domain=${inDomain}&out_Domain=${outDomain}&periodStart=${periodStart}&periodEnd=${periodEnd}`;
+  const res = await fetch(url, { headers: { "Accept": "application/xml" }, redirect: "manual" as RequestRedirect, cache: "no-store" });
+  const text = await res.text();
+  const ctype = res.headers.get("content-type") || "";
+  const isXML = ctype.includes("xml");
+  return { status: res.status, isXML, text, url };
+}
+
+// Try with (mtu, windowMin), and on 400 ack retry with coarser MTU/window
+async function entsoeA11WithRetry(token: string, inDomain: string, outDomain: string, now: Date, prefMtuMin: number) {
+  const plans = [
+    { mtu: prefMtuMin, windowMin: Math.max(prefMtuMin * 2, 60) }, // e.g., 30→60, 15→60
+    { mtu: 30,         windowMin: 120 },
+    { mtu: 60,         windowMin: 180 },
+  ];
+  const attempts: any[] = [];
+
+  for (const plan of plans) {
+    const start = alignDown(addMinutes(now, -plan.windowMin), plan.mtu);
+    const end   = alignDown(now, plan.mtu);
+    const resp  = await entsoeA11Raw(token, inDomain, outDomain, start, end);
+    const rec: any = { url: resp.url, status: resp.status, mtu: plan.mtu, windowMin: plan.windowMin };
+
+    if (!resp.isXML) { rec.reason = "non-xml"; attempts.push(rec); continue; }
+    if (resp.status === 400 && resp.text.includes("Acknowledgement_MarketDocument")) {
+      rec.reason = ackReason(resp.text) || "ack";
+      attempts.push(rec);
+      // retry with next plan
+      continue;
+    }
+    // success or at least a proper Publication doc; hand to parser
+    attempts.push(rec);
+    return { ok: true, xml: resp.text, attempts };
+  }
+  return { ok: false, xml: "", attempts };
+}
+
 // Compute net GB imports for a border at the latest aligned timestamp: net = partner->GB minus GB->partner
-async function entsoeNetForBorderMW(token: string, partnerEIC: string, now: Date) {
-  // Query a 3-hour window to be safe
-  const start = new Date(now.getTime() - 3 * 60 * 60 * 1000);
-  const end   = now;
+async function entsoeNetForBorderMW(token: string, partnerEIC: string, prefMtuMin: number, now: Date) {
+  // partner → GB
+  const into = await entsoeA11WithRetry(token, partnerEIC, GB_EIC, now, prefMtuMin);
+  // GB → partner
+  const from = await entsoeA11WithRetry(token, GB_EIC, partnerEIC, now, prefMtuMin);
 
-  let intoGB = await entsoeA11(token, partnerEIC, GB_EIC, start, end);
-  let fromGB = await entsoeA11(token, GB_EIC, partnerEIC, start, end);
+  const attempts = { into: into.attempts, from: from.attempts };
 
-  // If we received no points or an acknowledgement, retry once with a conservative end time (previous 15-min slot)
-  const noPoints = (r: any) => !r?.ok || !(Array.isArray(r.points) && r.points.length > 0);
-  const hasIntervalError = (r: any) => {
-    const txt = r?.meta?.reasonText || '';
-    return typeof txt === 'string' && /interval/i.test(txt);
-  };
-
-  let secondChance = false;
-  if (noPoints(intoGB) || noPoints(fromGB)) {
-    secondChance = true;
-    const endPrev15 = new Date(floorTo15m(end).getTime() - 15 * 60 * 1000);
-    intoGB = await entsoeA11(token, partnerEIC, GB_EIC, start, endPrev15);
-    fromGB = await entsoeA11(token, GB_EIC, partnerEIC, start, endPrev15);
+  if (!into.ok && !from.ok) {
+    return { ok: false, t: null, netMW: 0, detail: attempts, reason: "no-xml" };
   }
 
-  // Third attempt: enforce hour-aligned window if still empty or time interval error
-  let hourAligned = false;
-  if (noPoints(intoGB) || noPoints(fromGB) || hasIntervalError(intoGB) || hasIntervalError(fromGB)) {
-    hourAligned = true;
-    const endHour = new Date(end);
-    endHour.setUTCMinutes(0, 0, 0);
-    const startHour = new Date(endHour.getTime() - 3 * 60 * 60 * 1000);
-    intoGB = await entsoeA11(token, partnerEIC, GB_EIC, startHour, endHour);
-    fromGB = await entsoeA11(token, GB_EIC, partnerEIC, startHour, endHour);
+  const intoPoints = into.ok ? parseEntsoeA11(into.xml).points : [];
+  const fromPoints = from.ok ? parseEntsoeA11(from.xml).points : [];
+
+  const tsSet = new Set<string>();
+  intoPoints.forEach(p => tsSet.add(p.t));
+  fromPoints.forEach(p => tsSet.add(p.t));
+  const latestT = Array.from(tsSet).sort().pop() || null;
+  if (!latestT) {
+    return { ok: false, t: null, netMW: 0, detail: attempts, reason: "no-points" };
   }
 
-  const timestamps = new Set<string>();
-  intoGB.points.forEach((p: any) => timestamps.add(p.t));
-  fromGB.points.forEach((p: any) => timestamps.add(p.t));
-  const latestT = Array.from(timestamps).sort().pop() || null;
-  if (!latestT) return { ok:false, t:null, netMW:0, detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta, secondChance, hourAligned } };
-
-  const a = intoGB.points.filter((p: any) => p.t === latestT).reduce((s:number,p:any) => s + p.quantity, 0);
-  const b = fromGB.points.filter((p: any) => p.t === latestT).reduce((s:number,p:any) => s + p.quantity, 0);
-  return { ok: true, t: latestT, netMW: Math.round(a - b), detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta, secondChance, hourAligned } };
+  const a = intoPoints.filter(p => p.t === latestT).reduce((s,p)=>s+p.quantity,0);
+  const b = fromPoints.filter(p => p.t === latestT).reduce((s,p)=>s+p.quantity,0);
+  return { ok: true, t: latestT, netMW: Math.round(a - b), detail: attempts };
 }
 
 // ---- Interconnector helpers ----
@@ -1120,7 +1165,7 @@ try {
   const token = (Deno.env.get("ENTSOE_TOKEN") || Deno.env.get("ENTSOE_API_TOKEN") || "").trim();
   if (token) {
     const now = new Date();
-    const results = await Promise.all(ENTSOE_BORDERS.map(b => entsoeNetForBorderMW(token, b.eic, now)));
+    const results = await Promise.all(ENTSOE_BORDERS.map(b => entsoeNetForBorderMW(token, b.eic, b.mtuMin, now)));
 
     // Per-border fallback: BMRS summary for the current anchor
     const summaryRes = await fetchICSummaryCandidates({ date: anchorDate, period: anchorSP });
@@ -1201,9 +1246,8 @@ try {
         border: ENTSOE_BORDERS[i].name,
         ok: !!r?.ok,
         t: r?.t || null,
-        reasonText: r?.detail?.intoGB?.reasonText || r?.detail?.fromGB?.reasonText || null,
-        intoGB: r?.detail?.intoGB || null,
-        fromGB: r?.detail?.fromGB || null,
+        reason: r?.reason || null,
+        attempts: r?.detail || null,
       }));
       icDiag.backfilled = backfilled;
       icDiag.sourcesByBorder = built.map((b: any) => ({ name: b.name, source: b.__source }));
