@@ -196,108 +196,84 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
 }
 
 /**
- * Fetches ENTSO-E physical flows for interconnectors.
- * Returns flow data by interconnector code if successful.
+ * Fetches ENTSO-E physical flows using the new enhanced method.
+ * Uses standardized ENTSOE_BORDERS configuration with proper interconnector mapping.
  */
 async function fetchEntsoePhysicalFlows(): Promise<{
   flows?: Record<string, number>;
+  interconnectors?: any[];
   ok: boolean;
   reason?: string;
-  status?: number;
+  attempts?: any[];
 }> {
   const apiToken = Deno.env.get('ENTSOE_API_TOKEN');
   if (!apiToken) {
     return { ok: false, reason: 'no-api-token' };
   }
 
+  const now = new Date();
+  const attempts: any[] = [];
+  const interconnectors: any[] = [];
+
   try {
-    // Build ENTSO-E period using UTC time: last 2 hours to ensure data availability
-    const formatEntsoe = (d: Date) =>
-      `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}` +
-      `${String(d.getUTCHours()).padStart(2, '0')}${String(d.getUTCMinutes()).padStart(2, '0')}`;
-
-    const endAligned = floorTo15m(new Date());
-    const startAligned = new Date(endAligned.getTime() - 2 * 60 * 60 * 1000);
-    const dateFrom = toPeriod(startAligned);
-    const dateTo = toPeriod(new Date(endAligned.getTime() + 15 * 60 * 1000));
-
-    // ENTSO-E domain codes for GB interconnectors (Borders)
-    const borders = [
-      { from: '10YGB----------A', to: '10YFR-RTE------C', codes: ['INTFR', 'INTIFA2', 'INTELEC'] }, // GB-FR cluster
-      { from: '10YGB----------A', to: '10YBE----------2', codes: ['INTNEM'] }, // GB-BE
-      { from: '10YGB----------A', to: '10YNL----------L', codes: ['INTNED'] }, // GB-NL
-      { from: '10YGB----------A', to: '10YNO-2--------T', codes: ['INTNSL'] }, // GB-NO
-      { from: '10YGB----------A', to: '10Y1001A1001A59C', codes: ['INTIRL'] }, // GB-NI (Moyle)
-      { from: '10YGB----------A', to: '10YIE-1001A00010', codes: ['INTEW'] }, // GB-IE (EWIC)
-    ];
-
-    const flows: Record<string, number> = {};
-    let totalAttempts = 0;
-    let successfulAttempts = 0;
-
-    for (const border of borders) {
+    // Query each border using the new improved method
+    for (const border of ENTSOE_BORDERS) {
       try {
-        totalAttempts++;
-        const url = `https://web-api.tp.entsoe.eu/api?` +
-          `securityToken=${apiToken}&` +
-          `documentType=A11&` +
-          `in_Domain=${border.from}&` +
-          `out_Domain=${border.to}&` +
-          `periodStart=${dateFrom}&` +
-          `periodEnd=${dateTo}`;
-
-        const response = await fetch(url, {
-          headers: { 'Accept': 'application/xml, text/xml' },
-          signal: AbortSignal.timeout(12000)
+        const result = await entsoeNetForBorderMW(apiToken, border.eic, border.mtuMin, now);
+        
+        attempts.push({
+          border: border.name,
+          eic: border.eic,
+          ok: result.ok,
+          netMW: result.netMW,
+          reason: result.reason || undefined,
+          timestamp: result.t || undefined
         });
 
-        if (!response.ok) {
-          const preview = (await response.text()).slice(0, 180);
-          dlog(true, 'ENTSO-E border failed', { url, status: response.status, preview });
-          continue;
+        if (result.ok && Number.isFinite(result.netMW)) {
+          // Get capacity from hints
+          const capacity = CAPACITY_HINTS[border.name] || null;
+          
+          interconnectors.push({
+            name: border.displayName,
+            country: border.country,
+            flow: result.netMW,
+            capacity: capacity
+          });
         }
-
-        const xmlText = await response.text();
-        
-        // Simple XML parsing for TimeSeries data
-        const timeSeriesMatch = xmlText.match(/<TimeSeries>[\s\S]*?<\/TimeSeries>/);
-        if (!timeSeriesMatch) {
-          dlog(true, 'ENTSO-E no TimeSeries', { url });
-          continue;
-        }
-
-        // Extract the latest flow value
-        const quantityMatches = [...xmlText.matchAll(/<quantity>(-?\d+(?:\.\d+)?)<\/quantity>/g)];
-        if (quantityMatches.length === 0) {
-          dlog(true, 'ENTSO-E no quantities', { url });
-          continue;
-        }
-
-        // Most recent value
-        const latestFlow = parseFloat(quantityMatches[quantityMatches.length - 1][1]);
-        
-        // Distribute flow across interconnectors for this border
-        const flowPerIC = latestFlow / border.codes.length;
-        border.codes.forEach(code => {
-          flows[code] = Math.round(flowPerIC);
-        });
-
-        successfulAttempts++;
 
       } catch (e) {
-        dlog(true, 'ENTSO-E border error', { error: (e as Error)?.message });
-        continue;
+        attempts.push({
+          border: border.name,
+          eic: border.eic,
+          ok: false,
+          reason: (e as Error)?.message || 'unknown-error'
+        });
       }
     }
 
-    if (successfulAttempts > 0) {
-      return { flows, ok: true };
+    // Success if we got any valid interconnector data
+    if (interconnectors.length > 0) {
+      return { 
+        ok: true, 
+        interconnectors,
+        attempts,
+        flows: undefined // Legacy compatibility - not needed with new format
+      };
     }
 
-    return { ok: false, reason: 'no-successful-borders' };
+    return { 
+      ok: false, 
+      reason: 'no-valid-interconnectors',
+      attempts 
+    };
 
   } catch (e) {
-    return { ok: false, reason: (e as Error).message };
+    return { 
+      ok: false, 
+      reason: (e as Error).message,
+      attempts 
+    };
   }
 }
 
@@ -319,56 +295,17 @@ async function fetchInterconnectorsEnhanced(debug = false): Promise<{
   if (debug) dlog(true, "Trying ENTSO-E physical flows...");
   const entsoeResult = await fetchEntsoePhysicalFlows();
   
-  if (entsoeResult.ok && entsoeResult.flows) {
-    // Convert ENTSO-E flows to interconnector format
-    const interconnectors: any[] = [];
+  if (entsoeResult.ok && entsoeResult.interconnectors) {
+    attempts.push(...(entsoeResult.attempts || []));
     
-    // Map flows to our interconnector structure
-    const icMap: Record<string, { name: string; country: string; capacity: number }> = {
-      'INTFR': { name: 'IFA', country: 'France', capacity: 2000 },
-      'INTIFA2': { name: 'IFA2', country: 'France', capacity: 1000 },
-      'INTELEC': { name: 'ElecLink', country: 'France', capacity: 1000 },
-      'INTNEM': { name: 'Nemo Link', country: 'Belgium', capacity: 1000 },
-      'INTNED': { name: 'BritNed', country: 'Netherlands', capacity: 1000 },
-      'INTNSL': { name: 'NSL', country: 'Norway', capacity: 1400 },
-      'INTIRL': { name: 'Moyle', country: 'Northern Ireland', capacity: 500 },
-      'INTEW': { name: 'EWIC', country: 'Ireland', capacity: 500 }
-    };
-
-    Object.entries(entsoeResult.flows).forEach(([code, flow]) => {
-      const ic = icMap[code];
-      if (ic) {
-        interconnectors.push({
-          code,
-          name: ic.name,
-          country: ic.country,
-          flow: flow,
-          capacity: ic.capacity
-        });
-      }
-    });
-
-    // Add any missing interconnectors with zero flow (EWIC not in ENTSO-E)
-    Object.entries(icMap).forEach(([code, ic]) => {
-      if (!entsoeResult.flows![code]) {
-        interconnectors.push({
-          code,
-          name: ic.name,
-          country: ic.country,
-          flow: 0,
-          capacity: ic.capacity
-        });
-      }
-    });
-
-    if (debug) dlog(true, `ENTSO-E success: ${interconnectors.length} interconnectors`);
+    if (debug) dlog(true, `ENTSO-E success: ${entsoeResult.interconnectors.length} interconnectors`);
     return {
       ok: true,
-      data: interconnectors,
+      data: entsoeResult.interconnectors,
       attempts,
       source: "entso-e-physical",
       status: "live",
-      interconnectors
+      interconnectors: entsoeResult.interconnectors
     };
   }
 
@@ -444,27 +381,28 @@ const num = (x: any) => {
 const ENTSOE_BASE = "https://web-api.tp.entsoe.eu/api";
 const GB_EIC = "10YGB----------A";
 
-// Borders to report (can extend later)
+// Borders to report with standardized naming
 const ENTSOE_BORDERS = [
-  { name: "France",           eic: "10YFR-RTE------C",  mtuMin: 15 },
-  { name: "Belgium",          eic: "10YBE----------2",  mtuMin: 15 },
-  { name: "Netherlands",      eic: "10YNL----------L",  mtuMin: 15 },
-  { name: "Norway",           eic: "10YNO-2--------T",  mtuMin: 15 },
-  { name: "Ireland (SEM)",    eic: "10YIE-1001A00010", mtuMin: 30 },
-  { name: "Northern Ireland", eic: "10Y1001A1001A59C", mtuMin: 30 },
-  { name: "Denmark DK1",      eic: "10YDK-1--------W",  mtuMin: 15 },
-  { name: "Denmark DK2",      eic: "10YDK-2--------M",  mtuMin: 15 },
+  { name: "France",           eic: "10YFR-RTE------C",  mtuMin: 15, displayName: "France",          country: "France" },
+  { name: "Belgium",          eic: "10YBE----------2",  mtuMin: 15, displayName: "Belgium",         country: "Belgium" },
+  { name: "Netherlands",      eic: "10YNL----------L",  mtuMin: 15, displayName: "Netherlands",     country: "Netherlands" },
+  { name: "Norway",           eic: "10YNO-2--------T",  mtuMin: 15, displayName: "Norway",          country: "Norway" },
+  { name: "Ireland (SEM)",    eic: "10YIE-1001A00010", mtuMin: 30, displayName: "EWIC",            country: "Ireland" },
+  { name: "Northern Ireland", eic: "10Y1001A1001A59C", mtuMin: 30, displayName: "Moyle",           country: "Northern Ireland" },
+  { name: "Denmark DK1",      eic: "10YDK-1--------W",  mtuMin: 15, displayName: "Viking Link",    country: "Denmark" },
+  { name: "Denmark DK2",      eic: "10YDK-2--------M",  mtuMin: 15, displayName: "Denmark West",   country: "Denmark" },
 ];
 
-// Optional static capacity hints per border (MW)
+// Capacity hints using standardized border names
 const CAPACITY_HINTS: Record<string, number> = {
-  France: 4000,              // IFA (2000) + IFA2 (1000) + ElecLink (1000)
-  Belgium: 1000,             // Nemo Link
-  Netherlands: 1000,         // BritNed
-  Norway: 1400,              // NSL
-  "Northern Ireland": 500,  // Moyle
-  Ireland: 500,              // EWIC
-  "Denmark DK1": 1400,      // Viking Link
+  "France": 4000,              // IFA (2000) + IFA2 (1000) + ElecLink (1000)
+  "Belgium": 1000,             // Nemo Link
+  "Netherlands": 1000,         // BritNed
+  "Norway": 1400,              // NSL
+  "Ireland (SEM)": 500,        // EWIC
+  "Northern Ireland": 500,     // Moyle
+  "Denmark DK1": 1400,         // Viking Link
+  "Denmark DK2": 700,          // Denmark West
 };
 
 function pad2(n:number){ return n.toString().padStart(2,"0"); }
@@ -675,11 +613,13 @@ const IC_CODE_MAP: Record<string, { name: string; country: string; capacity?: nu
   INTNED:  { name: "BritNed",      country: "Netherlands",        capacity: 1000 },
   // Norway
   INTNSL:  { name: "NSL",          country: "Norway",             capacity: 1400 },
-  // Ireland
+  INTNOR:  { name: "NSL",          country: "Norway",             capacity: 1400 }, // alt code
+  // Ireland (matching ENTSO-E border names)
   INTEW:   { name: "EWIC",         country: "Ireland",            capacity: 500  },
   INTIRL:  { name: "Moyle",        country: "Northern Ireland",   capacity: 500  },
-  // Denmark
+  // Denmark (matching ENTSO-E border names)
   INTDK1:  { name: "Viking Link",  country: "Denmark",            capacity: 1400 },
+  INTDK2:  { name: "Denmark West", country: "Denmark",            capacity: 700 },
 };
 
 function isInterconnectorCode(code?: string) {
@@ -1166,102 +1106,45 @@ if (ds.ok) {
       dlog(true, `Warning: Percentage sum deviation: ${percentageSum}% (expected 100%)`);
     }
 
-// Interconnector flows via ENTSO-E A11 → LKG fallback
+// Interconnector flows via enhanced strategy (ENTSO-E → BMRS → LKG fallback)
 let interconnectors: Array<{ name:string; country:string; flow:number; capacity:number|null; asOf?:string|null }> = [];
 let interconnectorStatus: "live" | "cached" | "unavailable" = "unavailable";
-let icDiag: any = { source: "entsoe-a11", ok: false, tries: [] as any[], status: "none" };
+let icDiag: any = { source: "enhanced", ok: false, tries: [] as any[], status: "none" };
 
 try {
-  const token = (Deno.env.get("ENTSOE_TOKEN") || Deno.env.get("ENTSOE_API_TOKEN") || "").trim();
-  if (token) {
-    const now = new Date();
-    const results = await Promise.all(ENTSOE_BORDERS.map(b => entsoeNetForBorderMW(token, b.eic, b.mtuMin, now)));
-
-    // Per-border fallback: BMRS summary for the current anchor
-    const summaryRes = await fetchICSummaryCandidates({ date: anchorDate, period: anchorSP });
-    const summaryRows: any[] = Array.isArray((summaryRes as any)?.data) ? (summaryRes as any).data : [];
-
-    // Fetch last known ICs once for per-border backfill
-    const lkgList = await getLastInterconnectorsFromLKG();
-
-    const backfilled: string[] = [];
-    const usedBMRS: string[] = [];
-    const usedENTSOE: string[] = [];
-    const usedOutturn: string[] = [];
-
-    // Prepare outturn-derived IC flows (from BMRS HV outturn rows)
-    const outturnDerived = deriveICFromOutturnRowsVariant(latestOutturnRows, outturnVariant);
-    const outturnByCode: Record<string, number> = {};
-    outturnDerived.forEach(ic => { outturnByCode[ic.code] = Math.round(ic.flow); });
-    const built = ENTSOE_BORDERS.map((b, i) => {
-      const baseName = b.name.includes("(") ? b.name.split(" (")[0] : b.name; // strip qualifiers
-      const r = results[i];
-      let flow = 0;
-      let asOf: string | null = null;
-      let capacity = (CAPACITY_HINTS as any)[baseName] ?? null;
-      let source: 'entsoe' | 'bmrs' | 'lkg' | 'none' = 'none';
-
-      if (r && r.ok) {
-        flow = r.netMW;
-        asOf = r.t;
-        source = 'entsoe';
-        usedENTSOE.push(baseName);
-      } else {
-        // Try BMRS summary per-border
-        const matchBMRS = summaryRows.find((row: any) => (row.country === baseName) || String(row.name || '').includes(baseName));
-        if (matchBMRS) {
-          flow = Math.round(Number(matchBMRS.flow) || 0);
-          if (Number.isFinite(matchBMRS.capacity)) capacity = Number(matchBMRS.capacity);
-          asOf = null; // BMRS summary does not include exact timestamp
-          source = 'bmrs';
-          usedBMRS.push(baseName);
-        } else {
-          // Outturn-derived fallback for NI and Ireland borders
-          const borderToCode: Record<string, string> = { 'Northern Ireland': 'INTIRL', 'Ireland': 'INTEW' };
-          const code = borderToCode[baseName];
-          const otFlow = code ? outturnByCode[code] : undefined;
-          if (Number.isFinite(otFlow)) {
-            flow = otFlow as number;
-            asOf = anchorEndISO;
-            source = 'outturn';
-            usedOutturn.push(baseName);
-          } else if (Array.isArray(lkgList) && lkgList.length) {
-            const match = lkgList.find((ic: any) => (ic.country || ic.name) === baseName);
-            if (match) {
-              flow = Number(match.flow) || 0;
-              asOf = match.asOf ?? null;
-              capacity = (Number.isFinite(match.capacity) ? match.capacity : capacity);
-              backfilled.push(baseName);
-              source = 'lkg';
-            }
-          }
-        }
-      }
-
-      return { name: baseName, country: baseName, flow, capacity, asOf, __source: source };
-    });
-
-    interconnectors = built.map(({ __source, ...rest }) => rest);
-
-    const okCount = usedENTSOE.length;
-    const bmrsCount = usedBMRS.length;
-    const outturnCount = usedOutturn.length;
-    const backfillCount = backfilled.length;
-    interconnectorStatus = (okCount + bmrsCount + outturnCount) > 0 ? "live" : (backfillCount > 0 ? "cached" : "unavailable");
-
+  // Use the enhanced interconnector fetch strategy
+  const icResult = await fetchInterconnectorsEnhanced(DEBUG);
+  
+  if (icResult.ok && icResult.interconnectors) {
+    interconnectors = icResult.interconnectors;
+    interconnectorStatus = icResult.status as "live" | "cached" | "unavailable" || "live";
+    
     if (DEBUG) {
-      icDiag.ok = (okCount + bmrsCount + outturnCount) > 0 || backfillCount > 0;
+      icDiag.ok = true;
       icDiag.status = interconnectorStatus;
-      icDiag.tries = results.map((r, i) => ({
-        border: ENTSOE_BORDERS[i].name,
-        ok: !!r?.ok,
-        t: r?.t || null,
-        reason: r?.reason || null,
-        attempts: r?.detail || null,
-      }));
-      icDiag.backfilled = backfilled;
-      icDiag.sourcesByBorder = built.map((b: any) => ({ name: b.name, source: b.__source }));
-      icDiag.sourceCounts = { entsoe: okCount, bmrs: bmrsCount, outturn: outturnCount, lkg: backfillCount };
+      icDiag.source = icResult.source;
+      icDiag.tries = icResult.attempts || [];
+      icDiag.count = interconnectors.length;
+    }
+    // If enhanced method failed, try LKG fallback
+    if (DEBUG) dlog(true, "Enhanced interconnector fetch failed, trying LKG fallback");
+    
+    const lkgList = await getLastInterconnectorsFromLKG();
+    if (Array.isArray(lkgList) && lkgList.length) {
+      interconnectors = lkgList;
+      interconnectorStatus = "cached";
+      
+      if (DEBUG) {
+        icDiag.ok = true;
+        icDiag.status = "cached";
+        icDiag.source = "lkg-fallback";
+        icDiag.tries = [{ reason: icResult.reason || "enhanced-failed" }];
+        icDiag.count = interconnectors.length;
+      }
+    } else {
+      if (DEBUG) {
+        icDiag.tries = icResult.attempts || [{ reason: icResult.reason || "no-data" }];
+      }
     }
   }
 

@@ -86,10 +86,10 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                   <div className={`w-3 h-3 rounded-full ${isImport ? 'bg-energy-imports' : 'bg-energy-exports'}`} />
                   <div>
                     <div className="font-medium text-card-foreground">
-                      {interconnector.country} ({interconnector.name})
+                      {interconnector.name}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      Capacity: {interconnector.capacity && interconnector.capacity > 0 ? `${interconnector.capacity} MW` : 'n/a'}
+                      {interconnector.country} • Capacity: {interconnector.capacity && interconnector.capacity > 0 ? `${interconnector.capacity} MW` : 'n/a'}
                     </div>
                   </div>
                 </div>
