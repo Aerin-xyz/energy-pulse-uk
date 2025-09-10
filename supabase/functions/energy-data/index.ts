@@ -451,6 +451,7 @@ const ENTSOE_BORDERS = [
   { name: "Netherlands",      eic: "10YNL----------L",  mtuMin: 15 },
   { name: "Norway",           eic: "10YNO-2--------T",  mtuMin: 15 },
   { name: "Ireland (SEM)",    eic: "10YIE-1001A00010", mtuMin: 30 },
+  { name: "Northern Ireland", eic: "10Y1001A1001A59C", mtuMin: 30 },
   { name: "Denmark DK1",      eic: "10YDK-1--------W",  mtuMin: 15 },
   { name: "Denmark DK2",      eic: "10YDK-2--------M",  mtuMin: 15 },
 ];
@@ -533,8 +534,17 @@ function parseEntsoeA11(xml: string) {
       for (const period of periods) {
         const ti = period.timeInterval || {};
         const startISO = ti.start || "";
-        const resolution = period.resolution || "PT60M";
-        const stepMin = String(resolution).includes("15") ? 15 : 60;
+const resolutionRaw = String(period.resolution || "PT60M");
+// Support PT15M, PT30M, PT60M / PT1H, etc.
+const resMatch = resolutionRaw.match(/^PT(?:(\d+)H)?(?:(\d+)M)?$/i);
+let stepMin = 60;
+if (resMatch) {
+  const h = Number(resMatch[1] || 0);
+  const m = Number(resMatch[2] || 0);
+  stepMin = h * 60 + (m || (h ? 60 : 0));
+} else {
+  stepMin = resolutionRaw.includes("15") ? 15 : (resolutionRaw.includes("30") ? 30 : 60);
+}
 
         const rawPts = asArray(period.Point);
         for (const p of rawPts) {
