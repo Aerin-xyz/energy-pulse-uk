@@ -1117,7 +1117,7 @@ try {
   
   if (icResult.ok && icResult.interconnectors) {
     interconnectors = icResult.interconnectors;
-    interconnectorStatus = icResult.status as "live" | "cached" | "unavailable" || "live";
+    interconnectorStatus = (icResult.status as "live" | "cached" | "unavailable") || "live";
     
     if (DEBUG) {
       icDiag.ok = true;
@@ -1126,8 +1126,9 @@ try {
       icDiag.tries = icResult.attempts || [];
       icDiag.count = interconnectors.length;
     }
-    // If enhanced method failed, try LKG fallback
-    if (DEBUG) dlog(true, "Enhanced interconnector fetch failed, trying LKG fallback");
+  } else {
+    // Enhanced method failed → try Last Known Good (LKG) fallback
+    if (DEBUG) dlog(true, "Enhanced interconnector fetch failed, trying LKG fallback", { reason: icResult.reason });
     
     const lkgList = await getLastInterconnectorsFromLKG();
     if (Array.isArray(lkgList) && lkgList.length) {
