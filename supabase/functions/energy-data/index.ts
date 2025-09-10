@@ -226,7 +226,7 @@ async function fetchEntsoePhysicalFlows(): Promise<{
       { from: '10YGB----------A', to: '10YFR-RTE------C', codes: ['INTFR', 'INTIFA2', 'INTELEC'] }, // GB-FR cluster
       { from: '10YGB----------A', to: '10YBE----------2', codes: ['INTNEM'] }, // GB-BE
       { from: '10YGB----------A', to: '10YNL----------L', codes: ['INTNED'] }, // GB-NL
-      { from: '10YGB----------A', to: '10YNO-0--------C', codes: ['INTNSL'] }, // GB-NO
+      { from: '10YGB----------A', to: '10YNO-2--------T', codes: ['INTNSL'] }, // GB-NO
       { from: '10YGB----------A', to: '10Y1001A1001A59C', codes: ['INTIRL'] }, // GB-NI (Moyle)
       { from: '10YGB----------A', to: '10YIE-1001A00010', codes: ['INTEW'] }, // GB-IE (EWIC)
     ];
@@ -449,8 +449,7 @@ const ENTSOE_BORDERS = [
   { name: "France",           eic: "10YFR-RTE------C" },
   { name: "Belgium",          eic: "10YBE----------2" },
   { name: "Netherlands",      eic: "10YNL----------L" },
-  // Use SEM bidding zone for Ireland
-  { name: "Norway",           eic: "10YNO-0--------C" },
+  { name: "Norway",           eic: "10YNO-2--------T" },
   { name: "Ireland (SEM)",    eic: "10YIE-1001A00010" },
   { name: "Denmark DK1",      eic: "10YDK-1--------W" },
   { name: "Denmark DK2",      eic: "10YDK-2--------M" },
@@ -572,6 +571,11 @@ async function entsoeNetForBorderMW(token: string, partnerEIC: string, now: Date
 
   // If we received no points or an acknowledgement, retry once with a conservative end time (previous 15-min slot)
   const noPoints = (r: any) => !r?.ok || !(Array.isArray(r.points) && r.points.length > 0);
+  const hasIntervalError = (r: any) => {
+    const txt = r?.meta?.reasonText || '';
+    return typeof txt === 'string' && /interval/i.test(txt);
+  };
+
   let secondChance = false;
   if (noPoints(intoGB) || noPoints(fromGB)) {
     secondChance = true;
@@ -580,15 +584,26 @@ async function entsoeNetForBorderMW(token: string, partnerEIC: string, now: Date
     fromGB = await entsoeA11(token, GB_EIC, partnerEIC, start, endPrev15);
   }
 
+  // Third attempt: enforce hour-aligned window if still empty or time interval error
+  let hourAligned = false;
+  if (noPoints(intoGB) || noPoints(fromGB) || hasIntervalError(intoGB) || hasIntervalError(fromGB)) {
+    hourAligned = true;
+    const endHour = new Date(end);
+    endHour.setUTCMinutes(0, 0, 0);
+    const startHour = new Date(endHour.getTime() - 3 * 60 * 60 * 1000);
+    intoGB = await entsoeA11(token, partnerEIC, GB_EIC, startHour, endHour);
+    fromGB = await entsoeA11(token, GB_EIC, partnerEIC, startHour, endHour);
+  }
+
   const timestamps = new Set<string>();
   intoGB.points.forEach((p: any) => timestamps.add(p.t));
   fromGB.points.forEach((p: any) => timestamps.add(p.t));
   const latestT = Array.from(timestamps).sort().pop() || null;
-  if (!latestT) return { ok:false, t:null, netMW:0, detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta, secondChance } };
+  if (!latestT) return { ok:false, t:null, netMW:0, detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta, secondChance, hourAligned } };
 
   const a = intoGB.points.filter((p: any) => p.t === latestT).reduce((s:number,p:any) => s + p.quantity, 0);
   const b = fromGB.points.filter((p: any) => p.t === latestT).reduce((s:number,p:any) => s + p.quantity, 0);
-  return { ok: true, t: latestT, netMW: Math.round(a - b), detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta, secondChance } };
+  return { ok: true, t: latestT, netMW: Math.round(a - b), detail:{ intoGB: intoGB.meta, fromGB: fromGB.meta, secondChance, hourAligned } };
 }
 
 // ---- Interconnector helpers ----

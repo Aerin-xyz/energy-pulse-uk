@@ -64,12 +64,17 @@ Deno.serve(async (req) => {
         
         const minutesBack = body.minutesBack || 120; // Default 2 hours
         const alignQuarter = body.alignQuarter || false;
+        const alignHour = body.alignHour || false;
         
         const now = new Date();
         let endTime = new Date(now.getTime() - minutesBack * 60 * 1000);
-        let startTime = new Date(endTime.getTime() - 15 * 60 * 1000); // 15 minute window
+        let startTime = new Date(endTime.getTime() - 15 * 60 * 1000); // default: 15 minute window
         
-        if (alignQuarter) {
+        if (alignHour) {
+          // Align to hour boundaries and use 60-minute window
+          endTime.setUTCMinutes(0, 0, 0);
+          startTime = new Date(endTime.getTime() - 60 * 60 * 1000);
+        } else if (alignQuarter) {
           // Align to quarter-hour boundaries
           endTime.setUTCMinutes(Math.floor(endTime.getUTCMinutes() / 15) * 15, 0, 0);
           startTime = new Date(endTime.getTime() - 15 * 60 * 1000);
@@ -87,15 +92,23 @@ Deno.serve(async (req) => {
     } else {
       // GET request - use query parameters
       const now = new Date();
-      const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
-      periodStart = qp('periodStart', formatEntsoe(start));
-      periodEnd = qp('periodEnd', formatEntsoe(now));
+      const alignHourQP = qp('alignHour', '');
+      if (alignHourQP === '1' || alignHourQP === 'true') {
+        const endTime = new Date(now);
+        endTime.setUTCMinutes(0, 0, 0);
+        const startTime = new Date(endTime.getTime() - 60 * 60 * 1000);
+        periodStart = formatEntsoe(startTime);
+        periodEnd = formatEntsoe(endTime);
+      } else {
+        const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+        periodStart = qp('periodStart', formatEntsoe(start));
+        periodEnd = qp('periodEnd', formatEntsoe(now));
+      }
     }
 
     const entsoeUrl = `https://web-api.tp.entsoe.eu/api?` +
       `securityToken=${token}&` +
       `documentType=A11&` +
-      `processType=A16&` +
       `in_Domain=${inDomain}&` +
       `out_Domain=${outDomain}&` +
       `periodStart=${periodStart}&` +
