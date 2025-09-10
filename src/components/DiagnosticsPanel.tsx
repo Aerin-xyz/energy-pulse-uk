@@ -41,10 +41,9 @@ export const DiagnosticsPanel = () => {
   const runEnergyDebug = async () => {
     setLoadingEnergy(true);
     try {
-      const { data, error } = await supabase.functions.invoke('energy-data', {
-        body: { debug: true }
-      });
-      if (error) throw error;
+      const response = await fetch('/functions/v1/energy-data?debug=1');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
       setEnergyResult(data);
       toast({
         title: "Energy debug completed",
@@ -63,12 +62,12 @@ export const DiagnosticsPanel = () => {
     }
   };
 
-  const testEntsoeIreland = async () => {
+  const testEntsoeSEMQuarter = async () => {
     setLoadingHealth(true);
     try {
       const { data, error } = await supabase.functions.invoke('entsoe-health', {
         body: { 
-          in_Domain: '10Y1001A1001A59C', // IE (Ireland)
+          in_Domain: '10YIE-1001A00010', // Ireland (SEM)
           out_Domain: '10YGB----------A', // GB
           minutesBack: 180, // 3 hours back
           alignQuarter: true
@@ -77,16 +76,16 @@ export const DiagnosticsPanel = () => {
       if (error) throw error;
       setHealthResult(data);
       toast({
-        title: "ENTSO-E Ireland test completed",
-        description: data.ok ? "EWIC interconnector data available" : "Issues with Ireland data",
+        title: "ENTSO-E Ireland (SEM) quarter-aligned test completed",
+        description: data.ok ? "SEM interconnector data available" : "Issues with SEM quarter-aligned data",
         variant: data.ok ? "default" : "destructive",
       });
     } catch (error) {
-      console.error('ENTSO-E Ireland test failed:', error);
+      console.error('ENTSO-E Ireland (SEM) quarter test failed:', error);
       setHealthResult({ error: error.message });
       toast({
-        title: "ENTSO-E Ireland test failed",
-        description: "Failed to test Ireland border",
+        title: "ENTSO-E Ireland (SEM) quarter test failed",
+        description: "Failed to test SEM border with quarter alignment",
         variant: "destructive",
       });
     } finally {
@@ -94,30 +93,30 @@ export const DiagnosticsPanel = () => {
     }
   };
 
-  const testEntsoeNorthernIreland = async () => {
+  const testEntsoeSEMHour = async () => {
     setLoadingHealth(true);
     try {
       const { data, error } = await supabase.functions.invoke('entsoe-health', {
         body: { 
-          in_Domain: '10Y1001A1001A016', // Northern Ireland
+          in_Domain: '10YIE-1001A00010', // Ireland (SEM)
           out_Domain: '10YGB----------A', // GB
           minutesBack: 180, // 3 hours back
-          alignQuarter: true
+          alignHour: true
         }
       });
       if (error) throw error;
       setHealthResult(data);
       toast({
-        title: "ENTSO-E Northern Ireland test completed",
-        description: data.ok ? "Moyle interconnector data available" : "Issues with Northern Ireland data",
+        title: "ENTSO-E Ireland (SEM) hour-aligned test completed",
+        description: data.ok ? "SEM interconnector data available" : "Issues with SEM hour-aligned data",
         variant: data.ok ? "default" : "destructive",
       });
     } catch (error) {
-      console.error('ENTSO-E Northern Ireland test failed:', error);
+      console.error('ENTSO-E Ireland (SEM) hour test failed:', error);
       setHealthResult({ error: error.message });
       toast({
-        title: "ENTSO-E Northern Ireland test failed",
-        description: "Failed to test Northern Ireland border",
+        title: "ENTSO-E Ireland (SEM) hour test failed",
+        description: "Failed to test SEM border with hour alignment",
         variant: "destructive",
       });
     } finally {
@@ -169,30 +168,31 @@ export const DiagnosticsPanel = () => {
               
               <div className="flex gap-2 flex-wrap">
                 <Button
-                  onClick={testEntsoeIreland}
+                  onClick={testEntsoeSEMQuarter}
                   disabled={loadingHealth}
                   variant="outline"
                   size="sm"
                   className="flex items-center gap-2"
                 >
                   <Zap className="w-4 h-4" />
-                  {loadingHealth ? 'Testing...' : 'Test ENTSO-E: Ireland (EWIC)'}
+                  {loadingHealth ? 'Testing...' : 'Test ENTSO-E: Ireland (SEM) Quarter'}
                 </Button>
                 
                 <Button
-                  onClick={testEntsoeNorthernIreland}
+                  onClick={testEntsoeSEMHour}
                   disabled={loadingHealth}
                   variant="outline"
                   size="sm"
                   className="flex items-center gap-2"
                 >
                   <Zap className="w-4 h-4" />
-                  {loadingHealth ? 'Testing...' : 'Test ENTSO-E: Northern Ireland (Moyle)'}
+                  {loadingHealth ? 'Testing...' : 'Test ENTSO-E: Ireland (SEM) Hour'}
                 </Button>
               </div>
               
               <p className="text-xs text-muted-foreground">
-                Note: "Invalid time interval" errors are common with ENTSO-E A11 data - this indicates the requested time window is not available yet.
+                Note: "Invalid time interval" errors occur when the requested time window is not available. 
+                "Invalid business dimension" errors indicate the EIC codes or flow direction are not supported for that interconnector.
               </p>
             </div>
 
@@ -208,6 +208,49 @@ export const DiagnosticsPanel = () => {
             {energyResult && (
               <div className="space-y-2">
                 <h4 className="text-sm font-medium">Energy-Data Debug Result:</h4>
+                
+                {energyResult.diagnostics?.icAttempts && (
+                  <div className="space-y-2">
+                    <h5 className="text-xs font-medium">Interconnector Test Results:</h5>
+                    <div className="border rounded overflow-hidden">
+                      <table className="w-full text-xs">
+                        <thead className="bg-muted/50">
+                          <tr>
+                            <th className="text-left p-2 border-b">Border</th>
+                            <th className="text-left p-2 border-b">Status</th>
+                            <th className="text-left p-2 border-b">Time</th>
+                            <th className="text-left p-2 border-b">Issue</th>
+                            <th className="text-left p-2 border-b">URLs</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {energyResult.diagnostics.icAttempts.map((attempt: any, idx: number) => (
+                            <tr key={idx} className="border-b last:border-b-0">
+                              <td className="p-2 font-medium">{attempt.border}</td>
+                              <td className="p-2">
+                                <span className={`inline-block w-2 h-2 rounded-full mr-1 ${attempt.ok ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                                {attempt.ok ? 'OK' : 'Failed'}
+                              </td>
+                              <td className="p-2">{attempt.t ? new Date(attempt.t).toLocaleTimeString() : '—'}</td>
+                              <td className="p-2 max-w-32 truncate" title={attempt.reasonText || ''}>{attempt.reasonText || '—'}</td>
+                              <td className="p-2 space-x-1">
+                                {attempt.intoGB?.url && (
+                                  <a href={attempt.intoGB.url} target="_blank" rel="noopener noreferrer" 
+                                     className="text-blue-600 hover:underline text-xs">→GB</a>
+                                )}
+                                {attempt.fromGB?.url && (
+                                  <a href={attempt.fromGB.url} target="_blank" rel="noopener noreferrer" 
+                                     className="text-blue-600 hover:underline text-xs">GB→</a>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                )}
+                
                 <pre className="text-xs bg-muted p-3 rounded overflow-auto max-h-48">
                   {JSON.stringify(energyResult, null, 2)}
                 </pre>
