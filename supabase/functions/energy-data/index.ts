@@ -200,26 +200,25 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
   const token = Deno.env.get("ENTSOE_API_TOKEN");
   if (!token) { if (debug) dlog(true, 'EU mix: missing ENTSOE_API_TOKEN'); return []; }
 
-  // Major EU countries/bidding zones for generation data
+  // Focus on single-zone bidding areas to reduce API ambiguity
   const euCountries = [
-    { name: "Germany", eic: "10Y1001A1001A83F" },
-    { name: "France", eic: "10YFR-RTE------C" },
-    { name: "Spain", eic: "10YES-REE------0" },
-    { name: "Italy", eic: "10YIT-GRTN-----B" },
-    { name: "Netherlands", eic: "10YNL----------L" },
-    { name: "Belgium", eic: "10YBE----------2" },
-    { name: "Poland", eic: "10YPL-AREA-----S" },
-    { name: "Austria", eic: "10YAT-APG------L" },
-    { name: "Denmark", eic: "10Y1001A1001A65H" },
-    { name: "Sweden", eic: "10YSE-1--------K" },
-    { name: "Norway", eic: "10YNO-2--------T" },
-    { name: "Finland", eic: "10YFI-1--------U" }
+    { name: "Germany",      eic: "10Y1001A1001A83F" },
+    { name: "France",       eic: "10YFR-RTE------C" },
+    { name: "Spain",        eic: "10YES-REE------0" },
+    { name: "Italy",        eic: "10YIT-GRTN-----B" },
+    { name: "Netherlands",  eic: "10YNL----------L" },
+    { name: "Belgium",      eic: "10YBE----------2" },
+    { name: "Austria",      eic: "10YAT-APG------L" },
+    { name: "Finland",      eic: "10YFI-1--------U" },
+    { name: "Poland",       eic: "10YPL-TSO------S" },
   ];
 
+  // Use a tight, aligned 4-hour window to avoid empty responses
   const now = new Date();
-  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-  const startStr = yesterday.toISOString().slice(0, 10).replace(/-/g, '') + "0000";
-  const endStr = now.toISOString().slice(0, 10).replace(/-/g, '') + "2300";
+  const end = alignDown(now, 15);
+  const start = addMinutes(end, -240); // last 4 hours
+  const startStr = toPeriod(start);
+  const endStr = toPeriod(end);
 
   if (debug) dlog(true, 'EU mix fetch start', { countries: euCountries.length, window: { start: startStr, end: endStr } });
 
@@ -227,16 +226,24 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
   const raceTimeout = (ms: number) => new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms));
 
   async function fetchCountry(country: { name: string; eic: string }) {
+    // Try two attempts with tiny backoff
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
-        const url = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A75&processType=A16&in_Domain=${country.eic}&periodStart=${startStr}&periodEnd=${endStr}`;
+        const url = `https://web-api.tp.entsoe.eu/api?securityToken=${encodeURIComponent(token)}&documentType=A75&processType=A16&in_Domain=${country.eic}&periodStart=${startStr}&periodEnd=${endStr}`;
         const res = (await Promise.race([
-          fetch(url, { headers: { "User-Agent": UA }, cache: "no-store" }),
-          raceTimeout(6000),
+          fetch(url, { headers: { "User-Agent": UA, Accept: "application/xml" }, cache: "no-store" }),
+          raceTimeout(7000),
         ])) as Response;
 
         if (!res || !res.ok) throw new Error(`http ${res?.status}`);
         const xmlText = await res.text();
+
+        // Detect acknowledgements and log reason
+        if (xmlText.includes('Acknowledgement_MarketDocument')) {
+          const reason = ackReason(xmlText) || 'ack';
+          throw new Error(`ack:${reason}`);
+        }
+
         const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
         const parsed = parser.parse(xmlText);
         const doc = parsed?.Publication_MarketDocument;
@@ -248,7 +255,9 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
 
         for (const series of timeSeries) {
           const fuelType = series?.MktPSRType?.psrType || 'Unknown';
-          const period = Array.isArray(series?.Period) ? series.Period[series.Period.length - 1] : series?.Period;
+          const periods = Array.isArray(series?.Period) ? series.Period : (series?.Period ? [series.Period] : []);
+          // Pick latest period then latest point within it
+          const period = periods.length ? periods[periods.length - 1] : null;
           const points = period?.Point ? (Array.isArray(period.Point) ? period.Point : [period.Point]) : [];
           if (!points.length) continue;
           const latestPoint = points[points.length - 1];
@@ -260,7 +269,7 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
         }
 
         if (total > 0) {
-          const out = { country: country.name, totalMW: Math.round(total), fuelMix, timestamp: new Date().toISOString() };
+          const out = { country: country.name, totalMW: Math.round(total), fuelMix, timestamp: end.toISOString() };
           if (debug) dlog(true, 'EU mix country', { country: country.name, totalMW: out.totalMW, fuels: Object.keys(fuelMix).length });
           return out;
         }
@@ -274,11 +283,19 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
     return null;
   }
 
-  const results = await Promise.allSettled(euCountries.map(c => fetchCountry(c)));
-  const data = results.map(r => (r.status === 'fulfilled' ? r.value : null)).filter(Boolean) as any[];
+  // Run in small batches to be gentle on rate limits
+  const batchSize = 4;
+  const results: any[] = [];
+  for (let i = 0; i < euCountries.length; i += batchSize) {
+    const slice = euCountries.slice(i, i + batchSize);
+    const settled = await Promise.allSettled(slice.map(c => fetchCountry(c)));
+    for (const r of settled) {
+      if (r.status === 'fulfilled' && r.value) results.push(r.value);
+    }
+  }
 
-  if (debug) dlog(true, 'EU mix done', { countriesOk: data.length, countriesTried: euCountries.length });
-  return data;
+  if (debug) dlog(true, 'EU mix done', { countriesOk: results.length, countriesTried: euCountries.length });
+  return results;
 }
 
 /**
