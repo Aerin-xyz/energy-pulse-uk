@@ -23,26 +23,40 @@ export const EUDebugPanel: React.FC = () => {
             <strong>API Response Status:</strong> {energy?.loading ? 'Loading...' : energy?.error ? 'Error' : 'Success'}
           </div>
           
-          {energy?.data && (
+          {energy?.rawData && (
             <>
               <div>
-                <strong>EU Generation Mix:</strong>
+                <strong>Raw EU Generation Mix:</strong>
                 <pre className="mt-1 p-2 bg-black/30 rounded text-xs overflow-auto max-h-32">
-                  {JSON.stringify(energy.data.euGenerationMix, null, 2)}
+                  {JSON.stringify(energy.rawData.euGenerationMix, null, 2)}
                 </pre>
               </div>
               
               <div>
-                <strong>Diagnostics EU Mix:</strong>
+                <strong>EU Mix Diagnostics:</strong>
                 <pre className="mt-1 p-2 bg-black/30 rounded text-xs overflow-auto max-h-32">
-                  {JSON.stringify((energy.data as any)?.diagnostics?.euMix, null, 2)}
+                  {JSON.stringify(energy.rawData?.diagnostics?.euMix, null, 2)}
                 </pre>
               </div>
               
               <div>
-                <strong>All Available Keys:</strong>
+                <strong>ENTSO-E Interconnector Attempts:</strong>
+                <pre className="mt-1 p-2 bg-black/30 rounded text-xs overflow-auto max-h-40">
+                  {JSON.stringify(energy.rawData?.diagnostics?.icAttempts, null, 2)}
+                </pre>
+              </div>
+              
+              <div>
+                <strong>Full Diagnostics Object:</strong>
+                <pre className="mt-1 p-2 bg-black/30 rounded text-xs overflow-auto max-h-48">
+                  {JSON.stringify(energy.rawData?.diagnostics, null, 2)}
+                </pre>
+              </div>
+              
+              <div>
+                <strong>Raw API Keys Available:</strong>
                 <div className="mt-1 text-xs text-muted-foreground">
-                  {Object.keys(energy.data).join(', ')}
+                  {Object.keys(energy.rawData).join(', ')}
                 </div>
               </div>
             </>
