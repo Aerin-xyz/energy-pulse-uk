@@ -1,4 +1,3 @@
-// Version: Enhanced ENTSO-E with robust token management v1.0
 import { XMLParser } from "https://esm.sh/fast-xml-parser@4.5.0";
 
 const corsHeaders = {
@@ -11,76 +10,6 @@ function qDebug(url: string): boolean {
   try { return new URL(url).searchParams.get("debug") === "1"; } catch { return false; }
 }
 function dlog(enabled: boolean, ...args: any[]) { if (enabled) console.log("[energy-data]", ...args); }
-
-// ========== ENTSO-E shared helpers ==========
-const ENTSOE_BASE = "https://web-api.tp.entsoe.eu/api";
-
-function maskToken(s: string, keep = 4) {
-  if (!s) return "(none)";
-  return s.slice(0, keep) + "…" + s.slice(-keep);
-}
-
-let ENT_CACHE = { token: "", ts: 0 };
-function getEntsoeToken(): string {
-  if (ENT_CACHE.token) return ENT_CACHE.token;
-  const t =
-    Deno.env.get("ENTSOE_TOKEN") ||
-    Deno.env.get("ENTSOE_API_TOKEN") ||
-    Deno.env.get("ENTSOE_KEY") ||
-    "";
-  ENT_CACHE = { token: t, ts: Date.now() };
-  return t;
-}
-
-function pad2(n:number){ return n.toString().padStart(2,"0"); }
-function toPeriod(d: Date) {
-  return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}`;
-}
-function alignDown(date: Date, stepMin: number) {
-  const d = new Date(date);
-  const m = d.getUTCMinutes();
-  const alignedMin = Math.floor(m / stepMin) * stepMin;
-  d.setUTCMinutes(alignedMin, 0, 0);
-  return d;
-}
-function addMinutes(d: Date, mins: number) { return new Date(d.getTime() + mins*60*1000); }
-
-function num(val: any): number {
-  const n = Number(val);
-  return Number.isFinite(n) ? n : NaN;
-}
-
-function ackReason(xml: string) {
-  try {
-    const dom = new DOMParser().parseFromString(xml, "application/xml");
-    const txt = dom?.getElementsByTagName("Reason")[0]?.getElementsByTagName("text")[0]?.textContent;
-    return txt || null;
-  } catch { return null; }
-}
-
-async function entsoeRaw(token: string, qs: string) {
-  const url = `${ENTSOE_BASE}?securityToken=${encodeURIComponent(token)}&${qs}`;
-  const res = await fetch(url, { headers: { "Accept": "application/xml" }, redirect: "manual" as RequestRedirect, cache: "no-store" });
-  const text = await res.text();
-  const ctype = res.headers.get("content-type") || "";
-  const isXML = ctype.includes("xml");
-  return { url, status: res.status, isXML, text };
-}
-
-// Minimal token sanity test: request a tiny day-ahead price window (A44)
-// Any 400/403/ack means token/params/period are wrong; 200 XML indicates OK.
-async function entsoeHealthCheck(token: string, now = new Date()) {
-  const start = alignDown(addMinutes(now, -60), 60); // last full hour
-  const end   = alignDown(now, 60);
-  const qs = `documentType=A44&in_Domain=10YGB----------A&periodStart=${toPeriod(start)}&periodEnd=${toPeriod(end)}`;
-  const r = await entsoeRaw(token, qs);
-  if (!r.isXML) return { ok:false, reason:"non-xml", status:r.status, url:r.url };
-  if (r.status === 400 && r.text.includes("Acknowledgement_MarketDocument")) {
-    return { ok:false, reason: ackReason(r.text) || "acknowledgement", status:r.status, url:r.url };
-  }
-  // We don't parse content here; just check it's XML and not an ack 400
-  return { ok: r.status >= 200 && r.status < 300, reason: r.status, status:r.status, url:r.url };
-}
 
 // BMRS hosts (primary and fallback)
 const DATA_HOST = "data.elexon.co.uk";
@@ -266,119 +195,183 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
   return { mw: 0, matched: false, reason: sawJson ? 'pv-unexpected-shape' : 'pv-no-json', debug: { columns: lastCols } };
 }
 
-// Parse A11 Publication_MarketDocument -> points per (fuelType -> MW) for latest timestamp
-function parseA11Mix(xml: string) {
-  const dom = new DOMParser().parseFromString(xml, "application/xml");
-  if (!dom) return { ok:false, byFuel:{}, ts:null };
-  if (dom.getElementsByTagName("Acknowledgement_MarketDocument").length) {
-    return { ok:false, byFuel:{}, ts:null };
-  }
-  const tsNodes = Array.from(dom.getElementsByTagName("TimeSeries"));
-  const records: Array<{ fuel: string; t: string; mw: number }> = [];
+// EU Generation Mix from ENTSO-E A75 (Actual Generation Per Type)
+async function fetchEUGenerationMix(debug = false): Promise<any[]> {
+  const token = Deno.env.get("ENTSOE_API_TOKEN");
+  
+  if (debug) dlog(true, 'EU mix: function entry', { 
+    hasToken: !!token, 
+    tokenLength: token ? token.length : 0,
+    tokenPreview: token ? `${token.substring(0, 8)}...` : null
+  });
 
-  for (const ts of tsNodes) {
-    const psrType = ts.getElementsByTagName("psrType")[0]?.textContent || "";
-    const period  = ts.getElementsByTagName("Period")[0];
-    if (!period) continue;
-    const ti = period.getElementsByTagName("timeInterval")[0];
-    const startISO = ti?.getElementsByTagName("start")[0]?.textContent || "";
-    const resolution = period.getElementsByTagName("resolution")[0]?.textContent || "PT60M";
-    const stepMin = resolution === "PT15M" ? 15 : (resolution === "PT30M" ? 30 : 60);
-    const points = Array.from(period.getElementsByTagName("Point"));
-    for (const p of points) {
-      const pos = Number(p.getElementsByTagName("position")[0]?.textContent || "0");
-      const qty = Number(p.getElementsByTagName("quantity")[0]?.textContent || "NaN");
-      if (!startISO || !Number.isFinite(qty) || pos <= 0) continue;
-      const t0 = new Date(startISO).getTime();
-      const t  = new Date(t0 + (pos - 1) * stepMin * 60 * 1000).toISOString();
-      records.push({ fuel: psrType, t, mw: qty });
+  if (!token) { 
+    if (debug) dlog(true, 'EU mix: missing ENTSOE_API_TOKEN'); 
+    return []; 
+  }
+
+  // Test token validity with a simple API call first
+  if (debug) {
+    try {
+      const testUrl = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A75&processType=A16&in_Domain=10YFR-RTE------C&periodStart=202509130000&periodEnd=202509130100`;
+      if (debug) dlog(true, 'EU mix: testing token validity', { testUrl: testUrl.replace(token, 'TOKEN_HIDDEN') });
+      
+      const testResponse = await fetch(testUrl, { 
+        method: 'GET',
+        headers: { 'Accept': 'application/xml', 'User-Agent': 'UK Energy Dashboard/1.0' }
+      });
+      
+      if (debug) dlog(true, 'EU mix: token test result', { 
+        status: testResponse.status, 
+        statusText: testResponse.statusText,
+        contentType: testResponse.headers.get('content-type')
+      });
+      
+      if (!testResponse.ok) {
+        const errorText = await testResponse.text();
+        if (debug) dlog(true, 'EU mix: token test failed', { 
+          status: testResponse.status,
+          error: errorText.substring(0, 500)
+        });
+      }
+    } catch (error) {
+      if (debug) dlog(true, 'EU mix: token test error', { error: error.message });
     }
   }
 
-  if (!records.length) return { ok:false, byFuel:{}, ts:null };
-  const latestT = records.map(r => r.t).sort().pop()!;
-  const latest  = records.filter(r => r.t === latestT);
-
-  const byFuel: Record<string, number> = {};
-  for (const r of latest) {
-    const key = r.fuel || "OTHER";
-    byFuel[key] = (byFuel[key] || 0) + r.mw;
-  }
-  return { ok:true, byFuel, ts: latestT };
-}
-
-async function fetchCountryMixA11(token: string, biddingZoneEIC: string, now = new Date()) {
-  const plans = [
-    { mtu: 15, window: 60 },
-    { mtu: 30, window: 120 },
-    { mtu: 60, window: 180 },
+  // Focus on single-zone bidding areas to reduce API ambiguity
+  const euCountries = [
+    { name: "Germany",      eic: "10Y1001A1001A83F" },
+    { name: "France",       eic: "10YFR-RTE------C" },
+    { name: "Spain",        eic: "10YES-REE------0" },
+    { name: "Italy",        eic: "10YIT-GRTN-----B" },
+    { name: "Netherlands",  eic: "10YNL----------L" },
+    { name: "Belgium",      eic: "10YBE----------2" },
+    { name: "Austria",      eic: "10YAT-APG------L" },
+    { name: "Finland",      eic: "10YFI-1--------U" },
+    { name: "Poland",       eic: "10YPL-TSO------S" },
   ];
-  const attempts: any[] = [];
-  for (const p of plans) {
-    const start = alignDown(addMinutes(now, -p.window), p.mtu);
-    const end   = alignDown(now, p.mtu);
-    const qs = `documentType=A11&in_Domain=${biddingZoneEIC}&periodStart=${toPeriod(start)}&periodEnd=${toPeriod(end)}`;
-    const r = await entsoeRaw(token, qs);
-    attempts.push({ url:r.url, status:r.status, mtu:p.mtu, window:p.window, isXML:r.isXML, ack: r.text.includes("Acknowledgement_MarketDocument") });
-    if (!r.isXML) continue;
-    if (r.status === 400 && r.text.includes("Acknowledgement_MarketDocument")) continue;
-    const parsed = parseA11Mix(r.text);
-    if (parsed.ok) {
-      return { ok:true, ts: parsed.ts, byFuel: parsed.byFuel, attempts };
-    }
-  }
-  return { ok:false, ts:null, byFuel:{}, attempts };
-}
 
-// Example minimal country set (extend as needed)
-const EU_COUNTRIES = [
-  { code: "GB",  eic: "10YGB----------A" },
-  { code: "FR",  eic: "10YFR-RTE------C" },
-  { code: "BE",  eic: "10YBE----------2" },
-  { code: "NL",  eic: "10YNL----------L" },
-  { code: "IE",  eic: "10YIE-1001A00010" }, // SEM
-];
-
-async function fetchEUGenerationMix(DEBUG: boolean) {
-  const token = getEntsoeToken();
-  const tokenOk = !!token;
-  const tokenMask = maskToken(token);
-
-  const health = tokenOk ? await entsoeHealthCheck(token) : { ok:false, reason:"no-token" };
-  if (DEBUG) {
-    console.log("[EU] token:", tokenMask, "health:", health);
-  }
-  if (!tokenOk || !health.ok) {
-    return {
-      ok:false,
-      countries: [],
-      diagnostics: { tokenPresent: tokenOk, tokenMask, health }
-    };
-  }
-
+  // Use a tight, aligned 4-hour window to avoid empty responses
   const now = new Date();
-  const results = await Promise.all(EU_COUNTRIES.map(c => fetchCountryMixA11(token, c.eic, now)));
-  const countries = EU_COUNTRIES.map((c, i) => ({
-    code: c.code,
-    ts: results[i].ts,
-    mixByFuel: results[i].byFuel, // raw psrType keys; map in UI if needed
-    ok: results[i].ok
-  }));
+  const end = alignDown(now, 15);
+  const start = addMinutes(end, -240); // last 4 hours
+  const startStr = toPeriod(start);
+  const endStr = toPeriod(end);
 
-  if (DEBUG) {
-    console.log("[EU] countries fetched:", countries.filter(c => c.ok).map(c => c.code));
+  if (debug) dlog(true, 'EU mix fetch start', { 
+    countries: euCountries.length, 
+    window: { start: startStr, end: endStr },
+    hasToken: !!token,
+    tokenLength: token ? token.length : 0
+  });
+
+  // Simple timeout helper
+  const raceTimeout = (ms: number) => new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms));
+
+  async function fetchCountry(country: { name: string; eic: string }) {
+    if (debug) dlog(true, `EU mix: fetching ${country.name}`, { eic: country.eic });
+    
+    // Try two attempts with tiny backoff
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const url = `https://web-api.tp.entsoe.eu/api?securityToken=${encodeURIComponent(token)}&documentType=A75&processType=A16&in_Domain=${country.eic}&periodStart=${startStr}&periodEnd=${endStr}`;
+        
+        if (debug) dlog(true, `EU mix: API call for ${country.name} (attempt ${attempt})`, { 
+          url: url.replace(token, 'TOKEN_HIDDEN'),
+          eic: country.eic 
+        });
+
+        const res = (await Promise.race([
+          fetch(url, { headers: { "User-Agent": UA, Accept: "application/xml" }, cache: "no-store" }),
+          raceTimeout(7000),
+        ])) as Response;
+
+        if (debug) dlog(true, `EU mix: API response for ${country.name} (attempt ${attempt})`, { 
+          status: res?.status,
+          statusText: res?.statusText,
+          contentType: res?.headers?.get('content-type'),
+          contentLength: res?.headers?.get('content-length')
+        });
+
+        if (!res || !res.ok) {
+          const errorText = res ? await res.text() : 'No response';
+          throw new Error(`http ${res?.status} - ${errorText.substring(0, 200)}`);
+        }
+        const xmlText = await res.text();
+
+        if (debug) dlog(true, `EU mix: got XML for ${country.name}`, { 
+          length: xmlText.length,
+          xmlPreview: xmlText.substring(0, 200).replace(/\s+/g, ' ')
+        });
+
+        // Detect acknowledgements and log reason
+        if (xmlText.includes('Acknowledgement_MarketDocument')) {
+          const reason = ackReason(xmlText) || 'ack';
+          if (debug) dlog(true, `EU mix: acknowledgement for ${country.name}`, { reason, ackXml: xmlText.substring(0, 300) });
+          throw new Error(`ack:${reason}`);
+        }
+
+        const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
+        const parsed = parser.parse(xmlText);
+        const doc = parsed?.Publication_MarketDocument;
+        if (!doc?.TimeSeries) throw new Error('no-timeseries');
+
+        const timeSeries = Array.isArray(doc.TimeSeries) ? doc.TimeSeries : [doc.TimeSeries];
+        let total = 0;
+        const fuelMix: Record<string, number> = {};
+
+        for (const series of timeSeries) {
+          const fuelType = series?.MktPSRType?.psrType || 'Unknown';
+          const periods = Array.isArray(series?.Period) ? series.Period : (series?.Period ? [series.Period] : []);
+          // Pick latest period then latest point within it
+          const period = periods.length ? periods[periods.length - 1] : null;
+          const points = period?.Point ? (Array.isArray(period.Point) ? period.Point : [period.Point]) : [];
+          if (!points.length) continue;
+          const latestPoint = points[points.length - 1];
+          const q = parseFloat(latestPoint?.quantity || '0');
+          if (Number.isFinite(q) && q > 0) {
+            fuelMix[fuelType] = (fuelMix[fuelType] || 0) + q;
+            total += q;
+          }
+        }
+
+        if (total > 0) {
+          const out = { country: country.name, totalMW: Math.round(total), fuelMix, timestamp: end.toISOString() };
+          if (debug) dlog(true, 'EU mix country', { country: country.name, totalMW: out.totalMW, fuels: Object.keys(fuelMix).length });
+          return out;
+        }
+        throw new Error('no-positive-quantity');
+      } catch (e) {
+        if (debug) dlog(true, 'EU mix attempt failed', { country: country.name, attempt, error: (e as Error)?.message });
+        if (attempt === 2) return null;
+        await new Promise(r => setTimeout(r, 200 * attempt));
+      }
+    }
+    return null;
   }
 
-  return {
-    ok: countries.some(c => c.ok),
-    countries,
-    diagnostics: {
-      tokenPresent: true,
-      tokenMask,
-      health,
-      attempts: results.map((r, i) => ({ code: EU_COUNTRIES[i].code, tries: r.attempts.slice(0,3) }))
+  // Run in small batches to be gentle on rate limits
+  const batchSize = 4;
+  const results: any[] = [];
+  for (let i = 0; i < euCountries.length; i += batchSize) {
+    const slice = euCountries.slice(i, i + batchSize);
+    const settled = await Promise.allSettled(slice.map(c => fetchCountry(c)));
+    for (const r of settled) {
+      if (r.status === 'fulfilled' && r.value) results.push(r.value);
     }
-  };
+  }
+
+  if (debug) dlog(true, 'EU mix done', { 
+    countriesOk: results.length, 
+    countriesTried: euCountries.length,
+    sampleCountries: results.slice(0, 2).map(c => ({ 
+      name: c.countryName, 
+      total: c.totalMW,
+      fuels: Object.keys(c.fuelMix || {}).length 
+    }))
+  });
+  return results;
 }
 
 /**
@@ -594,6 +587,11 @@ function asArray(x: any): any[] {
   return [x];
 }
 
+// Safe number helper
+const num = (x: any) => {
+  const n = typeof x === 'string' ? Number(x) : (Number.isFinite(x) ? x : Number(x));
+  return Number.isFinite(n) ? n : NaN;
+};
 
 // ---------- ENTSO-E A11 helpers ----------
 const ENTSOE_BASE = "https://web-api.tp.entsoe.eu/api";
@@ -1100,8 +1098,6 @@ Deno.serve(async (req) => {
   }
 
   const DEBUG = qDebug(req.url);
-  const entsoeTokenMasked = maskToken(getEntsoeToken());
-  if (DEBUG) console.log("[BOOT] ENTSO-E token masked:", entsoeTokenMasked);
 
   // Helper to insert LKG only on real data
   async function insertLKG(as_of: string, payload: any, guardMW: number) {
@@ -1214,7 +1210,7 @@ Deno.serve(async (req) => {
 
   try {
     // Fetch data sources in parallel (BMRS + Demand + EU Generation; IC handled separately)
-    const [bmrsR, demandR, EU] = await Promise.all([
+    const [bmrsR, demandR, euGenerationMix] = await Promise.all([
       fetchBMRSGeneration(),
       fetchDemand(),
       fetchEUGenerationMix(DEBUG),
@@ -1368,7 +1364,7 @@ try {
     const payload: any = {
       generationMix,
       interconnectors,
-      euGenerationMix: EU.countries, // keep your existing response shape if different
+      euGenerationMix,
       totalGenerationMW: Math.round(totalGenerationMW),
       totalDemandMW: Math.round(totalDemand * 1000),
       units: "MW",
@@ -1410,7 +1406,14 @@ if (DEBUG) {
         return Number.isFinite(p) ? Math.round((eff - p) / 60000) : null;
       })()
     },
-    eu: EU.diagnostics ?? { note: "no-diagnostics" },
+    euMix: {
+      count: euGenerationMix.length,
+      sampleCountries: euGenerationMix.slice(0, 2).map(c => ({
+        name: c.countryName,
+        total: c.totalMW,
+        fuels: Object.keys(c.fuelMix || {}).length
+      }))
+    },
     icOk: interconnectors.length > 0,
     icCount: interconnectors.length,
     icSource: (
