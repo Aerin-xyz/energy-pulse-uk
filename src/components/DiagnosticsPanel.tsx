@@ -129,7 +129,7 @@ export const DiagnosticsPanel = () => {
   const runEuDataDebug = async () => {
     setLoadingEu(true);
     try {
-      const response = await fetch('/functions/v1/energy-data?debug=1&focus=eu');
+      const response = await fetch('/functions/v1/energy-data?debug=1');
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       setEuResult(data);
