@@ -119,10 +119,7 @@ export function useEUGeneration(fetchEnergyData?: () => Promise<any>): UseEUGene
       setCountries(countries);
       setDebug(debug);
 
-      // Optional toast on successful update
-      if (countries.length > 0) {
-        toast({ title: 'EU data updated', description: `Fetched ${countries.length} countries` });
-      }
+      // Silent loading - no toasts for EU data to avoid spam
     } catch (e: any) {
       setError(e?.message || 'Failed to read EU data');
     } finally {

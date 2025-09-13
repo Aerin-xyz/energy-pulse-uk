@@ -126,38 +126,32 @@ async function fetchEnergyData(): Promise<any> {
 
 export const useEnergyData = () => {
   const [data, setData] = useState<EnergyData | null>(null);
+  const [cachedData, setCachedData] = useState<EnergyData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [initialLoad, setInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [nextUpdateAt, setNextUpdateAt] = useState<Date | null>(null);
   const { toast } = useToast();
 
-  const fetchAndSetEnergyData = useCallback(async () => {
+  const fetchAndSetEnergyData = useCallback(async (showToast = true) => {
     try {
-      setLoading(true);
+      // If we have cached data, show it immediately while fetching new data
+      if (cachedData && !initialLoad) {
+        setData(cachedData);
+        setLoading(false);
+      } else {
+        setLoading(true);
+      }
       setError(null);
       
-      console.log('Fetching energy data from API...');
+      // Fetch data directly from our Edge Function with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
       
-      // Fetch data directly from our Edge Function
       const energyData = await fetchEnergyData();
-      console.log('Processed energy data:', {
-        generationMixLength: energyData.generationMix?.length,
-        interconnectorsLength: energyData.interconnectors?.length,
-        totalGenerationMW: energyData.totalGenerationMW,
-        dataFreshness: energyData.dataFreshness,
-        diagnostics: energyData.diagnostics
-      });
+      clearTimeout(timeoutId);
 
-      // Debug summary for interconnectors
-      console.info('Interconnector debug:', {
-        status: energyData.dataFreshness?.interconnectorStatus,
-        count: energyData.diagnostics?.icCount || 0,
-        ok: energyData.diagnostics?.icOk,
-        source: energyData.diagnostics?.icSource,
-        firstAttempt: energyData.diagnostics?.icAttempts?.[0]?.variant || 'none'
-      });
-
-      setData({
+      const newData = {
         generationMix: energyData.generationMix,
         interconnectors: energyData.interconnectors,
         euGenerationMix: energyData.euGenerationMix || [],
@@ -168,49 +162,70 @@ export const useEnergyData = () => {
         lastUpdated: new Date(energyData.lastUpdated),
         dataFreshness: energyData.dataFreshness,
         asOf: energyData.asOf,
-      });
+      };
 
+      setData(newData);
+      setCachedData(newData); // Cache for next time
+      
       // Calculate next update time (5 minutes from now)
       const nextUpdate = new Date();
       nextUpdate.setMinutes(nextUpdate.getMinutes() + 5);
       setNextUpdateAt(nextUpdate);
 
-      toast({
-        title: "Data Updated",
-        description: `Live UK grid data refreshed at ${new Date().toLocaleTimeString()}`,
-      });
+      // Only show toast on manual refresh or after initial load
+      if (showToast && !initialLoad) {
+        toast({
+          title: "Data Updated",
+          description: `Live UK grid data refreshed at ${new Date().toLocaleTimeString()}`,
+        });
+      }
       
     } catch (err) {
       console.error('Energy data fetch error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch live energy data';
-      setError(errorMessage);
-      toast({
-        title: "Update Failed", 
-        description: errorMessage,
-        variant: "destructive",
-      });
+      
+      // If we have cached data, use it and show a subtle warning
+      if (cachedData) {
+        setData(cachedData);
+        if (showToast) {
+          toast({
+            title: "Using cached data", 
+            description: "Live data unavailable, showing last known data",
+            variant: "default",
+          });
+        }
+      } else {
+        setError(errorMessage);
+        if (showToast) {
+          toast({
+            title: "Update Failed", 
+            description: errorMessage,
+            variant: "destructive",
+          });
+        }
+      }
     } finally {
       setLoading(false);
+      setInitialLoad(false);
     }
-  }, [toast]);
+  }, [toast, cachedData, initialLoad]);
 
   // Initial fetch
   useEffect(() => {
-    fetchAndSetEnergyData();
+    fetchAndSetEnergyData(false); // No toast on initial load
   }, [fetchAndSetEnergyData]);
 
-  // Auto-refresh every 5 minutes
+  // Auto-refresh every 5 minutes (silent)
   useEffect(() => {
-    const interval = setInterval(fetchAndSetEnergyData, 5 * 60 * 1000);
+    const interval = setInterval(() => fetchAndSetEnergyData(false), 5 * 60 * 1000);
     return () => clearInterval(interval);
   }, [fetchAndSetEnergyData]);
 
-  // Refresh when tab becomes visible again
+  // Refresh when tab becomes visible again (silent)
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        console.log('Tab became visible, refreshing data...');
-        fetchAndSetEnergyData();
+        fetchAndSetEnergyData(false);
       }
     };
 
@@ -223,6 +238,6 @@ export const useEnergyData = () => {
     loading,
     error,
     nextUpdateAt,
-    refetch: fetchAndSetEnergyData
+    refetch: () => fetchAndSetEnergyData(true) // Show toast on manual refresh
   };
 };

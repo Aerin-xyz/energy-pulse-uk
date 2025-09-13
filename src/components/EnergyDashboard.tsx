@@ -5,7 +5,7 @@ import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { EUGenerationMix } from '@/components/EUGenerationMix';
 import { EUGenerationCard } from '@/components/EUGenerationCard';
 import { useEnergyData } from '@/hooks/useEnergyData';
-import { Skeleton } from '@/components/ui/skeleton';
+import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/components/LoadingSkeleton';
 import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
 import { NextUpdateCountdown } from '@/components/NextUpdateCountdown';
@@ -99,8 +99,16 @@ export const EnergyDashboard = () => {
         
         {loading && !data ? (
           <div className="space-y-8">
-            <Skeleton className="h-[500px] w-full" />
-            <Skeleton className="h-[400px] w-full" />
+            <ChartSkeleton />
+            <InterconnectorSkeleton />
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <div className="border rounded-lg">
+                <EUCardSkeleton />
+              </div>
+              <div className="border rounded-lg">
+                <EUCardSkeleton />
+              </div>
+            </div>
           </div>
         ) : data ? (
           <div className="space-y-8">
