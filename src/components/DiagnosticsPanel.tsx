@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, TestTube, Zap } from 'lucide-react';
+import { ChevronDown, ChevronUp, TestTube, Zap, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
@@ -10,8 +10,10 @@ export const DiagnosticsPanel = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [healthResult, setHealthResult] = useState<any>(null);
   const [energyResult, setEnergyResult] = useState<any>(null);
+  const [euResult, setEuResult] = useState<any>(null);
   const [loadingHealth, setLoadingHealth] = useState(false);
   const [loadingEnergy, setLoadingEnergy] = useState(false);
+  const [loadingEu, setLoadingEu] = useState(false);
   const { toast } = useToast();
 
   const runHealthCheck = async () => {
@@ -124,6 +126,30 @@ export const DiagnosticsPanel = () => {
     }
   };
 
+  const runEuDataDebug = async () => {
+    setLoadingEu(true);
+    try {
+      const response = await fetch('/functions/v1/energy-data?debug=1&focus=eu');
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const data = await response.json();
+      setEuResult(data);
+      toast({
+        title: "EU data debug completed",
+        description: `EU mix: ${data.diagnostics?.euMix?.count || 0} countries, ${data.diagnostics?.euMix?.sampleCountries?.length || 0} with data`,
+      });
+    } catch (error) {
+      console.error('EU data debug failed:', error);
+      setEuResult({ error: error.message });
+      toast({
+        title: "EU data debug failed",
+        description: "Failed to fetch EU debug data",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingEu(false);
+    }
+  };
+
   return (
     <Card className="mb-6">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -163,6 +189,17 @@ export const DiagnosticsPanel = () => {
                 >
                   <TestTube className="w-4 h-4" />
                   {loadingEnergy ? 'Fetching...' : 'Fetch Energy-Data (Debug)'}
+                </Button>
+                
+                <Button
+                  onClick={runEuDataDebug}
+                  disabled={loadingEu}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <MapPin className="w-4 h-4" />
+                  {loadingEu ? 'Fetching...' : 'Fetch EU Data (Debug)'}
                 </Button>
               </div>
               
@@ -253,6 +290,27 @@ export const DiagnosticsPanel = () => {
                 
                 <pre className="text-xs bg-muted p-3 rounded overflow-auto max-h-48">
                   {JSON.stringify(energyResult, null, 2)}
+                </pre>
+              </div>
+            )}
+
+            {euResult && (
+              <div className="space-y-2">
+                <h4 className="text-sm font-medium">EU Data Debug Result:</h4>
+                
+                {euResult.diagnostics?.euMix && (
+                  <div className="space-y-2">
+                    <h5 className="text-xs font-medium">EU Generation Mix Status:</h5>
+                    <div className="text-xs bg-muted/50 p-2 rounded">
+                      <p><strong>Countries Tried:</strong> {euResult.diagnostics.euMix.count || 0}</p>
+                      <p><strong>Countries with Data:</strong> {euResult.diagnostics.euMix.sampleCountries?.length || 0}</p>
+                      <p><strong>Sample Countries:</strong> {euResult.diagnostics.euMix.sampleCountries?.join(', ') || 'None'}</p>
+                    </div>
+                  </div>
+                )}
+                
+                <pre className="text-xs bg-muted p-3 rounded overflow-auto max-h-48">
+                  {JSON.stringify(euResult, null, 2)}
                 </pre>
               </div>
             )}
