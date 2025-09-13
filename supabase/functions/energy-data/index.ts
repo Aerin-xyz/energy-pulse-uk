@@ -1,4 +1,4 @@
-import { XMLParser } from "https://esm.sh/fast-xml-parser@4.4.0";
+import { XMLParser } from "https://esm.sh/fast-xml-parser@4.5.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
