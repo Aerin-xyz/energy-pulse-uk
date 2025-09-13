@@ -69,7 +69,7 @@ export const EUGenerationMix = ({ data }: EUGenerationMixProps) => {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-card-foreground">EU Energy Generation Mix</h2>
-              <p className="text-sm text-muted-foreground">No EU data available right now</p>
+              <p className="text-sm text-muted-foreground">Fetching from ENTSO-E...</p>
             </div>
           </div>
         </CardHeader>

@@ -198,7 +198,46 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
 // EU Generation Mix from ENTSO-E A75 (Actual Generation Per Type)
 async function fetchEUGenerationMix(debug = false): Promise<any[]> {
   const token = Deno.env.get("ENTSOE_API_TOKEN");
-  if (!token) { if (debug) dlog(true, 'EU mix: missing ENTSOE_API_TOKEN'); return []; }
+  
+  if (debug) dlog(true, 'EU mix: function entry', { 
+    hasToken: !!token, 
+    tokenLength: token ? token.length : 0,
+    tokenPreview: token ? `${token.substring(0, 8)}...` : null
+  });
+
+  if (!token) { 
+    if (debug) dlog(true, 'EU mix: missing ENTSOE_API_TOKEN'); 
+    return []; 
+  }
+
+  // Test token validity with a simple API call first
+  if (debug) {
+    try {
+      const testUrl = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A75&processType=A16&in_Domain=10YFR-RTE------C&periodStart=202509130000&periodEnd=202509130100`;
+      if (debug) dlog(true, 'EU mix: testing token validity', { testUrl: testUrl.replace(token, 'TOKEN_HIDDEN') });
+      
+      const testResponse = await fetch(testUrl, { 
+        method: 'GET',
+        headers: { 'Accept': 'application/xml', 'User-Agent': 'UK Energy Dashboard/1.0' }
+      });
+      
+      if (debug) dlog(true, 'EU mix: token test result', { 
+        status: testResponse.status, 
+        statusText: testResponse.statusText,
+        contentType: testResponse.headers.get('content-type')
+      });
+      
+      if (!testResponse.ok) {
+        const errorText = await testResponse.text();
+        if (debug) dlog(true, 'EU mix: token test failed', { 
+          status: testResponse.status,
+          error: errorText.substring(0, 500)
+        });
+      }
+    } catch (error) {
+      if (debug) dlog(true, 'EU mix: token test error', { error: error.message });
+    }
+  }
 
   // Focus on single-zone bidding areas to reduce API ambiguity
   const euCountries = [
@@ -231,21 +270,45 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
   const raceTimeout = (ms: number) => new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms));
 
   async function fetchCountry(country: { name: string; eic: string }) {
+    if (debug) dlog(true, `EU mix: fetching ${country.name}`, { eic: country.eic });
+    
     // Try two attempts with tiny backoff
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
         const url = `https://web-api.tp.entsoe.eu/api?securityToken=${encodeURIComponent(token)}&documentType=A75&processType=A16&in_Domain=${country.eic}&periodStart=${startStr}&periodEnd=${endStr}`;
+        
+        if (debug) dlog(true, `EU mix: API call for ${country.name} (attempt ${attempt})`, { 
+          url: url.replace(token, 'TOKEN_HIDDEN'),
+          eic: country.eic 
+        });
+
         const res = (await Promise.race([
           fetch(url, { headers: { "User-Agent": UA, Accept: "application/xml" }, cache: "no-store" }),
           raceTimeout(7000),
         ])) as Response;
 
-        if (!res || !res.ok) throw new Error(`http ${res?.status}`);
+        if (debug) dlog(true, `EU mix: API response for ${country.name} (attempt ${attempt})`, { 
+          status: res?.status,
+          statusText: res?.statusText,
+          contentType: res?.headers?.get('content-type'),
+          contentLength: res?.headers?.get('content-length')
+        });
+
+        if (!res || !res.ok) {
+          const errorText = res ? await res.text() : 'No response';
+          throw new Error(`http ${res?.status} - ${errorText.substring(0, 200)}`);
+        }
         const xmlText = await res.text();
+
+        if (debug) dlog(true, `EU mix: got XML for ${country.name}`, { 
+          length: xmlText.length,
+          xmlPreview: xmlText.substring(0, 200).replace(/\s+/g, ' ')
+        });
 
         // Detect acknowledgements and log reason
         if (xmlText.includes('Acknowledgement_MarketDocument')) {
           const reason = ackReason(xmlText) || 'ack';
+          if (debug) dlog(true, `EU mix: acknowledgement for ${country.name}`, { reason, ackXml: xmlText.substring(0, 300) });
           throw new Error(`ack:${reason}`);
         }
 
