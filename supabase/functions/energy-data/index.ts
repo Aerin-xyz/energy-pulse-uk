@@ -594,11 +594,6 @@ function asArray(x: any): any[] {
   return [x];
 }
 
-// Safe number helper
-const num = (x: any) => {
-  const n = typeof x === 'string' ? Number(x) : (Number.isFinite(x) ? x : Number(x));
-  return Number.isFinite(n) ? n : NaN;
-};
 
 // ---------- ENTSO-E A11 helpers ----------
 const ENTSOE_BASE = "https://web-api.tp.entsoe.eu/api";
