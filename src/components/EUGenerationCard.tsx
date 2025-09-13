@@ -26,7 +26,22 @@ export const EUGenerationCard: React.FC = () => {
     return energy?.data ?? {};
   }, [energy?.data]);
 
-  const { countries, loading, error } = useEUGeneration(async () => fetcher());
+  const { countries, loading, error, debug } = useEUGeneration(async () => fetcher());
+  
+  // Debug logging when EU data is missing
+  const isDebugMode = new URLSearchParams(window.location.search).has('debug');
+  
+  React.useEffect(() => {
+    if (isDebugMode && energy?.data) {
+      console.log('🇪🇺 EU Generation Debug:', {
+        rawEnergyData: energy.data,
+        euGenerationMix: energy.data?.euGenerationMix,
+        extractedCountries: countries,
+        debugInfo: debug,
+        error: error
+      });
+    }
+  }, [energy?.data, countries, debug, error, isDebugMode]);
 
   const [selected, setSelected] = React.useState<string | null>(null);
   const countryCodes = countries.map(c => c.code);
@@ -47,7 +62,17 @@ export const EUGenerationCard: React.FC = () => {
       <CardContent className="space-y-4">
         {(!countries.length || !current) && !loading ? (
           <div className="text-sm text-muted-foreground glass-foreground p-4 rounded-lg border border-white/10">
-            EU data not available from the current response. No backend/API changes were made.
+            <div className="mb-2">EU data not available from the current response.</div>
+            {isDebugMode && (
+              <div className="text-xs space-y-2 mt-3 p-3 bg-black/20 rounded border">
+                <div><strong>Debug Info:</strong></div>
+                <div>Countries found: {countries.length}</div>
+                <div>Raw EU data: {JSON.stringify(energy?.data?.euGenerationMix || 'missing')}</div>
+                <div>Debug reason: {debug?.reason || 'unknown'}</div>
+                <div>Available keys: {debug?.keys ? debug.keys.join(', ') : 'none'}</div>
+                {error && <div className="text-red-400">Error: {error}</div>}
+              </div>
+            )}
           </div>
         ) : null}
 

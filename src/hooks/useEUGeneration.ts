@@ -84,6 +84,18 @@ export function useEUGeneration(fetchEnergyData?: () => Promise<any>): UseEUGene
   }, []);
 
   const extractEU = useCallback((payload: any) => {
+    // Enhanced debug logging
+    const isDebugMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug');
+    
+    if (isDebugMode) {
+      console.log('🔍 Extracting EU data from payload:', {
+        payload,
+        euGenerationMix: payload?.euGenerationMix,
+        euCountries: payload?.eu?.countries,
+        diagnostics: payload?.diagnostics?.euMix
+      });
+    }
+    
     // Try common shapes; do not throw if absent.
     const euCountries =
       (Array.isArray(payload?.euGenerationMix) && payload.euGenerationMix) ||
@@ -91,14 +103,30 @@ export function useEUGeneration(fetchEnergyData?: () => Promise<any>): UseEUGene
       [];
 
     if (!Array.isArray(euCountries) || euCountries.length === 0) {
-      return { countries: [], debug: { reason: 'eu-data-missing', keys: Object.keys(payload || {}) } };
+      const debugInfo = {
+        reason: 'eu-data-missing',
+        keys: Object.keys(payload || {}),
+        euGenerationMixType: typeof payload?.euGenerationMix,
+        euGenerationMixValue: payload?.euGenerationMix,
+        diagnosticsEuMix: payload?.diagnostics?.euMix
+      };
+      
+      if (isDebugMode) {
+        console.log('❌ No EU countries found:', debugInfo);
+      }
+      
+      return { countries: [], debug: debugInfo };
     }
 
     const normalized = euCountries
       .filter(Boolean)
       .map(normalizeCountry);
+      
+    if (isDebugMode) {
+      console.log('✅ Normalized EU countries:', normalized);
+    }
 
-    return { countries: normalized, debug: { count: normalized.length } };
+    return { countries: normalized, debug: { count: normalized.length, rawCount: euCountries.length } };
   }, [normalizeCountry]);
 
   const doFetch = useCallback(async () => {

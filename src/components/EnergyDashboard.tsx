@@ -4,6 +4,7 @@ import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { EUGenerationMix } from '@/components/EUGenerationMix';
 import { EUGenerationCard } from '@/components/EUGenerationCard';
+import { EUDebugPanel } from '@/components/EUDebugPanel';
 import { useEnergyData } from '@/hooks/useEnergyData';
 import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/components/LoadingSkeleton';
 import { StatusIndicator } from '@/components/StatusIndicator';
@@ -132,6 +133,9 @@ export const EnergyDashboard = () => {
             data={data.interconnectors} 
             interconnectorStatus={data.dataFreshness?.interconnectorStatus}
           />
+
+            {/* EU Debug Panel (only shows in debug mode) */}
+            <EUDebugPanel />
 
             {/* EU Generation Mix */}
             <EUGenerationMix data={data.euGenerationMix || []} />
