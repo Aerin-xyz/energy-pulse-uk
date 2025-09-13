@@ -92,7 +92,9 @@ export function useEUGeneration(fetchEnergyData?: () => Promise<any>): UseEUGene
         payload,
         euGenerationMix: payload?.euGenerationMix,
         euCountries: payload?.eu?.countries,
-        diagnostics: payload?.diagnostics?.euMix
+        diagnostics: payload?.diagnostics?.euMix,
+        payloadKeys: Object.keys(payload || {}),
+        euDiagnostics: payload?.diagnostics
       });
     }
     

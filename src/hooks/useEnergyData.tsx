@@ -126,6 +126,7 @@ async function fetchEnergyData(): Promise<any> {
 
 export const useEnergyData = () => {
   const [data, setData] = useState<EnergyData | null>(null);
+  const [rawData, setRawData] = useState<any>(null);
   const [cachedData, setCachedData] = useState<EnergyData | null>(null);
   const [loading, setLoading] = useState(true);
   const [initialLoad, setInitialLoad] = useState(true);
@@ -150,6 +151,9 @@ export const useEnergyData = () => {
       
       const energyData = await fetchEnergyData();
       clearTimeout(timeoutId);
+
+      // Store raw data for debugging
+      setRawData(energyData);
 
       const newData = {
         generationMix: energyData.generationMix,
@@ -235,6 +239,7 @@ export const useEnergyData = () => {
 
   return {
     data,
+    rawData,
     loading,
     error,
     nextUpdateAt,
