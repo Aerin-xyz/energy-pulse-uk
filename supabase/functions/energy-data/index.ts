@@ -220,7 +220,12 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
   const startStr = toPeriod(start);
   const endStr = toPeriod(end);
 
-  if (debug) dlog(true, 'EU mix fetch start', { countries: euCountries.length, window: { start: startStr, end: endStr } });
+  if (debug) dlog(true, 'EU mix fetch start', { 
+    countries: euCountries.length, 
+    window: { start: startStr, end: endStr },
+    hasToken: !!token,
+    tokenLength: token ? token.length : 0
+  });
 
   // Simple timeout helper
   const raceTimeout = (ms: number) => new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms));
@@ -294,7 +299,15 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
     }
   }
 
-  if (debug) dlog(true, 'EU mix done', { countriesOk: results.length, countriesTried: euCountries.length });
+  if (debug) dlog(true, 'EU mix done', { 
+    countriesOk: results.length, 
+    countriesTried: euCountries.length,
+    sampleCountries: results.slice(0, 2).map(c => ({ 
+      name: c.countryName, 
+      total: c.totalMW,
+      fuels: Object.keys(c.fuelMix || {}).length 
+    }))
+  });
   return results;
 }
 
@@ -1329,6 +1342,14 @@ if (DEBUG) {
         const eff = Math.min(Date.parse(anchorEndISO), Date.now());
         return Number.isFinite(p) ? Math.round((eff - p) / 60000) : null;
       })()
+    },
+    euMix: {
+      count: euGenerationMix.length,
+      sampleCountries: euGenerationMix.slice(0, 2).map(c => ({
+        name: c.countryName,
+        total: c.totalMW,
+        fuels: Object.keys(c.fuelMix || {}).length
+      }))
     },
     icOk: interconnectors.length > 0,
     icCount: interconnectors.length,
