@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { EUGenerationMix } from '@/components/EUGenerationMix';
+import { EUGenerationCard } from '@/components/EUGenerationCard';
 import { useEnergyData } from '@/hooks/useEnergyData';
 import { Skeleton } from '@/components/ui/skeleton';
 import { StatusIndicator } from '@/components/StatusIndicator';
@@ -126,6 +127,9 @@ export const EnergyDashboard = () => {
 
             {/* EU Generation Mix */}
             <EUGenerationMix data={data.euGenerationMix || []} />
+
+            {/* EU Generation Card */}
+            <EUGenerationCard />
           </div>
         ) : null}
       </main>
