@@ -195,184 +195,123 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
   return { mw: 0, matched: false, reason: sawJson ? 'pv-unexpected-shape' : 'pv-no-json', debug: { columns: lastCols } };
 }
 
-// EU Generation Mix from ENTSO-E A75 (Actual Generation Per Type)
+// Simplified EU Generation Mix from ENTSO-E A75 (Actual Generation Per Type)
 async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any[]> {
   const token = Deno.env.get("ENTSOE_API_TOKEN");
   
-  if (debug || euFocus) dlog(true, 'EU mix: function entry', { 
-    hasToken: !!token, 
-    tokenLength: token ? token.length : 0,
-    tokenPreview: token ? `${token.substring(0, 8)}...` : null,
-    euFocus: euFocus
-  });
-
-  if (!token) { 
-    if (debug || euFocus) dlog(true, 'EU mix: missing ENTSOE_API_TOKEN'); 
-    return []; 
+  if (debug || euFocus) dlog(true, 'EU mix: Starting simple fetch', { hasToken: !!token });
+  
+  if (!token) {
+    if (debug) dlog(true, 'EU mix: No ENTSO-E token - returning empty array');
+    return [];
   }
-
-  // Test token validity with a simple API call first
-  if (debug || euFocus) {
-    try {
-      const testUrl = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A75&processType=A16&in_Domain=10YFR-RTE------C&periodStart=202509130000&periodEnd=202509130100`;
-      if (debug) dlog(true, 'EU mix: testing token validity', { testUrl: testUrl.replace(token, 'TOKEN_HIDDEN') });
-      
-      const testResponse = await fetch(testUrl, { 
-        method: 'GET',
-        headers: { 'Accept': 'application/xml', 'User-Agent': 'UK Energy Dashboard/1.0' }
-      });
-      
-      if (debug) dlog(true, 'EU mix: token test result', { 
-        status: testResponse.status, 
-        statusText: testResponse.statusText,
-        contentType: testResponse.headers.get('content-type')
-      });
-      
-      if (!testResponse.ok) {
-        const errorText = await testResponse.text();
-        if (debug) dlog(true, 'EU mix: token test failed', { 
-          status: testResponse.status,
-          error: errorText.substring(0, 500)
-        });
-      }
-    } catch (error) {
-      if (debug) dlog(true, 'EU mix: token test error', { error: error.message });
-    }
-  }
-
-  // Focus on single-zone bidding areas to reduce API ambiguity
-  const euCountries = [
-    { name: "Germany",      eic: "10Y1001A1001A83F" },
-    { name: "France",       eic: "10YFR-RTE------C" },
-    { name: "Spain",        eic: "10YES-REE------0" },
-    { name: "Italy",        eic: "10YIT-GRTN-----B" },
-    { name: "Netherlands",  eic: "10YNL----------L" },
-    { name: "Belgium",      eic: "10YBE----------2" },
-    { name: "Austria",      eic: "10YAT-APG------L" },
-    { name: "Finland",      eic: "10YFI-1--------U" },
-    { name: "Poland",       eic: "10YPL-TSO------S" },
+  
+  // Simple list of major EU countries
+  const countries = [
+    { code: 'FR', eic: '10YFR-RTE------C', name: 'France' },
+    { code: 'DE', eic: '10Y1001A1001A83F', name: 'Germany' },
+    { code: 'ES', eic: '10YES-REE------0', name: 'Spain' },
+    { code: 'IT', eic: '10YIT-GRTN-----B', name: 'Italy' },
+    { code: 'NL', eic: '10YNL----------L', name: 'Netherlands' },
+    { code: 'BE', eic: '10YBE----------2', name: 'Belgium' }
   ];
-
-  // Use a tight, aligned 4-hour window to avoid empty responses
+  
+  // Simple date range - last 24 hours
   const now = new Date();
-  const end = alignDown(now, 15);
-  const start = addMinutes(end, -240); // last 4 hours
-  const startStr = toPeriod(start);
-  const endStr = toPeriod(end);
-
-  if (debug || euFocus) dlog(true, 'EU mix fetch start', { 
-    countries: euCountries.length, 
-    window: { start: startStr, end: endStr },
-    hasToken: !!token,
-    tokenLength: token ? token.length : 0,
-    euFocus: euFocus
-  });
-
-  // Simple timeout helper
-  const raceTimeout = (ms: number) => new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms));
-
-  async function fetchCountry(country: { name: string; eic: string }) {
-    if (debug || euFocus) dlog(true, `EU mix: fetching ${country.name}`, { eic: country.eic });
-    
-    // Try two attempts with tiny backoff
-    for (let attempt = 1; attempt <= 2; attempt++) {
-      try {
-        const url = `https://web-api.tp.entsoe.eu/api?securityToken=${encodeURIComponent(token)}&documentType=A75&processType=A16&in_Domain=${country.eic}&periodStart=${startStr}&periodEnd=${endStr}`;
-        
-        if (debug || euFocus) dlog(true, `EU mix: API call for ${country.name} (attempt ${attempt})`, { 
-          url: url.replace(token, 'TOKEN_HIDDEN'),
-          eic: country.eic 
-        });
-
-        const res = (await Promise.race([
-          fetch(url, { headers: { "User-Agent": UA, Accept: "application/xml" }, cache: "no-store" }),
-          raceTimeout(7000),
-        ])) as Response;
-
-        if (debug || euFocus) dlog(true, `EU mix: API response for ${country.name} (attempt ${attempt})`, { 
-          status: res?.status,
-          statusText: res?.statusText,
-          contentType: res?.headers?.get('content-type'),
-          contentLength: res?.headers?.get('content-length')
-        });
-
-        if (!res || !res.ok) {
-          const errorText = res ? await res.text() : 'No response';
-          throw new Error(`http ${res?.status} - ${errorText.substring(0, 200)}`);
-        }
-        const xmlText = await res.text();
-
-        if (debug || euFocus) dlog(true, `EU mix: got XML for ${country.name}`, { 
-          length: xmlText.length,
-          xmlPreview: xmlText.substring(0, 200).replace(/\s+/g, ' ')
-        });
-
-        // Detect acknowledgements and log reason
-        if (xmlText.includes('Acknowledgement_MarketDocument')) {
-          const reason = ackReason(xmlText) || 'ack';
-          if (debug || euFocus) dlog(true, `EU mix: acknowledgement for ${country.name}`, { reason, ackXml: xmlText.substring(0, 300) });
-          throw new Error(`ack:${reason}`);
-        }
-
-        const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: "@_" });
-        const parsed = parser.parse(xmlText);
-        const doc = parsed?.Publication_MarketDocument;
-        if (!doc?.TimeSeries) throw new Error('no-timeseries');
-
-        const timeSeries = Array.isArray(doc.TimeSeries) ? doc.TimeSeries : [doc.TimeSeries];
-        let total = 0;
-        const fuelMix: Record<string, number> = {};
-
-        for (const series of timeSeries) {
-          const fuelType = series?.MktPSRType?.psrType || 'Unknown';
-          const periods = Array.isArray(series?.Period) ? series.Period : (series?.Period ? [series.Period] : []);
-          // Pick latest period then latest point within it
-          const period = periods.length ? periods[periods.length - 1] : null;
-          const points = period?.Point ? (Array.isArray(period.Point) ? period.Point : [period.Point]) : [];
-          if (!points.length) continue;
-          const latestPoint = points[points.length - 1];
-          const q = parseFloat(latestPoint?.quantity || '0');
-          if (Number.isFinite(q) && q > 0) {
-            fuelMix[fuelType] = (fuelMix[fuelType] || 0) + q;
-            total += q;
-          }
-        }
-
-        if (total > 0) {
-          const out = { country: country.name, totalMW: Math.round(total), fuelMix, timestamp: end.toISOString() };
-          if (debug || euFocus) dlog(true, 'EU mix country', { country: country.name, totalMW: out.totalMW, fuels: Object.keys(fuelMix).length });
-          return out;
-        }
-        throw new Error('no-positive-quantity');
-      } catch (e) {
-        if (debug || euFocus) dlog(true, 'EU mix attempt failed', { country: country.name, attempt, error: (e as Error)?.message });
-        if (attempt === 2) return null;
-        await new Promise(r => setTimeout(r, 200 * attempt));
-      }
-    }
-    return null;
-  }
-
-  // Run in small batches to be gentle on rate limits
-  const batchSize = 4;
+  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const startDate = yesterday.toISOString().slice(0, 10).replace(/-/g, '') + '0000';
+  const endDate = now.toISOString().slice(0, 10).replace(/-/g, '') + '2300';
+  
+  if (debug || euFocus) dlog(true, 'EU mix: Date range', { startDate, endDate });
+  
   const results: any[] = [];
-  for (let i = 0; i < euCountries.length; i += batchSize) {
-    const slice = euCountries.slice(i, i + batchSize);
-    const settled = await Promise.allSettled(slice.map(c => fetchCountry(c)));
-    for (const r of settled) {
-      if (r.status === 'fulfilled' && r.value) results.push(r.value);
+  const parser = new XMLParser({
+    ignoreAttributes: false,
+    parseAttributeValue: true,
+    parseTrueNumberOnly: true
+  });
+
+  // Process countries sequentially to avoid API rate limits
+  for (const country of countries) {
+    try {
+      const url = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A75&processType=A16&outBiddingZone_Domain=${country.eic}&periodStart=${startDate}&periodEnd=${endDate}`;
+      
+      if (debug || euFocus) dlog(true, `Fetching ${country.code}...`);
+      
+      const response = await fetch(url, {
+        headers: { 'Accept': 'application/xml' }
+      });
+      
+      if (!response.ok) {
+        if (debug || euFocus) dlog(true, `${country.code}: HTTP ${response.status}`);
+        continue;
+      }
+      
+      const xmlText = await response.text();
+      const parsed = parser.parse(xmlText);
+      const doc = parsed.GL_MarketDocument || parsed.Publication_MarketDocument;
+      
+      if (!doc?.TimeSeries) {
+        if (debug || euFocus) dlog(true, `${country.code}: No time series`);
+        continue;
+      }
+      
+      // Extract latest generation data
+      const timeSeries = Array.isArray(doc.TimeSeries) ? doc.TimeSeries : [doc.TimeSeries];
+      const fuelMix: Array<{ fuel: string; value: number }> = [];
+      let latestTime: string | undefined;
+      
+      for (const series of timeSeries) {
+        const psrType = series.MktPSRType?.psrType || 'Other';
+        const periods = Array.isArray(series.Period) ? series.Period : [series.Period];
+        
+        // Get most recent period
+        const sortedPeriods = periods
+          ?.filter((p: any) => p?.Point)
+          ?.sort((a: any, b: any) => 
+            new Date(b.timeInterval?.start || 0).getTime() - 
+            new Date(a.timeInterval?.start || 0).getTime()
+          );
+        
+        const latestPeriod = sortedPeriods?.[0];
+        if (!latestPeriod) continue;
+        
+        latestTime = latestPeriod.timeInterval?.start;
+        const points = Array.isArray(latestPeriod.Point) ? latestPeriod.Point : [latestPeriod.Point];
+        
+        const totalMW = points
+          ?.filter((p: any) => p?.quantity !== undefined)
+          ?.reduce((sum: number, p: any) => sum + (Number(p.quantity) || 0), 0) || 0;
+        
+        if (totalMW > 0) {
+          fuelMix.push({ fuel: psrType, value: totalMW });
+        }
+      }
+      
+      if (fuelMix.length > 0) {
+        results.push({
+          code: country.code,
+          name: country.name,
+          ts: latestTime,
+          mix: fuelMix,
+          ok: true
+        });
+        
+        if (debug || euFocus) {
+          const total = fuelMix.reduce((sum, f) => sum + f.value, 0);
+          dlog(true, `${country.code}: Success - ${fuelMix.length} fuels, ${Math.round(total)} MW total`);
+        }
+      }
+      
+      // Small delay to be respectful to API
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+    } catch (error) {
+      if (debug || euFocus) dlog(true, `${country.code}: Error - ${error.message}`);
     }
   }
-
-  if (debug) dlog(true, 'EU mix done', { 
-    countriesOk: results.length, 
-    countriesTried: euCountries.length,
-    sampleCountries: results.slice(0, 2).map(c => ({ 
-      name: c.countryName, 
-      total: c.totalMW,
-      fuels: Object.keys(c.fuelMix || {}).length 
-    }))
-  });
+  
+  if (debug || euFocus) dlog(true, `EU mix: Complete - ${results.length} countries successful`);
   return results;
 }
 

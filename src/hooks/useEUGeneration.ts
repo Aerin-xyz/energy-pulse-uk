@@ -84,51 +84,39 @@ export function useEUGeneration(fetchEnergyData?: () => Promise<any>): UseEUGene
   }, []);
 
   const extractEU = useCallback((payload: any) => {
-    // Enhanced debug logging
     const isDebugMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug');
     
+    // Look for EU data in the simplified structure
+    const euCountries = Array.isArray(payload?.euGenerationMix) ? payload.euGenerationMix : [];
+
     if (isDebugMode) {
-      console.log('🔍 Extracting EU data from payload:', {
-        payload,
-        euGenerationMix: payload?.euGenerationMix,
-        euCountries: payload?.eu?.countries,
-        diagnostics: payload?.diagnostics?.euMix,
-        payloadKeys: Object.keys(payload || {}),
-        euDiagnostics: payload?.diagnostics
+      console.log('🇪🇺 EU Data Extract:', {
+        found: euCountries.length,
+        countries: euCountries.map((c: any) => c?.code).filter(Boolean),
+        sample: euCountries[0]
       });
     }
-    
-    // Try common shapes; do not throw if absent.
-    const euCountries =
-      (Array.isArray(payload?.euGenerationMix) && payload.euGenerationMix) ||
-      (Array.isArray(payload?.eu?.countries) && payload.eu.countries) ||
-      [];
 
-    if (!Array.isArray(euCountries) || euCountries.length === 0) {
-      const debugInfo = {
-        reason: 'eu-data-missing',
-        keys: Object.keys(payload || {}),
-        euGenerationMixType: typeof payload?.euGenerationMix,
-        euGenerationMixValue: payload?.euGenerationMix,
-        diagnosticsEuMix: payload?.diagnostics?.euMix
+    if (!euCountries.length) {
+      return { 
+        countries: [], 
+        debug: { 
+          reason: 'no-eu-data',
+          availableKeys: Object.keys(payload || {})
+        } 
       };
-      
-      if (isDebugMode) {
-        console.log('❌ No EU countries found:', debugInfo);
-      }
-      
-      return { countries: [], debug: debugInfo };
     }
 
     const normalized = euCountries
       .filter(Boolean)
-      .map(normalizeCountry);
+      .map(normalizeCountry)
+      .filter((c: any) => c.ok && c.totalMW > 0);
       
     if (isDebugMode) {
-      console.log('✅ Normalized EU countries:', normalized);
+      console.log('✅ Normalized EU countries:', normalized.length);
     }
 
-    return { countries: normalized, debug: { count: normalized.length, rawCount: euCountries.length } };
+    return { countries: normalized, debug: { count: normalized.length } };
   }, [normalizeCountry]);
 
   const doFetch = useCallback(async () => {
