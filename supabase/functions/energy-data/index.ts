@@ -335,6 +335,7 @@ async function fetchEUGenerationMix(DEBUG=false) {
     } : undefined
   };
 }
+}
 
 /**
  * Fetches ENTSO-E physical flows using the new enhanced method.
