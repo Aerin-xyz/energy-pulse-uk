@@ -131,12 +131,12 @@ export const DiagnosticsPanel = () => {
     setLoadingEu(true);
     try {
       const { data, error } = await supabase.functions.invoke('energy-data', {
-        body: { debug: 1 }
+        body: { debug: 1, euFocus: true }
       });
       if (error) throw error;
       setEuResult(data);
       toast({
-        title: "EU data debug completed",
+        title: "EU data debug completed (ENTSO-E focused)",
         description: `EU mix: ${data.diagnostics?.euMix?.count || 0} countries, ${data.diagnostics?.euMix?.sampleCountries?.length || 0} with data`,
       });
     } catch (error) {
@@ -302,11 +302,32 @@ export const DiagnosticsPanel = () => {
                 
                 {euResult.diagnostics?.euMix && (
                   <div className="space-y-2">
-                    <h5 className="text-xs font-medium">EU Generation Mix Status:</h5>
-                    <div className="text-xs bg-muted/50 p-2 rounded">
+                    <h5 className="text-xs font-medium">EU Generation Mix Status {euResult.diagnostics.euMix.euFocusMode && "(ENTSO-E Focused)"}:</h5>
+                    <div className="text-xs bg-muted/50 p-2 rounded space-y-2">
                       <p><strong>Countries Tried:</strong> {euResult.diagnostics.euMix.count || 0}</p>
                       <p><strong>Countries with Data:</strong> {euResult.diagnostics.euMix.sampleCountries?.length || 0}</p>
-                      <p><strong>Sample Countries:</strong> {euResult.diagnostics.euMix.sampleCountries?.join(', ') || 'None'}</p>
+                      
+                      {euResult.diagnostics.euMix.euFocusMode && euResult.diagnostics.euMix.allCountries ? (
+                        <div>
+                          <p><strong>All Countries (ENTSO-E Debug):</strong></p>
+                          {euResult.diagnostics.euMix.allCountries.map((country: any, i: number) => (
+                            <div key={i} className="ml-2 p-2 bg-black/20 rounded mt-1">
+                              <div><strong>{country.name}:</strong> {country.total} MW</div>
+                              <div className="text-xs text-muted-foreground">
+                                Fuels: {Object.keys(country.fuelMix || {}).join(', ')}
+                              </div>
+                              <div className="text-xs text-muted-foreground">
+                                Updated: {new Date(country.timestamp).toLocaleTimeString()}
+                              </div>
+                            </div>
+                          ))}
+                          <div className="mt-2 text-xs text-yellow-600">
+                            💡 {euResult.diagnostics.euMix.detailedLogs}
+                          </div>
+                        </div>
+                      ) : (
+                        <p><strong>Sample Countries:</strong> {euResult.diagnostics.euMix.sampleCountries?.map((c: any) => c.name || c).join(', ') || 'None'}</p>
+                      )}
                     </div>
                   </div>
                 )}

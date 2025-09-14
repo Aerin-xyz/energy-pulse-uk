@@ -196,22 +196,23 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
 }
 
 // EU Generation Mix from ENTSO-E A75 (Actual Generation Per Type)
-async function fetchEUGenerationMix(debug = false): Promise<any[]> {
+async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any[]> {
   const token = Deno.env.get("ENTSOE_API_TOKEN");
   
-  if (debug) dlog(true, 'EU mix: function entry', { 
+  if (debug || euFocus) dlog(true, 'EU mix: function entry', { 
     hasToken: !!token, 
     tokenLength: token ? token.length : 0,
-    tokenPreview: token ? `${token.substring(0, 8)}...` : null
+    tokenPreview: token ? `${token.substring(0, 8)}...` : null,
+    euFocus: euFocus
   });
 
   if (!token) { 
-    if (debug) dlog(true, 'EU mix: missing ENTSOE_API_TOKEN'); 
+    if (debug || euFocus) dlog(true, 'EU mix: missing ENTSOE_API_TOKEN'); 
     return []; 
   }
 
   // Test token validity with a simple API call first
-  if (debug) {
+  if (debug || euFocus) {
     try {
       const testUrl = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A75&processType=A16&in_Domain=10YFR-RTE------C&periodStart=202509130000&periodEnd=202509130100`;
       if (debug) dlog(true, 'EU mix: testing token validity', { testUrl: testUrl.replace(token, 'TOKEN_HIDDEN') });
@@ -259,25 +260,26 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
   const startStr = toPeriod(start);
   const endStr = toPeriod(end);
 
-  if (debug) dlog(true, 'EU mix fetch start', { 
+  if (debug || euFocus) dlog(true, 'EU mix fetch start', { 
     countries: euCountries.length, 
     window: { start: startStr, end: endStr },
     hasToken: !!token,
-    tokenLength: token ? token.length : 0
+    tokenLength: token ? token.length : 0,
+    euFocus: euFocus
   });
 
   // Simple timeout helper
   const raceTimeout = (ms: number) => new Promise<never>((_, rej) => setTimeout(() => rej(new Error('timeout')), ms));
 
   async function fetchCountry(country: { name: string; eic: string }) {
-    if (debug) dlog(true, `EU mix: fetching ${country.name}`, { eic: country.eic });
+    if (debug || euFocus) dlog(true, `EU mix: fetching ${country.name}`, { eic: country.eic });
     
     // Try two attempts with tiny backoff
     for (let attempt = 1; attempt <= 2; attempt++) {
       try {
         const url = `https://web-api.tp.entsoe.eu/api?securityToken=${encodeURIComponent(token)}&documentType=A75&processType=A16&in_Domain=${country.eic}&periodStart=${startStr}&periodEnd=${endStr}`;
         
-        if (debug) dlog(true, `EU mix: API call for ${country.name} (attempt ${attempt})`, { 
+        if (debug || euFocus) dlog(true, `EU mix: API call for ${country.name} (attempt ${attempt})`, { 
           url: url.replace(token, 'TOKEN_HIDDEN'),
           eic: country.eic 
         });
@@ -287,7 +289,7 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
           raceTimeout(7000),
         ])) as Response;
 
-        if (debug) dlog(true, `EU mix: API response for ${country.name} (attempt ${attempt})`, { 
+        if (debug || euFocus) dlog(true, `EU mix: API response for ${country.name} (attempt ${attempt})`, { 
           status: res?.status,
           statusText: res?.statusText,
           contentType: res?.headers?.get('content-type'),
@@ -300,7 +302,7 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
         }
         const xmlText = await res.text();
 
-        if (debug) dlog(true, `EU mix: got XML for ${country.name}`, { 
+        if (debug || euFocus) dlog(true, `EU mix: got XML for ${country.name}`, { 
           length: xmlText.length,
           xmlPreview: xmlText.substring(0, 200).replace(/\s+/g, ' ')
         });
@@ -308,7 +310,7 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
         // Detect acknowledgements and log reason
         if (xmlText.includes('Acknowledgement_MarketDocument')) {
           const reason = ackReason(xmlText) || 'ack';
-          if (debug) dlog(true, `EU mix: acknowledgement for ${country.name}`, { reason, ackXml: xmlText.substring(0, 300) });
+          if (debug || euFocus) dlog(true, `EU mix: acknowledgement for ${country.name}`, { reason, ackXml: xmlText.substring(0, 300) });
           throw new Error(`ack:${reason}`);
         }
 
@@ -338,12 +340,12 @@ async function fetchEUGenerationMix(debug = false): Promise<any[]> {
 
         if (total > 0) {
           const out = { country: country.name, totalMW: Math.round(total), fuelMix, timestamp: end.toISOString() };
-          if (debug) dlog(true, 'EU mix country', { country: country.name, totalMW: out.totalMW, fuels: Object.keys(fuelMix).length });
+          if (debug || euFocus) dlog(true, 'EU mix country', { country: country.name, totalMW: out.totalMW, fuels: Object.keys(fuelMix).length });
           return out;
         }
         throw new Error('no-positive-quantity');
       } catch (e) {
-        if (debug) dlog(true, 'EU mix attempt failed', { country: country.name, attempt, error: (e as Error)?.message });
+        if (debug || euFocus) dlog(true, 'EU mix attempt failed', { country: country.name, attempt, error: (e as Error)?.message });
         if (attempt === 2) return null;
         await new Promise(r => setTimeout(r, 200 * attempt));
       }
@@ -1097,7 +1099,19 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  const DEBUG = qDebug(req.url);
+  // Read request body for debug parameters
+  let requestBody: any = {};
+  try {
+    if (req.method === "POST" || req.headers.get("content-type")?.includes("application/json")) {
+      requestBody = await req.json();
+    }
+  } catch {
+    // Ignore body parsing errors
+  }
+
+  // Check debug mode from both URL and request body
+  const DEBUG = qDebug(req.url) || requestBody.debug === 1 || requestBody.debug === true;
+  const EU_FOCUS = requestBody.euFocus === true;
 
   // Helper to insert LKG only on real data
   async function insertLKG(as_of: string, payload: any, guardMW: number) {
@@ -1213,7 +1227,7 @@ Deno.serve(async (req) => {
     const [bmrsR, demandR, euGenerationMix] = await Promise.all([
       fetchBMRSGeneration(),
       fetchDemand(),
-      fetchEUGenerationMix(DEBUG),
+      fetchEUGenerationMix(DEBUG, EU_FOCUS),
     ]);
 
     if (DEBUG) dlog(true, "Data fetch results:", { 
@@ -1409,10 +1423,20 @@ if (DEBUG) {
     euMix: {
       count: euGenerationMix.length,
       sampleCountries: euGenerationMix.slice(0, 2).map(c => ({
-        name: c.countryName,
+        name: c.countryName || c.country,
         total: c.totalMW,
         fuels: Object.keys(c.fuelMix || {}).length
-      }))
+      })),
+      ...(EU_FOCUS && {
+        allCountries: euGenerationMix.map(c => ({
+          name: c.countryName || c.country,
+          total: c.totalMW,
+          fuelMix: c.fuelMix,
+          timestamp: c.timestamp
+        })),
+        euFocusMode: true,
+        detailedLogs: "Check server logs for detailed ENTSO-E API call information"
+      })
     },
     icOk: interconnectors.length > 0,
     icCount: interconnectors.length,
