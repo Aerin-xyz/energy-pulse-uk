@@ -57,22 +57,27 @@ export function useEUGeneration(fetchEnergyData?: () => Promise<any>): UseEUGene
     const code = raw?.code ?? '??';
     const asOf = raw?.ts ? new Date(raw.ts) : null;
 
-    // Prefer explicit mix array; else map; else empty
+    // Handle the mixByFuel format from the improved API
     let entries: Array<{ label: string; mw: number }> = [];
-    if (Array.isArray(raw?.mix)) {
-      entries = raw!.mix.map(x => ({
-        label: PSR_LABELS[x.fuel] ?? x.fuel ?? 'Other',
-        mw: Number(x.value) || 0
-      }));
-    } else if (raw?.mixByFuel && typeof raw.mixByFuel === 'object') {
-      entries = Object.entries(raw.mixByFuel).map(([k,v]) => ({
+    if (raw?.mixByFuel && typeof raw.mixByFuel === 'object') {
+      entries = Object.entries(raw.mixByFuel).map(([k, v]) => ({
         label: PSR_LABELS[k] ?? k,
         mw: Number(v) || 0
       }));
+    } else if (Array.isArray(raw?.mix)) {
+      // Legacy format support
+      entries = raw.mix.map(x => ({
+        label: PSR_LABELS[x.fuel] ?? x.fuel ?? 'Other',
+        mw: Number(x.value) || 0
+      }));
     }
-    // Sum & sort desc
-    const totalMW = entries.reduce((s, x) => s + (x.mw || 0), 0);
-    entries.sort((a,b) => b.mw - a.mw);
+    
+    // Filter out zero values and sort by MW descending
+    entries = entries
+      .filter(e => e.mw > 0)
+      .sort((a, b) => b.mw - a.mw);
+      
+    const totalMW = entries.reduce((s, x) => s + x.mw, 0);
 
     return {
       code,

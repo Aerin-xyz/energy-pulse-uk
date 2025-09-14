@@ -199,30 +199,40 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
 async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any[]> {
   const token = Deno.env.get("ENTSOE_API_TOKEN");
   
-  if (debug || euFocus) dlog(true, 'EU mix: Starting simple fetch', { hasToken: !!token });
+  if (debug || euFocus) dlog(true, 'EU mix: Starting fetch', { hasToken: !!token });
   
   if (!token) {
-    if (debug) dlog(true, 'EU mix: No ENTSO-E token - returning empty array');
+    if (debug || euFocus) dlog(true, 'EU mix: No ENTSO-E API token configured');
     return [];
   }
   
-  // Simple list of major EU countries
+  // Start with just France to test
   const countries = [
-    { code: 'FR', eic: '10YFR-RTE------C', name: 'France' },
-    { code: 'DE', eic: '10Y1001A1001A83F', name: 'Germany' },
-    { code: 'ES', eic: '10YES-REE------0', name: 'Spain' },
-    { code: 'IT', eic: '10YIT-GRTN-----B', name: 'Italy' },
-    { code: 'NL', eic: '10YNL----------L', name: 'Netherlands' },
-    { code: 'BE', eic: '10YBE----------2', name: 'Belgium' }
+    { code: 'FR', eic: '10YFR-RTE------C', name: 'France' }
   ];
   
-  // Simple date range - last 24 hours
+  // Use last 4 hours for more reliable data
   const now = new Date();
-  const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-  const startDate = yesterday.toISOString().slice(0, 10).replace(/-/g, '') + '0000';
-  const endDate = now.toISOString().slice(0, 10).replace(/-/g, '') + '2300';
+  const startTime = new Date(now.getTime() - 4 * 60 * 60 * 1000);
   
-  if (debug || euFocus) dlog(true, 'EU mix: Date range', { startDate, endDate });
+  // ENTSO-E expects YYYYMMDDHHMM format in UTC
+  const formatDateTime = (date: Date) => {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const hour = String(date.getUTCHours()).padStart(2, '0');
+    return `${year}${month}${day}${hour}00`;
+  };
+  
+  const startDate = formatDateTime(startTime);
+  const endDate = formatDateTime(now);
+  
+  if (debug || euFocus) dlog(true, 'EU mix: Date range', { 
+    startDate, 
+    endDate,
+    startUTC: startTime.toISOString(),
+    endUTC: now.toISOString()
+  });
   
   const results: any[] = [];
   const parser = new XMLParser({
@@ -231,80 +241,99 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
     parseTrueNumberOnly: true
   });
 
-  // Process countries sequentially to avoid API rate limits
+  // Process countries sequentially
   for (const country of countries) {
     try {
       const url = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A75&processType=A16&outBiddingZone_Domain=${country.eic}&periodStart=${startDate}&periodEnd=${endDate}`;
       
-      if (debug || euFocus) dlog(true, `Fetching ${country.code}...`);
+      if (debug || euFocus) dlog(true, `Fetching ${country.name} (${country.code})...`);
       
       const response = await fetch(url, {
-        headers: { 'Accept': 'application/xml' }
+        headers: { 
+          'Accept': 'application/xml',
+          'User-Agent': 'EnergyDashboard/1.0'
+        }
       });
       
       if (!response.ok) {
-        if (debug || euFocus) dlog(true, `${country.code}: HTTP ${response.status}`);
+        const errorText = await response.text();
+        if (debug || euFocus) {
+          dlog(true, `${country.code}: HTTP ${response.status} - ${errorText.substring(0, 200)}`);
+        }
         continue;
       }
       
       const xmlText = await response.text();
+      if (debug || euFocus) dlog(true, `${country.code}: Received XML response (${xmlText.length} chars)`);
+      
       const parsed = parser.parse(xmlText);
       const doc = parsed.GL_MarketDocument || parsed.Publication_MarketDocument;
       
       if (!doc?.TimeSeries) {
-        if (debug || euFocus) dlog(true, `${country.code}: No time series`);
+        if (debug || euFocus) dlog(true, `${country.code}: No TimeSeries in response`);
         continue;
       }
       
-      // Extract latest generation data
+      // Extract generation data by fuel type
       const timeSeries = Array.isArray(doc.TimeSeries) ? doc.TimeSeries : [doc.TimeSeries];
-      const fuelMix: Array<{ fuel: string; value: number }> = [];
+      const mixByFuel: Record<string, number> = {};
       let latestTime: string | undefined;
       
+      if (debug || euFocus) dlog(true, `${country.code}: Found ${timeSeries.length} time series`);
+      
       for (const series of timeSeries) {
-        const psrType = series.MktPSRType?.psrType || 'Other';
-        const periods = Array.isArray(series.Period) ? series.Period : [series.Period];
-        
-        // Get most recent period
-        const sortedPeriods = periods
-          ?.filter((p: any) => p?.Point)
-          ?.sort((a: any, b: any) => 
-            new Date(b.timeInterval?.start || 0).getTime() - 
-            new Date(a.timeInterval?.start || 0).getTime()
-          );
-        
-        const latestPeriod = sortedPeriods?.[0];
-        if (!latestPeriod) continue;
-        
-        latestTime = latestPeriod.timeInterval?.start;
-        const points = Array.isArray(latestPeriod.Point) ? latestPeriod.Point : [latestPeriod.Point];
-        
-        const totalMW = points
-          ?.filter((p: any) => p?.quantity !== undefined)
-          ?.reduce((sum: number, p: any) => sum + (Number(p.quantity) || 0), 0) || 0;
-        
-        if (totalMW > 0) {
-          fuelMix.push({ fuel: psrType, value: totalMW });
+        try {
+          const psrType = series.MktPSRType?.psrType || 'Other';
+          const periods = Array.isArray(series.Period) ? series.Period : [series.Period];
+          
+          if (!periods || periods.length === 0) continue;
+          
+          // Get the most recent period with data
+          const validPeriods = periods.filter((p: any) => p?.Point && p?.timeInterval?.start);
+          if (validPeriods.length === 0) continue;
+          
+          const latestPeriod = validPeriods.sort((a: any, b: any) => 
+            new Date(b.timeInterval.start).getTime() - new Date(a.timeInterval.start).getTime()
+          )[0];
+          
+          if (!latestPeriod) continue;
+          
+          latestTime = latestPeriod.timeInterval.start;
+          const points = Array.isArray(latestPeriod.Point) ? latestPeriod.Point : [latestPeriod.Point];
+          
+          // Sum all points for this fuel type
+          const totalMW = points
+            .filter((p: any) => p?.quantity !== undefined && !isNaN(Number(p.quantity)))
+            .reduce((sum: number, p: any) => sum + Number(p.quantity), 0);
+          
+          if (totalMW > 0) {
+            mixByFuel[psrType] = (mixByFuel[psrType] || 0) + totalMW;
+            if (debug || euFocus) dlog(true, `${country.code}: ${psrType} = ${totalMW.toFixed(1)} MW`);
+          }
+        } catch (seriesError) {
+          if (debug || euFocus) dlog(true, `${country.code}: Error processing series - ${seriesError.message}`);
         }
       }
       
-      if (fuelMix.length > 0) {
+      if (Object.keys(mixByFuel).length > 0) {
+        const totalMW = Object.values(mixByFuel).reduce((sum, mw) => sum + mw, 0);
+        
         results.push({
           code: country.code,
-          name: country.name,
-          ts: latestTime,
-          mix: fuelMix,
+          ts: latestTime || new Date().toISOString(),
+          mixByFuel,
           ok: true
         });
         
         if (debug || euFocus) {
-          const total = fuelMix.reduce((sum, f) => sum + f.value, 0);
-          dlog(true, `${country.code}: Success - ${fuelMix.length} fuels, ${Math.round(total)} MW total`);
+          dlog(true, `${country.code}: Success - ${Object.keys(mixByFuel).length} fuel types, ${Math.round(totalMW)} MW total`);
         }
+      } else {
+        if (debug || euFocus) dlog(true, `${country.code}: No valid generation data found`);
       }
       
-      // Small delay to be respectful to API
-      await new Promise(resolve => setTimeout(resolve, 200));
+      // Be respectful to the API
+      await new Promise(resolve => setTimeout(resolve, 500));
       
     } catch (error) {
       if (debug || euFocus) dlog(true, `${country.code}: Error - ${error.message}`);
