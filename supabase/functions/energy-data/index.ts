@@ -195,8 +195,9 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
   return { mw: 0, matched: false, reason: sawJson ? 'pv-unexpected-shape' : 'pv-no-json', debug: { columns: lastCols } };
 }
 
-// Simplified EU Generation Mix from ENTSO-E A75 (Actual Generation Per Type)
+// Enhanced EU Generation Mix from ENTSO-E A74 (Actual Generation Per Type)
 async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any[]> {
+  const dlog = (important: boolean, ...args: any[]) => debug && console.log('[energy-data]', ...args);
   const token = Deno.env.get("ENTSOE_API_TOKEN");
   
   if (debug || euFocus) dlog(true, 'EU mix: Starting fetch', { hasToken: !!token });
@@ -211,9 +212,10 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
     { code: 'FR', eic: '10YFR-RTE------C', name: 'France' }
   ];
   
-  // Use last 4 hours for more reliable data
+  // Use a 24-hour window ending 2 hours ago for more reliable data
   const now = new Date();
-  const startTime = new Date(now.getTime() - 4 * 60 * 60 * 1000);
+  const endTime = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+  const startTime = new Date(endTime.getTime() - 24 * 60 * 60 * 1000);
   
   // ENTSO-E expects YYYYMMDDHHMM format in UTC
   const formatDateTime = (date: Date) => {
@@ -221,17 +223,18 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
     const month = String(date.getUTCMonth() + 1).padStart(2, '0');
     const day = String(date.getUTCDate()).padStart(2, '0');
     const hour = String(date.getUTCHours()).padStart(2, '0');
-    return `${year}${month}${day}${hour}00`;
+    const minute = String(date.getUTCMinutes()).padStart(2, '0');
+    return `${year}${month}${day}${hour}${minute}`;
   };
   
   const startDate = formatDateTime(startTime);
-  const endDate = formatDateTime(now);
+  const endDate = formatDateTime(endTime);
   
   if (debug || euFocus) dlog(true, 'EU mix: Date range', { 
     startDate, 
     endDate,
     startUTC: startTime.toISOString(),
-    endUTC: now.toISOString()
+    endUTC: endTime.toISOString()
   });
   
   const results: any[] = [];
@@ -244,21 +247,38 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
   // Process countries sequentially
   for (const country of countries) {
     try {
-      const url = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A75&processType=A16&outBiddingZone_Domain=${country.eic}&periodStart=${startDate}&periodEnd=${endDate}`;
+      // Use A74 (Actual Generation Per Type) instead of A75
+      const url = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A74&processType=A16&outBiddingZone_Domain=${country.eic}&periodStart=${startDate}&periodEnd=${endDate}`;
       
-      if (debug || euFocus) dlog(true, `Fetching ${country.name} (${country.code})...`);
+      if (debug || euFocus) dlog(true, `Fetching ${country.name} (${country.code}) with URL: ${url.replace(token, 'TOKEN_HIDDEN')}`);
       
       const response = await fetch(url, {
+        method: 'GET',
         headers: { 
           'Accept': 'application/xml',
-          'User-Agent': 'EnergyDashboard/1.0'
+          'User-Agent': 'EnergyDashboard/1.0',
+          'Content-Type': 'application/xml'
         }
       });
       
       if (!response.ok) {
         const errorText = await response.text();
         if (debug || euFocus) {
-          dlog(true, `${country.code}: HTTP ${response.status} - ${errorText.substring(0, 200)}`);
+          dlog(true, `${country.code}: HTTP ${response.status} - Error response:`);
+          
+          // Try to parse XML error for better understanding
+          try {
+            const errorParsed = parser.parse(errorText);
+            const ackDoc = errorParsed.Acknowledgement_MarketDocument;
+            if (ackDoc?.Reason?.text) {
+              dlog(true, `${country.code}: Error reason: ${ackDoc.Reason.text}`);
+              dlog(true, `${country.code}: Error code: ${ackDoc.Reason.code}`);
+            } else {
+              dlog(true, `${country.code}: Raw error: ${errorText.substring(0, 500)}`);
+            }
+          } catch (parseError) {
+            dlog(true, `${country.code}: Raw error text: ${errorText.substring(0, 500)}`);
+          }
         }
         continue;
       }
@@ -269,8 +289,13 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
       const parsed = parser.parse(xmlText);
       const doc = parsed.GL_MarketDocument || parsed.Publication_MarketDocument;
       
-      if (!doc?.TimeSeries) {
-        if (debug || euFocus) dlog(true, `${country.code}: No TimeSeries in response`);
+      if (!doc) {
+        if (debug || euFocus) dlog(true, `${country.code}: No valid document structure in response`);
+        continue;
+      }
+      
+      if (!doc.TimeSeries) {
+        if (debug || euFocus) dlog(true, `${country.code}: No TimeSeries in response, available keys:`, Object.keys(doc));
         continue;
       }
       
@@ -286,11 +311,17 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
           const psrType = series.MktPSRType?.psrType || 'Other';
           const periods = Array.isArray(series.Period) ? series.Period : [series.Period];
           
-          if (!periods || periods.length === 0) continue;
+          if (!periods || periods.length === 0) {
+            if (debug || euFocus) dlog(true, `${country.code}: No periods found for ${psrType}`);
+            continue;
+          }
           
           // Get the most recent period with data
           const validPeriods = periods.filter((p: any) => p?.Point && p?.timeInterval?.start);
-          if (validPeriods.length === 0) continue;
+          if (validPeriods.length === 0) {
+            if (debug || euFocus) dlog(true, `${country.code}: No valid periods for ${psrType}`);
+            continue;
+          }
           
           const latestPeriod = validPeriods.sort((a: any, b: any) => 
             new Date(b.timeInterval.start).getTime() - new Date(a.timeInterval.start).getTime()
@@ -326,14 +357,14 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
         });
         
         if (debug || euFocus) {
-          dlog(true, `${country.code}: Success - ${Object.keys(mixByFuel).length} fuel types, ${Math.round(totalMW)} MW total`);
+          dlog(true, `${country.code}: SUCCESS - ${Object.keys(mixByFuel).length} fuel types, ${Math.round(totalMW)} MW total`);
         }
       } else {
         if (debug || euFocus) dlog(true, `${country.code}: No valid generation data found`);
       }
       
       // Be respectful to the API
-      await new Promise(resolve => setTimeout(resolve, 500));
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
     } catch (error) {
       if (debug || euFocus) dlog(true, `${country.code}: Error - ${error.message}`);
