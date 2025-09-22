@@ -813,7 +813,7 @@ async function entsoeNetForBorderMW(token: string, partnerEIC: string, prefMtuMi
 
   const a = intoPoints.filter(p => p.t === latestT).reduce((s,p)=>s+p.quantity,0);
   const b = fromPoints.filter(p => p.t === latestT).reduce((s,p)=>s+p.quantity,0);
-  return { ok: true, t: latestT, netMW: Math.round(a - b), detail: attempts };
+  return { ok: true, t: latestT, netMW: Math.round(b - a), detail: attempts };
 }
 
 // ---- Interconnector helpers ----
