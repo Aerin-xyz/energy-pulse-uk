@@ -3,9 +3,10 @@ import { Clock } from 'lucide-react';
 
 interface NextUpdateCountdownProps {
   nextUpdateAt: Date | null;
+  updateType?: 'high' | 'mid' | 'full';
 }
 
-export const NextUpdateCountdown = ({ nextUpdateAt }: NextUpdateCountdownProps) => {
+export const NextUpdateCountdown = ({ nextUpdateAt, updateType = 'full' }: NextUpdateCountdownProps) => {
   const [timeLeft, setTimeLeft] = useState<string>('');
 
   useEffect(() => {
@@ -39,10 +40,16 @@ export const NextUpdateCountdown = ({ nextUpdateAt }: NextUpdateCountdownProps) 
     return null;
   }
 
+  const updateLabels = {
+    high: 'embedded data',
+    mid: 'interconnector data', 
+    full: 'settlement period'
+  };
+
   return (
     <div className="flex items-center gap-1 text-xs text-muted-foreground">
       <Clock className="w-3 h-3" />
-      <span>Next settlement period: {timeLeft}</span>
+      <span>Next {updateLabels[updateType]}: {timeLeft}</span>
     </div>
   );
 };

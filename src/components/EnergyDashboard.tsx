@@ -10,11 +10,21 @@ import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/compone
 import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
 import { NextUpdateCountdown } from '@/components/NextUpdateCountdown';
+import { UpdateFrequencyIndicator } from '@/components/UpdateFrequencyIndicator';
 import { DiagnosticsPanel } from '@/components/DiagnosticsPanel';
 import { formatGWfromMW } from '@/lib/utils';
 
 export const EnergyDashboard = () => {
-  const { data, loading, error, nextUpdateAt, refetch } = useEnergyData();
+  const { 
+    data, 
+    loading, 
+    error, 
+    nextUpdateAt, 
+    nextHighFreqAt, 
+    nextMidFreqAt, 
+    lastUpdateType, 
+    refetch 
+  } = useEnergyData();
 
   if (error) {
     return (
@@ -75,7 +85,16 @@ export const EnergyDashboard = () => {
                       <span className="hidden sm:inline">Last updated: </span>
                       <span>{data.lastUpdated.toLocaleTimeString()}</span>
                     </div>
-                    <NextUpdateCountdown nextUpdateAt={nextUpdateAt} />
+            <UpdateFrequencyIndicator 
+              updateType={lastUpdateType}
+              nextHighFreqAt={nextHighFreqAt}
+              nextMidFreqAt={nextMidFreqAt}
+              nextUpdateAt={nextUpdateAt}
+            />
+            <NextUpdateCountdown 
+              nextUpdateAt={nextUpdateAt} 
+              updateType={lastUpdateType}
+            />
                   </div>
                 </>
               )}

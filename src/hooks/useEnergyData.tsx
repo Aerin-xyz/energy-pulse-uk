@@ -103,10 +103,10 @@ const FUEL_TYPE_MAPPING: { [key: string]: string } = {
 };
 
 // Real API integration using Supabase Edge Function
-async function fetchEnergyData(): Promise<any> {
+async function fetchEnergyData(updateType: 'high' | 'mid' | 'full' = 'full'): Promise<any> {
   // Add cache-busting timestamp
   const timestamp = new Date().getTime();
-  const response = await fetch(`https://cxvjgpuytezomdlsayif.supabase.co/functions/v1/energy-data?debug=1&t=${timestamp}`, {
+  const response = await fetch(`https://cxvjgpuytezomdlsayif.supabase.co/functions/v1/energy-data?debug=1&updateType=${updateType}&t=${timestamp}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -119,7 +119,7 @@ async function fetchEnergyData(): Promise<any> {
   }
 
   const data = await response.json();
-  console.log('Raw API response:', data);
+  console.log(`Raw API response (${updateType}):`, data);
   return data;
 }
 
@@ -132,9 +132,12 @@ export const useEnergyData = () => {
   const [initialLoad, setInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [nextUpdateAt, setNextUpdateAt] = useState<Date | null>(null);
+  const [nextHighFreqAt, setNextHighFreqAt] = useState<Date | null>(null);
+  const [nextMidFreqAt, setNextMidFreqAt] = useState<Date | null>(null);
+  const [lastUpdateType, setLastUpdateType] = useState<'high' | 'mid' | 'full'>('full');
   const { toast } = useToast();
 
-  const fetchAndSetEnergyData = useCallback(async (showToast = true) => {
+  const fetchAndSetEnergyData = useCallback(async (updateType: 'high' | 'mid' | 'full' = 'full', showToast = true) => {
     try {
       // If we have cached data, show it immediately while fetching new data
       if (cachedData && !initialLoad) {
@@ -149,7 +152,7 @@ export const useEnergyData = () => {
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
       
-      const energyData = await fetchEnergyData();
+      const energyData = await fetchEnergyData(updateType);
       clearTimeout(timeoutId);
 
       // Store raw data for debugging
@@ -168,19 +171,49 @@ export const useEnergyData = () => {
         asOf: energyData.asOf,
       };
 
+      // Smart merging for partial updates
+      if (updateType === 'high' && cachedData) {
+        // Only update embedded sources for high frequency
+        newData.generationMix = newData.generationMix.map(item => {
+          if (item.name === 'LV Wind' || item.name === 'Solar') {
+            return item; // Use new data
+          }
+          // Find matching item in cached data
+          const cachedItem = cachedData.generationMix.find(c => c.name === item.name);
+          return cachedItem || item;
+        });
+      } else if (updateType === 'mid' && cachedData) {
+        // Update embedded sources and interconnectors for mid frequency
+        newData.totalGeneration = cachedData.totalGeneration;
+        newData.totalDemand = cachedData.totalDemand;
+        newData.totalGenerationMW = cachedData.totalGenerationMW;
+        newData.totalDemandMW = cachedData.totalDemandMW;
+      }
+
       setData(newData);
       setCachedData(newData); // Cache for next time
+      setLastUpdateType(updateType);
       
-      // Calculate next update time (5 minutes from now)
-      const nextUpdate = new Date();
-      nextUpdate.setMinutes(nextUpdate.getMinutes() + 5);
-      setNextUpdateAt(nextUpdate);
+      // Calculate next update times
+      const now = new Date();
+      const nextHigh = new Date(now.getTime() + 5 * 60 * 1000); // 5 minutes
+      const nextMid = new Date(now.getTime() + 15 * 60 * 1000); // 15 minutes
+      const nextFull = new Date(now.getTime() + 30 * 60 * 1000); // 30 minutes
+      
+      setNextHighFreqAt(nextHigh);
+      setNextMidFreqAt(nextMid);
+      setNextUpdateAt(updateType === 'full' ? nextFull : nextHigh);
 
       // Only show toast on manual refresh or after initial load
       if (showToast && !initialLoad) {
+        const updateLabels = {
+          high: 'embedded sources',
+          mid: 'interconnectors & EU data',
+          full: 'all data'
+        };
         toast({
           title: "Data Updated",
-          description: `Live UK grid data refreshed at ${new Date().toLocaleTimeString()}`,
+          description: `${updateLabels[updateType]} refreshed at ${new Date().toLocaleTimeString()}`,
         });
       }
       
@@ -214,22 +247,40 @@ export const useEnergyData = () => {
     }
   }, [toast, cachedData, initialLoad]);
 
-  // Initial fetch
+  // Initial fetch (full data)
   useEffect(() => {
-    fetchAndSetEnergyData(false); // No toast on initial load
+    fetchAndSetEnergyData('full', false); // No toast on initial load
   }, [fetchAndSetEnergyData]);
 
-  // Auto-refresh every 5 minutes (silent)
+  // Multi-frequency auto-refresh intervals
   useEffect(() => {
-    const interval = setInterval(() => fetchAndSetEnergyData(false), 5 * 60 * 1000);
-    return () => clearInterval(interval);
+    // High frequency updates (5 minutes) - embedded sources only
+    const highFreqInterval = setInterval(() => {
+      fetchAndSetEnergyData('high', false);
+    }, 5 * 60 * 1000);
+
+    // Mid frequency updates (15 minutes) - interconnectors & EU data
+    const midFreqInterval = setInterval(() => {
+      fetchAndSetEnergyData('mid', false);
+    }, 15 * 60 * 1000);
+
+    // Full frequency updates (30 minutes) - complete refresh
+    const fullFreqInterval = setInterval(() => {
+      fetchAndSetEnergyData('full', false);
+    }, 30 * 60 * 1000);
+
+    return () => {
+      clearInterval(highFreqInterval);
+      clearInterval(midFreqInterval);
+      clearInterval(fullFreqInterval);
+    };
   }, [fetchAndSetEnergyData]);
 
-  // Refresh when tab becomes visible again (silent)
+  // Refresh when tab becomes visible again (full refresh)
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden) {
-        fetchAndSetEnergyData(false);
+        fetchAndSetEnergyData('full', false);
       }
     };
 
@@ -243,6 +294,9 @@ export const useEnergyData = () => {
     loading,
     error,
     nextUpdateAt,
-    refetch: () => fetchAndSetEnergyData(true) // Show toast on manual refresh
+    nextHighFreqAt,
+    nextMidFreqAt,
+    lastUpdateType,
+    refetch: () => fetchAndSetEnergyData('full', true) // Show toast on manual refresh
   };
 };

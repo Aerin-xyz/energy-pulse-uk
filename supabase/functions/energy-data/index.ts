@@ -1111,6 +1111,12 @@ Deno.serve(async (req) => {
   // Check debug mode from both URL and request body
   const DEBUG = qDebug(req.url) || requestBody.debug === 1 || requestBody.debug === true;
   const EU_FOCUS = requestBody.euFocus === true;
+  
+  // Check update type for multi-frequency updates (preserve existing functionality)
+  const url = new URL(req.url);
+  const UPDATE_TYPE = url.searchParams.get('updateType') || requestBody.updateType || 'full';
+  
+  if (DEBUG) dlog(true, `Update type: ${UPDATE_TYPE}`);
 
   // Helper to insert LKG only on real data
   async function insertLKG(as_of: string, payload: any, guardMW: number) {
