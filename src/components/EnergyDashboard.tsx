@@ -10,7 +10,7 @@ import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/compone
 import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
 import { NextUpdateCountdown } from '@/components/NextUpdateCountdown';
-import { UpdateFrequencyIndicator } from '@/components/UpdateFrequencyIndicator';
+// import { UpdateFrequencyIndicator } from '@/components/UpdateFrequencyIndicator';
 import { DiagnosticsPanel } from '@/components/DiagnosticsPanel';
 import { formatGWfromMW } from '@/lib/utils';
 
@@ -25,6 +25,16 @@ export const EnergyDashboard = () => {
     lastUpdateType, 
     refetch 
   } = useEnergyData();
+
+  console.log('EnergyDashboard render:', { 
+    hasData: !!data, 
+    loading, 
+    error, 
+    lastUpdateType,
+    nextUpdateAt,
+    nextHighFreqAt,
+    nextMidFreqAt
+  });
 
   if (error) {
     return (
@@ -85,15 +95,18 @@ export const EnergyDashboard = () => {
                       <span className="hidden sm:inline">Last updated: </span>
                       <span>{data.lastUpdated.toLocaleTimeString()}</span>
                     </div>
-            <UpdateFrequencyIndicator 
-              updateType={lastUpdateType}
-              nextHighFreqAt={nextHighFreqAt}
-              nextMidFreqAt={nextMidFreqAt}
-              nextUpdateAt={nextUpdateAt}
-            />
+            {/* Temporarily commenting out UpdateFrequencyIndicator to debug
+            {lastUpdateType && (
+              <UpdateFrequencyIndicator 
+                updateType={lastUpdateType}
+                nextHighFreqAt={nextHighFreqAt}
+                nextMidFreqAt={nextMidFreqAt}
+                nextUpdateAt={nextUpdateAt}
+              />
+            )} */}
             <NextUpdateCountdown 
               nextUpdateAt={nextUpdateAt} 
-              updateType={lastUpdateType}
+              updateType={lastUpdateType || 'full'}
             />
                   </div>
                 </>
