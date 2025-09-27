@@ -2,8 +2,10 @@ import { RefreshCw, Zap, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
+import { HistoricalGenerationChart } from '@/components/HistoricalGenerationChart';
 import { EUDebugPanel } from '@/components/EUDebugPanel';
 import { useEnergyData } from '@/hooks/useEnergyData';
+import { useHistoricalGeneration } from '@/hooks/useHistoricalGeneration';
 import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/components/LoadingSkeleton';
 import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
@@ -23,6 +25,12 @@ export const EnergyDashboard = () => {
     lastUpdateType, 
     refetch 
   } = useEnergyData();
+  const { 
+    data: historicalData, 
+    loading: historicalLoading, 
+    error: historicalError, 
+    lastUpdated: historicalLastUpdated 
+  } = useHistoricalGeneration();
 
   console.log('EnergyDashboard render:', { 
     hasData: !!data, 
@@ -158,11 +166,25 @@ export const EnergyDashboard = () => {
               asOf={data.asOf}
             />
 
+            {/* Historical Generation Chart */}
+            {historicalLoading ? (
+              <ChartSkeleton />
+            ) : historicalError ? (
+              <div className="text-center text-destructive py-4">
+                Failed to load historical data: {historicalError}
+              </div>
+            ) : (
+              <HistoricalGenerationChart 
+                data={historicalData} 
+                lastUpdated={historicalLastUpdated}
+              />
+            )}
+
             {/* Interconnector Flows */}
-          <InterconnectorFlows 
-            data={data.interconnectors} 
-            interconnectorStatus={data.dataFreshness?.interconnectorStatus}
-          />
+            <InterconnectorFlows 
+              data={data.interconnectors} 
+              interconnectorStatus={data.dataFreshness?.interconnectorStatus}
+            />
 
             {/* EU Debug Panel (only shows in debug mode) */}
             <EUDebugPanel />
