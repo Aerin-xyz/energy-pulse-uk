@@ -2,8 +2,6 @@ import { RefreshCw, Zap, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
-import { EUGenerationMix } from '@/components/EUGenerationMix';
-import { EUGenerationCard } from '@/components/EUGenerationCard';
 import { EUDebugPanel } from '@/components/EUDebugPanel';
 import { useEnergyData } from '@/hooks/useEnergyData';
 import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/components/LoadingSkeleton';
@@ -168,12 +166,6 @@ export const EnergyDashboard = () => {
 
             {/* EU Debug Panel (only shows in debug mode) */}
             <EUDebugPanel />
-
-            {/* EU Generation Mix */}
-            <EUGenerationMix data={data.euGenerationMix || []} />
-
-            {/* EU Generation Card */}
-            <EUGenerationCard />
           </div>
         ) : null}
       </main>
