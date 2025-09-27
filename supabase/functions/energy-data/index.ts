@@ -674,6 +674,7 @@ const ENTSOE_BORDERS = [
   { name: "Norway",           eic: "10YNO-2--------T",  mtuMin: 15, displayName: "Norway",          country: "Norway" },
   { name: "Ireland (SEM)",    eic: "10YIE-1001A00010", mtuMin: 30, displayName: "EWIC",            country: "Ireland" },
   { name: "Northern Ireland", eic: "10Y1001A1001A59C", mtuMin: 30, displayName: "Moyle",           country: "Northern Ireland" },
+  { name: "Greenlink",        eic: "10Y1001A1001A63L", mtuMin: 30, displayName: "Greenlink",       country: "Ireland" },
   { name: "Denmark DK1",      eic: "10YDK-1--------W",  mtuMin: 15, displayName: "Viking Link",    country: "Denmark" },
   { name: "Denmark DK2",      eic: "10YDK-2--------M",  mtuMin: 15, displayName: "Denmark West",   country: "Denmark" },
 ];
@@ -686,6 +687,7 @@ const CAPACITY_HINTS: Record<string, number> = {
   "Norway": 1400,              // NSL
   "Ireland (SEM)": 500,        // EWIC
   "Northern Ireland": 500,     // Moyle
+  "Greenlink": 500,            // Greenlink
   "Denmark DK1": 1400,         // Viking Link
   "Denmark DK2": 700,          // Denmark West
 };
@@ -902,6 +904,7 @@ const IC_CODE_MAP: Record<string, { name: string; country: string; capacity?: nu
   // Ireland (matching ENTSO-E border names)
   INTEW:   { name: "EWIC",         country: "Ireland",            capacity: 500  },
   INTIRL:  { name: "Moyle",        country: "Northern Ireland",   capacity: 500  },
+  INTGL:   { name: "Greenlink",    country: "Ireland",            capacity: 500  },
   // Denmark (matching ENTSO-E border names)
   INTDK1:  { name: "Viking Link",  country: "Denmark",            capacity: 1400 },
   INTDK2:  { name: "Denmark West", country: "Denmark",            capacity: 700 },
