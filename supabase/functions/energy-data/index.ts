@@ -149,14 +149,14 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
         }
         rows = data
           .map((arr: any[]) => ({ t: arr[dtIdx], mw: num(arr[mwIdx]) }))
-          .filter(r => Number.isFinite(r.mw) && typeof r.t === 'string');
+          .filter((r: any) => Number.isFinite(r.mw) && typeof r.t === 'string');
       } else {
         rows = data
           .map((r: any) => ({
             t: r?.datetime_utc ?? r?.datetime_gmt ?? r?.t,
             mw: num(r?.generation_mw ?? r?.mw ?? r?.value),
           }))
-          .filter(r => Number.isFinite(r.mw) && typeof r.t === 'string');
+          .filter((r: any) => Number.isFinite(r.mw) && typeof r.t === 'string');
       }
 
       if (!rows.length) {
@@ -240,8 +240,7 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
   const results: any[] = [];
   const parser = new XMLParser({
     ignoreAttributes: false,
-    parseAttributeValue: true,
-    parseTrueNumberOnly: true
+    parseAttributeValue: true
   });
 
   // Process countries sequentially
@@ -342,7 +341,7 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
             if (debug || euFocus) dlog(true, `${country.code}: ${psrType} = ${totalMW.toFixed(1)} MW`);
           }
         } catch (seriesError) {
-          if (debug || euFocus) dlog(true, `${country.code}: Error processing series - ${seriesError.message}`);
+          if (debug || euFocus) dlog(true, `${country.code}: Error processing series - ${(seriesError as Error).message}`);
         }
       }
       
@@ -367,7 +366,7 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
       await new Promise(resolve => setTimeout(resolve, 1000));
       
     } catch (error) {
-      if (debug || euFocus) dlog(true, `${country.code}: Error - ${error.message}`);
+      if (debug || euFocus) dlog(true, `${country.code}: Error - ${(error as Error).message}`);
     }
   }
   
@@ -716,7 +715,7 @@ function addMinutes(d: Date, mins: number) {
 // Extract acknowledgement reason (if any)
 function ackReason(xml: string) {
   try {
-    const dom = new DOMParser().parseFromString(xml, "application/xml");
+    const dom = new (globalThis as any).DOMParser().parseFromString(xml, "application/xml");
     const txt = dom?.getElementsByTagName("Reason")[0]?.getElementsByTagName("text")[0]?.textContent;
     return txt || null;
   } catch { return null; }
@@ -1432,7 +1431,7 @@ try {
     icDiag.liveCount = interconnectors.filter(ic => ic.status === 'live').length;
   }
 } catch (e) {
-  if (DEBUG) dlog(true, `IC resolution error: ${e.message}`);
+  if (DEBUG) dlog(true, `IC resolution error: ${(e as Error).message}`);
   
   // Fallback: show all interconnectors as unavailable
   interconnectors = ENTSOE_BORDERS.map(border => ({

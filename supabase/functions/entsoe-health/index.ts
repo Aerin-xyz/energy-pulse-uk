@@ -86,8 +86,8 @@ Deno.serve(async (req) => {
         // Fall back to query parameters
         const now = new Date();
         const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
-        periodStart = qp('periodStart', formatEntsoe(start));
-        periodEnd = qp('periodEnd', formatEntsoe(now));
+        periodStart = qp('periodStart') || formatEntsoe(start);
+        periodEnd = qp('periodEnd') || formatEntsoe(now);
       }
     } else {
       // GET request - use query parameters
@@ -101,8 +101,8 @@ Deno.serve(async (req) => {
         periodEnd = formatEntsoe(endTime);
       } else {
         const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
-        periodStart = qp('periodStart', formatEntsoe(start));
-        periodEnd = qp('periodEnd', formatEntsoe(now));
+        periodStart = qp('periodStart') || formatEntsoe(start);
+        periodEnd = qp('periodEnd') || formatEntsoe(now);
       }
     }
 

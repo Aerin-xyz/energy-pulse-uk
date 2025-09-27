@@ -42,7 +42,7 @@ async function entsoeRawXML(token: string, qs: string) {
 
 // Minimal A75 parser (XML → latest timestamp mix)
 function parseA75Mix(xml: string) {
-  const dom = new DOMParser().parseFromString(xml, "application/xml");
+  const dom = new (globalThis as any).DOMParser().parseFromString(xml, "application/xml");
   if (!dom) return { ok: false, ts: null, byFuel: {} as Record<string, number> };
 
   // ack document? (HTTP 400 acknowledged)
@@ -55,8 +55,8 @@ function parseA75Mix(xml: string) {
   const recs: Array<{ fuel: string; t: string; mw: number }> = [];
 
   for (const ts of series) {
-    const fuel = ts.getElementsByTagName("psrType")[0]?.textContent || "OTHER";
-    const period = ts.getElementsByTagName("Period")[0];
+    const fuel = (ts as any).getElementsByTagName("psrType")[0]?.textContent || "OTHER";
+    const period = (ts as any).getElementsByTagName("Period")[0];
     if (!period) continue;
     const ti = period.getElementsByTagName("timeInterval")[0];
     const startISO = ti?.getElementsByTagName("start")[0]?.textContent || "";
@@ -65,8 +65,8 @@ function parseA75Mix(xml: string) {
 
     const points = Array.from(period.getElementsByTagName("Point"));
     for (const p of points) {
-      const pos = Number(p.getElementsByTagName("position")[0]?.textContent || "0");
-      const q = Number(p.getElementsByTagName("quantity")[0]?.textContent || "NaN");
+      const pos = Number((p as any).getElementsByTagName("position")[0]?.textContent || "0");
+      const q = Number((p as any).getElementsByTagName("quantity")[0]?.textContent || "NaN");
       if (!startISO || !Number.isFinite(q) || pos <= 0) continue;
       const t0 = new Date(startISO).getTime();
       const t = new Date(t0 + (pos - 1) * stepMin * 60 * 1000).toISOString();
@@ -192,7 +192,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('[eu-generation-mix] Error:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: (error as Error).message,
       euGenerationMix: [],
       ok: false 
     }), {
