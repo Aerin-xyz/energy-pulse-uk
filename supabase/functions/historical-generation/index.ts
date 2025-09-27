@@ -148,7 +148,7 @@ function processHistoricalData(rawData: any): any[] {
       periodMap.set(key, {
         settlementDate: item.settlementDate,
         settlementPeriod: item.settlementPeriod,
-        timestamp: new Date(`${item.settlementDate}T${getPeriodTime(item.settlementPeriod)}`),
+        timestamp: new Date(`${item.settlementDate}T${getPeriodTime(item.settlementPeriod)}`).toISOString(),
         fuelMix: {},
         totalMW: 0
       });
