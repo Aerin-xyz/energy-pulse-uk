@@ -138,7 +138,7 @@ function processHistoricalData(rawData: any): any[] {
   
   console.log(`Processing ${dataArray.length} historical data periods`);
   
-  // Group by settlement period
+  // Group by settlement period - each item already represents a complete settlement period
   const periodMap = new Map<string, any>();
   
   for (const item of dataArray) {
@@ -147,19 +147,22 @@ function processHistoricalData(rawData: any): any[] {
     const settlementDate = startTime.toISOString().split('T')[0];
     const key = `${settlementDate}-${item.settlementPeriod}`;
     
-    if (!periodMap.has(key)) {
-      periodMap.set(key, {
-        settlementDate: settlementDate,
-        settlementPeriod: item.settlementPeriod,
-        timestamp: item.startTime, // Use provided ISO timestamp directly
-        fuelMix: {},
-        totalMW: 0
-      });
+    // Skip if we've already processed this settlement period
+    if (periodMap.has(key)) {
+      console.log(`Duplicate settlement period detected: ${key}, skipping...`);
+      continue;
     }
     
-    const period = periodMap.get(key);
+    // Initialize the settlement period data
+    const period = {
+      settlementDate: settlementDate,
+      settlementPeriod: item.settlementPeriod,
+      timestamp: item.startTime, // Use provided ISO timestamp directly
+      fuelMix: {} as Record<string, number>,
+      totalMW: 0
+    };
     
-    // Process fuel data nested in item.data array
+    // Process fuel data - each item.data array contains the complete fuel mix for this settlement period
     if (item.data && Array.isArray(item.data)) {
       for (const fuelData of item.data) {
         const mappedFuel = FUEL_TYPE_MAPPING[fuelData.fuelType] || 'Other';
@@ -171,7 +174,16 @@ function processHistoricalData(rawData: any): any[] {
         period.fuelMix[mappedFuel] += fuelData.generation || 0;
         period.totalMW += fuelData.generation || 0;
       }
+      
+      // Validation: Check if total is within realistic range (15-50 GW for UK)
+      if (period.totalMW < 15000 || period.totalMW > 50000) {
+        console.warn(`Settlement period ${key} has unrealistic total: ${period.totalMW} MW`);
+      }
+      
+      console.log(`Settlement period ${key}: ${period.totalMW} MW total, ${Object.keys(period.fuelMix).length} fuel types`);
     }
+    
+    periodMap.set(key, period);
   }
   
   // Convert to array and calculate percentages
