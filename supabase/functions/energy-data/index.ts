@@ -589,9 +589,9 @@ async function fetchIrishInterconnectorFromBMRS(outturnRows: any[], debug = fals
   // Extract interconnector data using existing function
   const interconnectors = deriveICFromOutturnRowsVariant(outturnRows, "dataset");
   
-  // Filter for Irish interconnectors only (INTEW = EWIC, INTIRL = Moyle)
+  // Filter for Irish interconnectors only (INTEW = EWIC, INTIRL = Moyle, INTGL = Greenlink)
   const irishInterconnectors = interconnectors.filter(ic => 
-    ic.code === "INTEW" || ic.code === "INTIRL"
+    ic.code === "INTEW" || ic.code === "INTIRL" || ic.code === "INTGL"
   );
 
   if (debug && irishInterconnectors.length > 0) {
