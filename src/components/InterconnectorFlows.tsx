@@ -7,7 +7,7 @@ interface InterconnectorData {
   country: string;
   flow: number; // Positive = import, Negative = export
   capacity: number;
-  status?: 'live' | 'offline' | 'unavailable';
+  status?: 'live' | 'offline' | 'unavailable' | 'bmrs-fallback';
 }
 
 interface InterconnectorFlowsProps {
@@ -43,6 +43,11 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                     <div className="w-2 h-2 bg-orange-500 rounded-full" />
                     <span className="font-medium">Offline:</span>
                     <span className="text-muted-foreground">Temporarily not operational</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-amber-500 rounded-full" />
+                    <span className="font-medium">BMRS Fallback:</span>
+                    <span className="text-muted-foreground">UK data when ENTSO-E unavailable</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="w-2 h-2 bg-muted rounded-full" />
@@ -110,7 +115,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
           data
             .sort((a, b) => {
               // Sort by status first (live > offline > unavailable), then by flow magnitude
-              const statusOrder = { live: 3, offline: 2, unavailable: 1 };
+              const statusOrder = { live: 4, 'bmrs-fallback': 3, offline: 2, unavailable: 1 };
               const aStatus = statusOrder[a.status || 'unavailable'];
               const bStatus = statusOrder[b.status || 'unavailable'];
               if (aStatus !== bStatus) return bStatus - aStatus;
@@ -120,7 +125,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
             const isImport = interconnector.flow > 0;
             const flowValue = Math.abs(interconnector.flow);
             const utilization = (flowValue / interconnector.capacity) * 100;
-            const isActive = interconnector.status === 'live' && flowValue > 0;
+            const isActive = (interconnector.status === 'live' || interconnector.status === 'bmrs-fallback') && flowValue > 0;
             const isOffline = interconnector.status === 'offline';
             const isUnavailable = interconnector.status === 'unavailable';
             
@@ -146,6 +151,8 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                     <div className={`w-2 h-2 rounded-full ${
                       interconnector.status === 'live' 
                         ? 'bg-primary animate-pulse' 
+                        : interconnector.status === 'bmrs-fallback'
+                        ? 'bg-amber-500'
                         : interconnector.status === 'offline'
                         ? 'bg-orange-500'
                         : 'bg-muted'
