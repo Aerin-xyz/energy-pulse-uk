@@ -136,33 +136,42 @@ function processHistoricalData(rawData: any): any[] {
     throw new Error(`Invalid historical data structure - expected array but got: ${typeof rawData?.data || typeof rawData}`);
   }
   
-  console.log(`Processing ${dataArray.length} historical data items`);
+  console.log(`Processing ${dataArray.length} historical data periods`);
   
   // Group by settlement period
   const periodMap = new Map<string, any>();
   
   for (const item of dataArray) {
-    const key = `${item.settlementDate}-${item.settlementPeriod}`;
+    // Extract date from startTime for grouping
+    const startTime = new Date(item.startTime);
+    const settlementDate = startTime.toISOString().split('T')[0];
+    const key = `${settlementDate}-${item.settlementPeriod}`;
     
     if (!periodMap.has(key)) {
       periodMap.set(key, {
-        settlementDate: item.settlementDate,
+        settlementDate: settlementDate,
         settlementPeriod: item.settlementPeriod,
-        timestamp: new Date(`${item.settlementDate}T${getPeriodTime(item.settlementPeriod)}`).toISOString(),
+        timestamp: item.startTime, // Use provided ISO timestamp directly
         fuelMix: {},
         totalMW: 0
       });
     }
     
     const period = periodMap.get(key);
-    const mappedFuel = FUEL_TYPE_MAPPING[item.fuelType] || 'Other';
     
-    if (!period.fuelMix[mappedFuel]) {
-      period.fuelMix[mappedFuel] = 0;
+    // Process fuel data nested in item.data array
+    if (item.data && Array.isArray(item.data)) {
+      for (const fuelData of item.data) {
+        const mappedFuel = FUEL_TYPE_MAPPING[fuelData.fuelType] || 'Other';
+        
+        if (!period.fuelMix[mappedFuel]) {
+          period.fuelMix[mappedFuel] = 0;
+        }
+        
+        period.fuelMix[mappedFuel] += fuelData.generation || 0;
+        period.totalMW += fuelData.generation || 0;
+      }
     }
-    
-    period.fuelMix[mappedFuel] += item.generation || 0;
-    period.totalMW += item.generation || 0;
   }
   
   // Convert to array and calculate percentages
