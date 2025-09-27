@@ -589,9 +589,9 @@ async function fetchIrishInterconnectorFromBMRS(outturnRows: any[], debug = fals
   // Extract interconnector data using existing function
   const interconnectors = deriveICFromOutturnRowsVariant(outturnRows, "dataset");
   
-  // Filter for Irish interconnectors only (INTEW = EWIC, INTIRL = Moyle, INTGL = Greenlink)
+  // Filter for Irish interconnectors only (INTEW = EWIC, INTIRL = Moyle, INTGRNL = Greenlink)
   const irishInterconnectors = interconnectors.filter(ic => 
-    ic.code === "INTEW" || ic.code === "INTIRL" || ic.code === "INTGL"
+    ic.code === "INTEW" || ic.code === "INTIRL" || ic.code === "INTGRNL"
   );
 
   if (debug && irishInterconnectors.length > 0) {
@@ -904,7 +904,7 @@ const IC_CODE_MAP: Record<string, { name: string; country: string; capacity?: nu
   // Ireland (matching ENTSO-E border names)
   INTEW:   { name: "EWIC",         country: "Ireland",            capacity: 500  },
   INTIRL:  { name: "Moyle",        country: "Northern Ireland",   capacity: 500  },
-  INTGL:   { name: "Greenlink",    country: "Ireland",            capacity: 500  },
+  INTGRNL: { name: "Greenlink",    country: "Ireland",            capacity: 500  },
   // Denmark (matching ENTSO-E border names)
   INTDK1:  { name: "Viking Link",  country: "Denmark",            capacity: 1400 },
   INTDK2:  { name: "Denmark West", country: "Denmark",            capacity: 700 },
