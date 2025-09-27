@@ -460,8 +460,9 @@ async function fetchEntsoePhysicalFlows(): Promise<{
 /**
  * Fetches all possible interconnectors showing their current status.
  * Returns all ENTSOE_BORDERS regardless of whether they have live data.
+ * Includes BMRS fallback for Irish interconnectors when ENTSO-E fails.
  */
-async function fetchAllInterconnectorsWithStatus(debug = false): Promise<{
+async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRows?: any[]): Promise<{
   ok: boolean; 
   attempts: any[];
   status: string;
@@ -483,9 +484,9 @@ async function fetchAllInterconnectorsWithStatus(debug = false): Promise<{
     const capacity = CAPACITY_HINTS[border.name] || null;
     
     let flow = 0;
-    let interconnectorStatus: "live" | "offline" | "unavailable" = "unavailable";
+    let interconnectorStatus: "live" | "offline" | "unavailable" | "bmrs-fallback" = "unavailable";
     
-    if (hasEntsoeToken) {
+    if (hasEntsoeToken && apiToken) {
       try {
         const result = await entsoeNetForBorderMW(apiToken, border.eic, border.mtuMin, now);
         
@@ -525,17 +526,85 @@ async function fetchAllInterconnectorsWithStatus(debug = false): Promise<{
     });
   }
 
+  // Strategy 2: BMRS fallback for Irish interconnectors when ENTSO-E fails
+  if (latestOutturnRows && latestOutturnRows.length > 0) {
+    const irishFallback = await fetchIrishInterconnectorFromBMRS(latestOutturnRows, debug);
+    
+    if (irishFallback.length > 0) {
+      // Update Irish interconnectors with BMRS data
+      for (const bmrsData of irishFallback) {
+        const interconnectorIndex = allInterconnectors.findIndex(ic => 
+          ic.name === bmrsData.name
+        );
+        
+        if (interconnectorIndex !== -1) {
+          const currentIC = allInterconnectors[interconnectorIndex];
+          // Only use BMRS fallback if ENTSO-E failed
+          if (currentIC.status === "offline" || currentIC.status === "unavailable") {
+            allInterconnectors[interconnectorIndex] = {
+              ...currentIC,
+              flow: bmrsData.flow,
+              status: "bmrs-fallback"
+            };
+            
+            if (debug) {
+              dlog(true, `BMRS fallback applied for ${bmrsData.name}: ${bmrsData.flow} MW`);
+            }
+          }
+        }
+      }
+    }
+  }
+
   const liveCount = allInterconnectors.filter(ic => ic.status === "live").length;
-  const overallStatus = liveCount > 0 ? "live" : (hasEntsoeToken ? "cached" : "unavailable");
+  const bmrsFallbackCount = allInterconnectors.filter(ic => ic.status === "bmrs-fallback").length;
+  const overallStatus = (liveCount + bmrsFallbackCount) > 0 ? "live" : (hasEntsoeToken ? "cached" : "unavailable");
   
-  if (debug) dlog(true, `All interconnectors processed: ${liveCount}/${allInterconnectors.length} live`);
+  if (debug) {
+    dlog(true, `All interconnectors processed: ${liveCount}/${allInterconnectors.length} live, ${bmrsFallbackCount} BMRS fallback`);
+  }
 
   return {
     ok: true,
     attempts,
-    status: overallStatus,
+    status: overallStatus as "live" | "cached" | "unavailable",
     interconnectors: allInterconnectors
   };
+}
+
+/**
+ * Extracts Irish interconnector data from BMRS Generation Outturn Summary as fallback
+ * when ENTSO-E API returns "no-points" for EWIC and Moyle.
+ */
+async function fetchIrishInterconnectorFromBMRS(outturnRows: any[], debug = false): Promise<Array<{
+  name: string;
+  country: string;
+  flow: number;
+  capacity: number | null;
+}>> {
+  if (!outturnRows || outturnRows.length === 0) {
+    if (debug) dlog(true, "No BMRS outturn rows available for Irish interconnector fallback");
+    return [];
+  }
+
+  // Extract interconnector data using existing function
+  const interconnectors = deriveICFromOutturnRowsVariant(outturnRows, "dataset");
+  
+  // Filter for Irish interconnectors only (INTEW = EWIC, INTIRL = Moyle)
+  const irishInterconnectors = interconnectors.filter(ic => 
+    ic.code === "INTEW" || ic.code === "INTIRL"
+  );
+
+  if (debug && irishInterconnectors.length > 0) {
+    dlog(true, `BMRS Irish interconnector fallback found: ${irishInterconnectors.map(ic => `${ic.name}=${ic.flow}MW`).join(", ")}`);
+  }
+
+  return irishInterconnectors.map(ic => ({
+    name: ic.name,
+    country: ic.country,
+    flow: ic.flow,
+    capacity: ic.capacity
+  }));
 }
 
 /**
@@ -1348,11 +1417,11 @@ let interconnectorStatus: "live" | "cached" | "unavailable" = "unavailable";
 let icDiag: any = { source: "enhanced", ok: false, tries: [] as any[], status: "none" };
 
 try {
-  // Use the new enhanced method that shows all possible interconnectors
-  const icResult = await fetchAllInterconnectorsWithStatus(DEBUG);
+  // Use the new enhanced method that shows all possible interconnectors with BMRS fallback for Irish
+  const icResult = await fetchAllInterconnectorsWithStatus(DEBUG, latestOutturnRows);
   
   interconnectors = icResult.interconnectors; // Always populated with all borders
-  interconnectorStatus = icResult.status;
+  interconnectorStatus = icResult.status as "live" | "cached" | "unavailable";
   
   if (DEBUG) {
     icDiag.ok = true;
