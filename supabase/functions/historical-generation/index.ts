@@ -185,7 +185,7 @@ function processHistoricalData(rawData: any): any[] {
         color: ENERGY_COLORS[fuelType as keyof typeof ENERGY_COLORS] || ENERGY_COLORS.Other
       }))
     }))
-    .sort((a, b) => a.timestamp.getTime() - b.timestamp.getTime());
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   
   console.log(`Processed ${result.length} settlement periods`);
   return result;
