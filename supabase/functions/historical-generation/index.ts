@@ -106,14 +106,42 @@ async function fetchBMRSHistoricalGeneration(): Promise<any> {
 }
 
 function processHistoricalData(rawData: any): any[] {
-  if (!rawData?.data || !Array.isArray(rawData.data)) {
-    throw new Error("Invalid historical data structure");
+  console.log(`Raw BMRS response structure:`, {
+    hasData: !!rawData?.data,
+    isDataArray: Array.isArray(rawData?.data),
+    dataLength: rawData?.data?.length || 0,
+    hasDirectArray: Array.isArray(rawData),
+    directArrayLength: Array.isArray(rawData) ? rawData.length : 0,
+    firstItemSample: rawData?.data?.[0] || rawData?.[0] || null,
+    topLevelKeys: Object.keys(rawData || {})
+  });
+
+  // Handle different response formats - be flexible like energy-data function
+  let dataArray: any[] = [];
+  
+  if (Array.isArray(rawData?.data)) {
+    dataArray = rawData.data;
+  } else if (Array.isArray(rawData)) {
+    dataArray = rawData;
+  } else if (rawData?.data && typeof rawData.data === 'object') {
+    // Sometimes data might be nested differently
+    const nestedData = Object.values(rawData.data).find(val => Array.isArray(val));
+    if (nestedData) {
+      dataArray = nestedData as any[];
+    }
   }
+  
+  if (!Array.isArray(dataArray) || dataArray.length === 0) {
+    console.error("No valid data array found in response:", rawData);
+    throw new Error(`Invalid historical data structure - expected array but got: ${typeof rawData?.data || typeof rawData}`);
+  }
+  
+  console.log(`Processing ${dataArray.length} historical data items`);
   
   // Group by settlement period
   const periodMap = new Map<string, any>();
   
-  for (const item of rawData.data) {
+  for (const item of dataArray) {
     const key = `${item.settlementDate}-${item.settlementPeriod}`;
     
     if (!periodMap.has(key)) {
