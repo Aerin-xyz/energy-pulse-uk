@@ -16,6 +16,7 @@ import {
   ResponsiveContainer 
 } from 'recharts';
 import { formatGWfromMW } from '@/lib/utils';
+import { useState, useEffect } from 'react';
 
 interface HistoricalDataPoint {
   settlementDate: string;
@@ -115,6 +116,17 @@ export const HistoricalGenerationChart = ({
   weeklyMeta, 
   onFetchWeeklyData 
 }: HistoricalGenerationChartProps) => {
+  const [activeTab, setActiveTab] = useState("chart");
+  const [weeklyDataFetched, setWeeklyDataFetched] = useState(false);
+
+  // Automatically fetch weekly data when tab is first accessed
+  useEffect(() => {
+    if (activeTab === "weekly" && !weeklyDataFetched && !weeklyLoading && weeklyData.length === 0) {
+      onFetchWeeklyData();
+      setWeeklyDataFetched(true);
+    }
+  }, [activeTab, weeklyDataFetched, weeklyLoading, weeklyData.length, onFetchWeeklyData]);
+
   if (!data || data.length === 0) {
     return (
       <Card>
@@ -233,7 +245,7 @@ export const HistoricalGenerationChart = ({
         </div>
       </CardHeader>
       <CardContent>
-        <Tabs defaultValue="chart" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList>
             <TabsTrigger value="chart">Chart View</TabsTrigger>
             <TabsTrigger value="table">Data Table</TabsTrigger>
@@ -384,16 +396,6 @@ export const HistoricalGenerationChart = ({
             ) : weeklyLoading ? (
               <div className="text-center text-muted-foreground py-8">
                 Loading weekly data...
-              </div>
-            ) : weeklyData.length === 0 ? (
-              <div className="text-center py-8">
-                <p className="text-muted-foreground mb-4">No weekly data available</p>
-                <button 
-                  onClick={onFetchWeeklyData}
-                  className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90"
-                >
-                  Load Weekly Data
-                </button>
               </div>
             ) : (
               <div className="space-y-6">
