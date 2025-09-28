@@ -109,8 +109,9 @@ async function fetchPVLiveNational(startISO: string, endISO: string, debug = fal
   console.log(`Fetching PV Live data from ${startISO} to ${endISO}`);
   
   // Try ESO Open Data first (preferred, no auth required)
+  // Using the correct ESO dataset for embedded wind and solar forecasts
   try {
-    const esoUrl = `https://data.nationalgrideso.com/api/3/action/datastore_search_sql?sql=SELECT * FROM "db68c4e9-9b7b-42ac-ad08-0b9a86c9bb06" WHERE "DATETIME_GMT" >= '${startISO}' AND "DATETIME_GMT" <= '${endISO}' ORDER BY "DATETIME_GMT"`;
+    const esoUrl = `https://data.nationalgrideso.com/api/3/action/datastore_search_sql?sql=SELECT * FROM "177f6fa4-de10-4ef4-8e31-e35c98b7a8b4" WHERE "DATETIME_GMT" >= '${startISO}' AND "DATETIME_GMT" <= '${endISO}' AND "FUEL_TYPE" = 'SOLAR' ORDER BY "DATETIME_GMT"`;
     
     if (debug) console.log(`Trying ESO Open Data: ${esoUrl}`);
     
@@ -119,8 +120,12 @@ async function fetchPVLiveNational(startISO: string, endISO: string, debug = fal
       cache: "no-store"
     });
     
+    if (debug) console.log(`ESO response status: ${esoResponse.status}`);
+    
     if (esoResponse.ok) {
       const esoData = await esoResponse.json();
+      if (debug) console.log(`ESO response structure: ${JSON.stringify(esoData, null, 2)}`);
+      
       if (esoData?.result?.records && Array.isArray(esoData.result.records) && esoData.result.records.length > 0) {
         const pvData = esoData.result.records
           .filter((record: any) => record.GENERATION_MW != null && Number.isFinite(Number(record.GENERATION_MW)) && Number(record.GENERATION_MW) >= 0)
@@ -130,12 +135,12 @@ async function fetchPVLiveNational(startISO: string, endISO: string, debug = fal
           }))
           .sort((a: {t: string, mw: number}, b: {t: string, mw: number}) => new Date(a.t).getTime() - new Date(b.t).getTime());
         
-        if (debug) console.log(`ESO returned ${pvData.length} valid PV records`);
+        if (debug) console.log(`ESO returned ${pvData.length} valid PV records, first few:`, pvData.slice(0, 3));
         return { data: pvData, source: 'eso' };
       }
     }
     
-    if (debug) console.log(`ESO Open Data failed or returned no data: ${esoResponse.status}`);
+    if (debug) console.log(`ESO Open Data failed or returned no data: ${esoResponse.status}, text: ${await esoResponse.text()}`);
   } catch (error) {
     if (debug) console.log(`ESO Open Data error: ${error}`);
   }
@@ -164,6 +169,7 @@ async function fetchPVLiveNational(startISO: string, endISO: string, debug = fal
     
     if (sheffieldResponse.ok) {
       const sheffieldData = await sheffieldResponse.json();
+      if (debug) console.log(`Sheffield response structure:`, JSON.stringify(sheffieldData, null, 2));
       
       let pvData: Array<{t: string, mw: number}> = [];
       
@@ -171,8 +177,11 @@ async function fetchPVLiveNational(startISO: string, endISO: string, debug = fal
       if (Array.isArray(sheffieldData.data) && Array.isArray(sheffieldData.meta)) {
         // Array format with columns
         const columns = sheffieldData.meta;
+        if (debug) console.log(`Sheffield columns:`, columns);
         const datetimeIdx = columns.findIndex((col: string) => col.toLowerCase().includes('datetime'));
         const generationIdx = columns.findIndex((col: string) => col.toLowerCase().includes('generation_mw'));
+        
+        if (debug) console.log(`Sheffield column indices: datetime=${datetimeIdx}, generation=${generationIdx}`);
         
         if (datetimeIdx >= 0 && generationIdx >= 0) {
           pvData = sheffieldData.data
@@ -194,7 +203,7 @@ async function fetchPVLiveNational(startISO: string, endISO: string, debug = fal
       
       pvData = pvData.sort((a, b) => new Date(a.t).getTime() - new Date(b.t).getTime());
       
-      if (debug) console.log(`Sheffield returned ${pvData.length} valid PV records`);
+      if (debug) console.log(`Sheffield returned ${pvData.length} valid PV records, first few:`, pvData.slice(0, 3));
       return { data: pvData, source: 'sheffield' };
     }
     
