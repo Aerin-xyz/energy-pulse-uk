@@ -121,9 +121,7 @@ export const useHistoricalGeneration = () => {
       setWeeklyLoading(true);
       setWeeklyError(null);
 
-      const { data: response, error: supabaseError } = await supabase.functions.invoke('historical-generation', {
-        body: { period: '7d' }
-      });
+      const { data: response, error: supabaseError } = await supabase.functions.invoke('historical-generation?period=7d');
 
       if (supabaseError) {
         throw new Error(supabaseError.message);
