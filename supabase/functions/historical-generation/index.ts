@@ -70,14 +70,16 @@ async function fetchBMRSHistoricalGeneration(period: string = '24h'): Promise<an
   let fromDate: string;
   
   if (period === '7d') {
-    // For weekly data, end on yesterday to ensure complete days
+    // For weekly data, request 14 days back to ensure we get 7 complete days
     const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
     toDate = yesterday.toISOString().split('T')[0];
-    fromDate = new Date(yesterday.getTime() - 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    fromDate = new Date(yesterday.getTime() - 13 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    console.log(`[historical-generation] Weekly data range: ${fromDate} to ${toDate} (14 days requested)`);
   } else {
     // Default: Get 24 hours of data ending today
     toDate = now.toISOString().split('T')[0];
     fromDate = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    console.log(`[historical-generation] Daily data range: ${fromDate} to ${toDate}`);
   }
   
   for (const host of hosts) {
@@ -412,10 +414,13 @@ async function processWeeklyData(dataArray: any[], pvLiveData: Array<{t: string,
     totalPeriods: number;
   }>();
   
+  const availableDates = new Set<string>();
+  
   // Process each settlement period and group by day
   for (const item of dataArray) {
     const startTime = new Date(item.startTime);
     const dateKey = startTime.toISOString().split('T')[0]; // YYYY-MM-DD
+    availableDates.add(dateKey);
     
     if (!dayMap.has(dateKey)) {
       dayMap.set(dateKey, {
@@ -492,8 +497,12 @@ async function processWeeklyData(dataArray: any[], pvLiveData: Array<{t: string,
     dayData.solarTotalMW += solarMW;
   }
   
-  // Convert to daily aggregates
-  const result = Array.from(dayMap.values())
+  // Log available dates for debugging
+  const sortedDates = Array.from(availableDates).sort();
+  console.log(`[historical-generation] Available dates: ${sortedDates.join(', ')} (${sortedDates.length} days)`);
+  
+  // Convert to daily aggregates and take only the most recent 7 days
+  const allDailyData = Array.from(dayMap.values())
     .map(dayData => {
       // Calculate daily averages
       const dailyFuelMix: Record<string, number> = {};
@@ -532,7 +541,10 @@ async function processWeeklyData(dataArray: any[], pvLiveData: Array<{t: string,
     })
     .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   
-  console.log(`Processed ${result.length} daily aggregates`);
+  // Take only the most recent 7 days of data
+  const result = allDailyData.slice(-7);
+  
+  console.log(`Processed ${allDailyData.length} daily aggregates, returning most recent ${result.length} days`);
   return result;
 }
 
