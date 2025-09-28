@@ -61,13 +61,21 @@ function withFormat(u: string): string {
   }
 }
 
-async function fetchBMRSHistoricalGeneration(): Promise<any> {
+async function fetchBMRSHistoricalGeneration(period: string = '24h'): Promise<any> {
   const hosts = ["data.elexon.co.uk", "bmrs.elexon.co.uk"];
   
-  // Get 48 settlement periods (24 hours) ending now
+  // Calculate time range based on period
   const now = new Date();
   const toDate = now.toISOString().split('T')[0];
-  const fromDate = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  let fromDate: string;
+  
+  if (period === '7d') {
+    // Get 7 days of data
+    fromDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  } else {
+    // Default: Get 24 hours of data
+    fromDate = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+  }
   
   for (const host of hosts) {
     try {
@@ -216,7 +224,7 @@ async function fetchPVLiveNational(startISO: string, endISO: string, debug = fal
   return { data: [], source: 'none' };
 }
 
-async function processHistoricalData(rawData: any, pvLiveData: Array<{t: string, mw: number}>, pvSource: string, debug = false): Promise<any[]> {
+async function processHistoricalData(rawData: any, pvLiveData: Array<{t: string, mw: number}>, pvSource: string, period: string = '24h', debug = false): Promise<any[]> {
   console.log(`Raw BMRS response structure:`, {
     hasData: !!rawData?.data,
     isDataArray: Array.isArray(rawData?.data),
@@ -247,7 +255,11 @@ async function processHistoricalData(rawData: any, pvLiveData: Array<{t: string,
     throw new Error(`Invalid historical data structure - expected array but got: ${typeof rawData?.data || typeof rawData}`);
   }
   
-  console.log(`Processing ${dataArray.length} historical data periods`);
+  console.log(`Processing ${dataArray.length} historical data periods for ${period}`);
+  
+  if (period === '7d') {
+    return await processWeeklyData(dataArray, pvLiveData, pvSource, debug);
+  }
   
   // Group by settlement period - each item already represents a complete settlement period
   const periodMap = new Map<string, any>();
@@ -383,6 +395,144 @@ async function processHistoricalData(rawData: any, pvLiveData: Array<{t: string,
   return result;
 }
 
+async function processWeeklyData(dataArray: any[], pvLiveData: Array<{t: string, mw: number}>, pvSource: string, debug = false): Promise<any[]> {
+  console.log(`Processing weekly aggregation for ${dataArray.length} periods`);
+  
+  // Group data by day
+  const dayMap = new Map<string, {
+    date: string;
+    periods: any[];
+    fuelTotals: Record<string, number>;
+    totalMW: number;
+    solarTotalMW: number;
+    solarMatchedPeriods: number;
+    totalPeriods: number;
+  }>();
+  
+  // Process each settlement period and group by day
+  for (const item of dataArray) {
+    const startTime = new Date(item.startTime);
+    const dateKey = startTime.toISOString().split('T')[0]; // YYYY-MM-DD
+    
+    if (!dayMap.has(dateKey)) {
+      dayMap.set(dateKey, {
+        date: dateKey,
+        periods: [],
+        fuelTotals: {},
+        totalMW: 0,
+        solarTotalMW: 0,
+        solarMatchedPeriods: 0,
+        totalPeriods: 0
+      });
+    }
+    
+    const dayData = dayMap.get(dateKey)!;
+    dayData.periods.push(item);
+    dayData.totalPeriods++;
+    
+    // Process fuel data for this period
+    if (item.data && Array.isArray(item.data)) {
+      for (const fuelData of item.data) {
+        // Skip interconnector imports
+        if (fuelData.fuelType && fuelData.fuelType.startsWith('INT')) {
+          continue;
+        }
+        
+        // For pumped storage, only count positive values (generation)
+        if (fuelData.fuelType === 'PS' && (fuelData.generation || 0) < 0) {
+          continue;
+        }
+        
+        const mappedFuel = FUEL_TYPE_MAPPING[fuelData.fuelType];
+        if (!mappedFuel) continue;
+        
+        if (!dayData.fuelTotals[mappedFuel]) {
+          dayData.fuelTotals[mappedFuel] = 0;
+        }
+        
+        dayData.fuelTotals[mappedFuel] += fuelData.generation || 0;
+        dayData.totalMW += fuelData.generation || 0;
+      }
+    }
+    
+    // Process solar data for this period
+    const periodStart = new Date(item.startTime);
+    const periodEnd = new Date(periodStart.getTime() + 30 * 60 * 1000);
+    const now = new Date();
+    const effectiveAnchor = new Date(Math.min(periodEnd.getTime(), now.getTime()));
+    
+    let solarMW = 0;
+    let solarMatched = false;
+    let closestDelta = Infinity;
+    
+    if (pvLiveData.length > 0) {
+      let closestRow = null;
+      
+      for (const pvRow of pvLiveData) {
+        const pvTime = new Date(pvRow.t);
+        const deltaMs = Math.abs(effectiveAnchor.getTime() - pvTime.getTime());
+        const deltaMinutes = deltaMs / (1000 * 60);
+        
+        if (deltaMinutes < closestDelta) {
+          closestDelta = deltaMinutes;
+          closestRow = pvRow;
+        }
+      }
+      
+      if (closestRow && closestDelta <= 45) {
+        solarMW = closestRow.mw;
+        solarMatched = true;
+        dayData.solarMatchedPeriods++;
+      }
+    }
+    
+    dayData.solarTotalMW += solarMW;
+  }
+  
+  // Convert to daily aggregates
+  const result = Array.from(dayMap.values())
+    .map(dayData => {
+      // Calculate daily averages
+      const dailyFuelMix: Record<string, number> = {};
+      
+      // Average fuel generation over the day (convert to average MW)
+      Object.entries(dayData.fuelTotals).forEach(([fuel, totalMW]) => {
+        dailyFuelMix[fuel] = totalMW / dayData.totalPeriods;
+      });
+      
+      // Average solar generation over the day
+      const avgSolarMW = dayData.solarTotalMW / dayData.totalPeriods;
+      dailyFuelMix['Solar'] = avgSolarMW;
+      
+      // Calculate daily total (sum of all fuel averages)
+      const dailyTotalMW = Object.values(dailyFuelMix).reduce((sum, mw) => sum + mw, 0);
+      
+      // Create daily data point
+      const dayTimestamp = new Date(dayData.date + 'T12:00:00Z'); // Use noon as representative time
+      
+      return {
+        settlementDate: dayData.date,
+        settlementPeriod: 0, // Not applicable for daily data
+        timestamp: dayTimestamp.toISOString(),
+        fuelMix: Object.entries(dailyFuelMix).map(([fuelType, mw]) => ({
+          fuelType,
+          mw,
+          percentage: dailyTotalMW > 0 ? Math.round((mw / dailyTotalMW) * 100) : 0,
+          color: ENERGY_COLORS[fuelType as keyof typeof ENERGY_COLORS] || ENERGY_COLORS.Other
+        })),
+        totalMW: dailyTotalMW,
+        solarMatched: dayData.solarMatchedPeriods > 0,
+        dayName: dayTimestamp.toLocaleDateString('en-US', { weekday: 'short' }),
+        solarMatchedPeriods: dayData.solarMatchedPeriods,
+        totalPeriods: dayData.totalPeriods
+      };
+    })
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  
+  console.log(`Processed ${result.length} daily aggregates`);
+  return result;
+}
+
 function getPeriodTime(settlementPeriod: number): string {
   // Settlement periods are 30-minute intervals starting at 00:00
   const hours = Math.floor((settlementPeriod - 1) / 2);
@@ -401,19 +551,31 @@ Deno.serve(async (req) => {
     
     const url = new URL(req.url);
     const debug = url.searchParams.get('debug') === '1';
+    const period = url.searchParams.get('period') || '24h';
+    
+    if (period !== '24h' && period !== '7d') {
+      throw new Error('Invalid period parameter. Must be "24h" or "7d"');
+    }
     
     // Fetch BMRS historical data
-    const rawData = await fetchBMRSHistoricalGeneration();
+    const rawData = await fetchBMRSHistoricalGeneration(period);
     
-    // Fetch PV Live solar data for the same time window
+    // Fetch PV Live solar data for the appropriate time window
     const now = new Date();
-    const startISO = new Date(now.getTime() - 26 * 60 * 60 * 1000).toISOString(); // 26 hours ago for buffer
-    const endISO = now.toISOString();
+    let startISO: string, endISO: string;
+    
+    if (period === '7d') {
+      startISO = new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000).toISOString(); // 8 days ago for buffer
+      endISO = now.toISOString();
+    } else {
+      startISO = new Date(now.getTime() - 26 * 60 * 60 * 1000).toISOString(); // 26 hours ago for buffer
+      endISO = now.toISOString();
+    }
     
     const { data: pvLiveData, source: pvSource } = await fetchPVLiveNational(startISO, endISO, debug);
     
     // Process data with solar integration
-    const processedData = await processHistoricalData(rawData, pvLiveData, pvSource, debug);
+    const processedData = await processHistoricalData(rawData, pvLiveData, pvSource, period, debug);
     
     // Calculate statistics
     const solarMatchedCount = processedData.filter(p => p.solarMatched).length;
@@ -423,9 +585,14 @@ Deno.serve(async (req) => {
       lastUpdated: new Date().toISOString(),
       totalPeriods: processedData.length,
       meta: {
+        period,
         periods: processedData.length,
         solarMatchedCount,
-        pvSource
+        pvSource,
+        ...(period === '7d' && {
+          solarMatchedDays: solarMatchedCount,
+          totalDays: processedData.length
+        })
       },
       ...(debug && {
         diagnostics: {

@@ -30,7 +30,13 @@ export const EnergyDashboard = () => {
     loading: historicalLoading, 
     error: historicalError, 
     lastUpdated: historicalLastUpdated,
-    meta: historicalMeta
+    meta: historicalMeta,
+    weeklyData,
+    weeklyLoading,
+    weeklyError,
+    weeklyLastUpdated,
+    weeklyMeta,
+    fetchWeeklyData
   } = useHistoricalGeneration();
 
   console.log('EnergyDashboard render:', { 
@@ -179,6 +185,12 @@ export const EnergyDashboard = () => {
                 data={historicalData} 
                 lastUpdated={historicalLastUpdated}
                 meta={historicalMeta}
+                weeklyData={weeklyData}
+                weeklyLoading={weeklyLoading}
+                weeklyError={weeklyError}
+                weeklyLastUpdated={weeklyLastUpdated}
+                weeklyMeta={weeklyMeta}
+                onFetchWeeklyData={fetchWeeklyData}
               />
             )}
 

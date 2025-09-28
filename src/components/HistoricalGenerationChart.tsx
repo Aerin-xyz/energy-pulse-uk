@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   AreaChart, 
   Area, 
+  BarChart,
+  Bar,
   XAxis, 
   YAxis, 
   CartesianGrid, 
@@ -29,15 +31,21 @@ interface HistoricalDataPoint {
   solarMatched?: boolean;
 }
 
-interface HistoricalGenerationData {
-  data: HistoricalDataPoint[];
-  lastUpdated: string;
-  totalPeriods: number;
-  meta?: {
-    periods: number;
-    solarMatchedCount: number;
-    pvSource: string;
-  };
+interface DailyDataPoint {
+  settlementDate: string;
+  settlementPeriod: number;
+  timestamp: Date;
+  fuelMix: Array<{
+    fuelType: string;
+    mw: number;
+    percentage: number;
+    color: string;
+  }>;
+  totalMW: number;
+  solarMatched?: boolean;
+  dayName?: string;
+  solarMatchedPeriods?: number;
+  totalPeriods?: number;
 }
 
 interface HistoricalGenerationChartProps {
@@ -48,6 +56,17 @@ interface HistoricalGenerationChartProps {
     solarMatchedCount: number;
     pvSource: string;
   };
+  weeklyData: DailyDataPoint[];
+  weeklyLoading: boolean;
+  weeklyError: string | null;
+  weeklyLastUpdated?: Date | null;
+  weeklyMeta?: {
+    periods: number;
+    solarMatchedDays: number;
+    totalDays: number;
+    pvSource: string;
+  } | null;
+  onFetchWeeklyData: () => void;
 }
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -85,7 +104,17 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   return null;
 };
 
-export const HistoricalGenerationChart = ({ data, lastUpdated, meta }: HistoricalGenerationChartProps) => {
+export const HistoricalGenerationChart = ({ 
+  data, 
+  lastUpdated, 
+  meta, 
+  weeklyData, 
+  weeklyLoading, 
+  weeklyError, 
+  weeklyLastUpdated, 
+  weeklyMeta, 
+  onFetchWeeklyData 
+}: HistoricalGenerationChartProps) => {
   if (!data || data.length === 0) {
     return (
       <Card>
@@ -150,6 +179,47 @@ export const HistoricalGenerationChart = ({ data, lastUpdated, meta }: Historica
   // Prepare table data for latest periods (last 12 periods = 6 hours)
   const recentData = data.slice(-12).reverse();
 
+  // Weekly chart data
+  const weeklyChartData = weeklyData.map(point => {
+    const chartPoint: any = {
+      day: point.dayName || new Date(point.timestamp).toLocaleDateString('en-US', { weekday: 'short' }),
+      date: point.settlementDate,
+      total: point.totalMW
+    };
+    
+    // Add each fuel type as a separate property
+    point.fuelMix.forEach(fuel => {
+      chartPoint[fuel.fuelType] = fuel.mw;
+    });
+    
+    return chartPoint;
+  });
+
+  // Get weekly fuel types and colors
+  const weeklyFuelTypes = weeklyData.length > 0 
+    ? Array.from(new Set(weeklyData.flatMap(point => point.fuelMix.map(fuel => fuel.fuelType))))
+    : [];
+    
+  const weeklyFuelColors = weeklyData[0]?.fuelMix.reduce((acc, fuel) => {
+    acc[fuel.fuelType] = fuel.color;
+    return acc;
+  }, {} as Record<string, string>) || {};
+
+  // Sort weekly fuel types by average generation
+  const sortedWeeklyFuelTypes = weeklyFuelTypes.sort((a, b) => {
+    const avgA = weeklyData.reduce((sum, point) => {
+      const fuel = point.fuelMix.find(f => f.fuelType === a);
+      return sum + (fuel?.mw || 0);
+    }, 0) / weeklyData.length;
+    
+    const avgB = weeklyData.reduce((sum, point) => {
+      const fuel = point.fuelMix.find(f => f.fuelType === b);
+      return sum + (fuel?.mw || 0);
+    }, 0) / weeklyData.length;
+    
+    return avgB - avgA;
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -167,6 +237,7 @@ export const HistoricalGenerationChart = ({ data, lastUpdated, meta }: Historica
           <TabsList>
             <TabsTrigger value="chart">Chart View</TabsTrigger>
             <TabsTrigger value="table">Data Table</TabsTrigger>
+            <TabsTrigger value="weekly">Weekly View</TabsTrigger>
           </TabsList>
           
           <TabsContent value="chart" className="mt-4">
