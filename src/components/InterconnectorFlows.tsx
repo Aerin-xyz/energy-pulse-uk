@@ -55,10 +55,15 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                     <span className="text-muted-foreground">No current data available</span>
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground border-t pt-2">
-                  Interconnectors may be offline due to planned maintenance, market conditions, weather, 
-                  or technical constraints. This is normal operation.
-                </p>
+                <div className="text-xs text-muted-foreground border-t pt-2 space-y-1">
+                  <p>
+                    Interconnectors may be offline due to planned maintenance, market conditions, weather, 
+                    or technical constraints. This is normal operation.
+                  </p>
+                  <p>
+                    Temporary overloads or reporting delays can push values over 100%.
+                  </p>
+                </div>
               </div>
             </HoverCardContent>
           </HoverCard>
