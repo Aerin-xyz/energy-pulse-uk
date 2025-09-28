@@ -13,12 +13,18 @@ interface HistoricalDataPoint {
     color: string;
   }>;
   totalMW: number;
+  solarMatched?: boolean;
 }
 
 interface HistoricalGenerationData {
   data: HistoricalDataPoint[];
   lastUpdated: string;
   totalPeriods: number;
+  meta?: {
+    periods: number;
+    solarMatchedCount: number;
+    pvSource: string;
+  };
 }
 
 export const useHistoricalGeneration = () => {
@@ -26,6 +32,7 @@ export const useHistoricalGeneration = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [meta, setMeta] = useState<{periods: number; solarMatchedCount: number; pvSource: string} | null>(null);
   const { toast } = useToast();
 
   const fetchHistoricalData = useCallback(async (showToast = true) => {
@@ -53,11 +60,15 @@ export const useHistoricalGeneration = () => {
 
       setData(processedData);
       setLastUpdated(new Date(historicalData.lastUpdated));
+      setMeta(historicalData.meta || null);
 
       if (showToast) {
+        const solarInfo = historicalData.meta 
+          ? `, ${historicalData.meta.solarMatchedCount}/${historicalData.meta.periods} solar periods matched`
+          : '';
         toast({
           title: "Historical data updated",
-          description: `Loaded ${historicalData.totalPeriods} periods`,
+          description: `Loaded ${historicalData.totalPeriods} periods${solarInfo}`,
         });
       }
 
@@ -96,6 +107,7 @@ export const useHistoricalGeneration = () => {
     loading,
     error,
     lastUpdated,
+    meta,
     refetch: () => fetchHistoricalData(true)
   };
 };

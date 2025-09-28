@@ -29,7 +29,8 @@ export const EnergyDashboard = () => {
     data: historicalData, 
     loading: historicalLoading, 
     error: historicalError, 
-    lastUpdated: historicalLastUpdated 
+    lastUpdated: historicalLastUpdated,
+    meta: historicalMeta
   } = useHistoricalGeneration();
 
   console.log('EnergyDashboard render:', { 
@@ -177,6 +178,7 @@ export const EnergyDashboard = () => {
               <HistoricalGenerationChart 
                 data={historicalData} 
                 lastUpdated={historicalLastUpdated}
+                meta={historicalMeta}
               />
             )}
 

@@ -105,7 +105,109 @@ async function fetchBMRSHistoricalGeneration(): Promise<any> {
   throw new Error("All BMRS historical endpoints failed");
 }
 
-function processHistoricalData(rawData: any): any[] {
+async function fetchPVLiveNational(startISO: string, endISO: string, debug = false): Promise<{ data: Array<{t: string, mw: number}>, source: string }> {
+  console.log(`Fetching PV Live data from ${startISO} to ${endISO}`);
+  
+  // Try ESO Open Data first (preferred, no auth required)
+  try {
+    const esoUrl = `https://data.nationalgrideso.com/api/3/action/datastore_search_sql?sql=SELECT * FROM "db68c4e9-9b7b-42ac-ad08-0b9a86c9bb06" WHERE "DATETIME_GMT" >= '${startISO}' AND "DATETIME_GMT" <= '${endISO}' ORDER BY "DATETIME_GMT"`;
+    
+    if (debug) console.log(`Trying ESO Open Data: ${esoUrl}`);
+    
+    const esoResponse = await fetch(esoUrl, { 
+      headers: { ...HEADERS, 'Accept': 'application/json' },
+      cache: "no-store"
+    });
+    
+    if (esoResponse.ok) {
+      const esoData = await esoResponse.json();
+      if (esoData?.result?.records && Array.isArray(esoData.result.records) && esoData.result.records.length > 0) {
+        const pvData = esoData.result.records
+          .filter((record: any) => record.GENERATION_MW != null && Number.isFinite(Number(record.GENERATION_MW)) && Number(record.GENERATION_MW) >= 0)
+          .map((record: any) => ({
+            t: record.DATETIME_GMT,
+            mw: Number(record.GENERATION_MW)
+          }))
+          .sort((a: {t: string, mw: number}, b: {t: string, mw: number}) => new Date(a.t).getTime() - new Date(b.t).getTime());
+        
+        if (debug) console.log(`ESO returned ${pvData.length} valid PV records`);
+        return { data: pvData, source: 'eso' };
+      }
+    }
+    
+    if (debug) console.log(`ESO Open Data failed or returned no data: ${esoResponse.status}`);
+  } catch (error) {
+    if (debug) console.log(`ESO Open Data error: ${error}`);
+  }
+  
+  // Fallback to Sheffield Solar API (requires PVLIVE_API_KEY)
+  try {
+    // Check if we have the Sheffield API key
+    const sheffieldApiKey = Deno.env.get('PVLIVE_API_KEY');
+    if (!sheffieldApiKey) {
+      if (debug) console.log('No PVLIVE_API_KEY found, skipping Sheffield API');
+      return { data: [], source: 'none' };
+    }
+    
+    const sheffieldUrl = `https://api.solar.sheffield.ac.uk/pvlive/api/v4/gsp/0?start=${startISO}&end=${endISO}&data_format=json`;
+    
+    if (debug) console.log(`Trying Sheffield Solar: ${sheffieldUrl}`);
+    
+    const sheffieldResponse = await fetch(sheffieldUrl, {
+      headers: { 
+        ...HEADERS,
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${sheffieldApiKey}`
+      },
+      cache: "no-store"
+    });
+    
+    if (sheffieldResponse.ok) {
+      const sheffieldData = await sheffieldResponse.json();
+      
+      let pvData: Array<{t: string, mw: number}> = [];
+      
+      // Handle Sheffield response format
+      if (Array.isArray(sheffieldData.data) && Array.isArray(sheffieldData.meta)) {
+        // Array format with columns
+        const columns = sheffieldData.meta;
+        const datetimeIdx = columns.findIndex((col: string) => col.toLowerCase().includes('datetime'));
+        const generationIdx = columns.findIndex((col: string) => col.toLowerCase().includes('generation_mw'));
+        
+        if (datetimeIdx >= 0 && generationIdx >= 0) {
+          pvData = sheffieldData.data
+            .filter((row: any[]) => row[generationIdx] != null && Number.isFinite(Number(row[generationIdx])) && Number(row[generationIdx]) >= 0)
+            .map((row: any[]) => ({
+              t: row[datetimeIdx],
+              mw: Number(row[generationIdx])
+            }));
+        }
+      } else if (Array.isArray(sheffieldData) && sheffieldData.length > 0 && typeof sheffieldData[0] === 'object') {
+        // Object format
+        pvData = sheffieldData
+          .filter((record: any) => record.generation_mw != null && Number.isFinite(Number(record.generation_mw)) && Number(record.generation_mw) >= 0)
+          .map((record: any) => ({
+            t: record.datetime_utc || record.datetime_gmt,
+            mw: Number(record.generation_mw)
+          }));
+      }
+      
+      pvData = pvData.sort((a, b) => new Date(a.t).getTime() - new Date(b.t).getTime());
+      
+      if (debug) console.log(`Sheffield returned ${pvData.length} valid PV records`);
+      return { data: pvData, source: 'sheffield' };
+    }
+    
+    if (debug) console.log(`Sheffield API failed: ${sheffieldResponse.status}`);
+  } catch (error) {
+    if (debug) console.log(`Sheffield API error: ${error}`);
+  }
+  
+  console.log('No PV Live data source available');
+  return { data: [], source: 'none' };
+}
+
+async function processHistoricalData(rawData: any, pvLiveData: Array<{t: string, mw: number}>, pvSource: string, debug = false): Promise<any[]> {
   console.log(`Raw BMRS response structure:`, {
     hasData: !!rawData?.data,
     isDataArray: Array.isArray(rawData?.data),
@@ -159,13 +261,32 @@ function processHistoricalData(rawData: any): any[] {
       settlementPeriod: item.settlementPeriod,
       timestamp: item.startTime, // Use provided ISO timestamp directly
       fuelMix: {} as Record<string, number>,
-      totalMW: 0
+      totalMW: 0,
+      solarMatched: false
     };
     
-    // Process fuel data - each item.data array contains the complete fuel mix for this settlement period
+    // Process fuel data - filter out interconnectors, handle pumped storage
+    let hasUnmappedFuels = false;
+    const unmappedFuels: string[] = [];
+    
     if (item.data && Array.isArray(item.data)) {
       for (const fuelData of item.data) {
-        const mappedFuel = FUEL_TYPE_MAPPING[fuelData.fuelType] || 'Other';
+        // Skip interconnector imports for generation-by-fuel table
+        if (fuelData.fuelType && fuelData.fuelType.startsWith('INT')) {
+          continue;
+        }
+        
+        // For pumped storage, only count positive values (generation), skip negative (pumping)
+        if (fuelData.fuelType === 'PS' && (fuelData.generation || 0) < 0) {
+          continue;
+        }
+        
+        const mappedFuel = FUEL_TYPE_MAPPING[fuelData.fuelType];
+        if (!mappedFuel) {
+          hasUnmappedFuels = true;
+          unmappedFuels.push(fuelData.fuelType);
+          continue;
+        }
         
         if (!period.fuelMix[mappedFuel]) {
           period.fuelMix[mappedFuel] = 0;
@@ -175,12 +296,59 @@ function processHistoricalData(rawData: any): any[] {
         period.totalMW += fuelData.generation || 0;
       }
       
+      if (hasUnmappedFuels && debug) {
+        console.log(`Unmapped BMRS fuel codes in ${key}:`, unmappedFuels);
+      }
+      
+      // Add solar data using time alignment
+      const periodStart = new Date(item.startTime);
+      const periodEnd = new Date(periodStart.getTime() + 30 * 60 * 1000); // 30 minutes later
+      const now = new Date();
+      const effectiveAnchor = new Date(Math.min(periodEnd.getTime(), now.getTime()));
+      
+      let solarMW = 0;
+      let solarMatched = false;
+      let closestDelta = Infinity;
+      let closestRowISO = '';
+      
+      if (pvLiveData.length > 0) {
+        // Find closest PV Live row to effective anchor
+        let closestRow = null;
+        
+        for (const pvRow of pvLiveData) {
+          const pvTime = new Date(pvRow.t);
+          const deltaMs = Math.abs(effectiveAnchor.getTime() - pvTime.getTime());
+          const deltaMinutes = deltaMs / (1000 * 60);
+          
+          if (deltaMinutes < closestDelta) {
+            closestDelta = deltaMinutes;
+            closestRow = pvRow;
+            closestRowISO = pvRow.t;
+          }
+        }
+        
+        // Accept if within 45 minutes tolerance
+        if (closestRow && closestDelta <= 45) {
+          solarMW = closestRow.mw;
+          solarMatched = true;
+        }
+        
+        if (debug && item.settlementPeriod === Math.max(...dataArray.map(d => d.settlementPeriod))) {
+          // Log details for latest settlement period
+          console.log(`Latest SP solar alignment: effectiveAnchor=${effectiveAnchor.toISOString()}, closest=${closestRowISO}, delta=${closestDelta.toFixed(1)}min, matched=${solarMatched}`);
+        }
+      }
+      
+      // Add solar to fuel mix
+      period.fuelMix['Solar'] = solarMW;
+      period.solarMatched = solarMatched;
+      
       // Validation: Check if total is within realistic range (15-50 GW for UK)
       if (period.totalMW < 15000 || period.totalMW > 50000) {
         console.warn(`Settlement period ${key} has unrealistic total: ${period.totalMW} MW`);
       }
       
-      console.log(`Settlement period ${key}: ${period.totalMW} MW total, ${Object.keys(period.fuelMix).length} fuel types`);
+      console.log(`Settlement period ${key}: ${period.totalMW} MW total, Solar: ${solarMW} MW (matched: ${solarMatched}), ${Object.keys(period.fuelMix).length} fuel types`);
     }
     
     periodMap.set(key, period);
@@ -199,7 +367,10 @@ function processHistoricalData(rawData: any): any[] {
     }))
     .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   
-  console.log(`Processed ${result.length} settlement periods`);
+  // Calculate solar match statistics
+  const solarMatchedCount = result.filter(p => p.solarMatched).length;
+  
+  console.log(`Processed ${result.length} settlement periods, ${solarMatchedCount} with matched solar data`);
   return result;
 }
 
@@ -219,13 +390,44 @@ Deno.serve(async (req) => {
   try {
     console.log("Starting historical generation fetch");
     
+    const url = new URL(req.url);
+    const debug = url.searchParams.get('debug') === '1';
+    
+    // Fetch BMRS historical data
     const rawData = await fetchBMRSHistoricalGeneration();
-    const processedData = processHistoricalData(rawData);
+    
+    // Fetch PV Live solar data for the same time window
+    const now = new Date();
+    const startISO = new Date(now.getTime() - 26 * 60 * 60 * 1000).toISOString(); // 26 hours ago for buffer
+    const endISO = now.toISOString();
+    
+    const { data: pvLiveData, source: pvSource } = await fetchPVLiveNational(startISO, endISO, debug);
+    
+    // Process data with solar integration
+    const processedData = await processHistoricalData(rawData, pvLiveData, pvSource, debug);
+    
+    // Calculate statistics
+    const solarMatchedCount = processedData.filter(p => p.solarMatched).length;
     
     const response = {
       data: processedData,
       lastUpdated: new Date().toISOString(),
-      totalPeriods: processedData.length
+      totalPeriods: processedData.length,
+      meta: {
+        periods: processedData.length,
+        solarMatchedCount,
+        pvSource
+      },
+      ...(debug && {
+        diagnostics: {
+          pv: {
+            totalRows: pvLiveData.length,
+            samples: pvLiveData.slice(0, 3).map(row => ({ t: row.t, mw: row.mw })),
+            source: pvSource,
+            timeWindow: { startISO, endISO }
+          }
+        }
+      })
     };
     
     return new Response(JSON.stringify(response), {
