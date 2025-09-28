@@ -66,14 +66,17 @@ async function fetchBMRSHistoricalGeneration(period: string = '24h'): Promise<an
   
   // Calculate time range based on period
   const now = new Date();
-  const toDate = now.toISOString().split('T')[0];
+  let toDate: string;
   let fromDate: string;
   
   if (period === '7d') {
-    // Get 7 days of data
-    fromDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    // For weekly data, end on yesterday to ensure complete days
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    toDate = yesterday.toISOString().split('T')[0];
+    fromDate = new Date(yesterday.getTime() - 6 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
   } else {
-    // Default: Get 24 hours of data
+    // Default: Get 24 hours of data ending today
+    toDate = now.toISOString().split('T')[0];
     fromDate = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
   }
   
