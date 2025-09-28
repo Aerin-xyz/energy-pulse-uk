@@ -366,6 +366,150 @@ export const HistoricalGenerationChart = ({
               </div>
             )}
           </TabsContent>
+
+          <TabsContent value="weekly" className="mt-4">
+            {weeklyError ? (
+              <div className="text-center py-8">
+                <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 max-w-md mx-auto">
+                  <p className="text-destructive font-medium mb-2">Weekly Data Error</p>
+                  <p className="text-sm text-muted-foreground mb-4">{weeklyError}</p>
+                  <button 
+                    onClick={onFetchWeeklyData}
+                    className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90"
+                  >
+                    Retry
+                  </button>
+                </div>
+              </div>
+            ) : weeklyLoading ? (
+              <div className="text-center text-muted-foreground py-8">
+                Loading weekly data...
+              </div>
+            ) : weeklyData.length === 0 ? (
+              <div className="text-center py-8">
+                <p className="text-muted-foreground mb-4">No weekly data available</p>
+                <button 
+                  onClick={onFetchWeeklyData}
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-md text-sm hover:bg-primary/90"
+                >
+                  Load Weekly Data
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Weekly Bar Chart */}
+                <div className="h-80 w-full">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={weeklyChartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                      <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                      <XAxis 
+                        dataKey="day"
+                        tick={{ fontSize: 12 }}
+                      />
+                      <YAxis 
+                        tickFormatter={(value) => `${(value / 1000).toFixed(0)}GW`}
+                        tick={{ fontSize: 12 }}
+                      />
+                      <Tooltip content={<CustomTooltip />} />
+                      <Legend 
+                        wrapperStyle={{ fontSize: '12px' }}
+                        iconType="rect"
+                      />
+                      
+                      {sortedWeeklyFuelTypes.map((fuelType) => (
+                        <Bar
+                          key={fuelType}
+                          dataKey={fuelType}
+                          stackId="1"
+                          fill={weeklyFuelColors[fuelType]}
+                          stroke={weeklyFuelColors[fuelType]}
+                          strokeWidth={0.5}
+                        />
+                      ))}
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+
+                {/* Weekly Data Table */}
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Day</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Gas (GW)</TableHead>
+                        <TableHead>Nuclear (GW)</TableHead>
+                        <TableHead>Wind (GW)</TableHead>
+                        <TableHead>Solar (GW)</TableHead>
+                        <TableHead>Biomass (GW)</TableHead>
+                        <TableHead>Hydro (GW)</TableHead>
+                        <TableHead>Other (GW)</TableHead>
+                        <TableHead>Total (GW)</TableHead>
+                        <TableHead>Solar Status</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {weeklyData.map((point, index) => {
+                        const getFuelValue = (fuelType: string) => 
+                          point.fuelMix.find(f => f.fuelType === fuelType)?.mw || 0;
+                        
+                        const solarMW = getFuelValue('Solar');
+                        const solarMatchedPeriods = point.solarMatchedPeriods || 0;
+                        const totalPeriods = point.totalPeriods || 48;
+                        
+                        return (
+                          <TableRow key={index}>
+                            <TableCell className="font-medium">
+                              {point.dayName || new Date(point.timestamp).toLocaleDateString('en-US', { weekday: 'short' })}
+                            </TableCell>
+                            <TableCell>{point.settlementDate}</TableCell>
+                            <TableCell>{formatGWfromMW(getFuelValue('Gas'))}</TableCell>
+                            <TableCell>{formatGWfromMW(getFuelValue('Nuclear'))}</TableCell>
+                            <TableCell>{formatGWfromMW(getFuelValue('Wind'))}</TableCell>
+                            <TableCell>{formatGWfromMW(solarMW)}</TableCell>
+                            <TableCell>{formatGWfromMW(getFuelValue('Biomass'))}</TableCell>
+                            <TableCell>{formatGWfromMW(getFuelValue('Hydro') + getFuelValue('PSH'))}</TableCell>
+                            <TableCell>{formatGWfromMW(getFuelValue('Other') + getFuelValue('Coal'))}</TableCell>
+                            <TableCell className="font-medium">{formatGWfromMW(point.totalMW)}</TableCell>
+                            <TableCell>
+                              <TooltipProvider>
+                                <UITooltip>
+                                  <TooltipTrigger>
+                                    <Badge 
+                                      variant={solarMatchedPeriods > 24 ? "default" : "secondary"}
+                                      className="text-xs"
+                                    >
+                                      {solarMatchedPeriods}/{totalPeriods}
+                                    </Badge>
+                                  </TooltipTrigger>
+                                  <TooltipContent>
+                                    <p className="text-xs">
+                                      Solar data matched for {solarMatchedPeriods} out of {totalPeriods} settlement periods
+                                    </p>
+                                  </TooltipContent>
+                                </UITooltip>
+                              </TooltipProvider>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+
+                {/* Weekly Metadata */}
+                {weeklyMeta && (
+                  <div className="text-xs text-muted-foreground space-y-1">
+                    <p>Weekly Solar from PV Live (measured) • {weeklyMeta.solarMatchedDays}/{weeklyMeta.totalDays} days with matched data</p>
+                    <p>PV Source: {weeklyMeta.pvSource === 'eso' ? 'ESO Open Data' : weeklyMeta.pvSource === 'sheffield' ? 'Sheffield Solar' : 'None available'}</p>
+                    {weeklyLastUpdated && (
+                      <p>Last updated: {weeklyLastUpdated.toLocaleString()}</p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </TabsContent>
         </Tabs>
         
         <div className="mt-4 text-xs text-muted-foreground text-center">
