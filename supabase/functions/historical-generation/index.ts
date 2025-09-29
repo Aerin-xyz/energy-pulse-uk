@@ -682,23 +682,28 @@ function convertFUELHHToExpectedFormat(weeklyResult: any, debug = false): any[] 
       const dailyFuelMix: Record<string, number> = {};
       
       Object.entries(dayData.fuelTotals).forEach(([fuel, totalMW]) => {
-        dailyFuelMix[fuel] = totalMW * 0.5; // Convert MW*periods to MWh (0.5h per period)
+        dailyFuelMix[fuel] = (totalMW * 0.5) / 1000; // Convert MW*periods to GWh (0.5h per period, ÷1000 for GW)
       });
       
-      const dailyTotalMWh = Object.values(dailyFuelMix).reduce((sum, mwh) => sum + mwh, 0);
+      // Add validation for DST days or missing periods
+      if (dayData.totalPeriods < 46) {
+        console.log(`[FUELHH] Partial day detected: ${dayData.date} has only ${dayData.totalPeriods} periods`);
+      }
+      
+      const dailyTotalGWh = Object.values(dailyFuelMix).reduce((sum, gwh) => sum + gwh, 0);
       const dayTimestamp = new Date(dayData.date + 'T12:00:00Z');
       
       return {
         settlementDate: dayData.date,
         settlementPeriod: 0,
         timestamp: dayTimestamp.toISOString(),
-        fuelMix: Object.entries(dailyFuelMix).map(([fuelType, mwh]) => ({
+        fuelMix: Object.entries(dailyFuelMix).map(([fuelType, gwh]) => ({
           fuelType,
-          mw: mwh, // Now represents MWh of daily energy
-          percentage: dailyTotalMWh > 0 ? Math.round((mwh / dailyTotalMWh) * 100) : 0,
+          mw: gwh * 1000, // Convert back to MWh for compatibility with existing frontend
+          percentage: dailyTotalGWh > 0 ? Math.round((gwh / dailyTotalGWh) * 100) : 0,
           color: ENERGY_COLORS[fuelType as keyof typeof ENERGY_COLORS] || ENERGY_COLORS.Other
         })),
-        totalMW: dailyTotalMWh, // Now represents total daily energy in MWh
+        totalMW: dailyTotalGWh * 1000, // Convert back to MWh for compatibility with existing frontend
         solarMatched: dayData.solarMatchedPeriods > 0,
         dayName: dayTimestamp.toLocaleDateString('en-US', { weekday: 'short' }),
         solarMatchedPeriods: dayData.solarMatchedPeriods,
