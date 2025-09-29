@@ -36,7 +36,13 @@ export const EnergyDashboard = () => {
     weeklyError,
     weeklyLastUpdated,
     weeklyMeta,
-    fetchWeeklyData
+    fetchWeeklyData,
+    monthlyData,
+    monthlyLoading,
+    monthlyError,
+    monthlyLastUpdated,
+    monthlyMeta,
+    fetchMonthlyData
   } = useHistoricalGeneration();
 
   console.log('EnergyDashboard render:', { 
@@ -181,17 +187,23 @@ export const EnergyDashboard = () => {
                 Failed to load historical data: {historicalError}
               </div>
             ) : (
-              <HistoricalGenerationChart 
-                data={historicalData} 
-                lastUpdated={historicalLastUpdated}
-                meta={historicalMeta}
-                weeklyData={weeklyData}
-                weeklyLoading={weeklyLoading}
-                weeklyError={weeklyError}
-                weeklyLastUpdated={weeklyLastUpdated}
-                weeklyMeta={weeklyMeta}
-                onFetchWeeklyData={fetchWeeklyData}
-              />
+          <HistoricalGenerationChart
+            data={historicalData}
+            lastUpdated={historicalLastUpdated}
+            meta={historicalMeta}
+            weeklyData={weeklyData}
+            weeklyLoading={weeklyLoading}
+            weeklyError={weeklyError}
+            weeklyLastUpdated={weeklyLastUpdated}
+            weeklyMeta={weeklyMeta}
+            onFetchWeeklyData={fetchWeeklyData}
+            monthlyData={monthlyData}
+            monthlyLoading={monthlyLoading}
+            monthlyError={monthlyError}
+            monthlyLastUpdated={monthlyLastUpdated}
+            monthlyMeta={monthlyMeta}
+            onFetchMonthlyData={fetchMonthlyData}
+          />
             )}
 
             {/* Interconnector Flows */}

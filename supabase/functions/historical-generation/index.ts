@@ -184,13 +184,13 @@ async function fetchPVLiveNationalSeries(startISO: string, endISO: string, DEBUG
 }
 
 /*** Build the past-week series using FUELHH with settlement filters ***/
-async function buildPastWeekGeneration(DEBUG=false){
+async function buildPastWeekGeneration(daysBack = 7, DEBUG=false){
   // Compute last 7 full UTC days up to "today"
   const todayUTC = startOfUTCDay(new Date());
   const dateTo   = ymdUTC(todayUTC);                // inclusive
-  const dateFrom = ymdUTC(addDays(todayUTC, -7));   // inclusive 7 days back
+  const dateFrom = ymdUTC(addDays(todayUTC, -daysBack));   // inclusive N days back
 
-  console.log(`[FUELHH-settlement] Fetching weekly data from ${dateFrom} to ${dateTo}`);
+  console.log(`[FUELHH-settlement] Fetching ${daysBack}-day data from ${dateFrom} to ${dateTo}`);
 
   // 1) BMRS HV outturn via settlement filters
   const fuelhh = await fetchFuelHHBySettlement(dateFrom, dateTo, DEBUG);
@@ -298,6 +298,12 @@ async function fetchBMRSHistoricalGeneration(period: string = '24h'): Promise<an
     toDate = yesterday.toISOString().split('T')[0];
     fromDate = new Date(yesterday.getTime() - 13 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
     console.log(`[historical-generation] Weekly data range: ${fromDate} to ${toDate} (14 days requested)`);
+  } else if (period === '30d') {
+    // For monthly data, request 35 days back to ensure we get 30 complete days
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    toDate = yesterday.toISOString().split('T')[0];
+    fromDate = new Date(yesterday.getTime() - 34 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    console.log(`[historical-generation] Monthly data range: ${fromDate} to ${toDate} (35 days requested)`);
   } else {
     // Default: Get 24 hours of data ending today
     toDate = now.toISOString().split('T')[0];
@@ -487,7 +493,7 @@ async function processHistoricalData(rawData: any, pvLiveData: Array<{t: string,
   
   if (period === '7d') {
     // Use new FUELHH approach for weekly data
-    const weeklyResult = await buildPastWeekGeneration(debug);
+    const weeklyResult = await buildPastWeekGeneration(7, debug);
     return convertFUELHHToExpectedFormat(weeklyResult, debug);
   }
   
@@ -858,11 +864,13 @@ async function processWeeklyDataLegacy(dataArray: any[], pvLiveData: Array<{t: s
     })
     .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
   
-  // Take only the most recent 7 days of data
-  const result = allDailyData.slice(-7);
+  // Take only the most recent N days of data (7 for weekly, 30 for monthly)
+  // Determine if this is monthly data based on input data size (rough heuristic)
+  const targetDays = allDailyData.length > 15 ? 30 : 7;
+  const finalResult = allDailyData.slice(-targetDays);
   
-  console.log(`Processed ${allDailyData.length} daily aggregates, returning most recent ${result.length} days`);
-  return result;
+  console.log(`Processed ${allDailyData.length} daily aggregates, returning most recent ${finalResult.length} days`);
+  return finalResult;
 }
 
 function getPeriodTime(settlementPeriod: number): string {
@@ -885,8 +893,8 @@ Deno.serve(async (req) => {
     const debug = url.searchParams.get('debug') === '1';
     const period = url.searchParams.get('period') || '24h';
     
-    if (period !== '24h' && period !== '7d') {
-      throw new Error('Invalid period parameter. Must be "24h" or "7d"');
+    if (period !== '24h' && period !== '7d' && period !== '30d') {
+      throw new Error('Invalid period parameter. Must be "24h", "7d", or "30d"');
     }
     
     let processedData: any[];
@@ -895,7 +903,13 @@ Deno.serve(async (req) => {
     
     if (period === '7d') {
       // Use FUELHH for weekly data
-      processedData = await buildPastWeekGeneration(debug).then(result => convertFUELHHToExpectedFormat(result, debug));
+      const daysBack = 7;
+      processedData = await buildPastWeekGeneration(daysBack, debug).then(result => convertFUELHHToExpectedFormat(result, debug));
+      pvSource = 'fuelhh-integrated';
+    } else if (period === '30d') {
+      // Use FUELHH for monthly data
+      const daysBack = 30;
+      processedData = await buildPastWeekGeneration(daysBack, debug).then(result => convertFUELHHToExpectedFormat(result, debug));
       pvSource = 'fuelhh-integrated';
     } else {
       // Use existing approach for daily data
@@ -923,12 +937,12 @@ Deno.serve(async (req) => {
         periods: processedData.length,
         solarMatchedCount,
         pvSource,
-        ...(period === '7d' && {
+        ...((period === '7d' || period === '30d') && {
           solarMatchedDays: solarMatchedCount,
           totalDays: processedData.length
         })
       },
-      ...(debug && period !== '7d' && {
+      ...(debug && period !== '7d' && period !== '30d' && {
         diagnostics: {
           pv: {
             totalRows: pvLiveData.length,
