@@ -682,23 +682,23 @@ function convertFUELHHToExpectedFormat(weeklyResult: any, debug = false): any[] 
       const dailyFuelMix: Record<string, number> = {};
       
       Object.entries(dayData.fuelTotals).forEach(([fuel, totalMW]) => {
-        dailyFuelMix[fuel] = totalMW / dayData.totalPeriods;
+        dailyFuelMix[fuel] = totalMW * 0.5; // Convert MW*periods to MWh (0.5h per period)
       });
       
-      const dailyTotalMW = Object.values(dailyFuelMix).reduce((sum, mw) => sum + mw, 0);
+      const dailyTotalMWh = Object.values(dailyFuelMix).reduce((sum, mwh) => sum + mwh, 0);
       const dayTimestamp = new Date(dayData.date + 'T12:00:00Z');
       
       return {
         settlementDate: dayData.date,
         settlementPeriod: 0,
         timestamp: dayTimestamp.toISOString(),
-        fuelMix: Object.entries(dailyFuelMix).map(([fuelType, mw]) => ({
+        fuelMix: Object.entries(dailyFuelMix).map(([fuelType, mwh]) => ({
           fuelType,
-          mw,
-          percentage: dailyTotalMW > 0 ? Math.round((mw / dailyTotalMW) * 100) : 0,
+          mw: mwh, // Now represents MWh of daily energy
+          percentage: dailyTotalMWh > 0 ? Math.round((mwh / dailyTotalMWh) * 100) : 0,
           color: ENERGY_COLORS[fuelType as keyof typeof ENERGY_COLORS] || ENERGY_COLORS.Other
         })),
-        totalMW: dailyTotalMW,
+        totalMW: dailyTotalMWh, // Now represents total daily energy in MWh
         solarMatched: dayData.solarMatchedPeriods > 0,
         dayName: dayTimestamp.toLocaleDateString('en-US', { weekday: 'short' }),
         solarMatchedPeriods: dayData.solarMatchedPeriods,

@@ -80,7 +80,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         <p className="text-muted-foreground text-xs mb-2">
           {timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
-        <p className="font-bold text-sm mb-2">Total: {formatGWfromMW(total, 2)} GW</p>
+        <p className="font-bold text-sm mb-2">Total: {formatGWfromMW(total, 2)} GWh</p>
         <div className="space-y-1">
           {payload
             .sort((a: any, b: any) => b.value - a.value)
@@ -94,7 +94,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                   <span className="text-xs">{entry.dataKey}</span>
                 </div>
                 <span className="text-xs font-medium">
-                  {formatGWfromMW(entry.value, 1)} GW
+                  {formatGWfromMW(entry.value, 1)} GWh
                 </span>
               </div>
             ))}
@@ -408,10 +408,10 @@ export const HistoricalGenerationChart = ({
                         dataKey="day"
                         tick={{ fontSize: 12 }}
                       />
-                      <YAxis 
-                        tickFormatter={(value) => `${(value / 1000).toFixed(0)}GW`}
-                        tick={{ fontSize: 12 }}
-                      />
+                       <YAxis 
+                         tickFormatter={(value) => `${(value / 1000).toFixed(0)}GWh`}
+                         tick={{ fontSize: 12 }}
+                       />
                       <Tooltip content={<CustomTooltip />} />
                       <Legend 
                         wrapperStyle={{ fontSize: '12px' }}
@@ -439,14 +439,14 @@ export const HistoricalGenerationChart = ({
                       <TableRow>
                         <TableHead>Day</TableHead>
                         <TableHead>Date</TableHead>
-                        <TableHead>Gas (GW)</TableHead>
-                        <TableHead>Nuclear (GW)</TableHead>
-                        <TableHead>Wind (GW)</TableHead>
-                        <TableHead>Solar (GW)</TableHead>
-                        <TableHead>Biomass (GW)</TableHead>
-                        <TableHead>Hydro (GW)</TableHead>
-                        <TableHead>Other (GW)</TableHead>
-                        <TableHead>Total (GW)</TableHead>
+                        <TableHead>Gas (GWh)</TableHead>
+                        <TableHead>Nuclear (GWh)</TableHead>
+                        <TableHead>Wind (GWh)</TableHead>
+                        <TableHead>Solar (GWh)</TableHead>
+                        <TableHead>Biomass (GWh)</TableHead>
+                        <TableHead>Hydro (GWh)</TableHead>
+                        <TableHead>Other (GWh)</TableHead>
+                        <TableHead>Total (GWh)</TableHead>
                         <TableHead>Solar Status</TableHead>
                       </TableRow>
                     </TableHeader>
