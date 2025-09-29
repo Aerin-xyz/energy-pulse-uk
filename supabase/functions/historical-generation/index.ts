@@ -37,6 +37,194 @@ const FUEL_TYPE_MAPPING: { [key: string]: string } = {
   'OTHER': 'Other'
 };
 
+/*** Time helpers for FUELHH ***/
+function pad2(n:number){ return n.toString().padStart(2,"0"); }
+function toISO(d: Date){ return new Date(d.getTime()).toISOString(); }
+function addMinutes(d: Date, m: number){ return new Date(d.getTime() + m*60*1000); }
+function alignDownHalfHour(d: Date){
+  const z = new Date(d);
+  const mm = z.getUTCMinutes();
+  z.setUTCMinutes(mm < 30 ? 0 : 30, 0, 0);
+  return z;
+}
+
+/*** Resilient fetch that insists on JSON ***/
+async function fetchJsonStrict(url: string){
+  const res = await fetch(url, { headers: { Accept: "application/json" }, redirect: "manual" as RequestRedirect, cache: "no-store" });
+  const ctype = res.headers.get("content-type") || "";
+  const text = await res.text();
+  if (!res.ok) throw new Error(`HTTP ${res.status} for ${url}`);
+  if (!ctype.includes("json")) throw new Error(`non-json for ${url}`);
+  try { return JSON.parse(text); } catch { throw new Error(`json-parse-failed for ${url}`); }
+}
+
+/*** BMRS FUELHH resolver (dataset) ***/
+async function fetchFUELHHWindow(fromISO: string, toISO: string, DEBUG=false){
+  const qs = (base: string) =>
+    `${base}/bmrs/api/v1/datasets/FUELHH?from=${encodeURIComponent(fromISO)}&to=${encodeURIComponent(toISO)}&format=json`;
+  const candidates = [
+    qs("https://data.elexon.co.uk"),
+    qs("https://bmrs.elexon.co.uk"),
+    `${qs("https://data.elexon.co.uk")}&stream=true`,
+    `${qs("https://bmrs.elexon.co.uk")}&stream=true`,
+  ];
+  const attempts: any[] = [];
+  for (const url of candidates){
+    try{
+      const j = await fetchJsonStrict(url);
+      if (DEBUG) attempts.push({ url, ok:true, sample: Array.isArray(j.data)? j.data.slice(0,2): j.data });
+      const rows: any[] = Array.isArray(j?.data) ? j.data : [];
+      if (rows.length) return { ok:true, rows, attempts };
+    }catch(e:any){
+      attempts.push({ url, ok:false, reason: e?.message?.slice(0,140) });
+    }
+  }
+  return { ok:false, rows:[], attempts };
+}
+
+/*** Normalise FUELHH to { periodStartISO, fuel, mw } ***/
+function normaliseFuelHH(rows: any[], DEBUG=false){
+  const out: Array<{ periodStartISO:string; fuel:string; mw:number }> = [];
+  for (const r of rows){
+    const fuel = r.fuelType || r.fuel || r.FUELTYPE || r.FUEL || r.type || "OTHER";
+    let tISO: string | null =
+      r.startTime || r.periodStart || r.start || r.STARTTIME || r.START || null;
+    let sp = Number(r.settlementPeriod ?? r.SETTLEMENTPERIOD ?? r.sp ?? 0);
+    let dstr = r.settlementDate || r.SETTLEMENTDATE || r.date || null;
+
+    const mwRaw = r.generation ?? r.MW ?? r.quantity ?? r.VALUE ?? r.value;
+    const mw = Number(mwRaw);
+    if (!Number.isFinite(mw)) continue;
+
+    if (!tISO){
+      if (dstr && sp > 0){
+        const y = Number(dstr.slice(0,4)), m = Number(dstr.slice(5,7)), d = Number(dstr.slice(8,10));
+        const base = new Date(Date.UTC(y, m-1, d, 0, 0, 0));
+        tISO = toISO(addMinutes(base, (sp-1)*30));
+      }else{
+        continue;
+      }
+    }
+    out.push({ periodStartISO: new Date(tISO).toISOString(), fuel: String(fuel).toUpperCase(), mw });
+  }
+  out.sort((a,b)=> a.periodStartISO.localeCompare(b.periodStartISO));
+  return out;
+}
+
+/*** Aggregate HV by SP & fuel (exclude interconnectors & PS pumping) ***/
+const INTERCONNECTOR_CODES = new Set(["INTFR","INTNED","INTBEL","INTNEM","INTIRL","INTEW","INTNSL","INTIFA2","INTELEC","INTNL","INTDK1","INTGRNL","INTVKL"]);
+function isInterconnectorFuel(fuel: string){
+  fuel = fuel.toUpperCase();
+  if (INTERCONNECTOR_CODES.has(fuel)) return true;
+  return fuel.startsWith("INT");
+}
+function classifyFuel(f: string){
+  const x = f.toUpperCase();
+  if (x === "WIND") return "Wind";
+  if (x === "NUCLEAR") return "Nuclear";
+  if (x === "CCGT" || x === "OCGT" || x === "FOSSIL_GAS" || x === "GAS") return "Gas";
+  if (x === "COAL") return "Coal";
+  if (x === "BIOMASS") return "Biomass";
+  if (x === "NPSHYD" || x === "PS" || x === "HYDRO") return "Hydro";
+  return "Other";
+}
+type FuelRow = { periodStartISO:string; fuels: Record<string, number> };
+function aggregateHV(rows: ReturnType<typeof normaliseFuelHH>){
+  const map = new Map<string, FuelRow>();
+  for (const r of rows){
+    if (isInterconnectorFuel(r.fuel)) continue;
+
+    const label = classifyFuel(r.fuel);
+    let mw = r.mw;
+    if (label === "Hydro" && mw < 0){ continue; }
+
+    const key = r.periodStartISO;
+    if (!map.has(key)) map.set(key, { periodStartISO: key, fuels: {} });
+    const row = map.get(key)!;
+    row.fuels[label] = (row.fuels[label] ?? 0) + mw;
+  }
+  return Array.from(map.values()).sort((a,b)=> a.periodStartISO.localeCompare(b.periodStartISO));
+}
+
+/*** Rename existing PV Live function ***/
+async function fetchPVLiveNationalSeries(startISO: string, endISO: string, DEBUG = false): Promise<Array<{t:string; mw:number}>> {
+  const { data } = await fetchPVLiveNational(startISO, endISO, DEBUG);
+  return data;
+}
+
+/*** Build the past-week series using FUELHH ***/
+async function buildPastWeekGeneration(DEBUG=false){
+  const end = alignDownHalfHour(new Date());
+  const start = addMinutes(end, -7*24*60); // 7 days
+  const fromISO = toISO(start);
+  const endISO = toISO(end);
+
+  console.log(`[FUELHH] Fetching weekly data from ${fromISO} to ${endISO}`);
+
+  // BMRS FUELHH (dataset)
+  const fuelhh = await fetchFUELHHWindow(fromISO, endISO, DEBUG);
+  if (DEBUG) console.log("[FUELHH attempts]", fuelhh.attempts?.slice(0,3));
+  const hvRows = normaliseFuelHH(fuelhh.rows, DEBUG);
+  const hvAgg  = aggregateHV(hvRows);
+
+  console.log(`[FUELHH] Processed ${hvRows.length} raw rows into ${hvAgg.length} aggregated periods`);
+
+  // PV_Live Solar 
+  let pv: Array<{t:string; mw:number}> = [];
+  try{
+    pv = await fetchPVLiveNationalSeries(fromISO, endISO, DEBUG);
+  }catch(e:any){
+    if (DEBUG) console.log("[PV_LIVE] failed:", e?.message);
+  }
+  
+  const pvIdx = new Map<string, number>();
+  for (const r of pv){
+    pvIdx.set(new Date(r.t).toISOString(), Number(r.mw));
+  }
+
+  // Join per SP
+  const out = hvAgg.map(sp => {
+    const spStart = new Date(sp.periodStartISO);
+    const spEnd   = addMinutes(spStart, 30);
+    const effectiveAnchor = Math.min(spEnd.getTime(), Date.now());
+
+    let bestISO: string | null = null;
+    let bestDt = Infinity;
+    for (const [iso, mw] of pvIdx.entries()){
+      const dt = Math.abs(new Date(iso).getTime() - effectiveAnchor);
+      if (dt < bestDt){ bestDt = dt; bestISO = iso; }
+    }
+    const within45 = bestDt <= 45*60*1000;
+    const solar = (bestISO && within45) ? (pvIdx.get(bestISO) ?? 0) : 0;
+
+    return {
+      periodStartISO: sp.periodStartISO,
+      fuels: {
+        Solar: solar,
+        Gas: Math.max(0, sp.fuels.Gas ?? 0),
+        Wind: Math.max(0, sp.fuels.Wind ?? 0),
+        Nuclear: Math.max(0, sp.fuels.Nuclear ?? 0),
+        Hydro: Math.max(0, sp.fuels.Hydro ?? 0),
+        Biomass: Math.max(0, sp.fuels.Biomass ?? 0),
+        Coal: Math.max(0, sp.fuels.Coal ?? 0),
+        Other: Math.max(0, sp.fuels.Other ?? 0),
+      },
+      flags: { solarMatched: within45 }
+    };
+  });
+
+  return {
+    fromISO, endISO,
+    periods: out.length,
+    rows: out,
+    meta: {
+      sourceHV: "BMRS FUELHH (dataset)",
+      sourceSolar: "PV_Live (national)",
+      solarMatchedCount: out.filter(r=>r.flags.solarMatched).length
+    }
+  };
+}
+
 const ENERGY_COLORS = {
   'Gas': '#3B82F6',
   'Wind': '#10B981',
@@ -263,7 +451,9 @@ async function processHistoricalData(rawData: any, pvLiveData: Array<{t: string,
   console.log(`Processing ${dataArray.length} historical data periods for ${period}`);
   
   if (period === '7d') {
-    return await processWeeklyData(dataArray, pvLiveData, pvSource, debug);
+    // Use new FUELHH approach for weekly data
+    const weeklyResult = await buildPastWeekGeneration(debug);
+    return convertFUELHHToExpectedFormat(weeklyResult, debug);
   }
   
   // Group by settlement period - each item already represents a complete settlement period
@@ -400,7 +590,94 @@ async function processHistoricalData(rawData: any, pvLiveData: Array<{t: string,
   return result;
 }
 
-async function processWeeklyData(dataArray: any[], pvLiveData: Array<{t: string, mw: number}>, pvSource: string, debug = false): Promise<any[]> {
+function convertFUELHHToExpectedFormat(weeklyResult: any, debug = false): any[] {
+  console.log(`[FUELHH] Converting ${weeklyResult.rows.length} periods to daily format`);
+  
+  // Group by day and calculate daily averages
+  const dayMap = new Map<string, {
+    date: string;
+    periods: any[];
+    fuelTotals: Record<string, number>;
+    totalMW: number;
+    solarTotalMW: number;
+    solarMatchedPeriods: number;
+    totalPeriods: number;
+  }>();
+
+  for (const period of weeklyResult.rows) {
+    const startTime = new Date(period.periodStartISO);
+    const dateKey = startTime.toISOString().split('T')[0];
+    
+    if (!dayMap.has(dateKey)) {
+      dayMap.set(dateKey, {
+        date: dateKey,
+        periods: [],
+        fuelTotals: {},
+        totalMW: 0,
+        solarTotalMW: 0,
+        solarMatchedPeriods: 0,
+        totalPeriods: 0
+      });
+    }
+    
+    const dayData = dayMap.get(dateKey)!;
+    dayData.periods.push(period);
+    dayData.totalPeriods++;
+    
+    // Accumulate fuel totals
+    Object.entries(period.fuels).forEach(([fuel, mw]) => {
+      if (!dayData.fuelTotals[fuel]) {
+        dayData.fuelTotals[fuel] = 0;
+      }
+      dayData.fuelTotals[fuel] += mw as number;
+    });
+    
+    dayData.totalMW += Object.values(period.fuels).reduce((sum: number, mw) => sum + (mw as number), 0);
+    dayData.solarTotalMW += period.fuels.Solar as number;
+    
+    if (period.flags.solarMatched) {
+      dayData.solarMatchedPeriods++;
+    }
+  }
+  
+  // Convert to expected daily format
+  const result = Array.from(dayMap.values())
+    .map(dayData => {
+      // Calculate daily averages
+      const dailyFuelMix: Record<string, number> = {};
+      
+      Object.entries(dayData.fuelTotals).forEach(([fuel, totalMW]) => {
+        dailyFuelMix[fuel] = totalMW / dayData.totalPeriods;
+      });
+      
+      const dailyTotalMW = Object.values(dailyFuelMix).reduce((sum, mw) => sum + mw, 0);
+      const dayTimestamp = new Date(dayData.date + 'T12:00:00Z');
+      
+      return {
+        settlementDate: dayData.date,
+        settlementPeriod: 0,
+        timestamp: dayTimestamp.toISOString(),
+        fuelMix: Object.entries(dailyFuelMix).map(([fuelType, mw]) => ({
+          fuelType,
+          mw,
+          percentage: dailyTotalMW > 0 ? Math.round((mw / dailyTotalMW) * 100) : 0,
+          color: ENERGY_COLORS[fuelType as keyof typeof ENERGY_COLORS] || ENERGY_COLORS.Other
+        })),
+        totalMW: dailyTotalMW,
+        solarMatched: dayData.solarMatchedPeriods > 0,
+        dayName: dayTimestamp.toLocaleDateString('en-US', { weekday: 'short' }),
+        solarMatchedPeriods: dayData.solarMatchedPeriods,
+        totalPeriods: dayData.totalPeriods
+      };
+    })
+    .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+    .slice(-7); // Take most recent 7 days
+  
+  console.log(`[FUELHH] Converted to ${result.length} daily aggregates`);
+  return result;
+}
+
+async function processWeeklyDataLegacy(dataArray: any[], pvLiveData: Array<{t: string, mw: number}>, pvSource: string, debug = false): Promise<any[]> {
   console.log(`Processing weekly aggregation for ${dataArray.length} periods`);
   
   // Group data by day
@@ -572,25 +849,27 @@ Deno.serve(async (req) => {
       throw new Error('Invalid period parameter. Must be "24h" or "7d"');
     }
     
-    // Fetch BMRS historical data
-    const rawData = await fetchBMRSHistoricalGeneration(period);
-    
-    // Fetch PV Live solar data for the appropriate time window
-    const now = new Date();
-    let startISO: string, endISO: string;
+    let processedData: any[];
+    let pvSource = 'none';
+    let pvLiveData: Array<{t: string, mw: number}> = [];
     
     if (period === '7d') {
-      startISO = new Date(now.getTime() - 8 * 24 * 60 * 60 * 1000).toISOString(); // 8 days ago for buffer
-      endISO = now.toISOString();
+      // Use FUELHH for weekly data
+      processedData = await buildPastWeekGeneration(debug).then(result => convertFUELHHToExpectedFormat(result, debug));
+      pvSource = 'fuelhh-integrated';
     } else {
-      startISO = new Date(now.getTime() - 26 * 60 * 60 * 1000).toISOString(); // 26 hours ago for buffer
-      endISO = now.toISOString();
+      // Use existing approach for daily data
+      const rawData = await fetchBMRSHistoricalGeneration(period);
+      
+      const now = new Date();
+      const startISO = new Date(now.getTime() - 26 * 60 * 60 * 1000).toISOString();
+      const endISO = now.toISOString();
+      
+      const pvData = await fetchPVLiveNational(startISO, endISO, debug);
+      pvLiveData = pvData.data;
+      pvSource = pvData.source;
+      processedData = await processHistoricalData(rawData, pvLiveData, pvSource, period, debug);
     }
-    
-    const { data: pvLiveData, source: pvSource } = await fetchPVLiveNational(startISO, endISO, debug);
-    
-    // Process data with solar integration
-    const processedData = await processHistoricalData(rawData, pvLiveData, pvSource, period, debug);
     
     // Calculate statistics
     const solarMatchedCount = processedData.filter(p => p.solarMatched).length;
@@ -609,13 +888,12 @@ Deno.serve(async (req) => {
           totalDays: processedData.length
         })
       },
-      ...(debug && {
+      ...(debug && period !== '7d' && {
         diagnostics: {
           pv: {
             totalRows: pvLiveData.length,
             samples: pvLiveData.slice(0, 3).map(row => ({ t: row.t, mw: row.mw })),
-            source: pvSource,
-            timeWindow: { startISO, endISO }
+            source: pvSource
           }
         }
       })
