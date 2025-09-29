@@ -494,7 +494,7 @@ async function processHistoricalData(rawData: any, pvLiveData: Array<{t: string,
   if (period === '7d') {
     // Use new FUELHH approach for weekly data
     const weeklyResult = await buildPastWeekGeneration(7, debug);
-    return convertFUELHHToExpectedFormat(weeklyResult, debug);
+    return convertFUELHHToExpectedFormat(weeklyResult, 7, debug);
   }
   
   // Group by settlement period - each item already represents a complete settlement period
@@ -631,7 +631,7 @@ async function processHistoricalData(rawData: any, pvLiveData: Array<{t: string,
   return result;
 }
 
-function convertFUELHHToExpectedFormat(weeklyResult: any, debug = false): any[] {
+function convertFUELHHToExpectedFormat(weeklyResult: any, targetDays = 7, debug = false): any[] {
   console.log(`[FUELHH] Converting ${weeklyResult.rows.length} periods to daily format`);
   
   // Group by day and calculate daily averages
@@ -717,7 +717,7 @@ function convertFUELHHToExpectedFormat(weeklyResult: any, debug = false): any[] 
       };
     })
     .sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
-    .slice(-7); // Take most recent 7 days
+    .slice(-targetDays); // Take most recent targetDays days
   
   console.log(`[FUELHH] Converted to ${result.length} daily aggregates`);
   return result;
@@ -904,12 +904,12 @@ Deno.serve(async (req) => {
     if (period === '7d') {
       // Use FUELHH for weekly data
       const daysBack = 7;
-      processedData = await buildPastWeekGeneration(daysBack, debug).then(result => convertFUELHHToExpectedFormat(result, debug));
+      processedData = await buildPastWeekGeneration(daysBack, debug).then(result => convertFUELHHToExpectedFormat(result, 7, debug));
       pvSource = 'fuelhh-integrated';
     } else if (period === '30d') {
       // Use FUELHH for monthly data
       const daysBack = 30;
-      processedData = await buildPastWeekGeneration(daysBack, debug).then(result => convertFUELHHToExpectedFormat(result, debug));
+      processedData = await buildPastWeekGeneration(daysBack, debug).then(result => convertFUELHHToExpectedFormat(result, 30, debug));
       pvSource = 'fuelhh-integrated';
     } else {
       // Use existing approach for daily data

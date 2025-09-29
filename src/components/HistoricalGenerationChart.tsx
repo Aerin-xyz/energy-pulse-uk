@@ -264,6 +264,11 @@ export const HistoricalGenerationChart = ({
     return acc;
   }, {} as Record<string, string>) || {};
 
+  const monthlyFuelColors = monthlyData[0]?.fuelMix.reduce((acc, fuel) => {
+    acc[fuel.fuelType] = fuel.color;
+    return acc;
+  }, {} as Record<string, string>) || {};
+
   // Sort weekly fuel types by average generation (values are MWh)
   const sortedWeeklyFuelTypes = weeklyFuelTypes.sort((a, b) => {
     const avgA = weeklyData.reduce((sum, point) => {
@@ -595,7 +600,7 @@ export const HistoricalGenerationChart = ({
                       <Tooltip content={<CustomTooltip />} />
                       <Legend />
                       {monthlyFuelTypes.map((fuelType) => {
-                        const color = monthlyData[0]?.fuelMix.find(f => f.fuelType === fuelType)?.color || '#6B7280';
+                        const color = monthlyFuelColors[fuelType] || '#6B7280';
                         return (
                           <Bar
                             key={fuelType}
