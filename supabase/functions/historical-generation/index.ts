@@ -48,6 +48,13 @@ function alignDownHalfHour(d: Date){
   return z;
 }
 
+/** Settlement helpers */
+function ymdUTC(d: Date) {
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
+}
+function startOfUTCDay(d: Date) { return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate(), 0,0,0)); }
+function addDays(d: Date, n: number) { return new Date(d.getTime() + n*24*60*60*1000); }
+
 /*** Resilient fetch that insists on JSON ***/
 async function fetchJsonStrict(url: string){
   const res = await fetch(url, { headers: { Accept: "application/json" }, redirect: "manual" as RequestRedirect, cache: "no-store" });
@@ -77,6 +84,30 @@ async function fetchFUELHHWindow(fromISO: string, toISO: string, DEBUG=false){
       if (rows.length) return { ok:true, rows, attempts };
     }catch(e:any){
       attempts.push({ url, ok:false, reason: e?.message?.slice(0,140) });
+    }
+  }
+  return { ok:false, rows:[], attempts };
+}
+
+/** Fetch FUELHH by settlement filters (7-day window), with host + stream fallbacks */
+async function fetchFuelHHBySettlement(settlementDateFrom: string, settlementDateTo: string, DEBUG=false){
+  const mk = (host: string) =>
+    `${host}/bmrs/api/v1/datasets/FUELHH?settlementDateFrom=${encodeURIComponent(settlementDateFrom)}&settlementDateTo=${encodeURIComponent(settlementDateTo)}&settlementPeriodFrom=1&settlementPeriodTo=50&format=json&stream=true`;
+
+  const candidates = [
+    mk("https://data.elexon.co.uk"),
+    mk("https://bmrs.elexon.co.uk"),
+  ];
+
+  const attempts: any[] = [];
+  for (const url of candidates){
+    try {
+      const j = await fetchJsonStrict(url);
+      const rows = Array.isArray(j?.data) ? j.data : [];
+      if (DEBUG) attempts.push({ url, ok:true, count: rows.length });
+      if (rows.length) return { ok:true, rows, attempts };
+    } catch (e:any) {
+      attempts.push({ url, ok:false, reason: String(e.message).slice(0,160) });
     }
   }
   return { ok:false, rows:[], attempts };
@@ -152,50 +183,54 @@ async function fetchPVLiveNationalSeries(startISO: string, endISO: string, DEBUG
   return data;
 }
 
-/*** Build the past-week series using FUELHH ***/
+/*** Build the past-week series using FUELHH with settlement filters ***/
 async function buildPastWeekGeneration(DEBUG=false){
-  const end = alignDownHalfHour(new Date());
-  const start = addMinutes(end, -7*24*60); // 7 days
-  const fromISO = toISO(start);
-  const endISO = toISO(end);
+  // Compute last 7 full UTC days up to "today"
+  const todayUTC = startOfUTCDay(new Date());
+  const dateTo   = ymdUTC(todayUTC);                // inclusive
+  const dateFrom = ymdUTC(addDays(todayUTC, -7));   // inclusive 7 days back
 
-  console.log(`[FUELHH] Fetching weekly data from ${fromISO} to ${endISO}`);
+  console.log(`[FUELHH-settlement] Fetching weekly data from ${dateFrom} to ${dateTo}`);
 
-  // BMRS FUELHH (dataset)
-  const fuelhh = await fetchFUELHHWindow(fromISO, endISO, DEBUG);
-  if (DEBUG) console.log("[FUELHH attempts]", fuelhh.attempts?.slice(0,3));
-  const hvRows = normaliseFuelHH(fuelhh.rows, DEBUG);
-  const hvAgg  = aggregateHV(hvRows);
+  // 1) BMRS HV outturn via settlement filters
+  const fuelhh = await fetchFuelHHBySettlement(dateFrom, dateTo, DEBUG);
+  if (DEBUG) console.log("[FUELHH-settlement] attempts", fuelhh.attempts?.slice(0,2));
+  const hvRows = normaliseFuelHH(fuelhh.rows, DEBUG);      // ← use existing normaliser
+  const hvAgg  = aggregateHV(hvRows);                      // ← and aggregator (excludes ICs, drops PS pumping)
 
-  console.log(`[FUELHH] Processed ${hvRows.length} raw rows into ${hvAgg.length} aggregated periods`);
+  console.log(`[FUELHH-settlement] Processed ${hvRows.length} raw rows into ${hvAgg.length} aggregated periods`);
+  if (DEBUG && hvAgg.length > 0) {
+    console.log(`[FUELHH-settlement] Date range: ${dateFrom} to ${dateTo}, first period: ${hvAgg[0].periodStartISO}, last period: ${hvAgg[hvAgg.length-1].periodStartISO}`);
+  }
 
-  // PV_Live Solar 
+  // 2) Solar from PV_Live for same calendar window (use existing fetch)
+  const pvStartISO = `${dateFrom}T00:00:00Z`;
+  const pvEndISO   = `${dateTo}T23:59:59Z`;
   let pv: Array<{t:string; mw:number}> = [];
-  try{
-    pv = await fetchPVLiveNationalSeries(fromISO, endISO, DEBUG);
-  }catch(e:any){
-    if (DEBUG) console.log("[PV_LIVE] failed:", e?.message);
+  try { 
+    pv = await fetchPVLiveNationalSeries(pvStartISO, pvEndISO, DEBUG); 
+    if (DEBUG) console.log(`[PV_LIVE] fetched ${pv.length} records, sample:`, pv.slice(0, 3));
   }
-  
-  const pvIdx = new Map<string, number>();
-  for (const r of pv){
-    pvIdx.set(new Date(r.t).toISOString(), Number(r.mw));
-  }
+  catch (e:any){ if (DEBUG) console.log("[PV_LIVE] failed", e?.message); }
 
-  // Join per SP
-  const out = hvAgg.map(sp => {
+  // 3) Join PV to half-hour SPs with effective anchor = min(periodEnd, now) & 45-min tolerance
+  const pvIdx = pv.map(r => ({ ts:new Date(r.t).getTime(), mw: r.mw }))
+                  .sort((a,b)=>a.ts-b.ts);
+
+  const joined = hvAgg.map(sp => {
     const spStart = new Date(sp.periodStartISO);
     const spEnd   = addMinutes(spStart, 30);
     const effectiveAnchor = Math.min(spEnd.getTime(), Date.now());
 
-    let bestISO: string | null = null;
+    // find nearest PV row
+    let best = null as {ts:number; mw:number} | null;
     let bestDt = Infinity;
-    for (const [iso, mw] of pvIdx.entries()){
-      const dt = Math.abs(new Date(iso).getTime() - effectiveAnchor);
-      if (dt < bestDt){ bestDt = dt; bestISO = iso; }
+    for (const row of pvIdx){
+      const dt = Math.abs(row.ts - effectiveAnchor);
+      if (dt < bestDt){ bestDt = dt; best = row; }
     }
     const within45 = bestDt <= 45*60*1000;
-    const solar = (bestISO && within45) ? (pvIdx.get(bestISO) ?? 0) : 0;
+    const solar = within45 && best ? best.mw : 0;
 
     return {
       periodStartISO: sp.periodStartISO,
@@ -207,20 +242,20 @@ async function buildPastWeekGeneration(DEBUG=false){
         Hydro: Math.max(0, sp.fuels.Hydro ?? 0),
         Biomass: Math.max(0, sp.fuels.Biomass ?? 0),
         Coal: Math.max(0, sp.fuels.Coal ?? 0),
-        Other: Math.max(0, sp.fuels.Other ?? 0),
+        Other: Math.max(0, sp.fuels.Other ?? 0)
       },
       flags: { solarMatched: within45 }
     };
   });
 
   return {
-    fromISO, endISO,
-    periods: out.length,
-    rows: out,
+    dateFrom, dateTo,
+    periods: joined.length,
+    rows: joined,
     meta: {
-      sourceHV: "BMRS FUELHH (dataset)",
+      sourceHV: "BMRS FUELHH (settlement, stream)",
       sourceSolar: "PV_Live (national)",
-      solarMatchedCount: out.filter(r=>r.flags.solarMatched).length
+      solarMatchedCount: joined.filter(r=>r.flags.solarMatched).length
     }
   };
 }
