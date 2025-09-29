@@ -15,7 +15,7 @@ import {
   Legend, 
   ResponsiveContainer 
 } from 'recharts';
-import { formatGWfromMW } from '@/lib/utils';
+import { formatGWfromMW, formatGWh } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 
 interface HistoricalDataPoint {
@@ -80,7 +80,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         <p className="text-muted-foreground text-xs mb-2">
           {timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
-        <p className="font-bold text-sm mb-2">Total: {formatGWfromMW(total, 2)} GWh</p>
+        <p className="font-bold text-sm mb-2">Total: {formatGWh(total / 1000, 1)}</p>
         <div className="space-y-1">
           {payload
             .sort((a: any, b: any) => b.value - a.value)
@@ -94,7 +94,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
                   <span className="text-xs">{entry.dataKey}</span>
                 </div>
                 <span className="text-xs font-medium">
-                  {formatGWfromMW(entry.value, 1)} GWh
+                  {formatGWh(entry.value / 1000, 1)}
                 </span>
               </div>
             ))}
@@ -150,7 +150,7 @@ export const HistoricalGenerationChart = ({
       total: point.totalMW
     };
     
-    // Add each fuel type as a separate property
+    // Add each fuel type as a separate property (values are in MW for hourly data)
     point.fuelMix.forEach(fuel => {
       chartPoint[fuel.fuelType] = fuel.mw;
     });
@@ -191,7 +191,7 @@ export const HistoricalGenerationChart = ({
   // Prepare table data for latest periods (last 12 periods = 6 hours)
   const recentData = data.slice(-12).reverse();
 
-  // Weekly chart data
+  // Weekly chart data  
   const weeklyChartData = weeklyData.map(point => {
     const chartPoint: any = {
       day: point.dayName || new Date(point.timestamp).toLocaleDateString('en-US', { weekday: 'short' }),
@@ -199,7 +199,7 @@ export const HistoricalGenerationChart = ({
       total: point.totalMW
     };
     
-    // Add each fuel type as a separate property
+    // Add each fuel type as a separate property (values are MWh for daily data)
     point.fuelMix.forEach(fuel => {
       chartPoint[fuel.fuelType] = fuel.mw;
     });
@@ -217,7 +217,7 @@ export const HistoricalGenerationChart = ({
     return acc;
   }, {} as Record<string, string>) || {};
 
-  // Sort weekly fuel types by average generation
+  // Sort weekly fuel types by average generation (values are MWh)
   const sortedWeeklyFuelTypes = weeklyFuelTypes.sort((a, b) => {
     const avgA = weeklyData.reduce((sum, point) => {
       const fuel = point.fuelMix.find(f => f.fuelType === a);
@@ -452,10 +452,10 @@ export const HistoricalGenerationChart = ({
                     </TableHeader>
                     <TableBody>
                       {weeklyData.map((point, index) => {
-                        const getFuelValue = (fuelType: string) => 
+                        const getFuelMWh = (fuelType: string) => 
                           point.fuelMix.find(f => f.fuelType === fuelType)?.mw || 0;
                         
-                        const solarMW = getFuelValue('Solar');
+                        const solarMWh = getFuelMWh('Solar');
                         const solarMatchedPeriods = point.solarMatchedPeriods || 0;
                         const totalPeriods = point.totalPeriods || 48;
                         
@@ -465,14 +465,14 @@ export const HistoricalGenerationChart = ({
                               {point.dayName || new Date(point.timestamp).toLocaleDateString('en-US', { weekday: 'short' })}
                             </TableCell>
                             <TableCell>{point.settlementDate}</TableCell>
-                            <TableCell>{formatGWfromMW(getFuelValue('Gas'))}</TableCell>
-                            <TableCell>{formatGWfromMW(getFuelValue('Nuclear'))}</TableCell>
-                            <TableCell>{formatGWfromMW(getFuelValue('Wind'))}</TableCell>
-                            <TableCell>{formatGWfromMW(solarMW)}</TableCell>
-                            <TableCell>{formatGWfromMW(getFuelValue('Biomass'))}</TableCell>
-                            <TableCell>{formatGWfromMW(getFuelValue('Hydro') + getFuelValue('PSH'))}</TableCell>
-                            <TableCell>{formatGWfromMW(getFuelValue('Other') + getFuelValue('Coal'))}</TableCell>
-                            <TableCell className="font-medium">{formatGWfromMW(point.totalMW)}</TableCell>
+                            <TableCell>{formatGWh(getFuelMWh('Gas') / 1000)}</TableCell>
+                            <TableCell>{formatGWh(getFuelMWh('Nuclear') / 1000)}</TableCell>
+                            <TableCell>{formatGWh(getFuelMWh('Wind') / 1000)}</TableCell>
+                            <TableCell>{formatGWh(solarMWh / 1000)}</TableCell>
+                            <TableCell>{formatGWh(getFuelMWh('Biomass') / 1000)}</TableCell>
+                            <TableCell>{formatGWh((getFuelMWh('Hydro') + getFuelMWh('PSH')) / 1000)}</TableCell>
+                            <TableCell>{formatGWh((getFuelMWh('Other') + getFuelMWh('Coal')) / 1000)}</TableCell>
+                            <TableCell className="font-medium">{formatGWh(point.totalMW / 1000)}</TableCell>
                             <TableCell>
                               <TooltipProvider>
                                 <UITooltip>
