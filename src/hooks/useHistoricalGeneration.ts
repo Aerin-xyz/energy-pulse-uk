@@ -61,13 +61,6 @@ export const useHistoricalGeneration = () => {
   const [weeklyLastUpdated, setWeeklyLastUpdated] = useState<Date | null>(null);
   const [weeklyMeta, setWeeklyMeta] = useState<{periods: number; solarMatchedDays: number; totalDays: number; pvSource: string} | null>(null);
   
-  // Monthly data state
-  const [monthlyData, setMonthlyData] = useState<DailyDataPoint[]>([]);
-  const [monthlyLoading, setMonthlyLoading] = useState(false);
-  const [monthlyError, setMonthlyError] = useState<string | null>(null);
-  const [monthlyLastUpdated, setMonthlyLastUpdated] = useState<Date | null>(null);
-  const [monthlyMeta, setMonthlyMeta] = useState<{periods: number; solarMatchedDays: number; totalDays: number; pvSource: string} | null>(null);
-  
   const { toast } = useToast();
 
   const fetchHistoricalData = useCallback(async (showToast = true) => {
@@ -128,9 +121,7 @@ export const useHistoricalGeneration = () => {
       setWeeklyLoading(true);
       setWeeklyError(null);
 
-      const { data: response, error: supabaseError } = await supabase.functions.invoke('historical-generation', {
-        body: { period: '7d' }
-      });
+      const { data: response, error: supabaseError } = await supabase.functions.invoke('historical-generation?period=7d');
 
       if (supabaseError) {
         throw new Error(supabaseError.message);
@@ -178,61 +169,6 @@ export const useHistoricalGeneration = () => {
     }
   }, [toast]);
 
-  const fetchMonthlyData = useCallback(async (showToast = true) => {
-    try {
-      setMonthlyLoading(true);
-      setMonthlyError(null);
-
-      const { data: response, error: supabaseError } = await supabase.functions.invoke('historical-generation', {
-        body: { period: '30d' }
-      });
-
-      if (supabaseError) {
-        throw new Error(supabaseError.message);
-      }
-
-      if (response.error) {
-        throw new Error(response.error);
-      }
-
-      const monthlyHistoricalData: HistoricalGenerationData = response;
-      
-      // Convert timestamp strings back to Date objects
-      const processedData = monthlyHistoricalData.data.map(point => ({
-        ...point,
-        timestamp: new Date(point.timestamp)
-      }));
-
-      setMonthlyData(processedData);
-      setMonthlyLastUpdated(new Date(monthlyHistoricalData.lastUpdated));
-      setMonthlyMeta(monthlyHistoricalData.meta as any || null);
-
-      if (showToast) {
-        const solarInfo = monthlyHistoricalData.meta 
-          ? `, ${monthlyHistoricalData.meta.solarMatchedDays}/${monthlyHistoricalData.meta.totalDays} days with solar data`
-          : '';
-        toast({
-          title: "Monthly data updated",
-          description: `Loaded ${monthlyHistoricalData.totalPeriods} days${solarInfo}`,
-        });
-      }
-
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to fetch monthly data';
-      setMonthlyError(errorMessage);
-      
-      if (showToast) {
-        toast({
-          title: "Error loading monthly data",
-          description: errorMessage,
-          variant: "destructive",
-        });
-      }
-    } finally {
-      setMonthlyLoading(false);
-    }
-  }, [toast]);
-
   // Initial fetch
   useEffect(() => {
     fetchHistoricalData(false);
@@ -260,13 +196,6 @@ export const useHistoricalGeneration = () => {
     weeklyError,
     weeklyLastUpdated,
     weeklyMeta,
-    fetchWeeklyData: () => fetchWeeklyData(true),
-    // Monthly data
-    monthlyData,
-    monthlyLoading,
-    monthlyError,
-    monthlyLastUpdated,
-    monthlyMeta,
-    fetchMonthlyData: () => fetchMonthlyData(true)
+    fetchWeeklyData: () => fetchWeeklyData(true)
   };
 };

@@ -68,17 +68,6 @@ interface HistoricalGenerationChartProps {
     pvSource: string;
   } | null;
   onFetchWeeklyData: () => void;
-  monthlyData: DailyDataPoint[];
-  monthlyLoading: boolean;
-  monthlyError: string | null;
-  monthlyLastUpdated?: Date | null;
-  monthlyMeta?: {
-    periods: number;
-    solarMatchedDays: number;
-    totalDays: number;
-    pvSource: string;
-  } | null;
-  onFetchMonthlyData: () => void;
 }
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -125,17 +114,10 @@ export const HistoricalGenerationChart = ({
   weeklyError, 
   weeklyLastUpdated, 
   weeklyMeta, 
-  onFetchWeeklyData,
-  monthlyData,
-  monthlyLoading,
-  monthlyError,
-  monthlyLastUpdated,
-  monthlyMeta,
-  onFetchMonthlyData
+  onFetchWeeklyData 
 }: HistoricalGenerationChartProps) => {
   const [activeTab, setActiveTab] = useState("chart");
   const [weeklyDataFetched, setWeeklyDataFetched] = useState(false);
-  const [monthlyDataFetched, setMonthlyDataFetched] = useState(false);
 
   // Automatically fetch weekly data when tab is first accessed
   useEffect(() => {
@@ -144,14 +126,6 @@ export const HistoricalGenerationChart = ({
       setWeeklyDataFetched(true);
     }
   }, [activeTab, weeklyDataFetched, weeklyLoading, weeklyData.length, onFetchWeeklyData]);
-
-  // Automatically fetch monthly data when tab is first accessed
-  useEffect(() => {
-    if (activeTab === "monthly" && !monthlyDataFetched && !monthlyLoading && monthlyData.length === 0) {
-      onFetchMonthlyData();
-      setMonthlyDataFetched(true);
-    }
-  }, [activeTab, monthlyDataFetched, monthlyLoading, monthlyData.length, onFetchMonthlyData]);
 
   if (!data || data.length === 0) {
     return (
@@ -237,34 +211,8 @@ export const HistoricalGenerationChart = ({
   const weeklyFuelTypes = weeklyData.length > 0 
     ? Array.from(new Set(weeklyData.flatMap(point => point.fuelMix.map(fuel => fuel.fuelType))))
     : [];
-
-  // Monthly chart data
-  const monthlyChartData = monthlyData.map(point => {
-    const chartPoint: any = {
-      day: new Date(point.timestamp).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      date: point.settlementDate,
-      total: point.totalMW
-    };
-    
-    // Add each fuel type as a separate property (values are MWh for daily data)
-    point.fuelMix.forEach(fuel => {
-      chartPoint[fuel.fuelType] = fuel.mw;
-    });
-    
-    return chartPoint;
-  });
-
-  // Get monthly fuel types and colors
-  const monthlyFuelTypes = monthlyData.length > 0 
-    ? Array.from(new Set(monthlyData.flatMap(point => point.fuelMix.map(fuel => fuel.fuelType))))
-    : [];
     
   const weeklyFuelColors = weeklyData[0]?.fuelMix.reduce((acc, fuel) => {
-    acc[fuel.fuelType] = fuel.color;
-    return acc;
-  }, {} as Record<string, string>) || {};
-
-  const monthlyFuelColors = monthlyData[0]?.fuelMix.reduce((acc, fuel) => {
     acc[fuel.fuelType] = fuel.color;
     return acc;
   }, {} as Record<string, string>) || {};
@@ -280,21 +228,6 @@ export const HistoricalGenerationChart = ({
       const fuel = point.fuelMix.find(f => f.fuelType === b);
       return sum + (fuel?.mw || 0);
     }, 0) / weeklyData.length;
-    
-    return avgB - avgA;
-  });
-
-  // Sort monthly fuel types by average generation (values are MWh)
-  const sortedMonthlyFuelTypes = monthlyFuelTypes.sort((a, b) => {
-    const avgA = monthlyData.reduce((sum, point) => {
-      const fuel = point.fuelMix.find(f => f.fuelType === a);
-      return sum + (fuel?.mw || 0);
-    }, 0) / monthlyData.length;
-    
-    const avgB = monthlyData.reduce((sum, point) => {
-      const fuel = point.fuelMix.find(f => f.fuelType === b);
-      return sum + (fuel?.mw || 0);
-    }, 0) / monthlyData.length;
     
     return avgB - avgA;
   });
@@ -317,7 +250,6 @@ export const HistoricalGenerationChart = ({
             <TabsTrigger value="chart">Chart View</TabsTrigger>
             <TabsTrigger value="table">Data Table</TabsTrigger>
             <TabsTrigger value="weekly">Weekly View</TabsTrigger>
-            <TabsTrigger value="monthly">Monthly View</TabsTrigger>
           </TabsList>
           
           <TabsContent value="chart" className="mt-4">
@@ -574,123 +506,6 @@ export const HistoricalGenerationChart = ({
                     <p>PV Source: {weeklyMeta.pvSource === 'eso' ? 'ESO Open Data' : weeklyMeta.pvSource === 'sheffield' ? 'Sheffield Solar' : 'None available'}</p>
                     {weeklyLastUpdated && (
                       <p>Last updated: {weeklyLastUpdated.toLocaleString()}</p>
-                    )}
-                  </div>
-                )}
-              </div>
-            )}
-          </TabsContent>
-
-          <TabsContent value="monthly" className="mt-4">
-            {monthlyLoading ? (
-              <div className="flex items-center justify-center py-8">
-                <div className="text-muted-foreground">Loading monthly data...</div>
-              </div>
-            ) : monthlyError ? (
-              <div className="text-center text-destructive py-8">
-                Error loading monthly data: {monthlyError}
-              </div>
-            ) : monthlyData.length === 0 ? (
-              <div className="text-center text-muted-foreground py-8">
-                No monthly data available
-              </div>
-            ) : (
-              <div className="space-y-6">
-                {/* Monthly Chart */}
-                <div className="h-80 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={monthlyChartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
-                      <XAxis 
-                        dataKey="day"
-                        tick={{ fontSize: 12 }}
-                        angle={-45}
-                        textAnchor="end"
-                        height={60}
-                      />
-                      <YAxis 
-                        tick={{ fontSize: 12 }}
-                        tickFormatter={(value) => `${(value/1000).toFixed(0)} GWh`}
-                      />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Legend />
-                      {sortedMonthlyFuelTypes.map((fuelType) => {
-                        const color = monthlyFuelColors[fuelType] || '#6B7280';
-                        return (
-                          <Bar
-                            key={fuelType}
-                            dataKey={fuelType}
-                            stackId="daily"
-                            fill={color}
-                            name={fuelType}
-                          />
-                        );
-                      })}
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                {/* Monthly Data Table */}
-                <div className="rounded-md border">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Date</TableHead>
-                        <TableHead>Gas (GWh)</TableHead>
-                        <TableHead>Nuclear (GWh)</TableHead>
-                        <TableHead>Wind (GWh)</TableHead>
-                        <TableHead>Solar (GWh)</TableHead>
-                        <TableHead>Biomass (GWh)</TableHead>
-                        <TableHead>Hydro (GWh)</TableHead>
-                        <TableHead>Other (GWh)</TableHead>
-                        <TableHead>Total (GWh)</TableHead>
-                        <TableHead>Solar Status</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {monthlyData.map((point, index) => {
-                        const getFuelMWh = (fuelType: string) => 
-                          point.fuelMix.find(f => f.fuelType === fuelType)?.mw || 0;
-                        
-                        const solarMWh = getFuelMWh('Solar');
-                        const solarMatchedPeriods = point.solarMatchedPeriods || 0;
-                        const totalPeriods = point.totalPeriods || 48;
-                        
-                        return (
-                          <TableRow key={index}>
-                            <TableCell className="font-medium">
-                              {point.settlementDate}
-                            </TableCell>
-                            <TableCell>{formatGWh(getFuelMWh('Gas') / 1000)}</TableCell>
-                            <TableCell>{formatGWh(getFuelMWh('Nuclear') / 1000)}</TableCell>
-                            <TableCell>{formatGWh(getFuelMWh('Wind') / 1000)}</TableCell>
-                            <TableCell>{formatGWh(solarMWh / 1000)}</TableCell>
-                            <TableCell>{formatGWh(getFuelMWh('Biomass') / 1000)}</TableCell>
-                            <TableCell>{formatGWh(getFuelMWh('Hydro') / 1000)}</TableCell>
-                            <TableCell>{formatGWh(getFuelMWh('Other') / 1000)}</TableCell>
-                            <TableCell className="font-medium">{formatGWh(point.totalMW / 1000)}</TableCell>
-                            <TableCell>
-                              <div className="flex items-center gap-2">
-                                <div className={`w-2 h-2 rounded-full ${point.solarMatched ? 'bg-green-500' : 'bg-red-500'}`} />
-                                <span className="text-xs">
-                                  {solarMatchedPeriods}/{totalPeriods} periods
-                                </span>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
-
-                {/* Monthly Metadata */}
-                {monthlyMeta && (
-                  <div className="text-xs text-muted-foreground space-y-1">
-                    <p>Monthly Solar from PV Live (measured) • {monthlyMeta.solarMatchedDays}/{monthlyMeta.totalDays} days with matched data</p>
-                    <p>PV Source: {monthlyMeta.pvSource === 'eso' ? 'ESO Open Data' : monthlyMeta.pvSource === 'sheffield' ? 'Sheffield Solar' : 'None available'}</p>
-                    {monthlyLastUpdated && (
-                      <p>Last updated: {monthlyLastUpdated.toLocaleString()}</p>
                     )}
                   </div>
                 )}
