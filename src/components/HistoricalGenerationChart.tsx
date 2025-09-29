@@ -284,6 +284,21 @@ export const HistoricalGenerationChart = ({
     return avgB - avgA;
   });
 
+  // Sort monthly fuel types by average generation (values are MWh)
+  const sortedMonthlyFuelTypes = monthlyFuelTypes.sort((a, b) => {
+    const avgA = monthlyData.reduce((sum, point) => {
+      const fuel = point.fuelMix.find(f => f.fuelType === a);
+      return sum + (fuel?.mw || 0);
+    }, 0) / monthlyData.length;
+    
+    const avgB = monthlyData.reduce((sum, point) => {
+      const fuel = point.fuelMix.find(f => f.fuelType === b);
+      return sum + (fuel?.mw || 0);
+    }, 0) / monthlyData.length;
+    
+    return avgB - avgA;
+  });
+
   return (
     <Card>
       <CardHeader>
@@ -599,7 +614,7 @@ export const HistoricalGenerationChart = ({
                       />
                       <Tooltip content={<CustomTooltip />} />
                       <Legend />
-                      {monthlyFuelTypes.map((fuelType) => {
+                      {sortedMonthlyFuelTypes.map((fuelType) => {
                         const color = monthlyFuelColors[fuelType] || '#6B7280';
                         return (
                           <Bar
