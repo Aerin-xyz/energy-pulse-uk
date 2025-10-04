@@ -6,7 +6,6 @@ import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { HistoricalGenerationChart } from '@/components/HistoricalGenerationChart';
 import { EUDebugPanel } from '@/components/EUDebugPanel';
 import { CarbonIntensityCard } from '@/components/CarbonIntensityCard';
-import { CarbonIntensityChart } from '@/components/CarbonIntensityChart';
 import { useEnergyData } from '@/hooks/useEnergyData';
 import { useHistoricalGeneration } from '@/hooks/useHistoricalGeneration';
 import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/components/LoadingSkeleton';
@@ -190,14 +189,6 @@ export const EnergyDashboard = () => {
                   timestamp={data.carbonIntensity.timestamp}
                   percentOfAverage={data.carbonIntensity.percentOfAverage}
                 />
-
-                {/* Carbon Intensity Forecast Chart */}
-                {data.carbonIntensity.forecastData && (
-                  <CarbonIntensityChart
-                    forecastData={data.carbonIntensity.forecastData}
-                    currentIntensity={data.carbonIntensity.actual}
-                  />
-                )}
               </>
             )}
 
