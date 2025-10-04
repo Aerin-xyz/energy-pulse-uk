@@ -1383,7 +1383,7 @@ Deno.serve(async (req) => {
 
   try {
     // Fetch carbon intensity (for full/mid updates)
-    carbonIntensity = (updateType === 'full' || updateType === 'mid') 
+    carbonIntensity = (UPDATE_TYPE === 'full' || UPDATE_TYPE === 'mid') 
       ? await fetchCarbonIntensity(DEBUG) 
       : null;
     
