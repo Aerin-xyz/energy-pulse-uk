@@ -1545,6 +1545,7 @@ try {
       totalDemandMW: Math.round(totalDemand * 1000),
       units: "MW",
       lastUpdated: new Date().toISOString(),
+      ...(carbonIntensity && { carbonIntensity }),
 dataFreshness: {
   source: "BMRS HV + ESO + PV Live",
   isRealtime: true,
