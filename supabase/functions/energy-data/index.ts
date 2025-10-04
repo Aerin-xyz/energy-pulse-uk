@@ -1379,11 +1379,15 @@ Deno.serve(async (req) => {
     return Math.round((totalDemandMW/1000)*100)/100;
   }
 
+  let carbonIntensity = null;
+
   try {
     // Fetch carbon intensity (for full/mid updates)
-    const carbonIntensity = (updateType === 'full' || updateType === 'mid') 
+    carbonIntensity = (updateType === 'full' || updateType === 'mid') 
       ? await fetchCarbonIntensity(DEBUG) 
       : null;
+    
+    console.log('[energy-data] Carbon intensity fetched:', carbonIntensity ? 'SUCCESS' : 'NULL');
 
     // Fetch data sources in parallel (BMRS + Demand + EU Generation; IC handled separately)
     const [bmrsR, demandR, euGenerationMix] = await Promise.all([
@@ -1545,7 +1549,7 @@ try {
       totalDemandMW: Math.round(totalDemand * 1000),
       units: "MW",
       lastUpdated: new Date().toISOString(),
-      ...(carbonIntensity && { carbonIntensity }),
+      carbonIntensity: carbonIntensity || null,
 dataFreshness: {
   source: "BMRS HV + ESO + PV Live",
   isRealtime: true,
