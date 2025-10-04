@@ -7,7 +7,6 @@ import { HistoricalGenerationChart } from '@/components/HistoricalGenerationChar
 import { EUDebugPanel } from '@/components/EUDebugPanel';
 import { CarbonIntensityCard } from '@/components/CarbonIntensityCard';
 import { CarbonIntensityChart } from '@/components/CarbonIntensityChart';
-import { CarbonGenerationCorrelation } from '@/components/CarbonGenerationCorrelation';
 import { useEnergyData } from '@/hooks/useEnergyData';
 import { useHistoricalGeneration } from '@/hooks/useHistoricalGeneration';
 import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/components/LoadingSkeleton';
@@ -184,19 +183,13 @@ export const EnergyDashboard = () => {
                   <h2 className="text-2xl font-bold mb-2">Carbon Intensity</h2>
                   <p className="text-muted-foreground">Real-time grid emissions and forecast</p>
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                  <CarbonIntensityCard
-                    actual={data.carbonIntensity.actual}
-                    forecast={data.carbonIntensity.forecast}
-                    index={data.carbonIntensity.index}
-                    timestamp={data.carbonIntensity.timestamp}
-                    percentOfAverage={data.carbonIntensity.percentOfAverage}
-                  />
-                  <CarbonGenerationCorrelation
-                    generationMix={data.generationMix}
-                    carbonIntensity={data.carbonIntensity.actual}
-                  />
-                </div>
+                <CarbonIntensityCard
+                  actual={data.carbonIntensity.actual}
+                  forecast={data.carbonIntensity.forecast}
+                  index={data.carbonIntensity.index}
+                  timestamp={data.carbonIntensity.timestamp}
+                  percentOfAverage={data.carbonIntensity.percentOfAverage}
+                />
 
                 {/* Carbon Intensity Forecast Chart */}
                 {data.carbonIntensity.forecastData && (
