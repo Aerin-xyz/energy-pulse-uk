@@ -1,4 +1,4 @@
-import { RefreshCw, Zap, Clock } from 'lucide-react';
+import { RefreshCw, Zap, Clock, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { GenerationMixChart } from '@/components/GenerationMixChart';
@@ -15,6 +15,7 @@ import { NextUpdateCountdown } from '@/components/NextUpdateCountdown';
 // import { UpdateFrequencyIndicator } from '@/components/UpdateFrequencyIndicator';
 import { DiagnosticsPanel } from '@/components/DiagnosticsPanel';
 import { formatGWfromMW } from '@/lib/utils';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export const EnergyDashboard = () => {
   const { 
@@ -117,6 +118,16 @@ export const EnergyDashboard = () => {
                       <Clock className="w-4 h-4" />
                       <span className="hidden sm:inline">Last updated: </span>
                       <span>{data.lastUpdated.toLocaleTimeString()}</span>
+                      <TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info className="w-3.5 h-3.5 cursor-help" />
+                          </TooltipTrigger>
+                          <TooltipContent className="max-w-xs">
+                            <p>Data shows the last completed 30-minute settlement period. There's typically a 5-10 minute delay for validation.</p>
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
                     </div>
             {/* Temporarily commenting out UpdateFrequencyIndicator to debug
             {lastUpdateType && (
