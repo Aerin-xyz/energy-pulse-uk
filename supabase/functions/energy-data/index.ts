@@ -109,6 +109,86 @@ async function fetchEmbeddedWindESO(anchorDate: string, anchorSP: number): Promi
 }
 
 // PV Live embedded solar — column-aware parser with 45m tolerance
+// Fetch Carbon Intensity from National Grid API
+async function fetchCarbonIntensity(debug = false): Promise<{ 
+  actual: number; 
+  forecast: number; 
+  index: string; 
+  timestamp: string;
+  percentOfAverage: number;
+  forecastData?: Array<{ from: string; to: string; intensity: { forecast: number; index: string } }>;
+} | null> {
+  try {
+    // Fetch current intensity
+    const currentRes = await fetch('https://api.carbonintensity.org.uk/intensity', {
+      headers: { 'Accept': 'application/json' },
+      cache: 'no-store'
+    });
+    
+    if (!currentRes.ok) {
+      if (debug) console.log('[carbon] Current intensity API error:', currentRes.status);
+      return null;
+    }
+    
+    const currentData = await currentRes.json();
+    const latest = currentData?.data?.[0];
+    
+    if (!latest?.intensity) {
+      if (debug) console.log('[carbon] No intensity data in response');
+      return null;
+    }
+    
+    // Fetch forecast for next 24 hours
+    let forecastData: any[] = [];
+    try {
+      const forecastRes = await fetch('https://api.carbonintensity.org.uk/intensity/date', {
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store'
+      });
+      
+      if (forecastRes.ok) {
+        const forecastJson = await forecastRes.json();
+        forecastData = forecastJson?.data || [];
+      }
+    } catch (e) {
+      if (debug) console.log('[carbon] Forecast fetch error:', (e as Error).message);
+    }
+    
+    const actual = latest.intensity.actual || latest.intensity.forecast;
+    const forecast = latest.intensity.forecast;
+    const index = latest.intensity.index;
+    const timestamp = latest.from;
+    
+    // GB annual average is ~233 gCO2/kWh
+    const GB_AVERAGE = 233;
+    const percentOfAverage = ((actual / GB_AVERAGE) * 100) - 100;
+    
+    if (debug) {
+      console.log('[carbon] Fetched carbon intensity:', {
+        actual,
+        forecast,
+        index,
+        timestamp,
+        percentOfAverage: percentOfAverage.toFixed(1) + '%',
+        forecastPoints: forecastData.length
+      });
+    }
+    
+    return {
+      actual,
+      forecast,
+      index,
+      timestamp,
+      percentOfAverage,
+      forecastData: forecastData.slice(0, 48) // Next 48 half-hourly periods
+    };
+  } catch (error) {
+    if (debug) console.log('[carbon] Error fetching carbon intensity:', (error as Error).message);
+    return null;
+  }
+}
+
+// PV Live embedded solar — column-aware parser with 45m tolerance
 async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Promise<{ mw: number; matched: boolean; reason: string; debug?: { picked?: any; columns?: any } }>
 {
   const candidates = [
@@ -193,6 +273,85 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
 
   // If all attempts failed
   return { mw: 0, matched: false, reason: sawJson ? 'pv-unexpected-shape' : 'pv-no-json', debug: { columns: lastCols } };
+}
+
+// Fetch Carbon Intensity from National Grid API
+async function fetchCarbonIntensity(debug = false): Promise<{ 
+  actual: number; 
+  forecast: number; 
+  index: string; 
+  timestamp: string;
+  percentOfAverage: number;
+  forecastData?: Array<{ from: string; to: string; intensity: { forecast: number; index: string } }>;
+} | null> {
+  try {
+    // Fetch current intensity
+    const currentRes = await fetch('https://api.carbonintensity.org.uk/intensity', {
+      headers: { 'Accept': 'application/json' },
+      cache: 'no-store'
+    });
+    
+    if (!currentRes.ok) {
+      if (debug) console.log('[carbon] Current intensity API error:', currentRes.status);
+      return null;
+    }
+    
+    const currentData = await currentRes.json();
+    const latest = currentData?.data?.[0];
+    
+    if (!latest?.intensity) {
+      if (debug) console.log('[carbon] No intensity data in response');
+      return null;
+    }
+    
+    // Fetch forecast for next 24 hours
+    let forecastData: any[] = [];
+    try {
+      const forecastRes = await fetch('https://api.carbonintensity.org.uk/intensity/date', {
+        headers: { 'Accept': 'application/json' },
+        cache: 'no-store'
+      });
+      
+      if (forecastRes.ok) {
+        const forecastJson = await forecastRes.json();
+        forecastData = forecastJson?.data || [];
+      }
+    } catch (e) {
+      if (debug) console.log('[carbon] Forecast fetch error:', (e as Error).message);
+    }
+    
+    const actual = latest.intensity.actual || latest.intensity.forecast;
+    const forecast = latest.intensity.forecast;
+    const index = latest.intensity.index;
+    const timestamp = latest.from;
+    
+    // GB annual average is ~233 gCO2/kWh
+    const GB_AVERAGE = 233;
+    const percentOfAverage = ((actual / GB_AVERAGE) * 100) - 100;
+    
+    if (debug) {
+      console.log('[carbon] Fetched carbon intensity:', {
+        actual,
+        forecast,
+        index,
+        timestamp,
+        percentOfAverage: percentOfAverage.toFixed(1) + '%',
+        forecastPoints: forecastData.length
+      });
+    }
+    
+    return {
+      actual,
+      forecast,
+      index,
+      timestamp,
+      percentOfAverage,
+      forecastData: forecastData.slice(0, 24) // Next 24 half-hourly periods
+    };
+  } catch (error) {
+    if (debug) console.log('[carbon] Error fetching carbon intensity:', (error as Error).message);
+    return null;
+  }
 }
 
 // Enhanced EU Generation Mix from ENTSO-E A74 (Actual Generation Per Type)
@@ -1299,6 +1458,11 @@ Deno.serve(async (req) => {
   }
 
   try {
+    // Fetch carbon intensity (for full/mid updates)
+    const carbonIntensity = (updateType === 'full' || updateType === 'mid') 
+      ? await fetchCarbonIntensity(DEBUG) 
+      : null;
+
     // Fetch data sources in parallel (BMRS + Demand + EU Generation; IC handled separately)
     const [bmrsR, demandR, euGenerationMix] = await Promise.all([
       fetchBMRSGeneration(),

@@ -50,6 +50,13 @@ All colors MUST be HSL.
     --energy-imports: 271 76% 53%;
     --energy-exports: 14 100% 62%;
 
+    /* Carbon Intensity Colors */
+    --carbon-very-low: 162 85% 35%;
+    --carbon-low: 162 73% 46%;
+    --carbon-moderate: 39 85% 65%;
+    --carbon-high: 24 100% 50%;
+    --carbon-very-high: 0 84% 60%;
+
     /* Gradients */
     --gradient-energy: linear-gradient(135deg, hsl(var(--energy-gas)), hsl(var(--energy-wind)));
     --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(220 30% 10%) 100%);

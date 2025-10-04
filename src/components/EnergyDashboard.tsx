@@ -1,9 +1,13 @@
 import { RefreshCw, Zap, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { HistoricalGenerationChart } from '@/components/HistoricalGenerationChart';
 import { EUDebugPanel } from '@/components/EUDebugPanel';
+import { CarbonIntensityCard } from '@/components/CarbonIntensityCard';
+import { CarbonIntensityChart } from '@/components/CarbonIntensityChart';
+import { CarbonGenerationCorrelation } from '@/components/CarbonGenerationCorrelation';
 import { useEnergyData } from '@/hooks/useEnergyData';
 import { useHistoricalGeneration } from '@/hooks/useHistoricalGeneration';
 import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/components/LoadingSkeleton';
@@ -101,6 +105,14 @@ export const EnergyDashboard = () => {
                         <div className="text-xs text-muted-foreground">Demand</div>
                         <div className="font-bold text-foreground">{formatGWfromMW(data.totalDemandMW || 0)} GW</div>
                       </div>
+                      {data.carbonIntensity && (
+                        <div className="text-center">
+                          <div className="text-xs text-muted-foreground">Carbon</div>
+                          <Badge variant="outline" className="font-mono">
+                            {data.carbonIntensity.actual} gCO₂/kWh
+                          </Badge>
+                        </div>
+                      )}
                     </div>
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -172,6 +184,31 @@ export const EnergyDashboard = () => {
               dataFreshness={data.dataFreshness}
               asOf={data.asOf}
             />
+
+            {/* Carbon Intensity Section */}
+            {data.carbonIntensity && (
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <CarbonIntensityCard
+                  actual={data.carbonIntensity.actual}
+                  forecast={data.carbonIntensity.forecast}
+                  index={data.carbonIntensity.index}
+                  timestamp={data.carbonIntensity.timestamp}
+                  percentOfAverage={data.carbonIntensity.percentOfAverage}
+                />
+                <CarbonGenerationCorrelation
+                  generationMix={data.generationMix}
+                  carbonIntensity={data.carbonIntensity.actual}
+                />
+              </div>
+            )}
+
+            {/* Carbon Intensity Forecast Chart */}
+            {data.carbonIntensity?.forecastData && (
+              <CarbonIntensityChart
+                forecastData={data.carbonIntensity.forecastData}
+                currentIntensity={data.carbonIntensity.actual}
+              />
+            )}
 
             {/* Historical Generation Chart */}
             {historicalLoading ? (

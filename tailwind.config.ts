@@ -72,6 +72,13 @@ export default {
 					biomass: 'hsl(var(--energy-biomass))',
 					imports: 'hsl(var(--energy-imports))',
 					exports: 'hsl(var(--energy-exports))'
+				},
+				carbon: {
+					'very-low': 'hsl(var(--carbon-very-low))',
+					'low': 'hsl(var(--carbon-low))',
+					'moderate': 'hsl(var(--carbon-moderate))',
+					'high': 'hsl(var(--carbon-high))',
+					'very-high': 'hsl(var(--carbon-very-high))'
 				}
 			},
 			backgroundImage: {

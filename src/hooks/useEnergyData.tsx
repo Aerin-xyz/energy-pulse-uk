@@ -22,6 +22,22 @@ interface EUCountryGeneration {
   timestamp: string;
 }
 
+interface CarbonIntensityData {
+  actual: number;
+  forecast: number;
+  index: string;
+  timestamp: string;
+  percentOfAverage: number;
+  forecastData?: Array<{
+    from: string;
+    to: string;
+    intensity: {
+      forecast: number;
+      index: string;
+    };
+  }>;
+}
+
 interface EnergyData {
   generationMix: GenerationData[];
   interconnectors: InterconnectorData[];
@@ -31,6 +47,7 @@ interface EnergyData {
   totalGenerationMW: number;
   totalDemandMW: number;
   lastUpdated: Date;
+  carbonIntensity?: CarbonIntensityData;
   dataFreshness?: {
     source?: string;
     isRealtime?: boolean;
@@ -167,6 +184,7 @@ export const useEnergyData = () => {
         totalGenerationMW: energyData.totalGenerationMW || (energyData.totalGeneration || 0) * 1000,
         totalDemandMW: energyData.totalDemandMW || (energyData.totalDemand || 0) * 1000,
         lastUpdated: new Date(energyData.lastUpdated),
+        carbonIntensity: energyData.carbonIntensity,
         dataFreshness: energyData.dataFreshness,
         asOf: energyData.asOf,
       };
