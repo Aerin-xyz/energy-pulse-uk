@@ -177,6 +177,33 @@ export const EnergyDashboard = () => {
               </div>
             )}
             
+            {/* Carbon Intensity Section */}
+            {data.carbonIntensity && (
+              <>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <CarbonIntensityCard
+                    actual={data.carbonIntensity.actual}
+                    forecast={data.carbonIntensity.forecast}
+                    index={data.carbonIntensity.index}
+                    timestamp={data.carbonIntensity.timestamp}
+                    percentOfAverage={data.carbonIntensity.percentOfAverage}
+                  />
+                  <CarbonGenerationCorrelation
+                    generationMix={data.generationMix}
+                    carbonIntensity={data.carbonIntensity.actual}
+                  />
+                </div>
+
+                {/* Carbon Intensity Forecast Chart */}
+                {data.carbonIntensity.forecastData && (
+                  <CarbonIntensityChart
+                    forecastData={data.carbonIntensity.forecastData}
+                    currentIntensity={data.carbonIntensity.actual}
+                  />
+                )}
+              </>
+            )}
+
             {/* Generation Mix Chart */}
             <GenerationMixChart 
               data={data.generationMix} 
@@ -184,31 +211,6 @@ export const EnergyDashboard = () => {
               dataFreshness={data.dataFreshness}
               asOf={data.asOf}
             />
-
-            {/* Carbon Intensity Section */}
-            {data.carbonIntensity && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <CarbonIntensityCard
-                  actual={data.carbonIntensity.actual}
-                  forecast={data.carbonIntensity.forecast}
-                  index={data.carbonIntensity.index}
-                  timestamp={data.carbonIntensity.timestamp}
-                  percentOfAverage={data.carbonIntensity.percentOfAverage}
-                />
-                <CarbonGenerationCorrelation
-                  generationMix={data.generationMix}
-                  carbonIntensity={data.carbonIntensity.actual}
-                />
-              </div>
-            )}
-
-            {/* Carbon Intensity Forecast Chart */}
-            {data.carbonIntensity?.forecastData && (
-              <CarbonIntensityChart
-                forecastData={data.carbonIntensity.forecastData}
-                currentIntensity={data.carbonIntensity.actual}
-              />
-            )}
 
             {/* Historical Generation Chart */}
             {historicalLoading ? (
