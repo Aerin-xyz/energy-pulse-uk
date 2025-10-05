@@ -101,7 +101,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>UK Generation Mix</CardTitle>
+          <CardTitle>UK Energy Mix</CardTitle>
           <Badge variant={dataFreshness?.isRealtime ? "default" : "secondary"}>
             {dataFreshness?.status === "live" ? "Live" : 
              dataFreshness?.status === "live-partial" ? "Live (partial)" :
@@ -147,12 +147,18 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
             
             {/* Center text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-              <div className="text-center">
-                <div className="text-lg font-bold text-foreground">
-                  {formatGWfromMW(totalGenerationMW)}
+              <div className="text-center space-y-1">
+                <div className="text-3xl font-bold text-foreground">
+                  {formatGWfromMW(totalGenerationMW + (data.find(item => item.name === "Imports")?.value || 0))} GW
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Generation (excl. imports)
+                  Total Supply
+                </div>
+                <div className="text-xl font-semibold text-muted-foreground mt-2">
+                  {formatGWfromMW(totalGenerationMW)} GW
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  UK Generation
                 </div>
               </div>
             </div>
