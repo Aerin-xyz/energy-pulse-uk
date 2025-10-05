@@ -13,7 +13,7 @@ import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
 import { NextUpdateCountdown } from '@/components/NextUpdateCountdown';
 // import { UpdateFrequencyIndicator } from '@/components/UpdateFrequencyIndicator';
-import { DiagnosticsPanel } from '@/components/DiagnosticsPanel';
+
 import { formatGWfromMW } from '@/lib/utils';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
@@ -162,8 +162,6 @@ export const EnergyDashboard = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
-        <DiagnosticsPanel />
-        
         {loading && !data ? (
           <div className="space-y-8">
             <ChartSkeleton />
