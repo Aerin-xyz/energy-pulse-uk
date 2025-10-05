@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, LabelList } from 'recharts';
 import { formatGWfromMW } from '@/lib/utils';
+import { Leaf, Flame, Zap } from 'lucide-react';
 
 interface GenerationData {
   name: string;
@@ -71,6 +72,31 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
     const minutes = startMinutes % 60;
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
   };
+
+  // Categorize and calculate energy mix percentages
+  const calculateMixSummary = () => {
+    const renewables = ['Wind', 'Solar', 'Hydro', 'PSH'];
+    const fossilFuels = ['Gas', 'Coal', 'Oil'];
+    
+    const renewablesMW = data
+      .filter(item => renewables.includes(item.name))
+      .reduce((sum, item) => sum + item.value, 0);
+    
+    const fossilMW = data
+      .filter(item => fossilFuels.includes(item.name))
+      .reduce((sum, item) => sum + item.value, 0);
+    
+    const otherMW = totalGenerationMW - renewablesMW - fossilMW;
+    
+    return {
+      renewables: totalGenerationMW > 0 ? ((renewablesMW / totalGenerationMW) * 100).toFixed(1) : '0.0',
+      fossil: totalGenerationMW > 0 ? ((fossilMW / totalGenerationMW) * 100).toFixed(1) : '0.0',
+      other: totalGenerationMW > 0 ? ((otherMW / totalGenerationMW) * 100).toFixed(1) : '0.0',
+    };
+  };
+
+  const mixSummary = calculateMixSummary();
+
   return (
     <Card>
       <CardHeader>
@@ -132,9 +158,39 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
             </div>
           </div>
           
-          {/* Legend */}
-          <div className="space-y-2 lg:space-y-3">
-            {data.map((item, index) => (
+          {/* Energy Mix Summary and Legend */}
+          <div className="space-y-4 lg:space-y-6">
+            {/* Mix Summary Panel */}
+            <div className="bg-muted/50 rounded-lg p-4 space-y-3">
+              <h3 className="text-sm font-semibold text-muted-foreground">Energy Mix Summary</h3>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Leaf className="w-4 h-4 text-green-600 dark:text-green-400" />
+                    <span className="text-sm">Renewables</span>
+                  </div>
+                  <span className="text-sm font-bold text-green-600 dark:text-green-400">{mixSummary.renewables}%</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Flame className="w-4 h-4 text-orange-600 dark:text-orange-400" />
+                    <span className="text-sm">Fossil Fuels</span>
+                  </div>
+                  <span className="text-sm font-bold text-orange-600 dark:text-orange-400">{mixSummary.fossil}%</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm">Other</span>
+                  </div>
+                  <span className="text-sm font-bold text-muted-foreground">{mixSummary.other}%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Detailed Legend */}
+            <div className="space-y-2 lg:space-y-3">
+              {data.map((item, index) => (
               <div key={index} className="flex items-center gap-3">
                 <div 
                   className="w-4 h-4 rounded-sm"
@@ -151,6 +207,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                 </div>
               </div>
             ))}
+            </div>
           </div>
         </div>
       </CardContent>
