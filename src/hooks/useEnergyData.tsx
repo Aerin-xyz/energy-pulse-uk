@@ -193,7 +193,7 @@ export const useEnergyData = () => {
       if (updateType === 'high' && cachedData) {
         // Only update embedded sources for high frequency
         newData.generationMix = newData.generationMix.map(item => {
-          if (item.name === 'LV Wind' || item.name === 'Solar') {
+          if (item.name === 'Wind' || item.name === 'Solar') {
             return item; // Use new data
           }
           // Find matching item in cached data

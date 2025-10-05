@@ -1489,7 +1489,17 @@ if (ds.ok) {
         generationMix.push({ name: fuel, value: Math.round(mw), percentage: 0, color: COLORS[fuel] || "#6b7280" });
       }
     }
-    if (embeddedWindMW > 0) generationMix.push({ name: "LV Wind", value: Math.round(embeddedWindMW), percentage: 0, color: COLORS["LV Wind"] || "#059669" });
+    
+    // Consolidate all wind (HV + embedded) into single "Wind" category
+    if (embeddedWindMW > 0) {
+      const windEntry = generationMix.find(item => item.name === "Wind");
+      if (windEntry) {
+        windEntry.value += Math.round(embeddedWindMW);
+      } else {
+        generationMix.push({ name: "Wind", value: Math.round(embeddedWindMW), percentage: 0, color: COLORS["Wind"] || "#10b981" });
+      }
+    }
+    
     generationMix.push({ name: "Solar", value: Math.round(embeddedSolarMW), percentage: 0, color: COLORS["Solar"] || "#fbbf24" });
 
     // Compute percentages now that total is final
