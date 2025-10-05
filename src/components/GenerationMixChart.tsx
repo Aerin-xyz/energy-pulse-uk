@@ -152,7 +152,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                   {formatGWfromMW(totalGenerationMW)}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Generation (incl. embedded)
+                  Generation (excl. imports)
                 </div>
               </div>
             </div>

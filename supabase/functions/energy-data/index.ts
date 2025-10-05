@@ -1150,6 +1150,7 @@ const COLORS: Record<string, string> = {
   Solar: "#fbbf24", 
   Biomass: "#16a34a", 
   Oil: "#1f2937", 
+  Imports: "#8b5cf6",
   Other: "#6b7280" 
 };
 
@@ -1502,7 +1503,10 @@ if (ds.ok) {
     
     generationMix.push({ name: "Solar", value: Math.round(embeddedSolarMW), percentage: 0, color: COLORS["Solar"] || "#fbbf24" });
 
-    // Compute percentages now that total is final
+    // Calculate total net imports from interconnectors (will be added later after interconnectors are fetched)
+    // This placeholder will be filled after interconnector data is available
+    
+    // Compute percentages now that total is final (excluding imports for now)
     for (const item of generationMix) {
       item.percentage = totalGenerationMW ? Math.round((item.value / totalGenerationMW) * 100) : 0;
     }
@@ -1550,6 +1554,27 @@ try {
     const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;
 
     const fullLive = variant.startsWith("outturn-") && windEmb.matched && solarEmb.matched;
+
+    // Calculate total net imports from interconnectors and add to generation mix
+    const totalImportsMW = interconnectors.reduce((sum, ic) => {
+      return sum + (ic.flow > 0 ? ic.flow : 0); // Positive flow = import
+    }, 0);
+
+    if (totalImportsMW > 0) {
+      generationMix.push({ 
+        name: "Imports", 
+        value: Math.round(totalImportsMW), 
+        percentage: 0, 
+        color: COLORS["Imports"] || "#8b5cf6"
+      });
+      
+      // Recalculate percentages including imports
+      const totalWithImports = totalGenerationMW + totalImportsMW;
+      for (const item of generationMix) {
+        item.percentage = totalWithImports ? Math.round((item.value / totalWithImports) * 100) : 0;
+      }
+      generationMix.sort((a, b) => b.value - a.value);
+    }
 
     const payload: any = {
       generationMix,
