@@ -1,9 +1,10 @@
-import { RefreshCw, Zap, Clock, Info } from 'lucide-react';
+import { RefreshCw, Zap, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { HistoricalGenerationChart } from '@/components/HistoricalGenerationChart';
 import { EUDebugPanel } from '@/components/EUDebugPanel';
+import { SettlementPeriodCountdown } from '@/components/SettlementPeriodCountdown';
 import { useEnergyData } from '@/hooks/useEnergyData';
 import { useHistoricalGeneration } from '@/hooks/useHistoricalGeneration';
 import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/components/LoadingSkeleton';
@@ -121,34 +122,16 @@ export const EnergyDashboard = () => {
                       )}
                     </div>
                   <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                      <Clock className="w-4 h-4" />
-                      <span className="hidden sm:inline">Last updated: </span>
-                      <span>{data.lastUpdated.toLocaleTimeString()}</span>
-                      <TooltipProvider>
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <Info className="w-3.5 h-3.5 cursor-help" />
-                          </TooltipTrigger>
-                          <TooltipContent className="max-w-xs">
-                            <p>Data shows the last completed 30-minute settlement period. There's typically a 5-10 minute delay for validation.</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      </TooltipProvider>
-                    </div>
-            {/* Temporarily commenting out UpdateFrequencyIndicator to debug
-            {lastUpdateType && (
-              <UpdateFrequencyIndicator 
-                updateType={lastUpdateType}
-                nextHighFreqAt={nextHighFreqAt}
-                nextMidFreqAt={nextMidFreqAt}
-                nextUpdateAt={nextUpdateAt}
-              />
-            )} */}
-            <NextUpdateCountdown 
-              nextUpdateAt={nextUpdateAt} 
-              updateType={lastUpdateType || 'full'}
-            />
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <Info className="w-3.5 h-3.5 cursor-help text-muted-foreground" />
+                        </TooltipTrigger>
+                        <TooltipContent className="max-w-xs">
+                          <p>Data shows the last completed 30-minute settlement period. There's typically a 5-10 minute delay for validation.</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
                   </div>
                 </>
               )}
@@ -190,6 +173,9 @@ export const EnergyDashboard = () => {
                 <p className="text-muted-foreground">Awaiting live data (stub/LKG)</p>
               </div>
             )}
+            
+            {/* Settlement Period Countdown */}
+            {data && <SettlementPeriodCountdown lastUpdated={data.lastUpdated} />}
             
             {/* Generation Mix Chart */}
             <GenerationMixChart 
