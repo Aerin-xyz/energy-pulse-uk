@@ -1,11 +1,9 @@
 import { RefreshCw, Zap, Clock, Info } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { HistoricalGenerationChart } from '@/components/HistoricalGenerationChart';
 import { EUDebugPanel } from '@/components/EUDebugPanel';
-import { CarbonIntensityCard } from '@/components/CarbonIntensityCard';
 import { useEnergyData } from '@/hooks/useEnergyData';
 import { useHistoricalGeneration } from '@/hooks/useHistoricalGeneration';
 import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/components/LoadingSkeleton';
@@ -105,11 +103,20 @@ export const EnergyDashboard = () => {
                         <div className="font-bold text-foreground">{formatGWfromMW(data.totalDemandMW || 0)} GW</div>
                       </div>
                       {data.carbonIntensity && (
-                        <div className="text-center">
-                          <div className="text-xs text-muted-foreground">Carbon</div>
-                          <Badge variant="outline" className="font-mono">
-                            {data.carbonIntensity.actual} gCO₂/kWh
-                          </Badge>
+                        <div className="flex items-center gap-2 px-3 py-2 bg-card/60 backdrop-blur-sm rounded-lg border border-border">
+                          <div className={`w-3 h-3 rounded-full ${
+                            data.carbonIntensity.index.toLowerCase() === 'very low' || data.carbonIntensity.index.toLowerCase() === 'low' 
+                              ? 'bg-carbon-low animate-pulse' 
+                              : data.carbonIntensity.index.toLowerCase() === 'moderate'
+                              ? 'bg-carbon-moderate animate-pulse'
+                              : 'bg-carbon-high animate-pulse'
+                          }`} />
+                          <div className="text-center">
+                            <div className="text-xs text-muted-foreground">Carbon</div>
+                            <div className="font-bold font-mono text-foreground">
+                              {data.carbonIntensity.actual} <span className="text-xs font-normal">gCO₂/kWh</span>
+                            </div>
+                          </div>
                         </div>
                       )}
                     </div>
@@ -184,23 +191,6 @@ export const EnergyDashboard = () => {
               </div>
             )}
             
-            {/* Carbon Intensity Section */}
-            {data.carbonIntensity && (
-              <>
-                <div className="mb-8">
-                  <h2 className="text-2xl font-bold mb-2">Carbon Intensity</h2>
-                  <p className="text-muted-foreground">Real-time grid emissions and forecast</p>
-                </div>
-                <CarbonIntensityCard
-                  actual={data.carbonIntensity.actual}
-                  forecast={data.carbonIntensity.forecast}
-                  index={data.carbonIntensity.index}
-                  timestamp={data.carbonIntensity.timestamp}
-                  percentOfAverage={data.carbonIntensity.percentOfAverage}
-                />
-              </>
-            )}
-
             {/* Generation Mix Chart */}
             <GenerationMixChart 
               data={data.generationMix} 
