@@ -13,18 +13,40 @@ export const SettlementPeriodCountdown = ({ lastUpdated }: SettlementPeriodCount
   useEffect(() => {
     const calculateTimeRemaining = () => {
       const now = new Date();
-      const lastUpdateTime = new Date(lastUpdated);
       
-      // Settlement periods are 30 minutes
+      // Settlement periods are 30 minutes, starting at :00 and :30
       const SETTLEMENT_PERIOD_MS = 30 * 60 * 1000;
       
-      // Calculate the next settlement period
-      const timeSinceLastUpdate = now.getTime() - lastUpdateTime.getTime();
-      const nextUpdate = lastUpdateTime.getTime() + SETTLEMENT_PERIOD_MS;
-      const remaining = nextUpdate - now.getTime();
+      // Get current minutes and seconds
+      const currentMinutes = now.getMinutes();
+      const currentSeconds = now.getSeconds();
+      const currentMs = now.getMilliseconds();
       
-      // Calculate progress (0-100, where 100 is just updated, 0 is about to update)
-      const progressPercent = Math.max(0, Math.min(100, (remaining / SETTLEMENT_PERIOD_MS) * 100));
+      // Calculate next settlement boundary (:00 or :30)
+      let nextBoundaryMinutes;
+      if (currentMinutes < 30) {
+        nextBoundaryMinutes = 30;
+      } else {
+        nextBoundaryMinutes = 60; // Will roll over to next hour at :00
+      }
+      
+      // Calculate time until next boundary
+      const minutesUntilBoundary = nextBoundaryMinutes - currentMinutes;
+      const secondsUntilBoundary = 60 - currentSeconds;
+      const msUntilBoundary = 1000 - currentMs;
+      
+      const remaining = (minutesUntilBoundary - 1) * 60 * 1000 + 
+                        secondsUntilBoundary * 1000 + 
+                        msUntilBoundary;
+      
+      // Calculate how far through current period (for progress bar)
+      const minutesIntoCurrentPeriod = currentMinutes % 30;
+      const msIntoCurrentPeriod = (minutesIntoCurrentPeriod * 60 + currentSeconds) * 1000 + currentMs;
+      
+      // Progress: 100 at start of period, 0 at end
+      const progressPercent = Math.max(0, Math.min(100, 
+        ((SETTLEMENT_PERIOD_MS - msIntoCurrentPeriod) / SETTLEMENT_PERIOD_MS) * 100
+      ));
       
       setTimeRemaining(Math.max(0, remaining));
       setProgress(progressPercent);
