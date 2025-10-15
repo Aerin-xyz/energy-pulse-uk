@@ -20,7 +20,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
   const totalExports = Math.abs(data.filter(item => item.flow < 0).reduce((sum, item) => sum + item.flow, 0));
 
   return (
-    <Card className="p-6 bg-gradient-card border-border">
+    <Card className="p-6 border-border">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold text-card-foreground">Interconnector Flows</h2>

@@ -80,7 +80,7 @@ export const CarbonIntensityCard = ({
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="p-2 bg-gradient-energy rounded-lg">
+            <div className="p-2 bg-gradient-energy rounded-lg shadow-md">
               <Leaf className="w-5 h-5 text-white" />
             </div>
             <div>

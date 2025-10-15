@@ -8,68 +8,68 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Energy Dashboard Theme */
-    --background: 218 30% 8%;
-    --foreground: 210 40% 98%;
+    /* Data Aurora White Theme */
+    --background: 210 17% 98%;
+    --foreground: 222 47% 11%;
 
-    --card: 220 30% 12%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
 
-    --popover: 220 30% 12%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
 
-    --primary: 205 100% 58%;
-    --primary-foreground: 220 30% 8%;
+    --primary: 188 100% 55%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 30% 15%;
-    --secondary-foreground: 210 40% 90%;
+    --secondary: 214 32% 91%;
+    --secondary-foreground: 222 47% 11%;
 
-    --muted: 220 30% 15%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    --accent: 205 100% 58%;
-    --accent-foreground: 220 30% 8%;
+    --accent: 188 100% 55%;
+    --accent-foreground: 222 47% 11%;
 
     --destructive: 0 84% 60%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 220 30% 18%;
-    --input: 220 30% 15%;
-    --ring: 205 100% 58%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 188 100% 55%;
 
     --radius: 0.75rem;
 
-    /* Energy Source Colors */
-    --energy-gas: 205 100% 58%;
-    --energy-solar: 39 85% 65%;
-    --energy-wind: 162 73% 46%;
-    --energy-nuclear: 210 11% 55%;
-    --energy-hydro: 195 100% 58%;
-    --energy-coal: 355 65% 65%;
-    --energy-biomass: 25 31% 53%;
-    --energy-imports: 271 76% 53%;
-    --energy-exports: 14 100% 62%;
+    /* Energy Source Colors - Data Aurora Palette */
+    --energy-gas: 217 91% 60%;
+    --energy-solar: 38 92% 50%;
+    --energy-wind: 158 64% 52%;
+    --energy-nuclear: 250 95% 76%;
+    --energy-hydro: 189 94% 43%;
+    --energy-coal: 215 14% 34%;
+    --energy-biomass: 28 84% 44%;
+    --energy-imports: 174 62% 47%;
+    --energy-exports: 33 100% 50%;
 
     /* Carbon Intensity Colors */
-    --carbon-very-low: 162 85% 35%;
+    --carbon-very-low: 158 64% 52%;
     --carbon-low: 162 73% 46%;
-    --carbon-moderate: 39 85% 65%;
+    --carbon-moderate: 38 92% 50%;
     --carbon-high: 24 100% 50%;
     --carbon-very-high: 0 84% 60%;
 
-    /* Gradients */
-    --gradient-energy: linear-gradient(135deg, hsl(var(--energy-gas)), hsl(var(--energy-wind)));
-    --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(220 30% 10%) 100%);
-    --gradient-glow: radial-gradient(circle at 50% 50%, hsl(var(--primary) / 0.3) 0%, transparent 70%);
+    /* Aurora Gradients */
+    --gradient-energy: linear-gradient(120deg, hsl(158 64% 52%), hsl(189 94% 43%), hsl(250 95% 76%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.7) 0%, hsl(0 0% 100% / 0.5) 100%);
+    --gradient-glow: radial-gradient(circle at 50% 50%, hsl(188 100% 55% / 0.15) 0%, transparent 70%);
 
-    --sidebar-background: 220 30% 8%;
-    --sidebar-foreground: 210 40% 90%;
-    --sidebar-primary: 205 100% 58%;
-    --sidebar-primary-foreground: 220 30% 8%;
-    --sidebar-accent: 220 30% 15%;
-    --sidebar-accent-foreground: 210 40% 90%;
-    --sidebar-border: 220 30% 18%;
-    --sidebar-ring: 205 100% 58%;
+    --sidebar-background: 210 17% 98%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 188 100% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 214 32% 91%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 214 32% 91%;
+    --sidebar-ring: 188 100% 55%;
   }
 
   .dark {

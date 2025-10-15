@@ -71,11 +71,11 @@ export const EnergyDashboard = () => {
     <div className="min-h-screen bg-background">
       <OfflineOverlay />
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm sticky top-0 z-50">
+      <header className="border-b border-border bg-card/60 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-energy rounded-lg">
+              <div className="p-2 bg-gradient-energy rounded-lg shadow-md">
                 <Zap className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -243,7 +243,7 @@ export const EnergyDashboard = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card/30 mt-16">
+      <footer className="border-t border-border bg-card/60 backdrop-blur-md mt-16">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="text-sm text-muted-foreground">
