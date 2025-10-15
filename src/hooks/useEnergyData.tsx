@@ -177,7 +177,9 @@ export const useEnergyData = () => {
 
       const newData = {
         generationMix: energyData.generationMix,
-        interconnectors: energyData.interconnectors,
+        interconnectors: (energyData.interconnectors || []).filter((ic: InterconnectorData) => 
+          ic.name !== 'Denmark West'
+        ),
         euGenerationMix: energyData.euGenerationMix || [],
         totalGeneration: energyData.totalGeneration || (energyData.totalGenerationMW || 0) / 1000,
         totalDemand: energyData.totalDemand || (energyData.totalDemandMW || 0) / 1000,
