@@ -72,24 +72,22 @@ export const EnergyDashboard = () => {
       <OfflineOverlay />
       {/* Header */}
       <header className="border-b border-border bg-card/60 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
+        <div className="container mx-auto px-4 py-3">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col gap-1">
               <img 
                 src={energyMixLogo} 
                 alt="Energy Mix" 
-                className="h-64 w-auto"
+                className="h-12 w-auto"
               />
-              <div>
-                <div className="flex items-center gap-3">
-                  <p className="text-sm text-muted-foreground">Real-time UK electricity generation and flows</p>
-                  {data && (
-                    <StatusIndicator 
-                      isRealtime={data.dataFreshness?.isRealtime}
-                      variant={data.dataFreshness?.variant}
-                    />
-                  )}
-                </div>
+              <div className="flex items-center gap-3">
+                <p className="text-xs text-muted-foreground">Real-time UK electricity generation and flows</p>
+                {data && (
+                  <StatusIndicator 
+                    isRealtime={data.dataFreshness?.isRealtime}
+                    variant={data.dataFreshness?.variant}
+                  />
+                )}
               </div>
             </div>
 
