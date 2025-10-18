@@ -78,7 +78,7 @@ export const EnergyDashboard = () => {
               <img 
                 src={energyMixLogo} 
                 alt="Energy Mix" 
-                className="h-14 w-auto object-contain"
+                className="h-10 w-auto object-contain"
               />
               <div className="flex items-center gap-3">
                 <p className="text-xs text-muted-foreground">Real-time UK electricity generation and flows</p>
