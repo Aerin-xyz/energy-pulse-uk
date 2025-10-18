@@ -94,7 +94,29 @@ export const EnergyDashboard = () => {
             <div className="flex items-center gap-6">
               {data && (
                   <>
-                    <div className="hidden md:flex items-center gap-4 text-sm">
+                    {/* Energy Balance Equation */}
+                    <div className="hidden lg:flex items-center gap-3 px-4 py-2 bg-card/60 backdrop-blur-sm rounded-lg border border-border">
+                      <div className="text-center">
+                        <div className="text-xs text-muted-foreground mb-1">Demand</div>
+                        <div className="font-bold text-lg">{formatGWfromMW(data.totalDemandMW || 0)} GW</div>
+                      </div>
+                      <div className="text-2xl text-muted-foreground">=</div>
+                      <div className="text-center">
+                        <div className="text-xs text-muted-foreground mb-1">Generation</div>
+                        <div className="font-bold text-lg text-primary">{formatGWfromMW(data.totalGenerationMW || 0)} GW</div>
+                      </div>
+                      <div className="text-2xl text-muted-foreground">+</div>
+                      <div className="text-center">
+                        <div className="text-xs text-muted-foreground mb-1">Transfers</div>
+                        <div className="font-bold text-lg">
+                          {formatGWfromMW(
+                            data.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0
+                          )} GW
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="hidden md:flex lg:hidden items-center gap-4 text-sm">
                       <div className="text-center">
                         <div className="text-xs text-muted-foreground">Generation</div>
                         <div className="font-bold text-primary">{formatGWfromMW(data.totalGenerationMW || 0)} GW</div>
