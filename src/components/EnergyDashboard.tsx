@@ -135,16 +135,6 @@ export const EnergyDashboard = () => {
                   </div>
                 </>
               )}
-              
-              <Button 
-                onClick={refetch} 
-                disabled={loading}
-                variant="outline"
-                size="sm"
-              >
-                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
-                Refresh
-              </Button>
             </div>
           </div>
         </div>
