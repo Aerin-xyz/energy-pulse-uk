@@ -92,7 +92,6 @@ export const EnergyDashboard = () => {
             </div>
 
             <div className="flex items-center gap-6">
-              <h2 className="text-lg font-semibold text-foreground hidden lg:block">Energy Mix Summary</h2>
               {data && (
                   <>
                     <div className="hidden md:flex items-center gap-4 text-sm">
