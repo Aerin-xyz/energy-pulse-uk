@@ -74,11 +74,11 @@ export const EnergyDashboard = () => {
       <header className="border-b border-border bg-card/60 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-3">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col gap-2">
               <img 
                 src={energyMixLogo} 
                 alt="Energy Mix" 
-                className="h-48 w-auto object-contain"
+                className="h-24 w-auto object-contain"
               />
               <div className="flex items-center gap-3">
                 <p className="text-xs text-muted-foreground">Real-time UK electricity generation and flows</p>
