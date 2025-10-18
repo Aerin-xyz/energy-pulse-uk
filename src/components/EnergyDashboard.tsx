@@ -1,4 +1,5 @@
-import { RefreshCw, Zap, Info } from 'lucide-react';
+import { RefreshCw, Info } from 'lucide-react';
+import energyMixLogo from '@/assets/energy-mix-logo.png';
 import { Button } from '@/components/ui/button';
 import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
@@ -73,14 +74,15 @@ export const EnergyDashboard = () => {
       <header className="border-b border-border bg-card/60 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex justify-between items-center">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-gradient-energy rounded-lg shadow-md">
-                <Zap className="w-6 h-6 text-white" />
-              </div>
+            <div className="flex items-center gap-4">
+              <img 
+                src={energyMixLogo} 
+                alt="Energy Mix" 
+                className="h-12 w-auto"
+              />
               <div>
-                <h1 className="text-2xl font-bold text-foreground">UK Energy Mix Dashboard</h1>
                 <div className="flex items-center gap-3">
-                  <p className="text-sm text-muted-foreground">Real-time electricity generation and flows</p>
+                  <p className="text-sm text-muted-foreground">Real-time UK electricity generation and flows</p>
                   {data && (
                     <StatusIndicator 
                       isRealtime={data.dataFreshness?.isRealtime}
