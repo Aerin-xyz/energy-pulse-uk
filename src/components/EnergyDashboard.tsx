@@ -78,7 +78,7 @@ export const EnergyDashboard = () => {
               <img 
                 src={energyMixLogo} 
                 alt="Energy Mix" 
-                className="h-32 w-auto"
+                className="h-64 w-auto"
               />
               <div>
                 <div className="flex items-center gap-3">
