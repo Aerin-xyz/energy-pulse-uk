@@ -39,16 +39,16 @@ All colors MUST be HSL.
 
     --radius: 0.75rem;
 
-    /* Energy Source Colors - Data Aurora Palette */
-    --energy-gas: 217 91% 60%;
-    --energy-solar: 38 92% 50%;
-    --energy-wind: 158 64% 52%;
-    --energy-nuclear: 250 95% 76%;
-    --energy-hydro: 189 94% 43%;
-    --energy-coal: 215 14% 34%;
-    --energy-biomass: 28 84% 44%;
-    --energy-imports: 174 62% 47%;
-    --energy-exports: 33 100% 50%;
+    /* Energy Source Colors - Refreshed Palette */
+    --energy-gas: 6 87% 59%;        /* Coral Red #F2553C */
+    --energy-solar: 40 92% 58%;     /* Soft Mustard #F7B633 */
+    --energy-wind: 168 42% 59%;     /* Teal Blue #6BC1B0 */
+    --energy-nuclear: 350 68% 62%;  /* Warm Rose #E15D72 */
+    --energy-hydro: 212 28% 43%;    /* Slate Indigo #4F6C8D */
+    --energy-coal: 35 22% 72%;      /* Light Mushroom #C9BBA8 */
+    --energy-biomass: 150 40% 70%;  /* Cool Mint #94D1B2 */
+    --energy-imports: 0 0% 84%;     /* Fog Grey #D6D6D6 */
+    --energy-exports: 6 87% 50%;    /* Darker Coral for exports */
 
     /* Carbon Intensity Colors */
     --carbon-very-low: 158 64% 52%;
