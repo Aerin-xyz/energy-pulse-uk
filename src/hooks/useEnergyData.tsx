@@ -80,19 +80,19 @@ interface InterconnectorFlow {
   interconnectorName: string;
 }
 
-// Energy source color mapping based on real dashboard colors
+// Energy source color mapping - Refreshed Palette
 const ENERGY_COLORS = {
-  'Gas': '#3B82F6', // Blue
-  'Wind': '#10B981', // Green  
-  'Nuclear': '#6B7280', // Gray
-  'Solar': '#F59E0B', // Yellow
-  'Hydro': '#06B6D4', // Cyan
-  'Coal': '#EF4444', // Red
-  'Biomass': '#A16207', // Brown
-  'Imports': '#8B5CF6', // Purple
-  'PSH': '#06B6D4', // Cyan (same as hydro)
-  'Other': '#6B7280', // Gray
-  'Misc': '#6B7280' // Gray
+  'Gas': '#F2553C',     // Coral Red
+  'Wind': '#6BC1B0',    // Teal Blue
+  'Nuclear': '#E15D72', // Warm Rose
+  'Solar': '#F7B633',   // Soft Mustard
+  'Hydro': '#4F6C8D',   // Slate Indigo
+  'Coal': '#C9BBA8',    // Light Mushroom
+  'Biomass': '#94D1B2', // Cool Mint
+  'Imports': '#D6D6D6', // Fog Grey
+  'PSH': '#4F6C8D',     // Slate Indigo
+  'Other': '#C9BBA8',   // Light Mushroom
+  'Misc': '#C9BBA8'     // Light Mushroom
 };
 
 // Map BMRS fuel types to our simplified categories

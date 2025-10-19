@@ -15,25 +15,25 @@ interface EUGenerationMixProps {
 }
 
 const fuelTypeColors: Record<string, string> = {
-  'B01': '#10b981', // Biomass - green
-  'B02': '#059669', // Lignite - dark green
-  'B03': '#ef4444', // Natural Gas - red
-  'B04': '#dc2626', // Hard coal - dark red
-  'B05': '#f59e0b', // Nuclear - amber
-  'B06': '#3b82f6', // Hydro - blue
-  'B07': '#06b6d4', // Pumped Storage - cyan
-  'B08': '#8b5cf6', // Geothermal - purple
-  'B09': '#10b981', // Wind Offshore - green
-  'B10': '#059669', // Wind Onshore - dark green
-  'B11': '#fbbf24', // Solar - yellow
-  'B12': '#6366f1', // Waste - indigo
-  'B13': '#ec4899', // Marine - pink
-  'B14': '#10b981', // Bioenergy - green
-  'B15': '#ef4444', // Fossil Oil - red
-  'B16': '#6b7280', // Other - gray
-  'B17': '#f59e0b', // AC Link - amber
-  'B18': '#f59e0b', // DC Link - amber
-  'B19': '#6b7280'  // Substation - gray
+  'B01': '#94D1B2', // Biomass - Cool Mint
+  'B02': '#C9BBA8', // Lignite - Light Mushroom
+  'B03': '#F2553C', // Natural Gas - Coral Red
+  'B04': '#C9BBA8', // Hard Coal - Light Mushroom
+  'B05': '#E15D72', // Nuclear - Warm Rose
+  'B06': '#4F6C8D', // Hydro - Slate Indigo
+  'B07': '#4F6C8D', // Pumped Storage - Slate Indigo
+  'B08': '#E15D72', // Geothermal - Warm Rose
+  'B09': '#6BC1B0', // Wind Offshore - Teal Blue
+  'B10': '#6BC1B0', // Wind Onshore - Teal Blue
+  'B11': '#F7B633', // Solar - Soft Mustard
+  'B12': '#94D1B2', // Waste - Cool Mint
+  'B13': '#6BC1B0', // Marine - Teal Blue
+  'B14': '#94D1B2', // Bioenergy - Cool Mint
+  'B15': '#C9BBA8', // Fossil Oil - Light Mushroom
+  'B16': '#C9BBA8', // Other - Light Mushroom
+  'B17': '#D6D6D6', // AC Link - Fog Grey
+  'B18': '#D6D6D6', // DC Link - Fog Grey
+  'B19': '#C9BBA8'  // Substation - Light Mushroom
 };
 
 const fuelTypeNames: Record<string, string> = {

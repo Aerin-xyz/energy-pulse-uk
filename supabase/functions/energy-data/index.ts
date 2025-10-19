@@ -1141,17 +1141,17 @@ const EXCLUDE = /INTERCONNECT|^INT|PUMP|^PS$/i;
 
 // Color mapping for generation types
 const COLORS: Record<string, string> = { 
-  Wind: "#10b981", 
-  "LV Wind": "#059669", 
-  Nuclear: "#f59e0b", 
-  Gas: "#ef4444", 
-  Coal: "#374151", 
-  Hydro: "#3b82f6", 
-  Solar: "#fbbf24", 
-  Biomass: "#16a34a", 
-  Oil: "#1f2937", 
-  Imports: "#8b5cf6",
-  Other: "#6b7280" 
+  Wind: "#6BC1B0",      // Teal Blue
+  "LV Wind": "#6BC1B0", // Teal Blue
+  Nuclear: "#E15D72",   // Warm Rose
+  Gas: "#F2553C",       // Coral Red
+  Coal: "#C9BBA8",      // Light Mushroom
+  Hydro: "#4F6C8D",     // Slate Indigo
+  Solar: "#F7B633",     // Soft Mustard
+  Biomass: "#94D1B2",   // Cool Mint
+  Oil: "#C9BBA8",       // Light Mushroom
+  Imports: "#D6D6D6",   // Fog Grey
+  Other: "#C9BBA8"      // Light Mushroom
 };
 
 function labelFuel(raw: string): string {
