@@ -261,17 +261,17 @@ async function buildPastWeekGeneration(DEBUG=false){
 }
 
 const ENERGY_COLORS = {
-  'Gas': '#3B82F6',
-  'Wind': '#10B981',
-  'Nuclear': '#6B7280',
-  'Solar': '#F59E0B',
-  'Hydro': '#06B6D4',
-  'Coal': '#EF4444',
-  'Biomass': '#A16207',
-  'Imports': '#8B5CF6',
-  'PSH': '#06B6D4',
-  'Other': '#6B7280',
-  'Misc': '#6B7280'
+  'Gas': '#F2553C',     // Coral Red
+  'Wind': '#6BC1B0',    // Teal Blue
+  'Nuclear': '#E15D72', // Warm Rose
+  'Solar': '#F7B633',   // Soft Mustard
+  'Hydro': '#4F6C8D',   // Slate Indigo
+  'Coal': '#C9BBA8',    // Light Mushroom
+  'Biomass': '#94D1B2', // Cool Mint
+  'Imports': '#D6D6D6', // Fog Grey
+  'PSH': '#4F6C8D',     // Slate Indigo
+  'Other': '#C9BBA8',   // Light Mushroom
+  'Misc': '#C9BBA8'     // Light Mushroom
 };
 
 function withFormat(u: string): string {
