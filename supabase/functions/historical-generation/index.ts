@@ -263,7 +263,7 @@ async function buildPastWeekGeneration(DEBUG=false){
 const ENERGY_COLORS = {
   'Gas': '#F2553C',     // Coral Red
   'Wind': '#6BC1B0',    // Teal Blue
-  'Nuclear': '#E15D72', // Warm Rose
+  'Nuclear': '#B8A4E8', // Pastel Purple
   'Solar': '#F7B633',   // Soft Mustard
   'Hydro': '#4F6C8D',   // Slate Indigo
   'Coal': '#C9BBA8',    // Light Mushroom

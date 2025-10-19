@@ -19,10 +19,10 @@ const fuelTypeColors: Record<string, string> = {
   'B02': '#C9BBA8', // Lignite - Light Mushroom
   'B03': '#F2553C', // Natural Gas - Coral Red
   'B04': '#C9BBA8', // Hard Coal - Light Mushroom
-  'B05': '#E15D72', // Nuclear - Warm Rose
+  'B05': '#B8A4E8', // Nuclear - Pastel Purple
   'B06': '#4F6C8D', // Hydro - Slate Indigo
   'B07': '#4F6C8D', // Pumped Storage - Slate Indigo
-  'B08': '#E15D72', // Geothermal - Warm Rose
+  'B08': '#B8A4E8', // Geothermal - Pastel Purple
   'B09': '#6BC1B0', // Wind Offshore - Teal Blue
   'B10': '#6BC1B0', // Wind Onshore - Teal Blue
   'B11': '#F7B633', // Solar - Soft Mustard

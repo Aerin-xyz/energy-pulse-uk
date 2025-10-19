@@ -1143,7 +1143,7 @@ const EXCLUDE = /INTERCONNECT|^INT|PUMP|^PS$/i;
 const COLORS: Record<string, string> = { 
   Wind: "#6BC1B0",      // Teal Blue
   "LV Wind": "#6BC1B0", // Teal Blue
-  Nuclear: "#E15D72",   // Warm Rose
+  Nuclear: "#B8A4E8",   // Pastel Purple
   Gas: "#F2553C",       // Coral Red
   Coal: "#C9BBA8",      // Light Mushroom
   Hydro: "#4F6C8D",     // Slate Indigo
