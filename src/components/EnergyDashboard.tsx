@@ -1,4 +1,4 @@
-import { RefreshCw, Info } from 'lucide-react';
+import { RefreshCw, Info, Leaf, Flame, Zap } from 'lucide-react';
 import energyMixLogo from '@/assets/energy-mix-logo.png';
 import { Button } from '@/components/ui/button';
 import { GenerationMixChart } from '@/components/GenerationMixChart';
@@ -51,6 +51,34 @@ export const EnergyDashboard = () => {
     nextHighFreqAt,
     nextMidFreqAt
   });
+
+  // Calculate energy mix categories
+  const calculateEnergyCategories = () => {
+    if (!data?.generationMix || !data.totalGenerationMW || data.totalGenerationMW === 0) {
+      return { renewables: '0.0', fossilFuels: '0.0', other: '0.0' };
+    }
+
+    const renewables = ['Wind', 'Solar', 'Hydro', 'PSH'];
+    const fossilFuels = ['Gas', 'Coal', 'Oil'];
+    
+    const renewablesMW = data.generationMix
+      .filter(item => renewables.includes(item.name))
+      .reduce((sum, item) => sum + item.value, 0);
+      
+    const fossilMW = data.generationMix
+      .filter(item => fossilFuels.includes(item.name))
+      .reduce((sum, item) => sum + item.value, 0);
+      
+    const otherMW = data.totalGenerationMW - renewablesMW - fossilMW;
+    
+    return {
+      renewables: (renewablesMW / data.totalGenerationMW * 100).toFixed(1),
+      fossilFuels: (fossilMW / data.totalGenerationMW * 100).toFixed(1),
+      other: (otherMW / data.totalGenerationMW * 100).toFixed(1),
+    };
+  };
+
+  const energyCategories = calculateEnergyCategories();
 
   if (error) {
     return (
@@ -235,6 +263,42 @@ export const EnergyDashboard = () => {
           </div>
         </div>
       </header>
+
+      {/* Energy Mix Summary Section */}
+      {data && (
+        <div className="border-t border-border bg-card/60 backdrop-blur-sm shadow-sm">
+          <div className="container mx-auto px-3 py-2.5 md:px-4 md:py-3 lg:px-6 lg:py-4">
+            <div className="flex items-center justify-center gap-3 md:gap-6 lg:gap-8">
+              {/* Renewables */}
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <Leaf className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-green-500" />
+                <div>
+                  <div className="text-xs md:text-sm text-muted-foreground">Renewables</div>
+                  <div className="font-bold text-lg md:text-xl lg:text-2xl text-green-600">{energyCategories.renewables}%</div>
+                </div>
+              </div>
+              
+              {/* Fossil Fuels */}
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <Flame className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-orange-500" />
+                <div>
+                  <div className="text-xs md:text-sm text-muted-foreground">Fossil Fuels</div>
+                  <div className="font-bold text-lg md:text-xl lg:text-2xl text-orange-600">{energyCategories.fossilFuels}%</div>
+                </div>
+              </div>
+              
+              {/* Other */}
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <Zap className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-purple-500" />
+                <div>
+                  <div className="text-xs md:text-sm text-muted-foreground">Other</div>
+                  <div className="font-bold text-lg md:text-xl lg:text-2xl text-purple-600">{energyCategories.other}%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <main className="container mx-auto px-4 py-8">
