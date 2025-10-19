@@ -99,7 +99,7 @@ export const EnergyDashboard = () => {
     <div className="min-h-screen bg-background">
       <OfflineOverlay />
       {/* Header */}
-      <header className="border-b border-border/20 bg-[#004683]/95 backdrop-blur-lg sticky top-0 z-50 shadow-lg">
+      <header className="border-b border-border bg-card backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-3">
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-2 -ml-2">
@@ -109,7 +109,7 @@ export const EnergyDashboard = () => {
                 className="h-24 w-auto object-contain"
               />
               <div className="flex items-center gap-3">
-                <p className="text-xs text-white/80">Real-time UK electricity generation and flows</p>
+                <p className="text-xs text-muted-foreground">Real-time UK electricity generation and flows</p>
                 {data && (
                   <StatusIndicator 
                     isRealtime={data.dataFreshness?.isRealtime}
