@@ -10,7 +10,7 @@ interface StatusIndicatorProps {
 export const StatusIndicator = ({ isRealtime = true, variant, isOnline = true }: StatusIndicatorProps) => {
   if (!isOnline) {
     return (
-      <div className="flex items-center gap-2 px-2 py-1 rounded-md bg-destructive/20 text-destructive">
+      <div className="flex items-center gap-2 px-2 py-1 rounded-md bg-[#E5756A]/20 text-[#E5756A]">
         <WifiOff className="w-3 h-3" />
         <span className="text-xs font-medium">Offline</span>
       </div>
@@ -20,7 +20,7 @@ export const StatusIndicator = ({ isRealtime = true, variant, isOnline = true }:
   // Show offline indicator for stub data
   if (variant?.includes("stub")) {
     return (
-      <div className="flex items-center gap-2 px-2 py-1 rounded-md bg-destructive/20 text-destructive">
+      <div className="flex items-center gap-2 px-2 py-1 rounded-md bg-[#E5756A]/20 text-[#E5756A]">
         <WifiOff className="w-3 h-3" />
         <span className="text-xs font-medium">Service unavailable</span>
       </div>
@@ -42,7 +42,7 @@ export const StatusIndicator = ({ isRealtime = true, variant, isOnline = true }:
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
-            <div className="flex items-center gap-2 px-2 py-1 rounded-md bg-blue-500/20 text-blue-600">
+            <div className="flex items-center gap-2 px-2 py-1 rounded-md bg-[#1C70AD]/20 text-[#1C70AD]">
               <Database className="w-3 h-3" />
               <span className="text-xs font-medium">Live</span>
             </div>
@@ -60,7 +60,7 @@ export const StatusIndicator = ({ isRealtime = true, variant, isOnline = true }:
   const isInsights = variant?.includes('insights-');
   
   return (
-    <div className="flex items-center gap-2 px-2 py-1 rounded-md bg-primary/20 text-primary">
+    <div className="flex items-center gap-2 px-2 py-1 rounded-md bg-[#1C70AD]/20 text-[#1C70AD]">
       <Wifi className="w-3 h-3" />
       <span className="text-xs font-medium">
         {isInsights ? 'Live' : variantLabel}

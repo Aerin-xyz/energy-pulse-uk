@@ -8,34 +8,34 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Data Aurora White Theme */
-    --background: 210 17% 98%;
-    --foreground: 222 47% 11%;
+    /* Data Aurora White Theme - Refined Palette */
+    --background: 210 17% 97%;  /* Anti-Flash White #F2F3F4 */
+    --foreground: 210 50% 8%;   /* Midnight Edition #0C121B */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card: 0 0% 100%;          /* Pure white for cards */
+    --card-foreground: 210 50% 8%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 210 50% 8%;
 
-    --primary: 188 100% 55%;
+    --primary: 205 72% 40%;     /* Planetarium #1C70AD */
     --primary-foreground: 0 0% 100%;
 
     --secondary: 214 32% 91%;
-    --secondary-foreground: 222 47% 11%;
+    --secondary-foreground: 210 50% 8%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 200 10% 80%;       /* Porpoise Fin #C8CBCD */
+    --muted-foreground: 210 30% 35%;
 
-    --accent: 188 100% 55%;
-    --accent-foreground: 222 47% 11%;
+    --accent: 205 72% 40%;      /* Planetarium #1C70AD */
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84% 60%;
+    --destructive: 6 69% 66%;   /* Ardent Coral #E5756A */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
-    --ring: 188 100% 55%;
+    --border: 200 10% 85%;      /* Lighter Porpoise Fin */
+    --input: 200 10% 85%;
+    --ring: 205 72% 40%;        /* Planetarium */
 
     --radius: 0.75rem;
 
@@ -57,19 +57,19 @@ All colors MUST be HSL.
     --carbon-high: 24 100% 50%;
     --carbon-very-high: 0 84% 60%;
 
-    /* Aurora Gradients */
-    --gradient-energy: linear-gradient(120deg, hsl(158 64% 52%), hsl(189 94% 43%), hsl(250 95% 76%));
-    --gradient-card: linear-gradient(145deg, hsl(0 0% 100% / 0.7) 0%, hsl(0 0% 100% / 0.5) 100%);
-    --gradient-glow: radial-gradient(circle at 50% 50%, hsl(188 100% 55% / 0.15) 0%, transparent 70%);
+    /* Aurora Gradients - Updated */
+    --gradient-energy: linear-gradient(120deg, hsl(205 72% 40%), hsl(207 100% 26%), hsl(205 72% 50%));
+    --gradient-card: linear-gradient(145deg, hsl(210 17% 99% / 0.9) 0%, hsl(210 17% 97% / 0.7) 100%);
+    --gradient-glow: radial-gradient(circle at 50% 50%, hsl(205 72% 40% / 0.15) 0%, transparent 70%);
 
-    --sidebar-background: 210 17% 98%;
-    --sidebar-foreground: 222 47% 11%;
-    --sidebar-primary: 188 100% 55%;
+    --sidebar-background: 210 17% 97%;
+    --sidebar-foreground: 210 50% 8%;
+    --sidebar-primary: 205 72% 40%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 214 32% 91%;
-    --sidebar-accent-foreground: 222 47% 11%;
-    --sidebar-border: 214 32% 91%;
-    --sidebar-ring: 188 100% 55%;
+    --sidebar-accent-foreground: 210 50% 8%;
+    --sidebar-border: 200 10% 85%;
+    --sidebar-ring: 205 72% 40%;
   }
 
   .dark {

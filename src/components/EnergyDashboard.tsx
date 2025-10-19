@@ -99,7 +99,7 @@ export const EnergyDashboard = () => {
     <div className="min-h-screen bg-background">
       <OfflineOverlay />
       {/* Header */}
-      <header className="border-b border-border bg-card/60 backdrop-blur-lg sticky top-0 z-50 shadow-sm">
+      <header className="border-b border-border/20 bg-[#004683]/95 backdrop-blur-lg sticky top-0 z-50 shadow-lg">
         <div className="container mx-auto px-4 py-3">
           <div className="flex justify-between items-center">
             <div className="flex flex-col gap-2 -ml-2">
@@ -109,7 +109,7 @@ export const EnergyDashboard = () => {
                 className="h-24 w-auto object-contain"
               />
               <div className="flex items-center gap-3">
-                <p className="text-xs text-muted-foreground">Real-time UK electricity generation and flows</p>
+                <p className="text-xs text-white/80">Real-time UK electricity generation and flows</p>
                 {data && (
                   <StatusIndicator 
                     isRealtime={data.dataFreshness?.isRealtime}
@@ -266,7 +266,7 @@ export const EnergyDashboard = () => {
 
       {/* Energy Mix Summary Section */}
       {data && (
-        <div className="border-t border-border bg-card/60 backdrop-blur-sm shadow-sm">
+        <div className="border-t border-border bg-[#F2F3F4]/90 backdrop-blur-sm shadow-sm">
           <div className="container mx-auto px-3 py-2.5 md:px-4 md:py-3 lg:px-6 lg:py-4">
             <div className="flex items-center justify-center gap-3 md:gap-6 lg:gap-8">
               {/* Renewables */}
@@ -280,19 +280,19 @@ export const EnergyDashboard = () => {
               
               {/* Fossil Fuels */}
               <div className="flex items-center gap-1.5 md:gap-2">
-                <Flame className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-orange-500" />
+                <Flame className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-[#E5756A]" />
                 <div>
                   <div className="text-xs md:text-sm text-muted-foreground">Fossil Fuels</div>
-                  <div className="font-bold text-lg md:text-xl lg:text-2xl text-orange-600">{energyCategories.fossilFuels}%</div>
+                  <div className="font-bold text-lg md:text-xl lg:text-2xl text-[#E5756A]">{energyCategories.fossilFuels}%</div>
                 </div>
               </div>
               
               {/* Other */}
               <div className="flex items-center gap-1.5 md:gap-2">
-                <Zap className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-purple-500" />
+                <Zap className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-[#1C70AD]" />
                 <div>
                   <div className="text-xs md:text-sm text-muted-foreground">Other</div>
-                  <div className="font-bold text-lg md:text-xl lg:text-2xl text-purple-600">{energyCategories.other}%</div>
+                  <div className="font-bold text-lg md:text-xl lg:text-2xl text-[#1C70AD]">{energyCategories.other}%</div>
                 </div>
               </div>
             </div>
@@ -369,15 +369,15 @@ export const EnergyDashboard = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-border bg-card/60 backdrop-blur-md mt-16">
+      <footer className="border-t border-border/20 bg-[#004683]/95 backdrop-blur-md mt-16">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-sm text-muted-foreground">
+            <div className="text-sm text-white/80">
               Data sources: BMRS HV + ESO embedded wind + PV Live solar + ENTSO-E interconnectors
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-              <span className="text-sm text-muted-foreground">Live data from BMRS every 5 minutes</span>
+              <div className="w-2 h-2 bg-[#1C70AD] rounded-full animate-pulse"></div>
+              <span className="text-sm text-white/80">Live data from BMRS every 5 minutes</span>
             </div>
           </div>
         </div>
