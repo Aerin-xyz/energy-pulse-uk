@@ -72,7 +72,17 @@ interface HistoricalGenerationChartProps {
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
-    const timestamp = new Date(label);
+    // Handle both timestamp (number) and day name (string)
+    let timestamp: Date;
+    if (typeof label === 'number') {
+      timestamp = new Date(label);
+    } else {
+      // For weekly chart, get timestamp from payload
+      timestamp = payload[0]?.payload?.timestamp 
+        ? new Date(payload[0].payload.timestamp)
+        : new Date();
+    }
+    
     const total = payload.reduce((sum: number, item: any) => sum + item.value, 0);
     
     return (
@@ -196,6 +206,7 @@ export const HistoricalGenerationChart = ({
     const chartPoint: any = {
       day: point.dayName || new Date(point.timestamp).toLocaleDateString('en-US', { weekday: 'short' }),
       date: point.settlementDate,
+      timestamp: point.timestamp.getTime(),
       total: point.totalMW
     };
     
