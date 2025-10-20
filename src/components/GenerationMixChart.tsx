@@ -55,7 +55,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
       x={x} 
       y={y} 
       fill="white" 
-      textAnchor={x > cx ? 'start' : 'end'} 
+      textAnchor="middle" 
       dominantBaseline="central"
       className="text-sm font-medium"
     >
