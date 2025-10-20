@@ -244,7 +244,7 @@ export const HistoricalGenerationChart = ({
           )}
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="px-2 md:px-6 pt-0">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList>
             <TabsTrigger value="chart">Chart View</TabsTrigger>
@@ -255,7 +255,7 @@ export const HistoricalGenerationChart = ({
           <TabsContent value="chart" className="mt-4">
             <div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <AreaChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                   <XAxis 
                     dataKey="timestamp"
@@ -402,7 +402,7 @@ export const HistoricalGenerationChart = ({
                 {/* Weekly Bar Chart */}
                 <div className="h-80 w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={weeklyChartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <BarChart data={weeklyChartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                       <XAxis 
                         dataKey="day"
