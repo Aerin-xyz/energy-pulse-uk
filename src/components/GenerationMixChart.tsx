@@ -94,14 +94,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>UK Energy Mix</CardTitle>
-          <Badge variant={dataFreshness?.isRealtime ? "default" : "secondary"}>
-            {dataFreshness?.status === "live" ? "Live" : 
-             dataFreshness?.status === "live-partial" ? "Live (partial)" :
-             "Delayed (LKG)"}
-          </Badge>
-        </div>
+        <CardTitle>UK Energy Mix</CardTitle>
         {asOf?.settlementPeriod && (
           <div className="space-y-1">
             <p className="text-sm text-muted-foreground">
