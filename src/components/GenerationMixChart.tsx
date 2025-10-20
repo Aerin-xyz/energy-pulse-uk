@@ -1,6 +1,7 @@
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, LabelList } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
 import { formatGWfromMW } from '@/lib/utils';
 
 interface GenerationData {
@@ -64,12 +65,29 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 };
 
 export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asOf }: GenerationMixChartProps) => {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+
   // Format settlement period time
   const formatSPTime = (sp: number) => {
     const startMinutes = (sp - 1) * 30;
     const hours = Math.floor(startMinutes / 60);
     const minutes = startMinutes % 60;
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  };
+
+  const renderActiveShape = (props: any) => {
+    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
+    return (
+      <Sector
+        cx={cx}
+        cy={cy}
+        innerRadius={innerRadius}
+        outerRadius={outerRadius + 20}
+        startAngle={startAngle}
+        endAngle={endAngle}
+        fill={fill}
+      />
+    );
   };
 
 
@@ -100,7 +118,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
         <div className="flex flex-col lg:flex-row items-center gap-8">
           <div className="relative w-[400px] h-[400px]">
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart>
+              <PieChart style={{ outline: 'none' }}>
                 <Pie
                   data={data}
                   cx="50%"
@@ -112,9 +130,14 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                   fill="#8884d8"
                   dataKey="value"
                   stroke="none"
+                  activeIndex={activeIndex !== null ? activeIndex : undefined}
+                  activeShape={renderActiveShape}
+                  onClick={(_, index) => setActiveIndex(activeIndex === index ? null : index)}
+                  onMouseEnter={(_, index) => setActiveIndex(index)}
+                  onMouseLeave={() => setActiveIndex(null)}
                 >
                   {data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                    <Cell key={`cell-${index}`} fill={entry.color} style={{ outline: 'none' }} />
                   ))}
                 </Pie>
                 <Tooltip content={<CustomTooltip />} />
