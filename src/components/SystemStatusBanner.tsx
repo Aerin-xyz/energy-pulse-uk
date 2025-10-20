@@ -23,7 +23,7 @@ export const SystemStatusBanner = ({
     : 'bg-yellow-500';
 
   return (
-    <div className="border-b border-border bg-muted/30 backdrop-blur-sm">
+    <div className="border-b border-border bg-muted/30 backdrop-blur-sm sticky top-[136px] z-40">
       <div className="container mx-auto px-4 py-2">
         <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-xs md:text-sm">
           {/* Settlement Period */}
