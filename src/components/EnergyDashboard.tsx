@@ -214,7 +214,7 @@ export const EnergyDashboard = () => {
       )}
 
       {/* Main Content */}
-      <main className="container mx-auto px-2 md:px-4 pt-0 pb-8">
+      <main className="container mx-auto px-4 pt-0 pb-8">
         {loading && !data ? (
           <div className="space-y-8">
             <ChartSkeleton />
