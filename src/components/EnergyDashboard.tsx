@@ -137,15 +137,7 @@ export const EnergyDashboard = () => {
                 alt="Energy Mix" 
                 className="h-24 w-auto object-contain"
               />
-              <div className="flex items-center gap-3">
-                <p className="text-xs text-muted-foreground">Real-time UK electricity generation and flows</p>
-                {data && (
-                  <StatusIndicator 
-                    isRealtime={data.dataFreshness?.isRealtime}
-                    variant={data.dataFreshness?.variant}
-                  />
-                )}
-              </div>
+              <p className="text-xs text-muted-foreground">Real-time UK electricity generation and flows</p>
             </div>
 
             <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6">

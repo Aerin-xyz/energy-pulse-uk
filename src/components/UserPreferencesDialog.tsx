@@ -20,9 +20,8 @@ export const UserPreferencesDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" size="icon">
           <Settings className="w-4 h-4" />
-          <span className="hidden md:inline">Settings</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-md">
