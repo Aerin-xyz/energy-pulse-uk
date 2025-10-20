@@ -156,13 +156,17 @@ export const useEnergyData = () => {
 
   const fetchAndSetEnergyData = useCallback(async (updateType: 'high' | 'mid' | 'full' = 'full', showToast = true) => {
     try {
-      // If we have cached data, show it immediately while fetching new data
-      if (cachedData && !initialLoad) {
+      // OPTIMIZATION: Always show cached data immediately to improve perceived performance
+      if (cachedData) {
         setData(cachedData);
         setLoading(false);
-      } else {
+      }
+      
+      // Only show loading on initial load if no cached data
+      if (!cachedData) {
         setLoading(true);
       }
+      
       setError(null);
       
       // Fetch data directly from our Edge Function with timeout

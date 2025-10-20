@@ -276,8 +276,8 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
 }
 
 
-// Enhanced EU Generation Mix from ENTSO-E A74 (Actual Generation Per Type)
-async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any[]> {
+// Enhanced EU Generation Mix from ENTSO-E A74 (Actual Generation Per Type) - WITH TIMEOUT
+async function fetchEUGenerationMix(debug = false, euFocus = false, timeoutMs = 3000): Promise<any[]> {
   const dlog = (important: boolean, ...args: any[]) => debug && console.log('[energy-data]', ...args);
   const token = Deno.env.get("ENTSOE_API_TOKEN");
   
@@ -288,15 +288,17 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
     return [];
   }
   
-  // Start with just France to test
-  const countries = [
-    { code: 'FR', eic: '10YFR-RTE------C', name: 'France' }
-  ];
-  
-  // Use a 24-hour window ending 2 hours ago for more reliable data
-  const now = new Date();
-  const endTime = new Date(now.getTime() - 2 * 60 * 60 * 1000);
-  const startTime = new Date(endTime.getTime() - 24 * 60 * 60 * 1000);
+  // Wrap the entire fetch in a timeout promise
+  const fetchPromise = (async () => {
+    // Start with just France to test
+    const countries = [
+      { code: 'FR', eic: '10YFR-RTE------C', name: 'France' }
+    ];
+    
+    // Use a 24-hour window ending 2 hours ago for more reliable data
+    const now = new Date();
+    const endTime = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+    const startTime = new Date(endTime.getTime() - 24 * 60 * 60 * 1000);
   
   // ENTSO-E expects YYYYMMDDHHMM format in UTC
   const formatDateTime = (date: Date) => {
@@ -453,6 +455,17 @@ async function fetchEUGenerationMix(debug = false, euFocus = false): Promise<any
   
   if (debug || euFocus) dlog(true, `EU mix: Complete - ${results.length} countries successful`);
   return results;
+  })();
+
+  // Wrap with timeout
+  const timeoutPromise = new Promise<any[]>((resolve) => {
+    setTimeout(() => {
+      if (debug || euFocus) dlog(true, 'EU mix: Timeout reached, returning empty array');
+      resolve([]);
+    }, timeoutMs);
+  });
+
+  return Promise.race([fetchPromise, timeoutPromise]);
 }
 
 /**
@@ -559,20 +572,18 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
   
   const now = new Date();
   
-  // Process each possible interconnector
-  for (const border of ENTSOE_BORDERS) {
+  // OPTIMIZATION: Process all interconnectors in parallel instead of sequentially
+  const borderPromises = ENTSOE_BORDERS.map(async (border) => {
     const capacity = CAPACITY_HINTS[border.name] || null;
-    
     let flow = 0;
     let interconnectorStatus: "live" | "offline" | "unavailable" | "bmrs-fallback" = "unavailable";
+    const attempt: any = { border: border.name, eic: border.eic };
     
     if (hasEntsoeToken && apiToken) {
       try {
         const result = await entsoeNetForBorderMW(apiToken, border.eic, border.mtuMin, now);
         
-        attempts.push({
-          border: border.name,
-          eic: border.eic,
+        Object.assign(attempt, {
           ok: result.ok,
           netMW: result.netMW,
           reason: result.reason || undefined,
@@ -586,24 +597,37 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
           interconnectorStatus = "offline";
         }
       } catch (e) {
-        attempts.push({
-          border: border.name,
-          eic: border.eic,
+        Object.assign(attempt, {
           ok: false,
           reason: (e as Error)?.message || 'unknown-error'
         });
         interconnectorStatus = "unavailable";
       }
+    } else {
+      attempt.ok = false;
+      attempt.reason = 'no-token';
     }
     
-    allInterconnectors.push({
-      name: border.displayName,
-      country: border.country,
-      flow: flow,
-      capacity: capacity,
-      status: interconnectorStatus,
-      borderName: border.name // For debugging
-    });
+    return {
+      interconnector: {
+        name: border.displayName,
+        country: border.country,
+        flow: flow,
+        capacity: capacity,
+        status: interconnectorStatus,
+        borderName: border.name
+      },
+      attempt
+    };
+  });
+
+  // Wait for all borders to complete in parallel
+  const borderResults = await Promise.all(borderPromises);
+  
+  // Extract interconnectors and attempts from results
+  for (const result of borderResults) {
+    allInterconnectors.push(result.interconnector);
+    attempts.push(result.attempt);
   }
 
   // Strategy 2: BMRS fallback for Irish interconnectors when ENTSO-E fails
@@ -1383,19 +1407,24 @@ Deno.serve(async (req) => {
   let carbonIntensity = null;
 
   try {
-    // Fetch carbon intensity (for full/mid updates)
-    carbonIntensity = (UPDATE_TYPE === 'full' || UPDATE_TYPE === 'mid') 
-      ? await fetchCarbonIntensity(DEBUG) 
-      : null;
-    
-    console.log('[energy-data] Carbon intensity fetched:', carbonIntensity ? 'SUCCESS' : 'NULL');
-
-    // Fetch data sources in parallel (BMRS + Demand + EU Generation; IC handled separately)
-    const [bmrsR, demandR, euGenerationMix] = await Promise.all([
+    // OPTIMIZATION: Parallelize ALL independent data sources with timeout for EU
+    const [bmrsR, demandR, carbonIntensity, euGenerationMix] = await Promise.all([
       fetchBMRSGeneration(),
       fetchDemand(),
-      fetchEUGenerationMix(DEBUG, EU_FOCUS),
+      // Fetch carbon intensity (for full/mid updates)
+      (UPDATE_TYPE === 'full' || UPDATE_TYPE === 'mid') 
+        ? fetchCarbonIntensity(DEBUG) 
+        : Promise.resolve(null),
+      // EU generation with 3s timeout (optional, non-critical)
+      fetchEUGenerationMix(DEBUG, EU_FOCUS, 3000),
     ]);
+    
+    console.log('[energy-data] Parallel fetch complete:', { 
+      bmrs: bmrsR.ok, 
+      demand: demandR.ok,
+      carbon: !!carbonIntensity,
+      eu: euGenerationMix.length 
+    });
 
     if (DEBUG) dlog(true, "Data fetch results:", { 
       bmrs: { ok: bmrsR.ok, variant: bmrsR.variant, status: (bmrsR as any).status }, 

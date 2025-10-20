@@ -215,18 +215,11 @@ export const EnergyDashboard = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-2 md:px-4 pt-0 pb-8">
-        {loading && !data ? (
+        {/* OPTIMIZATION: Progressive loading - show critical UI as soon as data arrives */}
+        {!data && loading ? (
           <div className="space-y-8">
             <ChartSkeleton />
             <InterconnectorSkeleton />
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <div className="border rounded-lg">
-                <EUCardSkeleton />
-              </div>
-              <div className="border rounded-lg">
-                <EUCardSkeleton />
-              </div>
-            </div>
           </div>
         ) : data ? (
           <div className="space-y-8">

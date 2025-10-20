@@ -169,9 +169,13 @@ export const useHistoricalGeneration = () => {
     }
   }, [toast]);
 
-  // Initial fetch
+  // OPTIMIZATION: Lazy load - defer initial fetch by 2 seconds to prioritize critical data
   useEffect(() => {
-    fetchHistoricalData(false);
+    const timer = setTimeout(() => {
+      fetchHistoricalData(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
   }, [fetchHistoricalData]);
 
   // Auto-refresh every 30 minutes
