@@ -13,8 +13,13 @@ import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
 import { EnergyBalanceDisplay } from '@/components/EnergyBalanceDisplay';
 import { HelpTooltip } from '@/components/HelpTooltip';
+import { SystemStatusBanner } from '@/components/SystemStatusBanner';
+import { UserPreferencesDialog } from '@/components/UserPreferencesDialog';
+import { useUserPreferences } from '@/hooks/useUserPreferences';
+import { useState, useEffect } from 'react';
 
 export const EnergyDashboard = () => {
+  const { preferences } = useUserPreferences();
   const { 
     data, 
     loading, 
@@ -38,6 +43,33 @@ export const EnergyDashboard = () => {
     weeklyMeta,
     fetchWeeklyData
   } = useHistoricalGeneration();
+
+  // Calculate time until next settlement period
+  const [timeUntilNextSP, setTimeUntilNextSP] = useState<string>('');
+  const [dataAge, setDataAge] = useState<string>('');
+
+  useEffect(() => {
+    if (!data?.lastUpdated) return;
+
+    const updateTimers = () => {
+      const now = new Date();
+      const lastUpdate = new Date(data.lastUpdated);
+      
+      // Calculate data age
+      const ageMinutes = Math.floor((now.getTime() - lastUpdate.getTime()) / 60000);
+      setDataAge(ageMinutes.toString());
+
+      // Calculate next settlement period
+      const currentMinute = now.getMinutes();
+      const minutesUntilNext = currentMinute < 30 ? 30 - currentMinute : 60 - currentMinute;
+      const secondsUntilNext = 60 - now.getSeconds();
+      setTimeUntilNextSP(`${minutesUntilNext - 1}:${secondsUntilNext.toString().padStart(2, '0')}`);
+    };
+
+    updateTimers();
+    const interval = setInterval(updateTimers, 1000);
+    return () => clearInterval(interval);
+  }, [data?.lastUpdated]);
 
   console.log('EnergyDashboard render:', { 
     hasData: !!data, 
@@ -128,10 +160,22 @@ export const EnergyDashboard = () => {
                     <HelpTooltip content="Data shows the last completed 30-minute settlement period. There's typically a 5-10 minute delay for validation." />
                   </>
                 )}
+              <UserPreferencesDialog />
             </div>
           </div>
         </div>
       </header>
+
+      {/* System Status Banner */}
+      {data && (
+        <SystemStatusBanner
+          settlementPeriod={data.asOf?.settlementPeriod}
+          timeUntilNextSP={timeUntilNextSP}
+          dataAge={dataAge}
+          isRealtime={data.dataFreshness?.isRealtime}
+          nextUpdate={nextUpdateAt ? new Date(nextUpdateAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : undefined}
+        />
+      )}
 
       {/* Energy Mix Summary Section */}
       {data && (
@@ -193,46 +237,49 @@ export const EnergyDashboard = () => {
               </div>
             )}
             
-            {/* Settlement Period Countdown */}
-            {data && <SettlementPeriodCountdown lastUpdated={data.lastUpdated} />}
-            
-            {/* Generation Mix Chart */}
-            <GenerationMixChart 
-              data={data.generationMix} 
-              totalGenerationMW={data.totalGenerationMW || 0}
-              dataFreshness={data.dataFreshness}
-              asOf={data.asOf}
-            />
+            {/* Generation Mix Chart - Hero Element */}
+            <div className="relative">
+              <GenerationMixChart 
+                data={data.generationMix} 
+                totalGenerationMW={data.totalGenerationMW || 0}
+                dataFreshness={data.dataFreshness}
+                asOf={data.asOf}
+              />
+            </div>
 
             {/* Historical Generation Chart */}
-            {historicalLoading ? (
-              <ChartSkeleton />
-            ) : historicalError ? (
-              <div className="text-center text-destructive py-4">
-                Failed to load historical data: {historicalError}
-              </div>
-            ) : (
-              <HistoricalGenerationChart 
-                data={historicalData} 
-                lastUpdated={historicalLastUpdated}
-                meta={historicalMeta}
-                weeklyData={weeklyData}
-                weeklyLoading={weeklyLoading}
-                weeklyError={weeklyError}
-                weeklyLastUpdated={weeklyLastUpdated}
-                weeklyMeta={weeklyMeta}
-                onFetchWeeklyData={fetchWeeklyData}
-              />
+            {preferences.showHistoricalChart && (
+              historicalLoading ? (
+                <ChartSkeleton />
+              ) : historicalError ? (
+                <div className="text-center text-destructive py-4">
+                  Failed to load historical data: {historicalError}
+                </div>
+              ) : (
+                <HistoricalGenerationChart 
+                  data={historicalData} 
+                  lastUpdated={historicalLastUpdated}
+                  meta={historicalMeta}
+                  weeklyData={weeklyData}
+                  weeklyLoading={weeklyLoading}
+                  weeklyError={weeklyError}
+                  weeklyLastUpdated={weeklyLastUpdated}
+                  weeklyMeta={weeklyMeta}
+                  onFetchWeeklyData={fetchWeeklyData}
+                />
+              )
             )}
 
             {/* Interconnector Flows */}
-            <InterconnectorFlows 
-              data={data.interconnectors} 
-              interconnectorStatus={data.dataFreshness?.interconnectorStatus}
-            />
+            {preferences.showInterconnectors && (
+              <InterconnectorFlows 
+                data={data.interconnectors} 
+                interconnectorStatus={data.dataFreshness?.interconnectorStatus}
+              />
+            )}
 
             {/* EU Debug Panel (only shows in debug mode) */}
-            <EUDebugPanel />
+            {preferences.showEUData && <EUDebugPanel />}
           </div>
         ) : null}
       </main>
