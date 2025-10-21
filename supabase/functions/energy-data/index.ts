@@ -572,16 +572,53 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
   
   const now = new Date();
   
-  // OPTIMIZATION: Process all interconnectors in parallel instead of sequentially
+  // CIRCUIT BREAKER: Test first border to fail fast if ENTSO-E is down
+  let skipEntsoe = false;
+  if (hasEntsoeToken && apiToken) {
+    const testBorder = ENTSOE_BORDERS[0]; // Test with France
+    try {
+      const timeoutMs = 2000; // 2 second timeout for circuit breaker test
+      const testPromise = entsoeNetForBorderMW(apiToken, testBorder.eic, testBorder.mtuMin, now);
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('circuit-breaker-timeout')), timeoutMs)
+      );
+      
+      const testResult = await Promise.race([testPromise, timeoutPromise]) as any;
+      
+      // If we get HTTP 400 or parameter errors, ENTSO-E API is misconfigured - skip all borders
+      if (!testResult.ok && testResult.reason && 
+          (testResult.reason.includes('parameter') || testResult.reason.includes('400'))) {
+        skipEntsoe = true;
+        if (debug) dlog(true, `Circuit breaker triggered: ${testResult.reason} - skipping ENTSO-E, using fallback`);
+      }
+    } catch (e) {
+      // Timeout or other error - continue with normal flow
+      if (debug) dlog(true, `Circuit breaker test failed: ${(e as Error).message} - continuing with normal fetch`);
+    }
+  }
+  
+  // OPTIMIZATION: Process all interconnectors in parallel with timeouts
   const borderPromises = ENTSOE_BORDERS.map(async (border) => {
     const capacity = CAPACITY_HINTS[border.name] || null;
     let flow = 0;
     let interconnectorStatus: "live" | "offline" | "unavailable" | "bmrs-fallback" = "unavailable";
     const attempt: any = { border: border.name, eic: border.eic };
     
-    if (hasEntsoeToken && apiToken) {
+    // Skip ENTSO-E if circuit breaker triggered
+    if (skipEntsoe || !hasEntsoeToken || !apiToken) {
+      attempt.ok = false;
+      attempt.reason = skipEntsoe ? 'circuit-breaker-skip' : 'no-token';
+      interconnectorStatus = "unavailable";
+    } else {
       try {
-        const result = await entsoeNetForBorderMW(apiToken, border.eic, border.mtuMin, now);
+        // Add 3-second timeout per border
+        const timeoutMs = 3000;
+        const fetchPromise = entsoeNetForBorderMW(apiToken, border.eic, border.mtuMin, now);
+        const timeoutPromise = new Promise((_, reject) => 
+          setTimeout(() => reject(new Error('border-timeout')), timeoutMs)
+        );
+        
+        const result = await Promise.race([fetchPromise, timeoutPromise]) as any;
         
         Object.assign(attempt, {
           ok: result.ok,
@@ -603,9 +640,6 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
         });
         interconnectorStatus = "unavailable";
       }
-    } else {
-      attempt.ok = false;
-      attempt.reason = 'no-token';
     }
     
     return {
@@ -934,27 +968,36 @@ async function entsoeA11Raw(token: string, inDomain: string, outDomain: string, 
 }
 
 // Try with (mtu, windowMin), and on 400 ack retry with coarser MTU/window
+// OPTIMIZED: Reduced retries - only retry on acknowledgement errors, not HTTP 4xx parameter errors
 async function entsoeA11WithRetry(token: string, inDomain: string, outDomain: string, now: Date, prefMtuMin: number) {
   const plans = [
     { mtu: prefMtuMin, windowMin: Math.max(prefMtuMin * 2, 60) }, // e.g., 30→60, 15→60
     { mtu: 30,         windowMin: 120 },
-    { mtu: 60,         windowMin: 180 },
   ];
   const attempts: any[] = [];
 
-  for (const plan of plans) {
+  for (let i = 0; i < plans.length; i++) {
+    const plan = plans[i];
     const start = alignDown(addMinutes(now, -plan.windowMin), plan.mtu);
     const end   = alignDown(now, plan.mtu);
     const resp  = await entsoeA11Raw(token, inDomain, outDomain, start, end);
     const rec: any = { url: resp.url, status: resp.status, mtu: plan.mtu, windowMin: plan.windowMin };
 
-    if (!resp.isXML) { rec.reason = "non-xml"; attempts.push(rec); continue; }
+    if (!resp.isXML) { 
+      rec.reason = "non-xml"; 
+      attempts.push(rec); 
+      // Don't retry on non-XML responses - likely a permanent error
+      return { ok: false, xml: "", attempts };
+    }
+    
     if (resp.status === 400 && resp.text.includes("Acknowledgement_MarketDocument")) {
       rec.reason = ackReason(resp.text) || "ack";
       attempts.push(rec);
-      // retry with next plan
-      continue;
+      // Only retry if this is the first attempt and it's an acknowledgement error
+      if (i === 0) continue;
+      return { ok: false, xml: "", attempts };
     }
+    
     // success or at least a proper Publication doc; hand to parser
     attempts.push(rec);
     return { ok: true, xml: resp.text, attempts };
