@@ -577,7 +577,7 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
   if (hasEntsoeToken && apiToken) {
     const testBorder = ENTSOE_BORDERS[0]; // Test with France
     try {
-      const timeoutMs = 2000; // 2 second timeout for circuit breaker test
+      const timeoutMs = 8000; // 8 second timeout - enough for 2 API calls per border
       const testPromise = entsoeNetForBorderMW(apiToken, testBorder.eic, testBorder.mtuMin, now);
       const timeoutPromise = new Promise((_, reject) => 
         setTimeout(() => reject(new Error('circuit-breaker-timeout')), timeoutMs)
@@ -585,15 +585,17 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
       
       const testResult = await Promise.race([testPromise, timeoutPromise]) as any;
       
-      // If we get HTTP 400 or parameter errors, ENTSO-E API is misconfigured - skip all borders
+      // Only trigger circuit breaker on HTTP 400/parameter errors or no-xml, NOT on timeouts
       if (!testResult.ok && testResult.reason && 
-          (testResult.reason.includes('parameter') || testResult.reason.includes('400'))) {
+          (testResult.reason.includes('parameter') || testResult.reason.includes('400') || 
+           testResult.reason.includes('no-xml'))) {
         skipEntsoe = true;
         if (debug) dlog(true, `Circuit breaker triggered: ${testResult.reason} - skipping ENTSO-E, using fallback`);
       }
     } catch (e) {
-      // Timeout or other error - continue with normal flow
-      if (debug) dlog(true, `Circuit breaker test failed: ${(e as Error).message} - continuing with normal fetch`);
+      // Timeout means API is slow but might work - DON'T skip, just log
+      const errorMsg = (e as Error).message;
+      if (debug) dlog(true, `Circuit breaker test slow: ${errorMsg} - continuing with normal fetch`);
     }
   }
   
@@ -611,8 +613,8 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
       interconnectorStatus = "unavailable";
     } else {
       try {
-        // Add 3-second timeout per border
-        const timeoutMs = 3000;
+        // Add 9-second timeout per border (allows 2 x 4s API calls + overhead)
+        const timeoutMs = 9000;
         const fetchPromise = entsoeNetForBorderMW(apiToken, border.eic, border.mtuMin, now);
         const timeoutPromise = new Promise((_, reject) => 
           setTimeout(() => reject(new Error('border-timeout')), timeoutMs)
@@ -956,15 +958,31 @@ async function entsoeA11(token: string, inDomain: string, outDomain: string, sta
 }
 
 // Low-level A11 request without caching; used by retry builder
-async function entsoeA11Raw(token: string, inDomain: string, outDomain: string, start: Date, end: Date) {
+async function entsoeA11Raw(token: string, inDomain: string, outDomain: string, start: Date, end: Date, timeoutMs: number = 4000) {
   const periodStart = toPeriod(start);
   const periodEnd   = toPeriod(end);
   const url = `${ENTSOE_BASE}?securityToken=${encodeURIComponent(token)}&documentType=A11&in_Domain=${inDomain}&out_Domain=${outDomain}&periodStart=${periodStart}&periodEnd=${periodEnd}`;
-  const res = await fetch(url, { headers: { "Accept": "application/xml" }, redirect: "manual" as RequestRedirect, cache: "no-store" });
-  const text = await res.text();
-  const ctype = res.headers.get("content-type") || "";
-  const isXML = ctype.includes("xml");
-  return { status: res.status, isXML, text, url };
+  
+  const fetchPromise = fetch(url, { headers: { "Accept": "application/xml" }, redirect: "manual" as RequestRedirect, cache: "no-store" });
+  const timeoutPromise = new Promise<Response>((_, reject) => 
+    setTimeout(() => reject(new Error('fetch-timeout')), timeoutMs)
+  );
+  
+  try {
+    const res = await Promise.race([fetchPromise, timeoutPromise]);
+    const text = await res.text();
+    const ctype = res.headers.get("content-type") || "";
+    const isXML = ctype.includes("xml");
+    return { status: res.status, isXML, text, url };
+  } catch (e) {
+    // Return a timeout error response
+    return { 
+      status: 408, 
+      isXML: false, 
+      text: `Timeout after ${timeoutMs}ms: ${(e as Error).message}`, 
+      url 
+    };
+  }
 }
 
 // Try with (mtu, windowMin), and on 400 ack retry with coarser MTU/window
@@ -980,7 +998,7 @@ async function entsoeA11WithRetry(token: string, inDomain: string, outDomain: st
     const plan = plans[i];
     const start = alignDown(addMinutes(now, -plan.windowMin), plan.mtu);
     const end   = alignDown(now, plan.mtu);
-    const resp  = await entsoeA11Raw(token, inDomain, outDomain, start, end);
+    const resp  = await entsoeA11Raw(token, inDomain, outDomain, start, end, 4000); // 4 second timeout per API call
     const rec: any = { url: resp.url, status: resp.status, mtu: plan.mtu, windowMin: plan.windowMin };
 
     if (!resp.isXML) { 
