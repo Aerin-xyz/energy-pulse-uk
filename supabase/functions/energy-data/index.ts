@@ -1256,6 +1256,7 @@ function labelFuel(raw: string): string {
 function parseBMRSHVGeneration(rows: any[]) {
   const latest = pickLatestSP(rows);
   const hvByFuelMW: Record<string, number> = {};
+  const otherBreakdown: Record<string, number> = {}; // Track raw fuel types categorized as "Other"
   let anchorSP = 0;
   let anchorDate = "";
 
@@ -1269,6 +1270,11 @@ function parseBMRSHVGeneration(rows: any[]) {
     const fuelLabel = labelFuel(fuelRaw);
     hvByFuelMW[fuelLabel] = (hvByFuelMW[fuelLabel] || 0) + mw;
 
+    // Track raw fuel types that get categorized as "Other"
+    if (fuelLabel === "Other" && fuelRaw) {
+      otherBreakdown[fuelRaw] = (otherBreakdown[fuelRaw] || 0) + mw;
+    }
+
     // Capture anchor settlement period from first valid record
     if (!anchorSP) {
       anchorSP = parseSettlementPeriod(r);
@@ -1276,7 +1282,7 @@ function parseBMRSHVGeneration(rows: any[]) {
     }
   }
 
-  return { hvByFuelMW, anchorSP, anchorDate };
+  return { hvByFuelMW, anchorSP, anchorDate, otherBreakdown };
 }
 
 // Convert datetime to settlement period (simplified for PV Live alignment)
@@ -1303,6 +1309,7 @@ async function fetchFUELHHStream(limit = 200): Promise<StrictResult> {
 function parseFUELHHtoMW(rows: any[]) {
   const latest = pickLatestSP(rows);
   const hvByFuelMW: Record<string, number> = {};
+  const otherBreakdown: Record<string, number> = {}; // Track raw fuel types categorized as "Other"
   let anchorSP = 0;
   let anchorDate = "";
   for (const r of latest) {
@@ -1323,12 +1330,17 @@ function parseFUELHHtoMW(rows: any[]) {
     const fuelLabel = labelFuel(fuelRaw);
     hvByFuelMW[fuelLabel] = (hvByFuelMW[fuelLabel] || 0) + mw;
 
+    // Track raw fuel types that get categorized as "Other"
+    if (fuelLabel === "Other" && fuelRaw) {
+      otherBreakdown[fuelRaw] = (otherBreakdown[fuelRaw] || 0) + mw;
+    }
+
     if (!anchorSP) {
       anchorSP = parseSettlementPeriod(r);
       anchorDate = parseSettlementDate(r);
     }
   }
-  return { hvByFuelMW, anchorSP, anchorDate };
+  return { hvByFuelMW, anchorSP, anchorDate, otherBreakdown };
 }
 
 Deno.serve(async (req) => {
@@ -1494,6 +1506,7 @@ Deno.serve(async (req) => {
 
     // Resolve BMRS HV baseline → dataset fallback → LKG
 let hvByFuelMW: Record<string, number> = {};
+let otherBreakdown: Record<string, number> = {}; // Track raw fuel types in "Other" category
 let anchorSP = 0;
 let anchorDate = "";
 let variant = bmrsR.variant;
@@ -1507,7 +1520,11 @@ const ds = await fetchFUELHHStream(200);
 if (ds.ok) {
   const rows = asArray(ds.data);
   const parsed = parseFUELHHtoMW(rows);
-  hvByFuelMW = parsed.hvByFuelMW; anchorSP = parsed.anchorSP; anchorDate = parsed.anchorDate; variant = "dataset-fuelhh-stream";
+  hvByFuelMW = parsed.hvByFuelMW; 
+  otherBreakdown = parsed.otherBreakdown || {};
+  anchorSP = parsed.anchorSP; 
+  anchorDate = parsed.anchorDate; 
+  variant = "dataset-fuelhh-stream";
   latestOutturnRows = pickLatestSP(rows);
   outturnVariant = "dataset";
 } else {
@@ -1521,7 +1538,10 @@ if (ds.ok) {
       // Parse BMRS HV generation
 bmrsRows = asArray(bmrsR.data);
 const parsed = parseBMRSHVGeneration(bmrsRows);
-hvByFuelMW = parsed.hvByFuelMW; anchorSP = parsed.anchorSP; anchorDate = parsed.anchorDate;
+hvByFuelMW = parsed.hvByFuelMW; 
+otherBreakdown = parsed.otherBreakdown || {};
+anchorSP = parsed.anchorSP; 
+anchorDate = parsed.anchorDate;
 latestOutturnRows = pickLatestSP(bmrsRows);
 outturnVariant = "insights";
 if (DEBUG) dlog(true, "BMRS HV parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, sample: Object.entries(hvByFuelMW).slice(0, 3) });
@@ -1536,7 +1556,11 @@ if (ds.ok) {
   const p2 = parseFUELHHtoMW(rows);
   const hvTotal2 = Object.values(p2.hvByFuelMW).reduce((s, v) => s + v, 0);
   if (hvTotal2 >= 10000 && hvTotal2 <= 80000) {
-    hvByFuelMW = p2.hvByFuelMW; anchorSP = p2.anchorSP; anchorDate = p2.anchorDate; variant = "dataset-fuelhh-stream";
+    hvByFuelMW = p2.hvByFuelMW; 
+    otherBreakdown = p2.otherBreakdown || {};
+    anchorSP = p2.anchorSP; 
+    anchorDate = p2.anchorDate; 
+    variant = "dataset-fuelhh-stream";
     latestOutturnRows = pickLatestSP(rows);
     outturnVariant = "dataset";
   } else {
@@ -1691,12 +1715,30 @@ dataFreshness: {
     };
 
 if (DEBUG) {
+  // Log "Other" breakdown details
+  const otherTotalMW = hvByFuelMW["Other"] || 0;
+  if (otherTotalMW > 0 && Object.keys(otherBreakdown).length > 0) {
+    const otherPercent = totalGenerationMW ? ((otherTotalMW / totalGenerationMW) * 100).toFixed(1) : "0.0";
+    dlog(true, `[Other fuel types breakdown] Total: ${Math.round(otherTotalMW)} MW (${otherPercent}%), Raw types: ${JSON.stringify(
+      Object.fromEntries(
+        Object.entries(otherBreakdown).map(([type, mw]) => [type, Math.round(mw)])
+      )
+    )}`);
+  }
+
   payload.diagnostics = {
     variant,
     hvFuels: Object.keys(hvByFuelMW).length,
     hvTotalMW,
     totalGenerationMW,
     anchor: { date: anchorDate, sp: anchorSP, endISO: anchorEndISO },
+    otherBreakdown: Object.keys(otherBreakdown).length > 0 ? {
+      rawTypes: Object.fromEntries(
+        Object.entries(otherBreakdown).map(([type, mw]) => [type, Math.round(mw)])
+      ),
+      totalOtherMW: Math.round(otherTotalMW),
+      percentOfTotal: totalGenerationMW ? parseFloat(((otherTotalMW / totalGenerationMW) * 100).toFixed(2)) : 0
+    } : null,
     wind: { matched: windEmb.matched, reason: windEmb.reason, mw: windEmb.mw },
     solar: { 
       reason: solarEmb.reason, 
