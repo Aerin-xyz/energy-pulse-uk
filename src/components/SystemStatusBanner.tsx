@@ -58,7 +58,6 @@ export const SystemStatusBanner = ({
               <div className="hidden md:block w-px h-6 bg-border" />
               <div className="flex items-center gap-2">
                 <RefreshCw className="w-4 h-4 text-primary" />
-                <span className="text-muted-foreground">Next update:</span>
                 <span className="font-mono font-semibold text-foreground">{nextUpdate}</span>
               </div>
             </>
