@@ -52,16 +52,6 @@ export const SystemStatusBanner = ({
             <HelpTooltip content="Live data updates every 5 minutes from BMRS (Balancing Mechanism Reporting Service). There's typically a 5-10 minute validation delay." />
           </div>
 
-          {/* Next Update */}
-          {nextUpdate && (
-            <>
-              <div className="hidden md:block w-px h-6 bg-border" />
-              <div className="flex items-center gap-2">
-                <RefreshCw className="w-4 h-4 text-primary" />
-                <span className="font-mono font-semibold text-foreground">{nextUpdate}</span>
-              </div>
-            </>
-          )}
         </div>
       </div>
     </div>
