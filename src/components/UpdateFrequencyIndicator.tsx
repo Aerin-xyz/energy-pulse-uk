@@ -43,7 +43,6 @@ export const UpdateFrequencyIndicator = ({
       
       <div className="flex items-center gap-1 text-muted-foreground">
         <Clock className="w-3 h-3" />
-        <span>Next in:</span>
         <span className="font-mono">
           {nextUpdateAt ? formatTimeUntil(nextUpdateAt) : '--:--'}
         </span>

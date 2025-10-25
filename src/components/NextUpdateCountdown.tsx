@@ -49,7 +49,7 @@ export const NextUpdateCountdown = ({ nextUpdateAt, updateType = 'full' }: NextU
   return (
     <div className="flex items-center gap-1 text-xs text-muted-foreground">
       <Clock className="w-3 h-3" />
-      <span>Next {updateLabels[updateType]}: {timeLeft}</span>
+      <span>{timeLeft}</span>
     </div>
   );
 };
