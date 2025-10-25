@@ -169,7 +169,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                       {interconnector.name}
                     </div>
                     <div className="text-sm text-muted-foreground">
-                      {interconnector.country} • Capacity: {interconnector.capacity && interconnector.capacity > 0 ? `${interconnector.capacity} MW` : 'n/a'}
+                      {interconnector.country}
                     </div>
                   </div>
                 </div>
