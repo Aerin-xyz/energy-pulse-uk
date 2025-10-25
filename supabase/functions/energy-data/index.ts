@@ -809,15 +809,15 @@ const GB_EIC = "10YGB----------A";
 
 // Borders to report with standardized naming
 const ENTSOE_BORDERS = [
-  { name: "France",           eic: "10YFR-RTE------C",  mtuMin: 15, displayName: "France",          country: "France" },
-  { name: "Belgium",          eic: "10YBE----------2",  mtuMin: 15, displayName: "Belgium",         country: "Belgium" },
-  { name: "Netherlands",      eic: "10YNL----------L",  mtuMin: 15, displayName: "Netherlands",     country: "Netherlands" },
-  { name: "Norway",           eic: "10YNO-2--------T",  mtuMin: 15, displayName: "Norway",          country: "Norway" },
-  { name: "Ireland (SEM)",    eic: "10YIE-1001A00010", mtuMin: 30, displayName: "EWIC",            country: "Ireland" },
-  { name: "Northern Ireland", eic: "10Y1001A1001A59C", mtuMin: 30, displayName: "Moyle",           country: "Northern Ireland" },
-  { name: "Greenlink",        eic: "10Y1001A1001A63L", mtuMin: 30, displayName: "Greenlink",       country: "Ireland" },
-  { name: "Denmark DK1",      eic: "10YDK-1--------W",  mtuMin: 15, displayName: "Viking Link",    country: "Denmark" },
-  { name: "Denmark DK2",      eic: "10YDK-2--------M",  mtuMin: 15, displayName: "Denmark West",   country: "Denmark" },
+  { name: "France",           eic: "10YFR-RTE------C",  mtuMin: 15, displayName: "IFA / IFA2",               country: "France" },
+  { name: "Belgium",          eic: "10YBE----------2",  mtuMin: 15, displayName: "Nemo Link",                country: "Belgium" },
+  { name: "Netherlands",      eic: "10YNL----------L",  mtuMin: 15, displayName: "BritNed",                  country: "Netherlands" },
+  { name: "Norway",           eic: "10YNO-2--------T",  mtuMin: 15, displayName: "North Sea Link",           country: "Norway" },
+  { name: "Ireland (SEM)",    eic: "10YIE-1001A00010", mtuMin: 30, displayName: "East–West Interconnector",  country: "Ireland" },
+  { name: "Northern Ireland", eic: "10Y1001A1001A59C", mtuMin: 30, displayName: "Moyle",                    country: "Northern Ireland" },
+  { name: "Greenlink",        eic: "10Y1001A1001A63L", mtuMin: 30, displayName: "Greenlink",                country: "Ireland" },
+  { name: "Denmark DK1",      eic: "10YDK-1--------W",  mtuMin: 15, displayName: "Viking Link",              country: "Denmark" },
+  { name: "Denmark DK2",      eic: "10YDK-2--------M",  mtuMin: 15, displayName: "Denmark West",             country: "Denmark" },
 ];
 
 // Capacity hints using standardized border names
