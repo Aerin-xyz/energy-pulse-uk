@@ -14,13 +14,10 @@ import { OfflineOverlay } from '@/components/OfflineOverlay';
 import { EnergyBalanceDisplay } from '@/components/EnergyBalanceDisplay';
 import { HelpTooltip } from '@/components/HelpTooltip';
 import { SystemStatusBanner } from '@/components/SystemStatusBanner';
-import { UserPreferencesDialog } from '@/components/UserPreferencesDialog';
-import { useUserPreferences } from '@/hooks/useUserPreferences';
 import { useState, useEffect } from 'react';
 
 export const EnergyDashboard = () => {
-  const { preferences } = useUserPreferences();
-  const { 
+  const {
     data, 
     loading, 
     error, 
@@ -152,7 +149,6 @@ export const EnergyDashboard = () => {
                     <HelpTooltip content="Data shows the last completed 30-minute settlement period. There's typically a 5-10 minute delay for validation." />
                   </>
                 )}
-              <UserPreferencesDialog />
             </div>
           </div>
         </div>
@@ -233,7 +229,7 @@ export const EnergyDashboard = () => {
             </div>
 
             {/* Historical Generation Chart */}
-            {preferences.showHistoricalChart && (
+            {(
               historicalLoading ? (
                 <ChartSkeleton />
               ) : historicalError ? (
@@ -256,7 +252,7 @@ export const EnergyDashboard = () => {
             )}
 
             {/* Interconnector Flows */}
-            {preferences.showInterconnectors && (
+            {(
               <InterconnectorFlows 
                 data={data.interconnectors} 
                 interconnectorStatus={data.dataFreshness?.interconnectorStatus}
@@ -264,7 +260,7 @@ export const EnergyDashboard = () => {
             )}
 
             {/* EU Debug Panel (only shows in debug mode) */}
-            {preferences.showEUData && <EUDebugPanel />}
+            <EUDebugPanel />
           </div>
         ) : null}
       </main>
