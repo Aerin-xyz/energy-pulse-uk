@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.redis-health]
 verify_jwt = false
+
+[functions.cache-warmup]
+verify_jwt = false

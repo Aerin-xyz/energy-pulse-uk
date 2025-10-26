@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_cache: {
+        Row: {
+          cache_key: string
+          created_at: string
+          data: Json
+          expires_at: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          cache_key: string
+          created_at?: string
+          data: Json
+          expires_at: string
+          id?: string
+          updated_at?: string
+        }
+        Update: {
+          cache_key?: string
+          created_at?: string
+          data?: Json
+          expires_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       energy_data_history: {
         Row: {
           as_of: string
@@ -40,6 +67,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      cleanup_expired_cache: { Args: never; Returns: undefined }
       get_latest_energy_data: {
         Args: never
         Returns: {

@@ -152,10 +152,19 @@ export const useEnergyData = () => {
   const [nextHighFreqAt, setNextHighFreqAt] = useState<Date | null>(null);
   const [nextMidFreqAt, setNextMidFreqAt] = useState<Date | null>(null);
   const [lastUpdateType, setLastUpdateType] = useState<'high' | 'mid' | 'full'>('full');
+  const [retryCount, setRetryCount] = useState(0);
+  const pendingRequest = useState<Promise<void> | null>(null);
   const { toast } = useToast();
 
   const fetchAndSetEnergyData = useCallback(async (updateType: 'high' | 'mid' | 'full' = 'full', showToast = true) => {
-    try {
+    // Prevent duplicate simultaneous requests
+    if (pendingRequest[0]) {
+      console.log('[useEnergyData] Request already in flight, skipping');
+      return pendingRequest[0];
+    }
+    
+    const promise = (async () => {
+      try {
       // OPTIMIZATION: Always show cached data immediately to improve perceived performance
       if (cachedData) {
         setData(cachedData);
@@ -228,6 +237,9 @@ export const useEnergyData = () => {
       setNextMidFreqAt(nextMid);
       setNextUpdateAt(updateType === 'full' ? nextFull : nextHigh);
 
+      // Reset retry count on successful fetch
+      setRetryCount(0);
+
       // Only show toast on manual refresh or after initial load
       if (showToast && !initialLoad) {
         const updateLabels = {
@@ -244,6 +256,31 @@ export const useEnergyData = () => {
     } catch (err) {
       console.error('Energy data fetch error:', err);
       const errorMessage = err instanceof Error ? err.message : 'Failed to fetch live energy data';
+      
+      // Handle rate limiting with exponential backoff
+      if (errorMessage.includes('429') || errorMessage.includes('API error: 429')) {
+        const backoffMinutes = Math.min(Math.pow(2, retryCount), 30);
+        setRetryCount(prev => prev + 1);
+        
+        if (showToast) {
+          toast({
+            title: "Rate Limited",
+            description: `Too many requests. Retrying in ${backoffMinutes} minutes...`,
+            variant: "destructive"
+          });
+        }
+        
+        // Schedule retry
+        setTimeout(() => {
+          fetchAndSetEnergyData(updateType, false);
+        }, backoffMinutes * 60 * 1000);
+        
+        // Use cached data if available
+        if (cachedData) {
+          setData(cachedData);
+        }
+        return;
+      }
       
       // If we have cached data, use it and show a subtle warning
       if (cachedData) {
@@ -268,35 +305,52 @@ export const useEnergyData = () => {
     } finally {
       setLoading(false);
       setInitialLoad(false);
+      pendingRequest[0] = null;
     }
-  }, [toast, cachedData, initialLoad]);
+  })();
+  
+  pendingRequest[0] = promise;
+  return promise;
+  }, [toast, cachedData, initialLoad, retryCount, pendingRequest]);
 
   // Initial fetch (full data)
   useEffect(() => {
     fetchAndSetEnergyData('full', false); // No toast on initial load
   }, [fetchAndSetEnergyData]);
 
-  // Multi-frequency auto-refresh intervals
+  // Staggered multi-frequency auto-refresh intervals to prevent simultaneous requests
   useEffect(() => {
-    // High frequency updates (5 minutes) - embedded sources only
-    const highFreqInterval = setInterval(() => {
-      fetchAndSetEnergyData('high', false);
+    const intervals: NodeJS.Timeout[] = [];
+    
+    // Start high frequency after 2 minutes (prevents clash with initial load)
+    const highFreqTimeout = setTimeout(() => {
+      const highFreqInterval = setInterval(() => {
+        fetchAndSetEnergyData('high', false);
+      }, 5 * 60 * 1000);
+      intervals.push(highFreqInterval);
+    }, 2 * 60 * 1000);
+
+    // Start mid frequency after 5 minutes
+    const midFreqTimeout = setTimeout(() => {
+      const midFreqInterval = setInterval(() => {
+        fetchAndSetEnergyData('mid', false);
+      }, 15 * 60 * 1000);
+      intervals.push(midFreqInterval);
     }, 5 * 60 * 1000);
 
-    // Mid frequency updates (15 minutes) - interconnectors & EU data
-    const midFreqInterval = setInterval(() => {
-      fetchAndSetEnergyData('mid', false);
-    }, 15 * 60 * 1000);
-
-    // Full frequency updates (30 minutes) - complete refresh
-    const fullFreqInterval = setInterval(() => {
-      fetchAndSetEnergyData('full', false);
-    }, 30 * 60 * 1000);
+    // Start full frequency after 10 minutes
+    const fullFreqTimeout = setTimeout(() => {
+      const fullFreqInterval = setInterval(() => {
+        fetchAndSetEnergyData('full', false);
+      }, 30 * 60 * 1000);
+      intervals.push(fullFreqInterval);
+    }, 10 * 60 * 1000);
 
     return () => {
-      clearInterval(highFreqInterval);
-      clearInterval(midFreqInterval);
-      clearInterval(fullFreqInterval);
+      clearTimeout(highFreqTimeout);
+      clearTimeout(midFreqTimeout);
+      clearTimeout(fullFreqTimeout);
+      intervals.forEach(interval => clearInterval(interval));
     };
   }, [fetchAndSetEnergyData]);
 

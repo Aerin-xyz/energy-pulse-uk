@@ -234,25 +234,58 @@ async function decompressData(compressed: string): Promise<string> {
   }
 }
 
-// Response caching middleware with compression
+// Database caching with Redis fallback
 export async function getCachedResponse(
   cacheKey: string
 ): Promise<{ hit: boolean; data: string | null; ttl: number }> {
-  const redis = new UpstashRedis();
-  
+  // Try database cache first
   try {
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
+
+    const { data, error } = await supabase
+      .from('api_cache')
+      .select('data, expires_at')
+      .eq('cache_key', cacheKey)
+      .maybeSingle();
+    
+    if (!error && data) {
+      const now = new Date();
+      const expiresAt = new Date(data.expires_at);
+      
+      if (expiresAt > now) {
+        const ttl = Math.floor((expiresAt.getTime() - now.getTime()) / 1000);
+        console.log('[DB Cache] HIT:', cacheKey, 'TTL:', ttl);
+        return { hit: true, data: JSON.stringify(data.data), ttl };
+      } else {
+        console.log('[DB Cache] EXPIRED:', cacheKey);
+        // Delete expired entry
+        await supabase.from('api_cache').delete().eq('cache_key', cacheKey);
+      }
+    }
+  } catch (err) {
+    console.error('[DB Cache] Read error:', err);
+  }
+  
+  // Fallback to Redis
+  try {
+    const redis = new UpstashRedis();
     const cached = await redis.get(cacheKey);
     if (cached) {
       const ttl = await redis.ttl(cacheKey);
-      // Decompress the cached data
       const decompressed = await decompressData(cached);
+      console.log('[Redis Cache] HIT (fallback):', cacheKey);
       return { hit: true, data: decompressed, ttl };
     }
-    return { hit: false, data: null, ttl: 0 };
-  } catch (error) {
-    console.error('[Cache] Error getting cached response:', error);
-    return { hit: false, data: null, ttl: 0 };
+  } catch (err) {
+    console.error('[Redis Cache] Read error:', err);
   }
+  
+  console.log('[Cache] MISS:', cacheKey);
+  return { hit: false, data: null, ttl: 0 };
 }
 
 export async function setCachedResponse(
@@ -260,15 +293,44 @@ export async function setCachedResponse(
   data: string,
   ttlSeconds: number
 ): Promise<void> {
-  const redis = new UpstashRedis();
+  const expiresAt = new Date(Date.now() + ttlSeconds * 1000);
   
+  // Write to database cache (primary)
   try {
-    // Compress the data before caching
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
+
+    const { error } = await supabase
+      .from('api_cache')
+      .upsert({
+        cache_key: cacheKey,
+        data: JSON.parse(data),
+        expires_at: expiresAt.toISOString(),
+        updated_at: new Date().toISOString()
+      }, {
+        onConflict: 'cache_key'
+      });
+    
+    if (error) {
+      console.error('[DB Cache] Write error:', error);
+    } else {
+      console.log('[DB Cache] SET:', cacheKey, 'expires:', expiresAt.toISOString());
+    }
+  } catch (err) {
+    console.error('[DB Cache] Unexpected error:', err);
+  }
+  
+  // Also try Redis (best effort, non-blocking)
+  try {
+    const redis = new UpstashRedis();
     const compressed = await compressData(data);
-    console.log(`[Cache] Size reduction: ${data.length} -> ${compressed.length} bytes (${((1 - compressed.length / data.length) * 100).toFixed(1)}% reduction)`);
     await redis.setex(cacheKey, ttlSeconds, compressed);
-  } catch (error) {
-    console.error('[Cache] Error setting cached response:', error);
+    console.log('[Redis Cache] SET (secondary):', cacheKey);
+  } catch (err) {
+    console.error('[Redis Cache] Write error (non-blocking):', err);
   }
 }
 

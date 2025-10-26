@@ -1402,13 +1402,19 @@ Deno.serve(async (req) => {
     });
   }
 
-  // Response caching based on update type
-  const cacheTTL = UPDATE_TYPE === 'high' ? 240 : UPDATE_TYPE === 'mid' ? 720 : 1500; // 4min, 12min, 25min
-  const cacheKey = `cache:energy-data:${UPDATE_TYPE}`;
+  // Response caching based on update type with new key strategy
+  const cacheTTL = UPDATE_TYPE === 'high' ? 240 : UPDATE_TYPE === 'mid' ? 840 : 1500; // 4min, 14min, 25min
+  const globalCacheKey = `energy-data:${UPDATE_TYPE}:global`;
   
-  const cachedResponse = await getCachedResponse(cacheKey);
+  const cachedResponse = await getCachedResponse(globalCacheKey);
   if (cachedResponse.hit && cachedResponse.data) {
-    return new Response(cachedResponse.data, {
+    const cachedData = JSON.parse(cachedResponse.data);
+    return new Response(JSON.stringify({
+      ...cachedData,
+      _cacheHit: true,
+      _cacheKey: globalCacheKey,
+      _cacheTTL: cachedResponse.ttl
+    }), {
       headers: {
         ...corsHeaders,
         ...rateLimitResult.headers,
@@ -1876,9 +1882,9 @@ await insertLKG(payload.lastUpdated, payload, totalGenerationMW);
     delete (cacheablePayload as any).interconnectorAttempts;
     delete (cacheablePayload as any).apiKeysUsed;
     
-    // Cache the compressed, stripped-down response
+    // Cache the compressed, stripped-down response with global key
     const cacheBody = JSON.stringify(cacheablePayload);
-    await setCachedResponse(cacheKey, cacheBody, cacheTTL);
+    await setCachedResponse(globalCacheKey, cacheBody, cacheTTL);
     
     // Return full payload (with debug info if requested)
     const responseBody = JSON.stringify(payload);
