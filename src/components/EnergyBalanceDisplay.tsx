@@ -24,7 +24,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-0.5 text-[10px] text-muted-foreground">
             D
-            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" className="w-3 h-3" />
+            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" className="w-2.5 h-2.5" />
           </div>
           <div className="font-bold">{formatGWfromMW(totalDemandMW)}</div>
         </div>
@@ -32,7 +32,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-0.5 text-[10px] text-muted-foreground">
             G
-            <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-3 h-3" />
+            <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-2.5 h-2.5" />
           </div>
           <div className="font-bold text-primary">{formatGWfromMW(totalGenerationMW)}</div>
         </div>
@@ -40,7 +40,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-0.5 text-[10px] text-muted-foreground">
             T
-            <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing, Negative = exporting" className="w-3 h-3" />
+            <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing, Negative = exporting" className="w-2.5 h-2.5" />
           </div>
           <div className="font-bold">{formatGWfromMW(interconnectorFlowMW)}</div>
         </div>
@@ -56,7 +56,7 @@ export const EnergyBalanceDisplay = ({
                   : 'bg-carbon-high animate-pulse'
               }`} />
               <div className="font-bold font-mono">{carbonIntensity.actual}</div>
-              <HelpTooltip content="Average carbon intensity of electricity generation, measured in grams of CO₂ per kilowatt-hour" className="w-3 h-3" />
+              <HelpTooltip content="Average carbon intensity of electricity generation, measured in grams of CO₂ per kilowatt-hour" className="w-2.5 h-2.5" />
             </div>
           </>
         )}
@@ -67,7 +67,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground mb-0.5">
             Demand
-            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" className="w-3.5 h-3.5" />
+            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" className="w-3 h-3" />
           </div>
           <div className="font-bold">{formatGWfromMW(totalDemandMW)} GW</div>
         </div>
@@ -75,7 +75,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground mb-0.5">
             Generation
-            <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-3.5 h-3.5" />
+            <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-3 h-3" />
           </div>
           <div className="font-bold text-primary">{formatGWfromMW(totalGenerationMW)} GW</div>
         </div>
@@ -83,7 +83,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground mb-0.5">
             Transfers
-            <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing, Negative = exporting" className="w-3.5 h-3.5" />
+            <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing, Negative = exporting" className="w-3 h-3" />
           </div>
           <div className="font-bold">{formatGWfromMW(interconnectorFlowMW)} GW</div>
         </div>
@@ -101,7 +101,7 @@ export const EnergyBalanceDisplay = ({
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground">
                   Carbon
-                  <HelpTooltip content="Average carbon intensity of electricity generation, measured in grams of CO₂ per kilowatt-hour" className="w-3.5 h-3.5" />
+                  <HelpTooltip content="Average carbon intensity of electricity generation, measured in grams of CO₂ per kilowatt-hour" className="w-3 h-3" />
                 </div>
                 <div className="font-bold font-mono">
                   {carbonIntensity.actual} <span className="text-[10px] font-normal">gCO₂/kWh</span>
@@ -117,7 +117,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-1">
             Demand
-            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" />
+            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" className="w-4 h-4" />
           </div>
           <div className="font-bold text-lg">{formatGWfromMW(totalDemandMW)} GW</div>
         </div>
@@ -125,7 +125,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-1">
             Generation
-            <HelpTooltip content="Total electricity generated from all sources within Great Britain" />
+            <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-4 h-4" />
           </div>
           <div className="font-bold text-lg text-primary">{formatGWfromMW(totalGenerationMW)} GW</div>
         </div>
@@ -133,7 +133,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-1">
             Transfers
-            <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing, Negative = exporting" />
+            <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing, Negative = exporting" className="w-4 h-4" />
           </div>
           <div className="font-bold text-lg">{formatGWfromMW(interconnectorFlowMW)} GW</div>
         </div>
@@ -151,7 +151,7 @@ export const EnergyBalanceDisplay = ({
               <div className="text-center">
                 <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
                   Carbon
-                  <HelpTooltip content="Average carbon intensity of electricity generation, measured in grams of CO₂ per kilowatt-hour" />
+                  <HelpTooltip content="Average carbon intensity of electricity generation, measured in grams of CO₂ per kilowatt-hour" className="w-4 h-4" />
                 </div>
                 <div className="font-bold font-mono text-lg">
                   {carbonIntensity.actual} <span className="text-xs font-normal">gCO₂/kWh</span>
