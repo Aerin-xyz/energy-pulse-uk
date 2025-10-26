@@ -12,7 +12,6 @@ import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/compone
 import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
 import { EnergyBalanceDisplay } from '@/components/EnergyBalanceDisplay';
-import { HelpTooltip } from '@/components/HelpTooltip';
 import { SystemStatusBanner } from '@/components/SystemStatusBanner';
 import { useState, useEffect } from 'react';
 
@@ -139,16 +138,13 @@ export const EnergyDashboard = () => {
 
             <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6">
               {data && (
-                  <>
-                    <EnergyBalanceDisplay
-                      totalDemandMW={data.totalDemandMW || 0}
-                      totalGenerationMW={data.totalGenerationMW || 0}
-                      interconnectorFlowMW={data.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0}
-                      carbonIntensity={data.carbonIntensity}
-                    />
-                    <HelpTooltip content="Data shows the last completed 30-minute settlement period. There's typically a 5-10 minute delay for validation." />
-                  </>
-                )}
+                <EnergyBalanceDisplay
+                  totalDemandMW={data.totalDemandMW || 0}
+                  totalGenerationMW={data.totalGenerationMW || 0}
+                  interconnectorFlowMW={data.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0}
+                  carbonIntensity={data.carbonIntensity}
+                />
+              )}
             </div>
           </div>
         </div>
