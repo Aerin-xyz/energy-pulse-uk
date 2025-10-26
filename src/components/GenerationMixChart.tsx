@@ -97,9 +97,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
         <div className="flex items-center justify-between">
           <CardTitle>UK Energy Mix</CardTitle>
           <Badge variant={dataFreshness?.isRealtime ? "default" : "secondary"}>
-            {dataFreshness?.status === "live" ? "Live" : 
-             dataFreshness?.status === "live-partial" ? "Live (partial)" :
-             "Delayed (LKG)"}
+            {dataFreshness?.status === "live" || dataFreshness?.status === "live-partial" ? "Live" : "Delayed (LKG)"}
           </Badge>
         </div>
         {asOf?.settlementPeriod && (
