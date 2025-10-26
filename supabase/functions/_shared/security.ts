@@ -18,25 +18,60 @@ class UpstashRedis {
   constructor() {
     this.url = Deno.env.get('UPSTASH_REDIS_REST_URL') || '';
     this.token = Deno.env.get('UPSTASH_REDIS_REST_TOKEN') || '';
+    
+    // Log configuration status (without exposing sensitive data)
+    if (this.url && this.token) {
+      console.log('[Redis] Configuration loaded:', {
+        urlFormat: this.url.startsWith('https://') ? 'Valid HTTPS' : 'Invalid format',
+        urlHost: this.url.split('/')[2] || 'unknown',
+        tokenLength: this.token.length,
+        tokenPrefix: this.token.substring(0, 4) + '...'
+      });
+    }
   }
 
   private async request(command: string[]): Promise<any> {
     if (!this.url || !this.token) {
-      throw new Error('Upstash Redis not configured');
+      console.error('[Redis] Configuration missing:', {
+        hasUrl: !!this.url,
+        hasToken: !!this.token,
+        urlPreview: this.url ? `${this.url.substring(0, 20)}...` : 'missing'
+      });
+      throw new Error('Upstash Redis not configured - check UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN');
     }
 
-    const response = await fetch(`${this.url}/${command.join('/')}`, {
-      headers: {
-        'Authorization': `Bearer ${this.token}`,
-      },
-    });
+    const requestUrl = `${this.url}/${command.join('/')}`;
+    
+    try {
+      const response = await fetch(requestUrl, {
+        headers: {
+          'Authorization': `Bearer ${this.token}`,
+        },
+      });
 
-    if (!response.ok) {
-      throw new Error(`Redis request failed: ${response.status}`);
+      if (!response.ok) {
+        const responseText = await response.text();
+        console.error('[Redis] Request failed:', {
+          status: response.status,
+          statusText: response.statusText,
+          command: command.join(' '),
+          url: requestUrl.replace(this.token, '***'),
+          responseBody: responseText.substring(0, 500),
+          headers: Object.fromEntries(response.headers.entries())
+        });
+        throw new Error(`Redis request failed: ${response.status} - ${responseText.substring(0, 200)}`);
+      }
+
+      const data = await response.json();
+      return data.result;
+    } catch (error) {
+      console.error('[Redis] Fetch error:', {
+        command: command.join(' '),
+        error: error instanceof Error ? error.message : String(error),
+        urlPreview: this.url ? `${this.url.substring(0, 30)}...` : 'missing'
+      });
+      throw error;
     }
-
-    const data = await response.json();
-    return data.result;
   }
 
   async incr(key: string): Promise<number> {
