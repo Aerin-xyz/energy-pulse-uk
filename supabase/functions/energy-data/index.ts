@@ -1385,10 +1385,10 @@ Deno.serve(async (req) => {
   const DEBUG = false;
   const EU_FOCUS = requestBody.euFocus === true;
 
-  // Rate limiting (10 req/min, 50 req/hour)
+  // Rate limiting (30 req/min, 200 req/hour)
   const rateLimitResult = await checkRateLimit('energy-data', clientIP, {
-    requestsPerMinute: 10,
-    requestsPerHour: 50,
+    requestsPerMinute: 30,
+    requestsPerHour: 200,
   });
 
   if (!rateLimitResult.allowed) {
