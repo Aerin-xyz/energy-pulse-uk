@@ -62,12 +62,43 @@ export type Database = {
         }
         Relationships: []
       }
+      rate_limits: {
+        Row: {
+          client_ip: string
+          created_at: string
+          function_name: string
+          id: string
+          request_count: number
+          window_start: string
+          window_type: string
+        }
+        Insert: {
+          client_ip: string
+          created_at?: string
+          function_name: string
+          id?: string
+          request_count?: number
+          window_start?: string
+          window_type: string
+        }
+        Update: {
+          client_ip?: string
+          created_at?: string
+          function_name?: string
+          id?: string
+          request_count?: number
+          window_start?: string
+          window_type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
       cleanup_expired_cache: { Args: never; Returns: undefined }
+      cleanup_old_rate_limits: { Args: never; Returns: undefined }
       get_latest_energy_data: {
         Args: never
         Returns: {
@@ -75,6 +106,15 @@ export type Database = {
         }[]
       }
       get_latest_energy_data_id: { Args: never; Returns: string }
+      increment_rate_limit: {
+        Args: {
+          p_client_ip: string
+          p_function_name: string
+          p_window_start: string
+          p_window_type: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never

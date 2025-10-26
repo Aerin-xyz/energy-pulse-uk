@@ -10,90 +10,6 @@ export interface CacheConfig {
   keyPrefix: string;
 }
 
-// Upstash Redis REST API client
-class UpstashRedis {
-  private url: string;
-  private token: string;
-
-  constructor() {
-    this.url = Deno.env.get('UPSTASH_REDIS_REST_URL') || '';
-    this.token = Deno.env.get('UPSTASH_REDIS_REST_TOKEN') || '';
-    
-    // Log configuration status (without exposing sensitive data)
-    if (this.url && this.token) {
-      console.log('[Redis] Configuration loaded:', {
-        urlFormat: this.url.startsWith('https://') ? 'Valid HTTPS' : 'Invalid format',
-        urlHost: this.url.split('/')[2] || 'unknown',
-        tokenLength: this.token.length,
-        tokenPrefix: this.token.substring(0, 4) + '...'
-      });
-    }
-  }
-
-  private async request(command: string[]): Promise<any> {
-    if (!this.url || !this.token) {
-      console.error('[Redis] Configuration missing:', {
-        hasUrl: !!this.url,
-        hasToken: !!this.token,
-        urlPreview: this.url ? `${this.url.substring(0, 20)}...` : 'missing'
-      });
-      throw new Error('Upstash Redis not configured - check UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN');
-    }
-
-    const requestUrl = `${this.url}/${command.join('/')}`;
-    
-    try {
-      const response = await fetch(requestUrl, {
-        headers: {
-          'Authorization': `Bearer ${this.token}`,
-        },
-      });
-
-      if (!response.ok) {
-        const responseText = await response.text();
-        console.error('[Redis] Request failed:', {
-          status: response.status,
-          statusText: response.statusText,
-          command: command.join(' '),
-          url: requestUrl.replace(this.token, '***'),
-          responseBody: responseText.substring(0, 500),
-          headers: Object.fromEntries(response.headers.entries())
-        });
-        throw new Error(`Redis request failed: ${response.status} - ${responseText.substring(0, 200)}`);
-      }
-
-      const data = await response.json();
-      return data.result;
-    } catch (error) {
-      console.error('[Redis] Fetch error:', {
-        command: command.join(' '),
-        error: error instanceof Error ? error.message : String(error),
-        urlPreview: this.url ? `${this.url.substring(0, 30)}...` : 'missing'
-      });
-      throw error;
-    }
-  }
-
-  async incr(key: string): Promise<number> {
-    return await this.request(['INCR', key]);
-  }
-
-  async expire(key: string, seconds: number): Promise<void> {
-    await this.request(['EXPIRE', key, seconds.toString()]);
-  }
-
-  async get(key: string): Promise<string | null> {
-    return await this.request(['GET', key]);
-  }
-
-  async setex(key: string, seconds: number, value: string): Promise<void> {
-    await this.request(['SETEX', key, seconds.toString(), value]);
-  }
-
-  async ttl(key: string): Promise<number> {
-    return await this.request(['TTL', key]);
-  }
-}
 
 // Get client IP from request
 export function getClientIP(req: Request): string {
@@ -108,41 +24,61 @@ export function getClientIP(req: Request): string {
   return 'unknown';
 }
 
-// Rate limiting middleware
+// Database-based rate limiting
 export async function checkRateLimit(
   functionName: string,
   clientIP: string,
   config: RateLimitConfig
 ): Promise<{ allowed: boolean; headers: Record<string, string> }> {
-  const redis = new UpstashRedis();
-  
   try {
-    // Check minute-based rate limit
-    const minuteKey = `ratelimit:${functionName}:${clientIP}:min`;
-    const minuteCount = await redis.incr(minuteKey);
+    const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
+
+    const now = new Date();
     
-    if (minuteCount === 1) {
-      await redis.expire(minuteKey, 60);
+    // Calculate window starts
+    const minuteWindowStart = new Date(now.getTime() - (now.getSeconds() * 1000) - (now.getMilliseconds()));
+    const hourWindowStart = new Date(now);
+    hourWindowStart.setMinutes(0, 0, 0);
+
+    // Check/increment minute window
+    const { data: minuteData, error: minuteError } = await supabase.rpc('increment_rate_limit', {
+      p_function_name: functionName,
+      p_client_ip: clientIP,
+      p_window_type: 'minute',
+      p_window_start: minuteWindowStart.toISOString()
+    });
+
+    // Check/increment hour window
+    const { data: hourData, error: hourError } = await supabase.rpc('increment_rate_limit', {
+      p_function_name: functionName,
+      p_client_ip: clientIP,
+      p_window_type: 'hour',
+      p_window_start: hourWindowStart.toISOString()
+    });
+
+    if (minuteError || hourError) {
+      console.error('[RateLimit] Database error:', { minuteError, hourError });
+      // Fail open - allow request if rate limiting has errors
+      return { allowed: true, headers: {} };
     }
-    
-    // Check hour-based rate limit
-    const hourKey = `ratelimit:${functionName}:${clientIP}:hour`;
-    const hourCount = await redis.incr(hourKey);
-    
-    if (hourCount === 1) {
-      await redis.expire(hourKey, 3600);
-    }
-    
+
+    const minuteCount = minuteData || 0;
+    const hourCount = hourData || 0;
+
     const minuteLimitExceeded = minuteCount > config.requestsPerMinute;
     const hourLimitExceeded = hourCount > config.requestsPerHour;
-    
+
     const headers = {
       'X-RateLimit-Limit-Minute': config.requestsPerMinute.toString(),
       'X-RateLimit-Remaining-Minute': Math.max(0, config.requestsPerMinute - minuteCount).toString(),
       'X-RateLimit-Limit-Hour': config.requestsPerHour.toString(),
       'X-RateLimit-Remaining-Hour': Math.max(0, config.requestsPerHour - hourCount).toString(),
     };
-    
+
     if (minuteLimitExceeded || hourLimitExceeded) {
       return {
         allowed: false,
@@ -152,93 +88,20 @@ export async function checkRateLimit(
         },
       };
     }
-    
+
     return { allowed: true, headers };
   } catch (error) {
     // If rate limiting fails, allow the request (fail open)
-    console.error('[RateLimit] Error checking rate limit:', error);
+    console.error('[RateLimit] Unexpected error:', error);
     return { allowed: true, headers: {} };
   }
 }
 
-// Compression helpers
-async function compressData(data: string): Promise<string> {
-  try {
-    const encoder = new TextEncoder();
-    const input = encoder.encode(data);
-    const cs = new CompressionStream('gzip');
-    const writer = cs.writable.getWriter();
-    writer.write(input);
-    writer.close();
-    
-    const chunks: Uint8Array[] = [];
-    const reader = cs.readable.getReader();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-    }
-    
-    const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
-    const compressed = new Uint8Array(totalLength);
-    let offset = 0;
-    for (const chunk of chunks) {
-      compressed.set(chunk, offset);
-      offset += chunk.length;
-    }
-    
-    // Convert to base64 for storage
-    const base64 = btoa(String.fromCharCode(...compressed));
-    return base64;
-  } catch (error) {
-    console.error('[Compression] Failed to compress:', error);
-    return data; // Fallback to uncompressed
-  }
-}
 
-async function decompressData(compressed: string): Promise<string> {
-  try {
-    // Decode from base64
-    const binaryString = atob(compressed);
-    const bytes = new Uint8Array(binaryString.length);
-    for (let i = 0; i < binaryString.length; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    
-    const ds = new DecompressionStream('gzip');
-    const writer = ds.writable.getWriter();
-    writer.write(bytes);
-    writer.close();
-    
-    const chunks: Uint8Array[] = [];
-    const reader = ds.readable.getReader();
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-    }
-    
-    const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
-    const decompressed = new Uint8Array(totalLength);
-    let offset = 0;
-    for (const chunk of chunks) {
-      decompressed.set(chunk, offset);
-      offset += chunk.length;
-    }
-    
-    const decoder = new TextDecoder();
-    return decoder.decode(decompressed);
-  } catch (error) {
-    console.error('[Decompression] Failed to decompress:', error);
-    return compressed; // Fallback to treating as uncompressed
-  }
-}
-
-// Database caching with Redis fallback
+// Database-only caching
 export async function getCachedResponse(
   cacheKey: string
 ): Promise<{ hit: boolean; data: string | null; ttl: number }> {
-  // Try database cache first
   try {
     const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
     const supabase = createClient(
@@ -267,21 +130,7 @@ export async function getCachedResponse(
       }
     }
   } catch (err) {
-    console.error('[DB Cache] Read error:', err);
-  }
-  
-  // Fallback to Redis
-  try {
-    const redis = new UpstashRedis();
-    const cached = await redis.get(cacheKey);
-    if (cached) {
-      const ttl = await redis.ttl(cacheKey);
-      const decompressed = await decompressData(cached);
-      console.log('[Redis Cache] HIT (fallback):', cacheKey);
-      return { hit: true, data: decompressed, ttl };
-    }
-  } catch (err) {
-    console.error('[Redis Cache] Read error:', err);
+    console.error('[DB Cache] Error:', err);
   }
   
   console.log('[Cache] MISS:', cacheKey);
@@ -295,7 +144,6 @@ export async function setCachedResponse(
 ): Promise<void> {
   const expiresAt = new Date(Date.now() + ttlSeconds * 1000);
   
-  // Write to database cache (primary)
   try {
     const { createClient } = await import('https://esm.sh/@supabase/supabase-js@2');
     const supabase = createClient(
@@ -320,17 +168,7 @@ export async function setCachedResponse(
       console.log('[DB Cache] SET:', cacheKey, 'expires:', expiresAt.toISOString());
     }
   } catch (err) {
-    console.error('[DB Cache] Unexpected error:', err);
-  }
-  
-  // Also try Redis (best effort, non-blocking)
-  try {
-    const redis = new UpstashRedis();
-    const compressed = await compressData(data);
-    await redis.setex(cacheKey, ttlSeconds, compressed);
-    console.log('[Redis Cache] SET (secondary):', cacheKey);
-  } catch (err) {
-    console.error('[Redis Cache] Write error (non-blocking):', err);
+    console.error('[DB Cache] Error:', err);
   }
 }
 
