@@ -37,14 +37,15 @@ export type Database = {
       }
     }
     Views: {
-      energy_data_latest: {
-        Row: {
-          payload: Json | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
+      get_latest_energy_data: {
+        Args: never
+        Returns: {
+          payload: Json
+        }[]
+      }
       get_latest_energy_data_id: { Args: never; Returns: string }
     }
     Enums: {
