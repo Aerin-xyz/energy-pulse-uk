@@ -1,5 +1,11 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { 
+  checkRateLimit, 
+  getCachedResponse, 
+  setCachedResponse, 
+  getClientIP
+} from "../_shared/security.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -163,9 +169,46 @@ serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const clientIP = getClientIP(req);
+
+  // Debug mode is now disabled for unauthenticated requests (security improvement)
+  const DEBUG = false;
+
+  // Rate limiting (10 req/min, 30 req/hour)
+  const rateLimitResult = await checkRateLimit('eu-generation-mix', clientIP, {
+    requestsPerMinute: 10,
+    requestsPerHour: 30,
+  });
+
+  if (!rateLimitResult.allowed) {
+    return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+      status: 429,
+      headers: { 
+        ...corsHeaders, 
+        ...rateLimitResult.headers,
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
+  // Response caching (4 minutes TTL)
+  const cacheTTL = 240;
+  const cacheKey = 'cache:eu-generation-mix';
+  
+  const cachedResponse = await getCachedResponse(cacheKey);
+  if (cachedResponse.hit && cachedResponse.data) {
+    return new Response(cachedResponse.data, {
+      headers: {
+        ...corsHeaders,
+        ...rateLimitResult.headers,
+        'Content-Type': 'application/json',
+        'X-Cache-Status': 'HIT',
+        'X-Cache-TTL': cachedResponse.ttl.toString(),
+      },
+    });
+  }
+
   try {
-    const DEBUG = new URL(req.url).searchParams.get("debug") === "1";
-    
     console.log("[eu-generation-mix] Starting EU Generation Mix fetch");
     
     const EU = await fetchEUGenerationMix(DEBUG);
@@ -185,8 +228,18 @@ serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify(payload), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    // Cache the response
+    const responseBody = JSON.stringify(payload);
+    await setCachedResponse(cacheKey, responseBody, cacheTTL);
+
+    return new Response(responseBody, {
+      headers: { 
+        ...corsHeaders, 
+        ...rateLimitResult.headers,
+        'Content-Type': 'application/json',
+        'X-Cache-Status': 'MISS',
+        'X-Cache-TTL': cacheTTL.toString(),
+      },
     });
 
   } catch (error) {

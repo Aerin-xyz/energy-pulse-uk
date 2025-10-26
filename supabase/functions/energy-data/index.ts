@@ -1,15 +1,17 @@
 import { XMLParser } from "https://esm.sh/fast-xml-parser@4.5.0";
+import { 
+  checkRateLimit, 
+  getCachedResponse, 
+  setCachedResponse, 
+  getClientIP,
+  validateOptionalEnum,
+  ValidationError
+} from "../_shared/security.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, cache-control",
 };
-
-// Debug helpers
-function qDebug(url: string): boolean {
-  try { return new URL(url).searchParams.get("debug") === "1"; } catch { return false; }
-}
-function dlog(enabled: boolean, ...args: any[]) { if (enabled) console.log("[energy-data]", ...args); }
 
 // BMRS hosts (primary and fallback)
 const DATA_HOST = "data.elexon.co.uk";
@@ -1348,6 +1350,9 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const clientIP = getClientIP(req);
+  const url = new URL(req.url);
+
   // Read request body for debug parameters
   let requestBody: any = {};
   try {
@@ -1358,15 +1363,61 @@ Deno.serve(async (req) => {
     // Ignore body parsing errors
   }
 
-  // Check debug mode from both URL and request body
-  const DEBUG = qDebug(req.url) || requestBody.debug === 1 || requestBody.debug === true;
+  // Input validation
+  let UPDATE_TYPE: string;
+  try {
+    UPDATE_TYPE = validateOptionalEnum(
+      url.searchParams.get('updateType') || requestBody.updateType,
+      ['high', 'mid', 'full'],
+      'updateType'
+    ) || 'full';
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    throw error;
+  }
+
+  // Debug mode is now disabled for unauthenticated requests (security improvement)
+  const DEBUG = false;
   const EU_FOCUS = requestBody.euFocus === true;
+
+  // Rate limiting (10 req/min, 50 req/hour)
+  const rateLimitResult = await checkRateLimit('energy-data', clientIP, {
+    requestsPerMinute: 10,
+    requestsPerHour: 50,
+  });
+
+  if (!rateLimitResult.allowed) {
+    return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+      status: 429,
+      headers: { 
+        ...corsHeaders, 
+        ...rateLimitResult.headers,
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
+  // Response caching based on update type
+  const cacheTTL = UPDATE_TYPE === 'high' ? 240 : UPDATE_TYPE === 'mid' ? 720 : 1500; // 4min, 12min, 25min
+  const cacheKey = `cache:energy-data:${UPDATE_TYPE}`;
   
-  // Check update type for multi-frequency updates (preserve existing functionality)
-  const url = new URL(req.url);
-  const UPDATE_TYPE = url.searchParams.get('updateType') || requestBody.updateType || 'full';
-  
-  if (DEBUG) dlog(true, `Update type: ${UPDATE_TYPE}`);
+  const cachedResponse = await getCachedResponse(cacheKey);
+  if (cachedResponse.hit && cachedResponse.data) {
+    return new Response(cachedResponse.data, {
+      headers: {
+        ...corsHeaders,
+        ...rateLimitResult.headers,
+        'Content-Type': 'application/json',
+        'X-Cache-Status': 'HIT',
+        'X-Cache-TTL': cachedResponse.ttl.toString(),
+      },
+    });
+  }
 
   // Helper to insert LKG only on real data
   async function insertLKG(as_of: string, payload: any, guardMW: number) {
@@ -1818,7 +1869,20 @@ if (!Array.isArray(payload.interconnectors) || payload.interconnectors.length ==
 }
 await insertLKG(payload.lastUpdated, payload, totalGenerationMW);
 
-    return new Response(JSON.stringify(payload), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+    // Cache the response
+    const responseBody = JSON.stringify(payload);
+    await setCachedResponse(cacheKey, responseBody, cacheTTL);
+
+    return new Response(responseBody, { 
+      headers: { 
+        ...corsHeaders, 
+        ...rateLimitResult.headers,
+        "Content-Type": "application/json", 
+        "Cache-Control": "no-store",
+        "X-Cache-Status": "MISS",
+        "X-Cache-TTL": cacheTTL.toString(),
+      } 
+    });
 
   } catch (error) {
     console.error('Error in energy-data function:', error);

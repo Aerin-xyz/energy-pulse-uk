@@ -2,6 +2,18 @@
 // Verifies token presence and performs a lightweight A11 physical flows request
 // to surface HTTP status and common XML error messages.
 
+import { 
+  checkRateLimit, 
+  getCachedResponse, 
+  setCachedResponse, 
+  getClientIP,
+  validateOptionalEICDomain,
+  validateOptionalEntsoeTimestamp,
+  validateOptionalInteger,
+  validateBoolean,
+  ValidationError
+} from "../_shared/security.ts";
+
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
@@ -36,6 +48,25 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const clientIP = getClientIP(req);
+
+  // Rate limiting (3 req/min, 10 req/hour)
+  const rateLimitResult = await checkRateLimit('entsoe-health', clientIP, {
+    requestsPerMinute: 3,
+    requestsPerHour: 10,
+  });
+
+  if (!rateLimitResult.allowed) {
+    return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+      status: 429,
+      headers: { 
+        ...corsHeaders, 
+        ...rateLimitResult.headers,
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
   try {
     const urlObj = new URL(req.url);
     const qp = (k: string, d?: string) => urlObj.searchParams.get(k) ?? d;
@@ -46,9 +77,9 @@ Deno.serve(async (req) => {
       return new Response(JSON.stringify(body), { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
     }
 
-    // Check if we have a JSON body with border-specific parameters
-    let inDomain = qp('in_Domain', '10YGB----------A');
-    let outDomain = qp('out_Domain', '10YFR-RTE------C');
+    // Input validation and parameter handling
+    let inDomain: string;
+    let outDomain: string;
     let periodStart: string;
     let periodEnd: string;
 
@@ -56,15 +87,18 @@ Deno.serve(async (req) => {
       `${d.getUTCFullYear()}${String(d.getUTCMonth() + 1).padStart(2, '0')}${String(d.getUTCDate()).padStart(2, '0')}` +
       `${String(d.getUTCHours()).padStart(2, '0')}${String(d.getUTCMinutes()).padStart(2, '0')}`;
 
-    if (req.method === 'POST') {
-      try {
+    try {
+      if (req.method === 'POST') {
         const body = await req.json();
-        if (body.in_Domain) inDomain = body.in_Domain;
-        if (body.out_Domain) outDomain = body.out_Domain;
         
-        const minutesBack = body.minutesBack || 120; // Default 2 hours
-        const alignQuarter = body.alignQuarter || false;
-        const alignHour = body.alignHour || false;
+        // Validate EIC domains
+        inDomain = body.in_Domain || qp('in_Domain', '10YGB----------A');
+        outDomain = body.out_Domain || qp('out_Domain', '10YFR-RTE------C');
+        
+        // Validate minutesBack (15-1440 minutes = 15min to 24 hours)
+        const minutesBack = validateOptionalInteger(body.minutesBack, 15, 1440, 'minutesBack') || 120;
+        const alignQuarter = validateBoolean(body.alignQuarter, 'alignQuarter');
+        const alignHour = validateBoolean(body.alignHour, 'alignHour');
         
         const now = new Date();
         let endTime = new Date(now.getTime() - minutesBack * 60 * 1000);
@@ -82,28 +116,34 @@ Deno.serve(async (req) => {
         
         periodStart = formatEntsoe(startTime);
         periodEnd = formatEntsoe(endTime);
-      } catch {
-        // Fall back to query parameters
-        const now = new Date();
-        const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
-        periodStart = qp('periodStart') || formatEntsoe(start);
-        periodEnd = qp('periodEnd') || formatEntsoe(now);
-      }
-    } else {
-      // GET request - use query parameters
-      const now = new Date();
-      const alignHourQP = qp('alignHour', '');
-      if (alignHourQP === '1' || alignHourQP === 'true') {
-        const endTime = new Date(now);
-        endTime.setUTCMinutes(0, 0, 0);
-        const startTime = new Date(endTime.getTime() - 60 * 60 * 1000);
-        periodStart = formatEntsoe(startTime);
-        periodEnd = formatEntsoe(endTime);
       } else {
-        const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
-        periodStart = qp('periodStart') || formatEntsoe(start);
-        periodEnd = qp('periodEnd') || formatEntsoe(now);
+        // GET request - use query parameters with validation
+        inDomain = qp('in_Domain', '10YGB----------A');
+        outDomain = qp('out_Domain', '10YFR-RTE------C');
+        
+        const now = new Date();
+        const alignHourQP = validateBoolean(qp('alignHour', ''), 'alignHour');
+        
+        if (alignHourQP) {
+          const endTime = new Date(now);
+          endTime.setUTCMinutes(0, 0, 0);
+          const startTime = new Date(endTime.getTime() - 60 * 60 * 1000);
+          periodStart = formatEntsoe(startTime);
+          periodEnd = formatEntsoe(endTime);
+        } else {
+          const start = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+          periodStart = validateOptionalEntsoeTimestamp(qp('periodStart'), 'periodStart') || formatEntsoe(start);
+          periodEnd = validateOptionalEntsoeTimestamp(qp('periodEnd'), 'periodEnd') || formatEntsoe(now);
+        }
       }
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        return new Response(JSON.stringify({ error: error.message, ok: false }), {
+          status: 400,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      throw error;
     }
 
     const entsoeUrl = `https://web-api.tp.entsoe.eu/api?` +
@@ -140,7 +180,13 @@ Deno.serve(async (req) => {
         },
       };
 
-      return new Response(JSON.stringify(body), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify(body), { 
+        headers: { 
+          ...corsHeaders, 
+          ...rateLimitResult.headers,
+          'Content-Type': 'application/json' 
+        } 
+      });
     } catch (e) {
       const body = {
         ok: false,
@@ -155,7 +201,14 @@ Deno.serve(async (req) => {
           parsedErr,
         },
       };
-      return new Response(JSON.stringify(body), { status: 502, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+      return new Response(JSON.stringify(body), { 
+        status: 502, 
+        headers: { 
+          ...corsHeaders, 
+          ...rateLimitResult.headers,
+          'Content-Type': 'application/json' 
+        } 
+      });
     }
   } catch (err) {
     return new Response(JSON.stringify({ ok: false, reason: 'internal-error', error: (err as Error)?.message }), {

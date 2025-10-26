@@ -1,3 +1,12 @@
+import { 
+  checkRateLimit, 
+  getCachedResponse, 
+  setCachedResponse, 
+  getClientIP,
+  validateOptionalEnum,
+  ValidationError
+} from "../_shared/security.ts";
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
@@ -878,16 +887,66 @@ Deno.serve(async (req) => {
     return new Response(null, { headers: corsHeaders });
   }
 
+  const clientIP = getClientIP(req);
+  const url = new URL(req.url);
+
+  // Input validation
+  let period: string;
+  try {
+    period = validateOptionalEnum(
+      url.searchParams.get('period'),
+      ['24h', '7d'],
+      'period'
+    ) || '24h';
+  } catch (error) {
+    if (error instanceof ValidationError) {
+      return new Response(JSON.stringify({ error: error.message }), {
+        status: 400,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+    throw error;
+  }
+
+  // Debug mode is now disabled for unauthenticated requests (security improvement)
+  const debug = false;
+
+  // Rate limiting (5 req/min, 15 req/hour)
+  const rateLimitResult = await checkRateLimit('historical-generation', clientIP, {
+    requestsPerMinute: 5,
+    requestsPerHour: 15,
+  });
+
+  if (!rateLimitResult.allowed) {
+    return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
+      status: 429,
+      headers: { 
+        ...corsHeaders, 
+        ...rateLimitResult.headers,
+        'Content-Type': 'application/json',
+      },
+    });
+  }
+
+  // Response caching (25 minutes TTL)
+  const cacheTTL = 1500;
+  const cacheKey = `cache:historical-generation:${period}`;
+  
+  const cachedResponse = await getCachedResponse(cacheKey);
+  if (cachedResponse.hit && cachedResponse.data) {
+    return new Response(cachedResponse.data, {
+      headers: {
+        ...corsHeaders,
+        ...rateLimitResult.headers,
+        'Content-Type': 'application/json',
+        'X-Cache-Status': 'HIT',
+        'X-Cache-TTL': cachedResponse.ttl.toString(),
+      },
+    });
+  }
+
   try {
     console.log("Starting historical generation fetch");
-    
-    const url = new URL(req.url);
-    const debug = url.searchParams.get('debug') === '1';
-    const period = url.searchParams.get('period') || '24h';
-    
-    if (period !== '24h' && period !== '7d') {
-      throw new Error('Invalid period parameter. Must be "24h" or "7d"');
-    }
     
     let processedData: any[];
     let pvSource = 'none';
@@ -939,8 +998,18 @@ Deno.serve(async (req) => {
       })
     };
     
-    return new Response(JSON.stringify(response), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    // Cache the response
+    const responseBody = JSON.stringify(response);
+    await setCachedResponse(cacheKey, responseBody, cacheTTL);
+
+    return new Response(responseBody, {
+      headers: { 
+        ...corsHeaders, 
+        ...rateLimitResult.headers,
+        'Content-Type': 'application/json',
+        'X-Cache-Status': 'MISS',
+        'X-Cache-TTL': cacheTTL.toString(),
+      },
     });
     
   } catch (error) {
