@@ -6,7 +6,7 @@ import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { HistoricalGenerationChart } from '@/components/HistoricalGenerationChart';
 import { EUDebugPanel } from '@/components/EUDebugPanel';
 import { SettlementPeriodCountdown } from '@/components/SettlementPeriodCountdown';
-import { useEnergyData } from '@/hooks/useEnergyData';
+import { useEnergyData } from '@/contexts/EnergyDataContext';
 import { useHistoricalGeneration } from '@/hooks/useHistoricalGeneration';
 import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/components/LoadingSkeleton';
 import { StatusIndicator } from '@/components/StatusIndicator';

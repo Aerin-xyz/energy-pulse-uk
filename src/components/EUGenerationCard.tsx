@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useEUGeneration } from '@/hooks/useEUGeneration';
-import { useEnergyData } from '@/hooks/useEnergyData'; // your existing hook that calls energy-data
+import { useEnergyData } from '@/contexts/EnergyDataContext';
 import { Loader2 } from 'lucide-react';
 
 type CountryView = {

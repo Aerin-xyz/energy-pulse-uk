@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { useEnergyData } from '@/hooks/useEnergyData';
+import { useEnergyData } from '@/contexts/EnergyDataContext';
 
 export const EUDebugPanel: React.FC = () => {
   const energy = useEnergyData();
