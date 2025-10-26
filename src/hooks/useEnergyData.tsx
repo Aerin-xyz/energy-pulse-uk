@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 interface GenerationData {
@@ -153,18 +153,34 @@ export const useEnergyData = () => {
   const [nextMidFreqAt, setNextMidFreqAt] = useState<Date | null>(null);
   const [lastUpdateType, setLastUpdateType] = useState<'high' | 'mid' | 'full'>('full');
   const [retryCount, setRetryCount] = useState(0);
-  const pendingRequest = useState<Promise<void> | null>(null);
+  const pendingRequest = useRef<Promise<void> | null>(null);
+  const isMountedRef = useRef(true);
   const { toast } = useToast();
+
+  // Cleanup on unmount
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   const fetchAndSetEnergyData = useCallback(async (updateType: 'high' | 'mid' | 'full' = 'full', showToast = true) => {
     // Prevent duplicate simultaneous requests
-    if (pendingRequest[0]) {
+    if (pendingRequest.current) {
       console.log('[useEnergyData] Request already in flight, skipping');
-      return pendingRequest[0];
+      return pendingRequest.current;
+    }
+    
+    // Don't start new requests if unmounted
+    if (!isMountedRef.current) {
+      return;
     }
     
     const promise = (async () => {
       try {
+      // Check if still mounted before setting state
+      if (!isMountedRef.current) return;
+      
       // OPTIMIZATION: Always show cached data immediately to improve perceived performance
       if (cachedData) {
         setData(cachedData);
@@ -185,6 +201,9 @@ export const useEnergyData = () => {
       const energyData = await fetchEnergyData(updateType);
       clearTimeout(timeoutId);
 
+      // Check if still mounted before setting state
+      if (!isMountedRef.current) return;
+      
       // Store raw data for debugging
       setRawData(energyData);
 
@@ -303,20 +322,23 @@ export const useEnergyData = () => {
         }
       }
     } finally {
-      setLoading(false);
-      setInitialLoad(false);
-      pendingRequest[0] = null;
+      if (isMountedRef.current) {
+        setLoading(false);
+        setInitialLoad(false);
+      }
+      pendingRequest.current = null;
     }
   })();
   
-  pendingRequest[0] = promise;
+  pendingRequest.current = promise;
   return promise;
-  }, [toast, cachedData, initialLoad, retryCount, pendingRequest]);
+  }, [toast, cachedData, initialLoad, retryCount]);
 
   // Initial fetch (full data)
   useEffect(() => {
     fetchAndSetEnergyData('full', false); // No toast on initial load
-  }, [fetchAndSetEnergyData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps - only run once on mount
 
   // Staggered multi-frequency auto-refresh intervals to prevent simultaneous requests
   useEffect(() => {
@@ -352,7 +374,8 @@ export const useEnergyData = () => {
       clearTimeout(fullFreqTimeout);
       intervals.forEach(interval => clearInterval(interval));
     };
-  }, [fetchAndSetEnergyData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps - set up intervals once on mount
 
   // Refresh when tab becomes visible again (full refresh)
   useEffect(() => {
@@ -364,7 +387,8 @@ export const useEnergyData = () => {
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [fetchAndSetEnergyData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps - set up listener once on mount
 
   return {
     data,
