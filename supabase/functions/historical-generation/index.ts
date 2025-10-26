@@ -1,7 +1,5 @@
 import { 
   checkRateLimit, 
-  getCachedResponse, 
-  setCachedResponse, 
   getClientIP,
   validateOptionalEnum,
   ValidationError
@@ -928,23 +926,6 @@ Deno.serve(async (req) => {
     });
   }
 
-  // Response caching (25 minutes TTL)
-  const cacheTTL = 1500;
-  const cacheKey = `cache:historical-generation:${period}`;
-  
-  const cachedResponse = await getCachedResponse(cacheKey);
-  if (cachedResponse.hit && cachedResponse.data) {
-    return new Response(cachedResponse.data, {
-      headers: {
-        ...corsHeaders,
-        ...rateLimitResult.headers,
-        'Content-Type': 'application/json',
-        'X-Cache-Status': 'HIT',
-        'X-Cache-TTL': cachedResponse.ttl.toString(),
-      },
-    });
-  }
-
   try {
     console.log("Starting historical generation fetch");
     
@@ -998,17 +979,13 @@ Deno.serve(async (req) => {
       })
     };
     
-    // Cache the response
     const responseBody = JSON.stringify(response);
-    await setCachedResponse(cacheKey, responseBody, cacheTTL);
 
     return new Response(responseBody, {
       headers: { 
         ...corsHeaders, 
         ...rateLimitResult.headers,
         'Content-Type': 'application/json',
-        'X-Cache-Status': 'MISS',
-        'X-Cache-TTL': cacheTTL.toString(),
       },
     });
     
