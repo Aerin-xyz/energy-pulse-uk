@@ -1387,8 +1387,8 @@ Deno.serve(async (req) => {
 
   // Rate limiting (30 req/min, 200 req/hour)
   const rateLimitResult = await checkRateLimit('energy-data', clientIP, {
-    requestsPerMinute: 30,
-    requestsPerHour: 200,
+    requestsPerMinute: 120,
+    requestsPerHour: 1000,
   });
 
   if (!rateLimitResult.allowed) {

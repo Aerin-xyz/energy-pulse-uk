@@ -52,8 +52,8 @@ Deno.serve(async (req) => {
 
   // Rate limiting (3 req/min, 10 req/hour)
   const rateLimitResult = await checkRateLimit('entsoe-health', clientIP, {
-    requestsPerMinute: 3,
-    requestsPerHour: 10,
+    requestsPerMinute: 30,
+    requestsPerHour: 200,
   });
 
   if (!rateLimitResult.allowed) {

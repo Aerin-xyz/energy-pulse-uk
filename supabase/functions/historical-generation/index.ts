@@ -911,8 +911,8 @@ Deno.serve(async (req) => {
 
   // Rate limiting (5 req/min, 15 req/hour)
   const rateLimitResult = await checkRateLimit('historical-generation', clientIP, {
-    requestsPerMinute: 5,
-    requestsPerHour: 15,
+    requestsPerMinute: 50,
+    requestsPerHour: 400,
   });
 
   if (!rateLimitResult.allowed) {

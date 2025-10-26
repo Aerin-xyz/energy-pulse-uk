@@ -176,8 +176,8 @@ serve(async (req) => {
 
   // Rate limiting (10 req/min, 30 req/hour)
   const rateLimitResult = await checkRateLimit('eu-generation-mix', clientIP, {
-    requestsPerMinute: 10,
-    requestsPerHour: 30,
+    requestsPerMinute: 60,
+    requestsPerHour: 500,
   });
 
   if (!rateLimitResult.allowed) {
