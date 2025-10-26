@@ -1217,21 +1217,10 @@ function pickLatestSP(rows: any[]) {
     return Number(d) * 100 + sp;
   };
 
-  // Calculate current settlement period to filter out future data
-  const now = new Date();
-  const currentDateStr = now.toISOString().slice(0, 10).replace(/-/g, ""); // "20250830"
-  const minutesSinceMidnight = now.getUTCHours() * 60 + now.getUTCMinutes();
-  const currentSP = Math.floor(minutesSinceMidnight / 30) + 1; // SP 1-48
-  const currentKey = Number(currentDateStr) * 100 + currentSP;
-
-  // Filter to only current or past settlement periods
-  const validRows = rows.filter(r => key(r) > 0 && key(r) <= currentKey);
-  if (!validRows.length) return []; // No valid data
-
-  // Find max key among valid rows
+  // Find max key
   let maxKey = -1;
-  for (const r of validRows) { maxKey = Math.max(maxKey, key(r)); }
-  return validRows.filter(r => key(r) === maxKey);
+  for (const r of rows) { maxKey = Math.max(maxKey, key(r)); }
+  return rows.filter(r => key(r) === maxKey);
 }
 
 // Fuel type exclusions (interconnectors and pumped storage)
