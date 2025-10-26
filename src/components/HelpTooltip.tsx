@@ -1,5 +1,5 @@
 import { HelpCircle } from 'lucide-react';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface HelpTooltipProps {
   content: string;
@@ -8,15 +8,19 @@ interface HelpTooltipProps {
 
 export const HelpTooltip = ({ content, className = '' }: HelpTooltipProps) => {
   return (
-    <TooltipProvider delayDuration={200}>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <HelpCircle className={`w-3.5 h-3.5 cursor-help text-muted-foreground hover:text-foreground transition-colors ${className}`} />
-        </TooltipTrigger>
-        <TooltipContent className="max-w-xs">
-          <p className="text-sm">{content}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="inline-flex items-center justify-center rounded-full focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+          aria-label="Help information"
+        >
+          <HelpCircle className={`w-5 h-5 cursor-pointer text-muted-foreground hover:text-foreground transition-colors ${className}`} />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="max-w-xs">
+        <p className="text-sm">{content}</p>
+      </PopoverContent>
+    </Popover>
   );
 };
