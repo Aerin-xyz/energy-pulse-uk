@@ -126,7 +126,80 @@ export async function checkRateLimit(
   }
 }
 
-// Response caching middleware
+// Compression helpers
+async function compressData(data: string): Promise<string> {
+  try {
+    const encoder = new TextEncoder();
+    const input = encoder.encode(data);
+    const cs = new CompressionStream('gzip');
+    const writer = cs.writable.getWriter();
+    writer.write(input);
+    writer.close();
+    
+    const chunks: Uint8Array[] = [];
+    const reader = cs.readable.getReader();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+    
+    const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
+    const compressed = new Uint8Array(totalLength);
+    let offset = 0;
+    for (const chunk of chunks) {
+      compressed.set(chunk, offset);
+      offset += chunk.length;
+    }
+    
+    // Convert to base64 for storage
+    const base64 = btoa(String.fromCharCode(...compressed));
+    return base64;
+  } catch (error) {
+    console.error('[Compression] Failed to compress:', error);
+    return data; // Fallback to uncompressed
+  }
+}
+
+async function decompressData(compressed: string): Promise<string> {
+  try {
+    // Decode from base64
+    const binaryString = atob(compressed);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+      bytes[i] = binaryString.charCodeAt(i);
+    }
+    
+    const ds = new DecompressionStream('gzip');
+    const writer = ds.writable.getWriter();
+    writer.write(bytes);
+    writer.close();
+    
+    const chunks: Uint8Array[] = [];
+    const reader = ds.readable.getReader();
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+    }
+    
+    const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
+    const decompressed = new Uint8Array(totalLength);
+    let offset = 0;
+    for (const chunk of chunks) {
+      decompressed.set(chunk, offset);
+      offset += chunk.length;
+    }
+    
+    const decoder = new TextDecoder();
+    return decoder.decode(decompressed);
+  } catch (error) {
+    console.error('[Decompression] Failed to decompress:', error);
+    return compressed; // Fallback to treating as uncompressed
+  }
+}
+
+// Response caching middleware with compression
 export async function getCachedResponse(
   cacheKey: string
 ): Promise<{ hit: boolean; data: string | null; ttl: number }> {
@@ -136,7 +209,9 @@ export async function getCachedResponse(
     const cached = await redis.get(cacheKey);
     if (cached) {
       const ttl = await redis.ttl(cacheKey);
-      return { hit: true, data: cached, ttl };
+      // Decompress the cached data
+      const decompressed = await decompressData(cached);
+      return { hit: true, data: decompressed, ttl };
     }
     return { hit: false, data: null, ttl: 0 };
   } catch (error) {
@@ -153,7 +228,10 @@ export async function setCachedResponse(
   const redis = new UpstashRedis();
   
   try {
-    await redis.setex(cacheKey, ttlSeconds, data);
+    // Compress the data before caching
+    const compressed = await compressData(data);
+    console.log(`[Cache] Size reduction: ${data.length} -> ${compressed.length} bytes (${((1 - compressed.length / data.length) * 100).toFixed(1)}% reduction)`);
+    await redis.setex(cacheKey, ttlSeconds, compressed);
   } catch (error) {
     console.error('[Cache] Error setting cached response:', error);
   }

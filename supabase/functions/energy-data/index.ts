@@ -1765,6 +1765,7 @@ dataFreshness: {
       }
     };
 
+// Add debug info only if requested (don't cache debug responses)
 if (DEBUG) {
   // Log "Other" breakdown details
   const otherTotalMW = hvByFuelMW["Other"] || 0;
@@ -1869,9 +1870,18 @@ if (!Array.isArray(payload.interconnectors) || payload.interconnectors.length ==
 }
 await insertLKG(payload.lastUpdated, payload, totalGenerationMW);
 
-    // Cache the response
+    // Create cacheable payload (strip debug info for smaller cache size)
+    const cacheablePayload = { ...payload };
+    delete (cacheablePayload as any).diagnostics;
+    delete (cacheablePayload as any).interconnectorAttempts;
+    delete (cacheablePayload as any).apiKeysUsed;
+    
+    // Cache the compressed, stripped-down response
+    const cacheBody = JSON.stringify(cacheablePayload);
+    await setCachedResponse(cacheKey, cacheBody, cacheTTL);
+    
+    // Return full payload (with debug info if requested)
     const responseBody = JSON.stringify(payload);
-    await setCachedResponse(cacheKey, responseBody, cacheTTL);
 
     return new Response(responseBody, { 
       headers: { 
