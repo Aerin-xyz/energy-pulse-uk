@@ -45,7 +45,7 @@ export type Database = {
       }
     }
     Functions: {
-      [_ in never]: never
+      get_latest_energy_data_id: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
