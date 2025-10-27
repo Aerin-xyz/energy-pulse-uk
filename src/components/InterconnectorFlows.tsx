@@ -22,6 +22,7 @@ const countryFlags: Record<string, string> = {
   'Ireland': '🇮🇪',
   'Norway': '🇳🇴',
   'Denmark': '🇩🇰',
+  'Northern Ireland': '🇬🇧',
 };
 
 const getCountryFlag = (country: string): string => {
