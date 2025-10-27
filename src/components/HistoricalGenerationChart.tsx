@@ -141,7 +141,7 @@ export const HistoricalGenerationChart = ({
     return (
       <Card>
         <CardHeader>
-          <CardTitle>Past 24 Hours Generation by Fuel Type</CardTitle>
+          <CardTitle>Historical Generation</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="text-center text-muted-foreground py-8">
@@ -247,7 +247,7 @@ export const HistoricalGenerationChart = ({
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Past 24 Hours Generation by Fuel Type</CardTitle>
+          <CardTitle>Historical Generation</CardTitle>
           {lastUpdated && (
             <Badge variant="outline" className="text-xs">
               Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -258,8 +258,7 @@ export const HistoricalGenerationChart = ({
       <CardContent className="px-2 md:px-6 pt-0">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList>
-            <TabsTrigger value="chart">Chart View</TabsTrigger>
-            <TabsTrigger value="table">Data Table</TabsTrigger>
+            <TabsTrigger value="chart">Last day</TabsTrigger>
             <TabsTrigger value="weekly">Weekly View</TabsTrigger>
           </TabsList>
           
@@ -303,92 +302,6 @@ export const HistoricalGenerationChart = ({
             </div>
           </TabsContent>
           
-          <TabsContent value="table" className="mt-4">
-            <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Time</TableHead>
-                    <TableHead>Gas (GW)</TableHead>
-                    <TableHead>Nuclear (GW)</TableHead>
-                    <TableHead>Wind (GW)</TableHead>
-                    <TableHead>Solar (GW)</TableHead>
-                    <TableHead>Biomass (GW)</TableHead>
-                    <TableHead>Hydro (GW)</TableHead>
-                    <TableHead>Other (GW)</TableHead>
-                    <TableHead>Total (GW)</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentData.map((point, index) => {
-                    const getFuelValue = (fuelType: string) => 
-                      point.fuelMix.find(f => f.fuelType === fuelType)?.mw || 0;
-                    
-                    const solarMW = getFuelValue('Solar');
-                    const solarMatched = point.solarMatched;
-                    
-                    return (
-                      <TableRow key={index}>
-                        <TableCell className="font-medium">
-                          {point.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                        </TableCell>
-                        <TableCell>{formatGWfromMW(getFuelValue('Gas'))}</TableCell>
-                        <TableCell>{formatGWfromMW(getFuelValue('Nuclear'))}</TableCell>
-                        <TableCell>{formatGWfromMW(getFuelValue('Wind'))}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <span>{formatGWfromMW(solarMW)}</span>
-                            <TooltipProvider>
-                              <UITooltip>
-                                <TooltipTrigger>
-                                  <div 
-                                    className={`w-1.5 h-1.5 rounded-full ${
-                                      solarMatched 
-                                        ? 'bg-green-500' 
-                                        : 'bg-muted-foreground/40'
-                                    }`}
-                                  />
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                  <p className="text-xs">
-                                    Solar data {solarMatched ? 'matched' : 'not available'} within 45min tolerance
-                                  </p>
-                                </TooltipContent>
-                              </UITooltip>
-                            </TooltipProvider>
-                          </div>
-                        </TableCell>
-                        <TableCell>{formatGWfromMW(getFuelValue('Biomass'))}</TableCell>
-                        <TableCell>{formatGWfromMW(getFuelValue('Hydro') + getFuelValue('PSH'))}</TableCell>
-                        <TableCell>{formatGWfromMW(getFuelValue('Other') + getFuelValue('Coal'))}</TableCell>
-                        <TableCell className="font-medium">{formatGWfromMW(point.totalMW)}</TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            </div>
-            
-            {meta && (
-              <div className="mt-4 text-xs text-muted-foreground space-y-1">
-                <p>Solar from PV Live (measured) • {meta.solarMatchedCount}/{meta.periods} periods matched</p>
-                <p>PV Source: {meta.pvSource === 'eso' ? 'ESO Open Data' : meta.pvSource === 'sheffield' ? 'Sheffield Solar' : 'None available'}</p>
-                <TooltipProvider>
-                  <UITooltip>
-                    <TooltipTrigger className="underline decoration-dotted">
-                      <span>Tolerance: ±45 minutes from period end</span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p className="text-xs max-w-xs">
-                        Solar data is accepted when PV Live measurements are within 45 minutes of the settlement period end time.
-                        This ensures data quality while accounting for reporting delays.
-                      </p>
-                    </TooltipContent>
-                  </UITooltip>
-                </TooltipProvider>
-              </div>
-            )}
-          </TabsContent>
 
           <TabsContent value="weekly" className="mt-4">
             {weeklyError ? (
