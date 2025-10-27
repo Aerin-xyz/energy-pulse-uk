@@ -15,6 +15,19 @@ interface InterconnectorFlowsProps {
   interconnectorStatus?: 'live' | 'cached' | 'unavailable';
 }
 
+const countryFlags: Record<string, string> = {
+  'France': '🇫🇷',
+  'Belgium': '🇧🇪',
+  'Netherlands': '🇳🇱',
+  'Ireland': '🇮🇪',
+  'Norway': '🇳🇴',
+  'Denmark': '🇩🇰',
+};
+
+const getCountryFlag = (country: string): string => {
+  return countryFlags[country] || '';
+};
+
 export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: InterconnectorFlowsProps) => {
   const totalImports = data.filter(item => item.flow > 0).reduce((sum, item) => sum + item.flow, 0);
   const totalExports = Math.abs(data.filter(item => item.flow < 0).reduce((sum, item) => sum + item.flow, 0));
@@ -168,8 +181,9 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                     <div className="font-medium text-card-foreground">
                       {interconnector.name}
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      {interconnector.country}
+                    <div className="text-sm text-muted-foreground flex items-center gap-1.5">
+                      <span className="text-base" aria-label={interconnector.country}>{getCountryFlag(interconnector.country)}</span>
+                      <span>{interconnector.country}</span>
                     </div>
                     <div className="text-xs text-muted-foreground">
                       Capacity: {interconnector.capacity && interconnector.capacity > 0 ? `${interconnector.capacity} MW` : 'n/a'}
