@@ -258,7 +258,7 @@ export const HistoricalGenerationChart = ({
       <CardContent className="px-2 md:px-6 pt-0">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList>
-            <TabsTrigger value="chart">Last day</TabsTrigger>
+            <TabsTrigger value="chart">Last 24 hours</TabsTrigger>
             <TabsTrigger value="weekly">Weekly View</TabsTrigger>
           </TabsList>
           
