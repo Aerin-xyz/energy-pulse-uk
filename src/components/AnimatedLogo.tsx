@@ -12,6 +12,12 @@ const colorSchemes = [
   { name: 'spring', colors: ['#84cc16', '#10b981', '#06b6d4'] },    // lime → green → cyan
 ];
 
+// Deterministic pseudo-random function based on seed
+const pseudoRandom = (seed: number, min: number, max: number): number => {
+  const x = Math.sin(seed * 12.9898 + 78.233) * 43758.5453;
+  return min + (x - Math.floor(x)) * (max - min);
+};
+
 // Convert hex color to RGB
 const hexToRgb = (hex: string): [number, number, number] => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -72,49 +78,58 @@ export const AnimatedLogo = ({ className = '', animate = true }: AnimatedLogoPro
     return () => clearInterval(interval);
   }, [animate]);
 
-  // Generate circle positions in double concentric rings with gradient colors
+  // Generate circles in multiple organic layers with variance
   const generateCircles = () => {
     const circles = [];
-    const numCircles = 48;
     const centerX = 60;
     const centerY = 60;
     const colors = colorSchemes[currentScheme].colors;
     
-    // Inner ring
-    const innerRadius = 40;
-    for (let i = 0; i < numCircles; i++) {
-      const angle = (i / numCircles) * 2 * Math.PI;
-      const x = centerX + innerRadius * Math.cos(angle);
-      const y = centerY + innerRadius * Math.sin(angle);
-      const gradientPosition = i / numCircles;
-      const color = getGradientColor(gradientPosition, colors);
-      
-      circles.push({
-        id: `inner-${i}`,
-        x,
-        y,
-        r: 2.2,
-        color,
-      });
-    }
+    // Define multiple layers with different characteristics
+    const layers = [
+      { baseRadius: 35, count: 16, sizeRange: [1.8, 2.5] as [number, number], variance: 4, opacity: 0.85 },
+      { baseRadius: 42, count: 20, sizeRange: [2.5, 3.5] as [number, number], variance: 3, opacity: 1.0 },
+      { baseRadius: 48, count: 18, sizeRange: [2.0, 3.0] as [number, number], variance: 3, opacity: 0.95 },
+      { baseRadius: 54, count: 14, sizeRange: [1.5, 2.2] as [number, number], variance: 5, opacity: 0.85 },
+    ];
     
-    // Outer ring (offset by half position for staggered effect)
-    const outerRadius = 50;
-    for (let i = 0; i < numCircles; i++) {
-      const angle = ((i + 0.5) / numCircles) * 2 * Math.PI;
-      const x = centerX + outerRadius * Math.cos(angle);
-      const y = centerY + outerRadius * Math.sin(angle);
-      const gradientPosition = (i + 0.5) / numCircles;
-      const color = getGradientColor(gradientPosition, colors);
-      
-      circles.push({
-        id: `outer-${i}`,
-        x,
-        y,
-        r: 2.5,
-        color,
-      });
-    }
+    layers.forEach((layer, layerIndex) => {
+      for (let i = 0; i < layer.count; i++) {
+        // Add angular variance (±0.15 radians ≈ ±8.6 degrees)
+        const baseAngle = (i / layer.count) * 2 * Math.PI;
+        const angleVariance = pseudoRandom(layerIndex * 1000 + i, -0.15, 0.15);
+        const angle = baseAngle + angleVariance;
+        
+        // Add radial variance
+        const radiusVariance = pseudoRandom(layerIndex * 1000 + i * 100, -layer.variance, layer.variance);
+        const radius = layer.baseRadius + radiusVariance;
+        
+        // Calculate position with variance applied
+        const x = centerX + radius * Math.cos(angle);
+        const y = centerY + radius * Math.sin(angle);
+        
+        // Calculate gradient position based on angle (normalized to 0-1)
+        const gradientPosition = (angle + Math.PI) / (2 * Math.PI);
+        const color = getGradientColor(gradientPosition, colors);
+        
+        // Vary circle size within layer's range
+        const size = pseudoRandom(layerIndex * 1000 + i * 200, layer.sizeRange[0], layer.sizeRange[1]);
+        
+        // Calculate shadow intensity based on size
+        const shadowBlur = size > 3 ? 1.5 : 0.8;
+        const shadowAlpha = size > 3 ? 0.15 : 0.1;
+        
+        circles.push({
+          id: `layer${layerIndex}-${i}`,
+          x,
+          y,
+          r: size,
+          color,
+          opacity: layer.opacity,
+          shadow: `drop-shadow(0 0 ${shadowBlur}px rgba(0, 0, 0, ${shadowAlpha}))`,
+        });
+      }
+    });
 
     return circles;
   };
@@ -140,10 +155,11 @@ export const AnimatedLogo = ({ className = '', animate = true }: AnimatedLogoPro
             cy={circle.y}
             r={circle.r}
             fill={circle.color}
+            opacity={circle.opacity}
             className={isAnimating ? 'logo-circle' : ''}
             style={{
               transition: isAnimating ? 'fill 1.2s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
-              filter: 'drop-shadow(0 0 2px rgba(0, 0, 0, 0.1))',
+              filter: circle.shadow,
             }}
           />
         ))}
