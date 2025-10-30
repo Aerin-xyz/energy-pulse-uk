@@ -176,10 +176,7 @@ export const AnimatedLogo = ({
         className="logo-svg"
         style={{ contain: 'layout paint' }}
       >
-        <g 
-          className={!reduced && variant === 'auto' ? 'spin' : ''}
-          style={{ transformOrigin: '60px 60px' }}
-        >
+        <g>
           {/* Layer A - current scheme */}
           <g 
             style={{ 
@@ -248,19 +245,6 @@ export const AnimatedLogo = ({
           filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.55));
         }
 
-        .spin {
-          animation: spin 36s linear infinite;
-        }
-
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-          .spin {
-            animation: none !important;
-          }
-        }
       `}</style>
     </div>
   );
