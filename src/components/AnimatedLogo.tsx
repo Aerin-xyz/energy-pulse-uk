@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 
 interface AnimatedLogoProps {
   className?: string;
-  animate?: boolean;
+  variant?: 'auto' | 'ocean' | 'coral' | 'violet' | 'green';
+  speedMs?: number;
+  holdMs?: number;
 }
 
-const colorSchemes = [
-  { name: 'cool', colors: ['#10b981', '#14b8a6', '#3b82f6'] },      // green → teal → blue
-  { name: 'sunset', colors: ['#f97316', '#ef4444', '#ec4899'] },    // orange → red → pink
-  { name: 'purple', colors: ['#a855f7', '#8b5cf6', '#3b82f6'] },    // purple → violet → blue
-  { name: 'spring', colors: ['#84cc16', '#10b981', '#06b6d4'] },    // lime → green → cyan
+const SCHEMES = [
+  { key: "ocean",  stops: ["#004683","#1C70AD","#10B8A6","#1C70AD","#004683"], text:"#1CDEE4" },
+  { key: "coral",  stops: ["#E5756A","#FF4D6D","#FF5CA8","#FF4D6D","#E5756A"], text:"#FF6B7D" },
+  { key: "violet", stops: ["#6F2CF5","#8848FF","#3B82F6","#5A2DE0","#6F2CF5"], text:"#B06CFF" },
+  { key: "green",  stops: ["#1AD05C","#18C99B","#1BB2F5","#18C99B","#1AD05C"], text:"#38E3B2" },
 ];
 
 // Deterministic pseudo-random function based on seed
@@ -34,8 +36,8 @@ const rgbToHex = (r: number, g: number, b: number): string => {
   }).join('');
 };
 
-// Interpolate between two colors
-const interpolateColor = (color1: string, color2: string, factor: number): string => {
+// Interpolate between two hex colors
+const lerpHex = (color1: string, color2: string, factor: number): string => {
   const c1 = hexToRgb(color1);
   const c2 = hexToRgb(color2);
   
@@ -46,46 +48,44 @@ const interpolateColor = (color1: string, color2: string, factor: number): strin
   return rgbToHex(r, g, b);
 };
 
-// Get gradient color at position (0-1) through all 3 colors
-const getGradientColor = (position: number, colors: string[]): string => {
-  // Smooth transition through all 3 colors
-  if (position < 0.5) {
-    // Blend between color[0] and color[1]
-    return interpolateColor(colors[0], colors[1], position * 2);
-  } else {
-    // Blend between color[1] and color[2]
-    return interpolateColor(colors[1], colors[2], (position - 0.5) * 2);
-  }
+// Sample from 5-stop gradient
+const sample5 = (t: number, stops: string[]): string => {
+  const n = stops.length - 1;
+  const x = Math.min(Math.max(t, 0), 1) * n;
+  const i = Math.floor(x);
+  const f = x - i;
+  return lerpHex(stops[i], stops[Math.min(i + 1, n)], f);
 };
 
-export const AnimatedLogo = ({ className = '', animate = true }: AnimatedLogoProps) => {
-  const [currentScheme, setCurrentScheme] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
+interface CircleGeo {
+  k: string;
+  x: number;
+  y: number;
+  r: number;
+  pos: number;
+  op: number;
+}
 
-  useEffect(() => {
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!animate || prefersReducedMotion) {
-      setIsAnimating(false);
-      return;
-    }
+export const AnimatedLogo = ({ 
+  className = '', 
+  variant = 'auto',
+  speedMs = 2500,
+  holdMs = 3500
+}: AnimatedLogoProps) => {
+  const [idx, setIdx] = useState(0);
+  const [next, setNext] = useState(1);
+  const [fade, setFade] = useState(0);
+  
+  const reduced = useMemo(() => 
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  , []);
 
-    setIsAnimating(true);
-    const interval = setInterval(() => {
-      setCurrentScheme(prev => (prev + 1) % colorSchemes.length);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [animate]);
-
-  // Generate circles in multiple organic layers with variance
-  const generateCircles = () => {
-    const circles = [];
+  // Memoized geometry - computed once
+  const geometry = useMemo((): CircleGeo[] => {
+    const circles: CircleGeo[] = [];
     const centerX = 60;
     const centerY = 60;
-    const colors = colorSchemes[currentScheme].colors;
     
-    // Define multiple layers with different characteristics
     const layers = [
       { baseRadius: 35, count: 16, sizeRange: [1.8, 2.5] as [number, number], variance: 4, opacity: 0.85 },
       { baseRadius: 42, count: 20, sizeRange: [2.5, 3.5] as [number, number], variance: 3, opacity: 1.0 },
@@ -95,98 +95,158 @@ export const AnimatedLogo = ({ className = '', animate = true }: AnimatedLogoPro
     
     layers.forEach((layer, layerIndex) => {
       for (let i = 0; i < layer.count; i++) {
-        // Add angular variance (±0.15 radians ≈ ±8.6 degrees)
         const baseAngle = (i / layer.count) * 2 * Math.PI;
         const angleVariance = pseudoRandom(layerIndex * 1000 + i, -0.15, 0.15);
         const angle = baseAngle + angleVariance;
         
-        // Add radial variance
         const radiusVariance = pseudoRandom(layerIndex * 1000 + i * 100, -layer.variance, layer.variance);
         const radius = layer.baseRadius + radiusVariance;
         
-        // Calculate position with variance applied
         const x = centerX + radius * Math.cos(angle);
         const y = centerY + radius * Math.sin(angle);
         
-        // Calculate gradient position based on angle (normalized to 0-1)
         const gradientPosition = (angle + Math.PI) / (2 * Math.PI);
-        const color = getGradientColor(gradientPosition, colors);
-        
-        // Vary circle size within layer's range
         const size = pseudoRandom(layerIndex * 1000 + i * 200, layer.sizeRange[0], layer.sizeRange[1]);
         
-        // Calculate shadow intensity based on size
-        const shadowBlur = size > 3 ? 1.5 : 0.8;
-        const shadowAlpha = size > 3 ? 0.15 : 0.1;
-        
         circles.push({
-          id: `layer${layerIndex}-${i}`,
+          k: `layer${layerIndex}-${i}`,
           x,
           y,
           r: size,
-          color,
-          opacity: layer.opacity,
-          shadow: `drop-shadow(0 0 ${shadowBlur}px rgba(0, 0, 0, ${shadowAlpha}))`,
+          pos: gradientPosition,
+          op: layer.opacity,
         });
       }
     });
-
+    
     return circles;
-  };
+  }, []);
 
-  const circles = generateCircles();
+  // Animation loop
+  useEffect(() => {
+    if (variant !== 'auto' || reduced) return;
+    
+    let raf: number;
+    let t0: number;
+    let phase: 'fade' | 'hold' = 'fade';
+    
+    const loop = (t: number) => {
+      if (!t0) t0 = t;
+      const dt = t - t0;
+      
+      if (phase === 'fade') {
+        const p = Math.min(dt / speedMs, 1);
+        setFade(p);
+        if (p === 1) {
+          phase = 'hold';
+          t0 = t;
+          setIdx(next);
+          setNext((next + 1) % SCHEMES.length);
+        }
+      } else {
+        if (dt >= holdMs) {
+          phase = 'fade';
+          t0 = t;
+          setFade(0);
+        }
+      }
+      
+      raf = requestAnimationFrame(loop);
+    };
+    
+    raf = requestAnimationFrame(loop);
+    return () => cancelAnimationFrame(raf);
+  }, [variant, reduced, next, speedMs, holdMs]);
+
+  // Determine active schemes
+  const currentScheme = variant === 'auto' 
+    ? SCHEMES[idx] 
+    : SCHEMES.find(s => s.key === variant) ?? SCHEMES[0];
+  const nextScheme = SCHEMES[next];
+
+  // Blend text color during fade
+  const activeText = variant === 'auto'
+    ? lerpHex(currentScheme.text, nextScheme.text, fade)
+    : currentScheme.text;
 
   return (
-    <div className={`flex flex-col items-start gap-1 ${className}`}>
-      <svg
-        width="120"
-        height="120"
-        viewBox="0 0 120 120"
+    <div className={`flex items-center gap-4 ${className}`} role="img" aria-label="Energy Mix logo">
+      <svg 
+        width="120" 
+        height="120" 
+        viewBox="0 0 120 120" 
         className="logo-svg"
-        style={{
-          contain: 'layout paint',
-          willChange: isAnimating ? 'opacity' : 'auto',
-        }}
+        style={{ contain: 'layout paint' }}
       >
-        {circles.map((circle) => (
-          <circle
-            key={circle.id}
-            cx={circle.x}
-            cy={circle.y}
-            r={circle.r}
-            fill={circle.color}
-            opacity={circle.opacity}
-            className={isAnimating ? 'logo-circle' : ''}
-            style={{
-              transition: isAnimating ? 'fill 1.2s cubic-bezier(0.4, 0, 0.2, 1)' : 'none',
-              filter: circle.shadow,
-            }}
-          />
-        ))}
+        <g 
+          className={!reduced && variant === 'auto' ? 'spin' : ''}
+          style={{ transformOrigin: '60px 60px' }}
+        >
+          {/* Layer A - current scheme */}
+          <g style={{ opacity: variant === 'auto' ? 1 - fade : 1 }}>
+            {geometry.map(g => (
+              <circle
+                key={`a-${g.k}`}
+                cx={g.x}
+                cy={g.y}
+                r={g.r}
+                fill={sample5(g.pos, currentScheme.stops)}
+                opacity={g.op}
+              />
+            ))}
+          </g>
+          
+          {/* Layer B - next scheme (auto mode only) */}
+          {variant === 'auto' && (
+            <g style={{ opacity: fade }}>
+              {geometry.map(g => (
+                <circle
+                  key={`b-${g.k}`}
+                  cx={g.x}
+                  cy={g.y}
+                  r={g.r}
+                  fill={sample5(g.pos, nextScheme.stops)}
+                  opacity={g.op}
+                />
+              ))}
+            </g>
+          )}
+        </g>
       </svg>
       
-      <div className="flex flex-col -mt-2 ml-1">
-        <span className="text-[28px] font-bold leading-none tracking-tight text-foreground">
+      <div>
+        <div 
+          className="text-3xl font-semibold tracking-tight leading-none" 
+          style={{ color: activeText }}
+        >
           energy mix
-        </span>
-        <span className="text-[9px] text-muted-foreground tracking-wide -mt-0.5">
+        </div>
+        <div className="text-xs uppercase tracking-widest mt-0.5" style={{ color: '#C8CBCD' }}>
           UK ELECTRICITY DASHBOARD
-        </span>
+        </div>
       </div>
 
       <style>{`
-        @media (prefers-reduced-motion: reduce) {
-          .logo-circle {
-            transition: none !important;
-          }
-        }
-
         .logo-svg {
-          filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.12));
+          filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.35));
         }
         
         .dark .logo-svg {
-          filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.4));
+          filter: drop-shadow(0 2px 12px rgba(0, 0, 0, 0.55));
+        }
+
+        .spin {
+          animation: spin 36s linear infinite;
+        }
+
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+          .spin {
+            animation: none !important;
+          }
         }
       `}</style>
     </div>
