@@ -122,21 +122,29 @@ export const AnimatedLogo = ({
     return circles;
   }, []);
 
-  // Animation loop
+  // Animation loop with throttling
   useEffect(() => {
     if (variant !== 'auto' || reduced) return;
     
     let raf: number;
     let t0: number;
+    let lastUpdate = 0;
     let phase: 'fade' | 'hold' = 'fade';
+    const FRAME_TIME = 50; // ~20fps
     
     const loop = (t: number) => {
       if (!t0) t0 = t;
       const dt = t - t0;
       
+      // Only update state every 50ms or at phase completion
+      const shouldUpdate = t - lastUpdate >= FRAME_TIME;
+      
       if (phase === 'fade') {
         const p = Math.min(dt / speedMs, 1);
-        setFade(p);
+        if (shouldUpdate || p === 1) {
+          lastUpdate = t;
+          setFade(p);
+        }
         if (p === 1) {
           phase = 'hold';
           t0 = t;
@@ -147,6 +155,7 @@ export const AnimatedLogo = ({
         if (dt >= holdMs) {
           phase = 'fade';
           t0 = t;
+          lastUpdate = t;
           setFade(0);
         }
       }
@@ -164,10 +173,23 @@ export const AnimatedLogo = ({
     : SCHEMES.find(s => s.key === variant) ?? SCHEMES[0];
   const nextScheme = SCHEMES[next];
 
-  // Blend text color during fade
-  const activeText = variant === 'auto'
-    ? lerpHex(currentScheme.text, nextScheme.text, fade)
-    : currentScheme.text;
+  // Pre-calculate all colors for layer A (current scheme)
+  const layerAColors = useMemo(() => 
+    geometry.map(g => sample5(g.pos, currentScheme.stops))
+  , [geometry, currentScheme]);
+
+  // Pre-calculate all colors for layer B (next scheme)
+  const layerBColors = useMemo(() => 
+    geometry.map(g => sample5(g.pos, nextScheme.stops))
+  , [geometry, nextScheme]);
+
+  // Blend text color during fade (rounded to reduce updates)
+  const activeText = useMemo(() => {
+    const roundedFade = Math.round(fade * 10) / 10;
+    return variant === 'auto'
+      ? lerpHex(currentScheme.text, nextScheme.text, roundedFade)
+      : currentScheme.text;
+  }, [variant, currentScheme.text, nextScheme.text, Math.round(fade * 10)]);
 
   return (
     <div className={`flex items-center gap-4 ${className}`} role="img" aria-label="Energy Mix logo">
@@ -184,13 +206,13 @@ export const AnimatedLogo = ({
         >
           {/* Layer A - current scheme */}
           <g style={{ opacity: variant === 'auto' ? 1 - fade : 1 }}>
-            {geometry.map(g => (
+            {geometry.map((g, i) => (
               <circle
                 key={`a-${g.k}`}
                 cx={g.x}
                 cy={g.y}
                 r={g.r}
-                fill={sample5(g.pos, currentScheme.stops)}
+                fill={layerAColors[i]}
                 opacity={g.op}
               />
             ))}
@@ -199,13 +221,13 @@ export const AnimatedLogo = ({
           {/* Layer B - next scheme (auto mode only) */}
           {variant === 'auto' && (
             <g style={{ opacity: fade }}>
-              {geometry.map(g => (
+              {geometry.map((g, i) => (
                 <circle
                   key={`b-${g.k}`}
                   cx={g.x}
                   cy={g.y}
                   r={g.r}
-                  fill={sample5(g.pos, nextScheme.stops)}
+                  fill={layerBColors[i]}
                   opacity={g.op}
                 />
               ))}
