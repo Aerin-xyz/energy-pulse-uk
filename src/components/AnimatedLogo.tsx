@@ -87,10 +87,10 @@ export const AnimatedLogo = ({
     const centerY = 60;
     
     const layers = [
-      { baseRadius: 35, count: 16, sizeRange: [1.8, 2.5] as [number, number], variance: 4, opacity: 0.85 },
-      { baseRadius: 42, count: 20, sizeRange: [2.5, 3.5] as [number, number], variance: 3, opacity: 1.0 },
-      { baseRadius: 48, count: 18, sizeRange: [2.0, 3.0] as [number, number], variance: 3, opacity: 0.95 },
-      { baseRadius: 54, count: 14, sizeRange: [1.5, 2.2] as [number, number], variance: 5, opacity: 0.85 },
+      { baseRadius: 25, count: 16, sizeRange: [1.8, 2.5] as [number, number], variance: 4, opacity: 0.85 },
+      { baseRadius: 32, count: 20, sizeRange: [2.5, 3.5] as [number, number], variance: 3, opacity: 1.0 },
+      { baseRadius: 40, count: 18, sizeRange: [2.0, 3.0] as [number, number], variance: 3, opacity: 0.95 },
+      { baseRadius: 48, count: 14, sizeRange: [1.5, 2.2] as [number, number], variance: 5, opacity: 0.85 },
     ];
     
     layers.forEach((layer, layerIndex) => {
