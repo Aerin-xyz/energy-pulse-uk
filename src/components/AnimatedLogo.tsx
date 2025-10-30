@@ -74,7 +74,7 @@ export const AnimatedLogo = ({
 }: AnimatedLogoProps) => {
   const [idx, setIdx] = useState(0);
   const [next, setNext] = useState(1);
-  const [fade, setFade] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
   
   const reduced = useMemo(() => 
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -122,49 +122,30 @@ export const AnimatedLogo = ({
     return circles;
   }, []);
 
-  // Animation loop with throttling
+  // CSS-driven animation loop - only updates at phase boundaries
   useEffect(() => {
     if (variant !== 'auto' || reduced) return;
     
-    let raf: number;
-    let t0: number;
-    let lastUpdate = 0;
-    let phase: 'fade' | 'hold' = 'fade';
-    const FRAME_TIME = 50; // ~20fps
+    let timeout: NodeJS.Timeout;
     
-    const loop = (t: number) => {
-      if (!t0) t0 = t;
-      const dt = t - t0;
+    const startTransition = () => {
+      setIsTransitioning(true);
       
-      // Only update state every 50ms or at phase completion
-      const shouldUpdate = t - lastUpdate >= FRAME_TIME;
-      
-      if (phase === 'fade') {
-        const p = Math.min(dt / speedMs, 1);
-        if (shouldUpdate || p === 1) {
-          lastUpdate = t;
-          setFade(p);
-        }
-        if (p === 1) {
-          phase = 'hold';
-          t0 = t;
-          setIdx(next);
-          setNext((next + 1) % SCHEMES.length);
-        }
-      } else {
-        if (dt >= holdMs) {
-          phase = 'fade';
-          t0 = t;
-          lastUpdate = t;
-          setFade(0);
-        }
-      }
-      
-      raf = requestAnimationFrame(loop);
+      // After fade completes, switch to next scheme
+      timeout = setTimeout(() => {
+        setIdx(next);
+        setNext((next + 1) % SCHEMES.length);
+        setIsTransitioning(false);
+        
+        // Hold for specified time, then start next transition
+        timeout = setTimeout(startTransition, holdMs);
+      }, speedMs);
     };
     
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
+    // Start first hold period
+    timeout = setTimeout(startTransition, holdMs);
+    
+    return () => clearTimeout(timeout);
   }, [variant, reduced, next, speedMs, holdMs]);
 
   // Determine active schemes
@@ -183,13 +164,8 @@ export const AnimatedLogo = ({
     geometry.map(g => sample5(g.pos, nextScheme.stops))
   , [geometry, nextScheme]);
 
-  // Blend text color during fade (rounded to reduce updates)
-  const activeText = useMemo(() => {
-    const roundedFade = Math.round(fade * 10) / 10;
-    return variant === 'auto'
-      ? lerpHex(currentScheme.text, nextScheme.text, roundedFade)
-      : currentScheme.text;
-  }, [variant, currentScheme.text, nextScheme.text, Math.round(fade * 10)]);
+  // Text color - only changes at scheme boundaries
+  const activeText = currentScheme.text;
 
   return (
     <div className={`flex items-center gap-4 ${className}`} role="img" aria-label="Energy Mix logo">
@@ -205,7 +181,13 @@ export const AnimatedLogo = ({
           style={{ transformOrigin: '60px 60px' }}
         >
           {/* Layer A - current scheme */}
-          <g style={{ opacity: variant === 'auto' ? 1 - fade : 1 }}>
+          <g 
+            style={{ 
+              opacity: variant === 'auto' && isTransitioning ? 0 : 1,
+              transition: isTransitioning ? `opacity ${speedMs}ms ease-in-out` : 'none',
+              willChange: 'opacity'
+            }}
+          >
             {geometry.map((g, i) => (
               <circle
                 key={`a-${g.k}`}
@@ -220,7 +202,13 @@ export const AnimatedLogo = ({
           
           {/* Layer B - next scheme (auto mode only) */}
           {variant === 'auto' && (
-            <g style={{ opacity: fade }}>
+            <g 
+              style={{ 
+                opacity: isTransitioning ? 1 : 0,
+                transition: isTransitioning ? `opacity ${speedMs}ms ease-in-out` : 'none',
+                willChange: 'opacity'
+              }}
+            >
               {geometry.map((g, i) => (
                 <circle
                   key={`b-${g.k}`}
@@ -239,7 +227,10 @@ export const AnimatedLogo = ({
       <div>
         <div 
           className="text-3xl font-semibold tracking-tight leading-none" 
-          style={{ color: activeText }}
+          style={{ 
+            color: activeText,
+            transition: `color ${speedMs}ms ease-in-out`
+          }}
         >
           energy mix
         </div>
