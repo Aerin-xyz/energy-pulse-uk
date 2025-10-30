@@ -127,7 +127,25 @@ export const EnergyDashboard = () => {
       {/* Header */}
       <header className="border-b border-primary/20 glass-morphism sticky top-0 z-50 shadow-lg shadow-primary/10 relative">
         <div className="container mx-auto px-4 py-3">
-          <div className="flex justify-between items-center">
+          {/* Mobile: Vertical stack */}
+          <div className="flex md:hidden flex-col gap-3">
+            <div className="flex flex-col gap-1 -ml-2">
+              <AnimatedLogo />
+              <p className="text-xs text-muted-foreground -mt-1">Real-time UK electricity generation and flows</p>
+            </div>
+            
+            {data && (
+              <EnergyBalanceDisplay
+                totalDemandMW={data.totalDemandMW || 0}
+                totalGenerationMW={data.totalGenerationMW || 0}
+                interconnectorFlowMW={data.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0}
+                carbonIntensity={data.carbonIntensity}
+              />
+            )}
+          </div>
+
+          {/* Tablet & Desktop: Horizontal layout */}
+          <div className="hidden md:flex justify-between items-center">
             <div className="flex flex-col gap-1 -ml-2">
               <AnimatedLogo />
               <p className="text-xs text-muted-foreground -mt-1">Real-time UK electricity generation and flows</p>

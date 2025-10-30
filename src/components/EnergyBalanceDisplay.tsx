@@ -20,7 +20,7 @@ export const EnergyBalanceDisplay = ({
   return (
     <>
       {/* Mobile: Compact Energy Balance */}
-      <div className="flex md:hidden items-center gap-2 px-3 py-1.5 glass-morphism rounded-lg border-primary/20 text-xs w-full justify-between">
+      <div className="flex md:hidden items-center gap-2.5 px-3 py-2 glass-morphism rounded-lg border-primary/20 text-xs w-full justify-around">
         <div className="text-center">
           <div className="flex items-center justify-center gap-0.5 text-[10px] text-muted-foreground">
             D
