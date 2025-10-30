@@ -1,6 +1,6 @@
 import { RefreshCw, Leaf, Flame, Zap } from 'lucide-react';
-import energyMixLogo from '@/assets/energy-mix-logo.png';
 import { Button } from '@/components/ui/button';
+import { AnimatedLogo } from '@/components/AnimatedLogo';
 import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { HistoricalGenerationChart } from '@/components/HistoricalGenerationChart';
@@ -127,13 +127,9 @@ export const EnergyDashboard = () => {
       <header className="border-b border-border bg-card backdrop-blur-lg sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 py-3">
           <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-2 -ml-2">
-              <img 
-                src={energyMixLogo} 
-                alt="Energy Mix" 
-                className="h-24 w-auto object-contain"
-              />
-              <p className="text-xs text-muted-foreground">Real-time UK electricity generation and flows</p>
+            <div className="flex flex-col gap-1 -ml-2">
+              <AnimatedLogo />
+              <p className="text-xs text-muted-foreground -mt-1">Real-time UK electricity generation and flows</p>
             </div>
 
             <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6">
