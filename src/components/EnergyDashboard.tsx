@@ -281,16 +281,7 @@ export const EnergyDashboard = () => {
       <footer className="border-t border-primary/20 glass-morphism mt-16 relative">
         <div className="absolute inset-0 bg-gradient-glow opacity-20"></div>
         <div className="container mx-auto px-4 py-6 relative z-10">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="text-sm text-foreground/70">
-              Data sources: BMRS HV + ESO embedded wind + PV Live solar + ENTSO-E interconnectors
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-cosmic-cyan rounded-full animate-pulse glow-cyan"></div>
-              <span className="text-sm text-foreground/70">Live data from BMRS every 5 minutes</span>
-            </div>
-          </div>
-          <div className="text-xs text-foreground/50 text-center mt-4">
+          <div className="text-xs text-foreground/50 text-center">
             Contains BMRS data © Elexon Limited copyright and database right 2025
           </div>
         </div>
