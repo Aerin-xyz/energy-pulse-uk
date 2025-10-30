@@ -20,7 +20,7 @@ export const EnergyBalanceDisplay = ({
   return (
     <>
       {/* Mobile: Compact Energy Balance */}
-      <div className="flex md:hidden items-center gap-2 px-3 py-1.5 bg-muted/30 backdrop-blur-sm rounded-lg border border-border text-xs w-full justify-between">
+      <div className="flex md:hidden items-center gap-2 px-3 py-1.5 glass-morphism rounded-lg border-primary/20 text-xs w-full justify-between">
         <div className="text-center">
           <div className="flex items-center justify-center gap-0.5 text-[10px] text-muted-foreground">
             D
@@ -34,7 +34,7 @@ export const EnergyBalanceDisplay = ({
             G
             <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-2.5 h-2.5" />
           </div>
-          <div className="font-bold text-primary">{formatGWfromMW(totalGenerationMW)}</div>
+          <div className="font-bold text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)}</div>
         </div>
         <span className="text-muted-foreground">+</span>
         <div className="text-center">
@@ -63,7 +63,7 @@ export const EnergyBalanceDisplay = ({
       </div>
 
       {/* Tablet: Medium Energy Balance */}
-      <div className="hidden md:flex lg:hidden items-center gap-2.5 px-3 py-2 bg-muted/30 backdrop-blur-sm rounded-lg border border-border text-sm">
+      <div className="hidden md:flex lg:hidden items-center gap-2.5 px-3 py-2 glass-morphism rounded-lg border-primary/20 text-sm">
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground mb-0.5">
             Demand
@@ -77,7 +77,7 @@ export const EnergyBalanceDisplay = ({
             Generation
             <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-3 h-3" />
           </div>
-          <div className="font-bold text-primary">{formatGWfromMW(totalGenerationMW)} GW</div>
+          <div className="font-bold text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)} GW</div>
         </div>
         <div className="text-lg text-muted-foreground">+</div>
         <div className="text-center">
@@ -113,7 +113,7 @@ export const EnergyBalanceDisplay = ({
       </div>
 
       {/* Desktop: Full Energy Balance Equation */}
-      <div className="hidden lg:flex items-center gap-3 px-4 py-2 bg-muted/30 backdrop-blur-sm rounded-lg border border-border">
+      <div className="hidden lg:flex items-center gap-3 px-4 py-2 glass-morphism rounded-lg border-primary/20">
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-1">
             Demand
@@ -127,7 +127,7 @@ export const EnergyBalanceDisplay = ({
             Generation
             <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-4 h-4" />
           </div>
-          <div className="font-bold text-lg text-primary">{formatGWfromMW(totalGenerationMW)} GW</div>
+          <div className="font-bold text-lg text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)} GW</div>
         </div>
         <div className="text-2xl text-muted-foreground">+</div>
         <div className="text-center">

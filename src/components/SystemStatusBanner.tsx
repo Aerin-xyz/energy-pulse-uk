@@ -23,13 +23,13 @@ export const SystemStatusBanner = ({
     : 'bg-yellow-500';
 
   return (
-    <div className="border-b border-border bg-muted/30 backdrop-blur-sm sticky top-[136px] z-40">
+    <div className="border-b border-primary/20 glass-morphism sticky top-[136px] z-40 shadow-lg">
       <div className="container mx-auto px-4 py-2">
         <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-xs md:text-sm">
           {/* Settlement Period */}
           {settlementPeriod && (
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-primary" />
+              <Clock className="w-4 h-4 text-cosmic-cyan" />
               <span className="text-muted-foreground">Settlement Period:</span>
               <span className="font-bold text-foreground">{settlementPeriod}</span>
               {timeUntilNextSP && (
@@ -43,8 +43,8 @@ export const SystemStatusBanner = ({
 
           {/* Data Freshness */}
           <div className="flex items-center gap-2">
-            <div className={`w-2 h-2 rounded-full ${statusColor} animate-pulse`} />
-            <Database className="w-4 h-4 text-primary" />
+            <div className={`w-2 h-2 rounded-full ${statusColor} animate-pulse glow-cyan`} />
+            <Database className="w-4 h-4 text-cosmic-cyan" />
             <span className="text-muted-foreground">Data Status:</span>
             <span className="font-semibold text-foreground">
               {isRealtime ? 'Live' : dataAge ? `${dataAge} min old` : 'Unknown'}

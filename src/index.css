@@ -8,47 +8,47 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Data Aurora White Theme - Refined Palette */
-    --background: 210 17% 97%;  /* Anti-Flash White #F2F3F4 */
-    --foreground: 210 50% 8%;   /* Midnight Edition #0C121B */
+    /* Deep Space Theme */
+    --background: 220 30% 8%;        /* Dark blue-black space */
+    --foreground: 210 40% 98%;       /* Almost white */
 
-    --card: 0 0% 100%;          /* Pure white for cards */
-    --card-foreground: 210 50% 8%;
+    --card: 220 28% 12%;             /* Slightly lighter than bg */
+    --card-foreground: 210 40% 98%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 210 50% 8%;
+    --popover: 220 28% 12%;
+    --popover-foreground: 210 40% 98%;
 
-    --primary: 205 72% 40%;     /* Planetarium #1C70AD */
-    --primary-foreground: 0 0% 100%;
+    --primary: 187 89% 55%;          /* Bright cyan #1CDEE4 */
+    --primary-foreground: 220 30% 8%;
 
-    --secondary: 214 32% 91%;
-    --secondary-foreground: 210 50% 8%;
+    --secondary: 205 72% 40%;        /* Electric blue #1C70AD */
+    --secondary-foreground: 210 40% 98%;
 
-    --muted: 200 10% 80%;       /* Porpoise Fin #C8CBCD */
-    --muted-foreground: 210 30% 35%;
+    --muted: 220 20% 18%;            /* Muted dark */
+    --muted-foreground: 210 20% 70%;
 
-    --accent: 205 72% 40%;      /* Planetarium #1C70AD */
-    --accent-foreground: 0 0% 100%;
+    --accent: 260 60% 70%;           /* Violet glow #B06CFF */
+    --accent-foreground: 220 30% 8%;
 
-    --destructive: 6 69% 66%;   /* Ardent Coral #E5756A */
+    --destructive: 6 69% 66%;        /* Coral */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 200 10% 85%;      /* Lighter Porpoise Fin */
-    --input: 200 10% 85%;
-    --ring: 205 72% 40%;        /* Planetarium */
+    --border: 220 25% 18%;           /* Subtle border */
+    --input: 220 25% 18%;
+    --ring: 187 89% 55%;             /* Cyan ring */
 
     --radius: 0.75rem;
 
-    /* Energy Source Colors - Refreshed Palette */
-    --energy-gas: 6 87% 59%;        /* Coral Red #F2553C */
-    --energy-solar: 40 92% 58%;     /* Soft Mustard #F7B633 */
-    --energy-wind: 168 42% 59%;     /* Teal Blue #6BC1B0 */
-    --energy-nuclear: 260 54% 74%;  /* Pastel Purple #B8A4E8 */
-    --energy-hydro: 212 28% 43%;    /* Slate Indigo #4F6C8D */
-    --energy-coal: 35 22% 72%;      /* Light Mushroom #C9BBA8 */
-    --energy-biomass: 150 40% 70%;  /* Cool Mint #94D1B2 */
-    --energy-imports: 0 0% 84%;     /* Fog Grey #D6D6D6 */
-    --energy-exports: 6 87% 50%;    /* Darker Coral for exports */
+    /* Energy Source Colors - Adjusted for dark theme */
+    --energy-gas: 6 87% 59%;         /* Coral Red */
+    --energy-solar: 40 92% 58%;      /* Soft Mustard */
+    --energy-wind: 168 42% 59%;      /* Teal Blue */
+    --energy-nuclear: 260 54% 74%;   /* Pastel Purple */
+    --energy-hydro: 212 28% 53%;     /* Brighter Slate Indigo */
+    --energy-coal: 35 22% 82%;       /* Lighter Mushroom */
+    --energy-biomass: 150 40% 70%;   /* Cool Mint */
+    --energy-imports: 0 0% 84%;      /* Fog Grey */
+    --energy-exports: 6 87% 50%;     /* Darker Coral */
 
     /* Carbon Intensity Colors */
     --carbon-very-low: 158 64% 52%;
@@ -57,19 +57,21 @@ All colors MUST be HSL.
     --carbon-high: 24 100% 50%;
     --carbon-very-high: 0 84% 60%;
 
-    /* Aurora Gradients - Updated */
-    --gradient-energy: linear-gradient(120deg, hsl(205 72% 40%), hsl(207 100% 26%), hsl(205 72% 50%));
-    --gradient-card: linear-gradient(145deg, hsl(210 17% 99% / 0.9) 0%, hsl(210 17% 97% / 0.7) 100%);
-    --gradient-glow: radial-gradient(circle at 50% 50%, hsl(205 72% 40% / 0.15) 0%, transparent 70%);
+    /* Cosmic Gradients */
+    --gradient-energy: linear-gradient(120deg, hsl(187 89% 55%), hsl(207 100% 36%), hsl(260 60% 70%));
+    --gradient-card: linear-gradient(145deg, hsl(220 28% 14% / 0.8) 0%, hsl(220 28% 10% / 0.6) 100%);
+    --gradient-glow: radial-gradient(circle at 50% 50%, hsl(187 89% 55% / 0.15) 0%, transparent 70%);
+    --gradient-cosmic: linear-gradient(135deg, hsl(220 30% 10%), hsl(250 40% 15%), hsl(280 35% 12%));
+    --gradient-nebula: radial-gradient(circle at 20% 50%, hsl(280 50% 20% / 0.3), transparent 70%);
 
-    --sidebar-background: 210 17% 97%;
-    --sidebar-foreground: 210 50% 8%;
-    --sidebar-primary: 205 72% 40%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 214 32% 91%;
-    --sidebar-accent-foreground: 210 50% 8%;
-    --sidebar-border: 200 10% 85%;
-    --sidebar-ring: 205 72% 40%;
+    --sidebar-background: 220 30% 8%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 187 89% 55%;
+    --sidebar-primary-foreground: 220 30% 8%;
+    --sidebar-accent: 220 20% 18%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 220 25% 18%;
+    --sidebar-ring: 187 89% 55%;
   }
 
   .dark {
@@ -118,5 +120,34 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    background: linear-gradient(135deg, hsl(220 30% 8%), hsl(220 30% 10%), hsl(240 30% 9%));
+  }
+}
+
+@layer utilities {
+  .glow-cyan {
+    box-shadow: 0 0 20px hsl(187 89% 55% / 0.3);
+  }
+  
+  .glow-cyan-strong {
+    box-shadow: 0 0 30px hsl(187 89% 55% / 0.5), 0 0 60px hsl(187 89% 55% / 0.2);
+  }
+  
+  .glow-violet {
+    box-shadow: 0 0 20px hsl(260 60% 70% / 0.3);
+  }
+  
+  .text-glow {
+    text-shadow: 0 0 10px currentColor;
+  }
+  
+  .text-glow-strong {
+    text-shadow: 0 0 20px currentColor, 0 0 40px currentColor;
+  }
+  
+  .glass-morphism {
+    background: hsl(220 28% 12% / 0.6);
+    backdrop-filter: blur(12px);
+    border: 1px solid hsl(187 89% 55% / 0.1);
   }
 }

@@ -34,7 +34,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
   const totalExports = Math.abs(data.filter(item => item.flow < 0).reduce((sum, item) => sum + item.flow, 0));
 
   return (
-    <Card className="p-6 border-border">
+    <Card className="p-6 border-primary/30 glow-cyan">
       <div className="flex justify-between items-center mb-6">
         <div className="flex items-center gap-3">
           <h2 className="text-2xl font-bold text-card-foreground">Interconnector Flows</h2>
@@ -49,7 +49,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                 <h4 className="font-semibold text-card-foreground">Interconnector Status</h4>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                    <div className="w-2 h-2 bg-cosmic-cyan rounded-full animate-pulse glow-cyan" />
                     <span className="font-medium">Live:</span>
                     <span className="text-muted-foreground">Actively trading electricity</span>
                   </div>
@@ -85,7 +85,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
         <div className="flex items-center gap-2">
           {interconnectorStatus === 'live' ? (
             <>
-              <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
+              <div className="w-3 h-3 bg-cosmic-cyan rounded-full animate-pulse glow-cyan"></div>
               <span className="text-sm text-muted-foreground">Live</span>
             </>
           ) : interconnectorStatus === 'cached' ? (
@@ -104,20 +104,20 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div className="bg-gradient-to-br from-energy-imports/20 to-energy-imports/5 border border-energy-imports/30 rounded-lg p-4">
+        <div className="glass-morphism border-cosmic-cyan/30 rounded-lg p-4 glow-cyan">
           <div className="flex items-center gap-2 mb-2">
-            <ArrowDownLeft className="w-5 h-5 text-energy-imports" />
+            <ArrowDownLeft className="w-5 h-5 text-cosmic-cyan" />
             <span className="text-sm font-medium text-card-foreground">Total Imports</span>
           </div>
-          <span className="text-2xl font-bold text-energy-imports">{totalImports.toFixed(1)} MW</span>
+          <span className="text-2xl font-bold text-cosmic-cyan text-glow">{totalImports.toFixed(1)} MW</span>
         </div>
 
-        <div className="bg-gradient-to-br from-energy-exports/20 to-energy-exports/5 border border-energy-exports/30 rounded-lg p-4">
+        <div className="glass-morphism border-cosmic-violet/30 rounded-lg p-4 glow-violet">
           <div className="flex items-center gap-2 mb-2">
-            <ArrowUpRight className="w-5 h-5 text-energy-exports" />
+            <ArrowUpRight className="w-5 h-5 text-cosmic-violet" />
             <span className="text-sm font-medium text-card-foreground">Total Exports</span>
           </div>
-          <span className="text-2xl font-bold text-energy-exports">{totalExports.toFixed(1)} MW</span>
+          <span className="text-2xl font-bold text-cosmic-violet text-glow">{totalExports.toFixed(1)} MW</span>
         </div>
       </div>
 
@@ -151,12 +151,12 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
             return (
               <div
                 key={index}
-                className={`flex items-center justify-between p-4 border rounded-lg transition-colors ${
+                className={`flex items-center justify-between p-4 border rounded-lg transition-all ${
                   isActive 
-                    ? 'bg-secondary/30 border-border hover:bg-secondary/40' 
+                    ? 'glass-morphism border-cosmic-cyan/50 hover:glow-cyan' 
                     : isOffline
-                    ? 'bg-orange-500/10 border-orange-500/30 hover:bg-orange-500/20'
-                    : 'bg-muted/20 border-muted hover:bg-muted/30'
+                    ? 'glass-morphism border-orange-500/30 hover:bg-orange-500/20'
+                    : 'glass-morphism border-muted/30 hover:bg-muted/20'
                 }`}
               >
                 <div className="flex items-center gap-3">
@@ -169,7 +169,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                     {/* Status indicator */}
                     <div className={`w-2 h-2 rounded-full ${
                       interconnector.status === 'live' 
-                        ? 'bg-primary animate-pulse' 
+                        ? 'bg-cosmic-cyan animate-pulse glow-cyan' 
                         : interconnector.status === 'bmrs-fallback'
                         ? 'bg-amber-500'
                         : interconnector.status === 'offline'

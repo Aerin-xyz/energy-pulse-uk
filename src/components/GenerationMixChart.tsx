@@ -32,9 +32,9 @@ const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     return (
-      <div className="bg-card border border-border rounded-lg p-3 shadow-lg">
+      <div className="glass-morphism border-primary/30 rounded-lg p-3 shadow-lg glow-cyan">
         <p className="text-muted-foreground text-xs">{data.name}</p>
-        <p className="font-bold text-sm">{formatGWfromMW(data.value, 2)} GW</p>
+        <p className="font-bold text-sm text-cosmic-cyan">{formatGWfromMW(data.value, 2)} GW</p>
         <p className="text-primary text-xs">{data.percentage}%</p>
       </div>
     );
@@ -92,7 +92,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
 
 
   return (
-    <Card>
+    <Card className="glow-cyan border-primary/30">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>UK Energy Mix</CardTitle>
@@ -145,13 +145,13 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
             {/* Center text */}
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <div className="text-center space-y-1">
-                <div className="text-3xl font-bold text-foreground">
+                <div className="text-3xl font-bold text-cosmic-cyan text-glow">
                   {formatGWfromMW(totalGenerationMW + (data.find(item => item.name === "Imports")?.value || 0))} GW
                 </div>
                 <div className="text-xs text-muted-foreground">
                   Total Supply
                 </div>
-                <div className="text-xl font-semibold text-muted-foreground mt-2">
+                <div className="text-xl font-semibold text-primary mt-2">
                   {formatGWfromMW(totalGenerationMW)} GW
                 </div>
                 <div className="text-xs text-muted-foreground">

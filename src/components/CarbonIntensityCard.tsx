@@ -76,11 +76,11 @@ export const CarbonIntensityCard = ({
   const isLow = percentOfAverage < 0;
   
   return (
-    <Card>
+    <Card className="glow-cyan border-primary/30">
       <CardHeader>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="p-2 bg-gradient-to-br from-[#1C70AD] to-[#004683] rounded-lg shadow-md">
+            <div className="p-2 bg-gradient-to-br from-cosmic-cyan to-cosmic-violet rounded-lg shadow-md glow-cyan">
               <Leaf className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -97,7 +97,7 @@ export const CarbonIntensityCard = ({
         {/* Main Intensity Display */}
         <div className="text-center space-y-2">
           <div className="text-5xl font-bold">
-            <span className={getCarbonColor(index)}>{actual}</span>
+            <span className={cn(getCarbonColor(index), "text-glow")}>{actual}</span>
             <span className="text-2xl text-muted-foreground ml-2">gCO₂/kWh</span>
           </div>
           
@@ -105,11 +105,11 @@ export const CarbonIntensityCard = ({
           <div className="relative">
             <Progress 
               value={getProgressValue(actual)} 
-              className="h-3"
+              className="h-3 bg-muted/30"
             />
             <div 
               className={cn(
-                "absolute top-0 left-0 h-3 rounded-full transition-all",
+                "absolute top-0 left-0 h-3 rounded-full transition-all glow-cyan",
                 getProgressColor(index)
               )}
               style={{ width: `${getProgressValue(actual)}%` }}

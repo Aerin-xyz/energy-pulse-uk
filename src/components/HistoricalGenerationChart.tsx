@@ -86,7 +86,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
     const total = payload.reduce((sum: number, item: any) => sum + item.value, 0);
     
     return (
-      <div className="bg-card border border-border rounded-lg p-3 shadow-lg max-w-xs">
+      <div className="glass-morphism border-primary/30 rounded-lg p-3 shadow-lg max-w-xs glow-cyan">
         <p className="text-muted-foreground text-xs mb-2">
           {timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </p>
@@ -244,7 +244,7 @@ export const HistoricalGenerationChart = ({
   });
 
   return (
-    <Card>
+    <Card className="glow-cyan border-primary/30">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>Historical Generation</CardTitle>
