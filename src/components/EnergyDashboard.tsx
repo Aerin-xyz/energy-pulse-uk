@@ -290,6 +290,9 @@ export const EnergyDashboard = () => {
               <span className="text-sm text-foreground/70">Live data from BMRS every 5 minutes</span>
             </div>
           </div>
+          <div className="text-xs text-foreground/50 text-center mt-4">
+            Contains BMRS data © Elexon Limited copyright and database right 2025
+          </div>
         </div>
       </footer>
     </div>
