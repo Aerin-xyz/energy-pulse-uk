@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Menu, ChevronDown, Home } from 'lucide-react';
 import { AnimatedLogo } from '@/components/AnimatedLogo';
-import { useState, ReactNode } from 'react';
+import { useState, ReactNode, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 
 interface NavigationBarProps {
@@ -10,8 +10,23 @@ interface NavigationBarProps {
 }
 
 export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarProps) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isExploreOpen, setIsExploreOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const exploreRef = useRef<HTMLDivElement>(null);
+
+  // Close explore section when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (exploreRef.current && !exploreRef.current.contains(event.target as Node)) {
+        setIsExploreOpen(false);
+      }
+    };
+
+    if (isExploreOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isExploreOpen]);
 
   return (
     <nav aria-label="Main navigation" className="w-full border-b border-primary/20 glass-morphism sticky top-0 z-50 shadow-lg shadow-primary/10">
@@ -26,7 +41,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
             </div>
 
             {/* Navigation Menu - Text Based */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-start gap-4">
               <Link
                 to="/"
                 className="px-4 py-2 text-sm font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]"
@@ -35,38 +50,35 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                 Home
               </Link>
 
-              {/* Explore Dropdown */}
-              <div 
-                className="relative"
-                onMouseEnter={() => setIsDropdownOpen(true)}
-                onMouseLeave={() => setIsDropdownOpen(false)}
-              >
+              {/* Explore Collapsible Section */}
+              <div className="flex flex-col" ref={exploreRef}>
                 <button
+                  onClick={() => setIsExploreOpen(!isExploreOpen)}
                   className={cn(
                     "px-4 py-2 text-sm font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)] flex items-center gap-1",
-                    isDropdownOpen && "text-primary bg-primary/10"
+                    isExploreOpen && "text-primary bg-primary/10"
                   )}
-                  aria-expanded={isDropdownOpen}
-                  aria-haspopup="true"
+                  aria-expanded={isExploreOpen}
                   aria-label="Explore pages menu"
                 >
                   Explore
-                  <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", isDropdownOpen && "rotate-180")} />
+                  <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", isExploreOpen && "rotate-180")} />
                 </button>
 
-                {/* Dropdown Menu - Always in DOM for SEO */}
+                {/* Collapsible Section - Always in DOM for SEO */}
                 <div
                   className={cn(
-                    "absolute top-full left-0 mt-2 w-48 rounded-lg border border-primary/20 glass-morphism shadow-xl shadow-primary/20 transition-all duration-200 origin-top z-50",
-                    isDropdownOpen ? "opacity-100 visible scale-100" : "opacity-0 invisible scale-95 pointer-events-none"
+                    "transition-all duration-300 origin-top overflow-hidden",
+                    isExploreOpen ? "max-h-64 opacity-100 visible" : "max-h-0 opacity-0 invisible"
                   )}
                 >
-                  <ul className="py-2" role="menu">
+                  <ul className="py-2 mt-2 rounded-lg border border-primary/20 glass-morphism shadow-xl shadow-primary/20" role="menu">
                     <li role="none">
                       <Link
                         to="/about"
                         className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
                         role="menuitem"
+                        onClick={() => setIsExploreOpen(false)}
                       >
                         About
                       </Link>
@@ -76,6 +88,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                         to="/data"
                         className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
                         role="menuitem"
+                        onClick={() => setIsExploreOpen(false)}
                       >
                         Data
                       </Link>
@@ -85,6 +98,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                         to="/insights"
                         className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
                         role="menuitem"
+                        onClick={() => setIsExploreOpen(false)}
                       >
                         Insights
                       </Link>
@@ -94,6 +108,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                         to="/newsletter"
                         className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
                         role="menuitem"
+                        onClick={() => setIsExploreOpen(false)}
                       >
                         Newsletter
                       </Link>
@@ -124,7 +139,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
             </div>
 
             {/* Navigation Menu - Icon + Text */}
-            <div className="flex items-center gap-3">
+            <div className="flex items-start gap-3">
               <Link
                 to="/"
                 className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]"
@@ -135,40 +150,37 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                 <span className="sr-only">Home</span>
               </Link>
 
-              {/* Explore Dropdown with Icon */}
-              <div 
-                className="relative"
-                onMouseEnter={() => setIsDropdownOpen(true)}
-                onMouseLeave={() => setIsDropdownOpen(false)}
-              >
+              {/* Explore Collapsible Section with Icon */}
+              <div className="flex flex-col">
                 <button
+                  onClick={() => setIsExploreOpen(!isExploreOpen)}
                   className={cn(
                     "flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]",
-                    isDropdownOpen && "text-primary bg-primary/10"
+                    isExploreOpen && "text-primary bg-primary/10"
                   )}
-                  aria-expanded={isDropdownOpen}
-                  aria-haspopup="true"
+                  aria-expanded={isExploreOpen}
                   aria-label="Explore pages menu"
                   title="Explore"
                 >
                   <Menu className="w-4 h-4" />
                   <span className="text-xs">Explore</span>
-                  <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", isDropdownOpen && "rotate-180")} />
+                  <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", isExploreOpen && "rotate-180")} />
                 </button>
 
-                {/* Dropdown Menu - SEO Safe */}
+                {/* Collapsible Section - SEO Safe */}
                 <div
                   className={cn(
-                    "absolute top-full right-0 mt-2 w-44 rounded-lg border border-primary/20 glass-morphism shadow-xl shadow-primary/20 transition-all duration-200 origin-top z-50",
-                    isDropdownOpen ? "opacity-100 visible scale-100" : "opacity-0 invisible scale-95 pointer-events-none"
+                    "transition-all duration-300 origin-top overflow-hidden",
+                    isExploreOpen ? "max-h-64 opacity-100 visible" : "max-h-0 opacity-0 invisible"
                   )}
                 >
-                  <ul className="py-2" role="menu">
+                  <ul className="py-2 mt-2 rounded-lg border border-primary/20 glass-morphism shadow-xl shadow-primary/20" role="menu">
                     <li role="none">
                       <Link
                         to="/about"
                         className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
                         role="menuitem"
+                        onClick={() => setIsExploreOpen(false)}
                       >
                         About
                       </Link>
@@ -178,6 +190,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                         to="/data"
                         className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
                         role="menuitem"
+                        onClick={() => setIsExploreOpen(false)}
                       >
                         Data
                       </Link>
@@ -187,6 +200,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                         to="/insights"
                         className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
                         role="menuitem"
+                        onClick={() => setIsExploreOpen(false)}
                       >
                         Insights
                       </Link>
@@ -196,6 +210,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                         to="/newsletter"
                         className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
                         role="menuitem"
+                        onClick={() => setIsExploreOpen(false)}
                       >
                         Newsletter
                       </Link>
