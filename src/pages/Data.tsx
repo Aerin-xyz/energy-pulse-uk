@@ -176,12 +176,6 @@ const Data = () => {
                     className="text-cosmic-cyan hover:underline">Carbon Intensity API</a>.
                   </p>
                 </div>
-                
-                <p className="text-sm pt-4">
-                  These licenses allow us to copy, publish, distribute and transmit the data; 
-                  adapt the data; and exploit the data commercially and non-commercially, 
-                  provided we acknowledge the source of the data as stated above.
-                </p>
               </div>
             </div>
           </article>
