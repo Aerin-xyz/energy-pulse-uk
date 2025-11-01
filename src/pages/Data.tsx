@@ -137,12 +137,6 @@ const Data = () => {
               </div>
             </div>
 
-            <div className="glass-morphism rounded-lg p-8 mb-8">
-              <h2 className="text-2xl font-semibold mb-4 text-primary">Transparency</h2>
-              <p className="text-foreground/80 leading-relaxed">
-                All figures are drawn from public, machine-readable sources. We apply only light aggregation for readability — never editorial adjustments.
-              </p>
-            </div>
 
             <div className="glass-morphism rounded-lg p-8">
               <h2 className="text-2xl font-semibold mb-4 text-primary">Licenses & Attribution</h2>
