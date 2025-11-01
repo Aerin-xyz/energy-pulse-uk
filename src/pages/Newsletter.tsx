@@ -2,26 +2,10 @@ import { AnimatedLogo } from '@/components/AnimatedLogo';
 import { Link } from 'react-router-dom';
 import { Home, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
 import { Helmet } from 'react-helmet-async';
+import '../styles/mailerlite-overrides.css';
 
 const Newsletter = () => {
-  const [email, setEmail] = useState('');
-  const { toast } = useToast();
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Placeholder for newsletter signup
-    toast({
-      title: "Newsletter signup",
-      description: "Newsletter integration coming soon. Thank you for your interest!",
-    });
-    setEmail('');
-  };
-
   return (
     <>
       <Helmet>
@@ -84,31 +68,84 @@ const Newsletter = () => {
 
             <div className="glass-morphism rounded-lg p-8">
               <h2 className="text-xl font-semibold mb-4 text-primary">Join the List</h2>
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium mb-2 text-foreground/90">
-                    Email Address
-                  </label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="your.email@example.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full"
-                  />
-                </div>
+              
+              {/* MailerLite Form */}
+              <div id="mlb2-32802782" className="ml-form-embedContainer ml-subscribe-form ml-subscribe-form-32802782">
+                <div className="ml-form-align-center">
+                  <div className="ml-form-embedWrapper embedForm">
+                    <div className="ml-form-embedBody ml-form-embedBodyHorizontal row-form">
+                      <div className="ml-form-embedContent" style={{ display: 'none' }}>
+                        <h4>Newsletter</h4>
+                        <p>Signup for news and special offers!</p>
+                      </div>
 
-                <Button type="submit" className="w-full" size="lg">
-                  Subscribe Now
-                </Button>
-              </form>
+                      <form className="ml-block-form" action="https://assets.mailerlite.com/jsonp/343200/forms/169882898276550620/subscribe" data-code="" method="post" target="_blank">
+                        <div className="ml-form-formContent horozintalForm">
+                          <div className="ml-form-horizontalRow">
+                            <div className="ml-input-horizontal">
+                              <div style={{ width: '100%' }} className="horizontal-fields">
+                                <div className="ml-field-group ml-field-email ml-validate-email ml-validate-required">
+                                  <input type="email" className="form-control" data-inputmask="" name="fields[email]" placeholder="Email" autoComplete="email" />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="ml-button-horizontal primary">
+                              <button type="submit" className="primary">Subscribe</button>
+                              <button disabled style={{ display: 'none' }} type="button" className="loading">
+                                <div className="ml-form-embedSubmitLoad"></div>
+                                <span className="sr-only">Loading...</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="ml-form-recaptcha ml-validate-required" style={{ float: 'left' }}>
+                          <script src="https://www.google.com/recaptcha/api.js"></script>
+                          <div className="g-recaptcha" data-sitekey="6Lf1KHQUAAAAAFNKEX1hdSWCS3mRMv4FlFaNslaD"></div>
+                        </div>
+
+                        <input type="hidden" name="ml-submit" value="1" />
+                        <input type="hidden" name="anticsrf" value="true" />
+
+                        <div className="ml-mobileButton-horizontal">
+                          <button type="submit" className="primary">Subscribe</button>
+                          <button disabled style={{ display: 'none' }} type="button" className="loading">
+                            <div className="ml-form-embedSubmitLoad"></div>
+                            <span className="sr-only">Loading...</span>
+                          </button>
+                        </div>
+                      </form>
+                    </div>
+
+                    <div className="ml-form-successBody row-success" style={{ display: 'none' }}>
+                      <div className="ml-form-successContent">
+                        <h4>Thank you!</h4>
+                        <p>You have successfully joined our subscriber list.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <p className="text-sm text-muted-foreground mt-6 text-center">
                 We respect your privacy. No spam — just clear, actionable energy data.
               </p>
             </div>
+            
+            <script dangerouslySetInnerHTML={{
+              __html: `
+                function ml_webform_success_32802782() {
+                  var $ = ml_jQuery || jQuery;
+                  $('.ml-subscribe-form-32802782 .row-success').show();
+                  $('.ml-subscribe-form-32802782 .row-form').hide();
+                }
+              `
+            }} />
+            <script src="https://groot.mailerlite.com/js/w/webforms.min.js?v176e10baa5e7ed80d35ae235be3d5024" type="text/javascript"></script>
+            <script dangerouslySetInnerHTML={{
+              __html: `fetch("https://assets.mailerlite.com/jsonp/343200/forms/169882898276550620/takel")`
+            }} />
           </div>
         </main>
 
