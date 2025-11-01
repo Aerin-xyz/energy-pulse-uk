@@ -1,6 +1,14 @@
-import { RefreshCw, Leaf, Flame, Zap } from 'lucide-react';
+import { RefreshCw, Leaf, Flame, Zap, Menu } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { AnimatedLogo } from '@/components/AnimatedLogo';
+import { Link } from 'react-router-dom';
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu";
 import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { HistoricalGenerationChart } from '@/components/HistoricalGenerationChart';
@@ -129,9 +137,43 @@ export const EnergyDashboard = () => {
         <div className="container mx-auto px-4 py-3">
           {/* Mobile: Vertical stack */}
           <div className="flex md:hidden flex-col gap-3">
-            <div className="flex flex-col gap-1 -ml-2">
-              <AnimatedLogo />
-              <p className="text-xs text-muted-foreground -mt-1">Real-time UK electricity generation and flows</p>
+            <div className="flex justify-between items-start">
+              <div className="flex flex-col gap-1 -ml-2">
+                <AnimatedLogo />
+                <p className="text-xs text-muted-foreground -mt-1">Real-time UK electricity generation and flows</p>
+              </div>
+              <NavigationMenu>
+                <NavigationMenuList className="flex-col md:flex-row">
+                  <NavigationMenuItem>
+                    <Link to="/about">
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        About
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link to="/data">
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Data
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link to="/insights">
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Insights
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link to="/newsletter">
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Newsletter
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
             </div>
             
             {data && (
@@ -146,9 +188,44 @@ export const EnergyDashboard = () => {
 
           {/* Tablet & Desktop: Horizontal layout */}
           <div className="hidden md:flex justify-between items-center">
-            <div className="flex flex-col gap-1 -ml-2">
-              <AnimatedLogo />
-              <p className="text-xs text-muted-foreground -mt-1">Real-time UK electricity generation and flows</p>
+            <div className="flex items-center gap-8">
+              <div className="flex flex-col gap-1 -ml-2">
+                <AnimatedLogo />
+                <p className="text-xs text-muted-foreground -mt-1">Real-time UK electricity generation and flows</p>
+              </div>
+              
+              <NavigationMenu>
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <Link to="/about">
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        About
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link to="/data">
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Data
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link to="/insights">
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Insights
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                  <NavigationMenuItem>
+                    <Link to="/newsletter">
+                      <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                        Newsletter
+                      </NavigationMenuLink>
+                    </Link>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
             </div>
 
             <div className="flex flex-col md:flex-row items-start md:items-center gap-3 md:gap-6">
