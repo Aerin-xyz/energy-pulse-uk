@@ -9,12 +9,12 @@ const Data = () => {
     {
       name: "Elexon BMRS",
       description: "Balancing Mechanism Reporting System data for national generation and demand",
-      url: "https://www.bmreports.com"
+      url: "https://bmrs.elexon.co.uk/"
     },
     {
       name: "National Grid ESO",
       description: "Live generation and interconnector flow data",
-      url: "https://www.nationalgrideso.com"
+      url: "https://www.neso.energy/"
     },
     {
       name: "Carbon Intensity",
