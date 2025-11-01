@@ -89,9 +89,52 @@ const Data = () => {
 
             <div className="glass-morphism rounded-lg p-8 mb-8">
               <h2 className="text-2xl font-semibold mb-4 text-primary">Update Frequency</h2>
-              <p className="text-foreground/80 leading-relaxed">
-                Data refreshes automatically throughout the day.
+              
+              <p className="text-foreground/80 leading-relaxed mb-6">
+                Energy Mix uses a multi-tier refresh system designed to balance data freshness with API reliability. Different data types update at different frequencies based on how quickly they change.
               </p>
+              
+              <div className="space-y-4">
+                <div className="border-l-2 border-green-500/30 pl-4 py-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 rounded-full bg-green-500"></div>
+                    <h3 className="font-semibold text-foreground">High Frequency — Every 5 minutes</h3>
+                  </div>
+                  <p className="text-sm text-foreground/70">
+                    Embedded wind and solar generation (from National Grid ESO and Sheffield Solar's PV Live API). 
+                    These sources change rapidly as weather conditions shift.
+                  </p>
+                </div>
+                
+                <div className="border-l-2 border-blue-500/30 pl-4 py-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                    <h3 className="font-semibold text-foreground">Mid Frequency — Every 15 minutes</h3>
+                  </div>
+                  <p className="text-sm text-foreground/70">
+                    Interconnector flows and European generation mix (from ENTSO-E). 
+                    Cross-border electricity flows change less frequently than domestic embedded generation.
+                  </p>
+                </div>
+                
+                <div className="border-l-2 border-purple-500/30 pl-4 py-2">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-2 h-2 rounded-full bg-purple-500"></div>
+                    <h3 className="font-semibold text-foreground">Full Refresh — Every 30 minutes</h3>
+                  </div>
+                  <p className="text-sm text-foreground/70">
+                    Complete data refresh including BMRS generation outturn, all embedded sources, 
+                    interconnectors, EU data, and carbon intensity forecasts. Aligns with BMRS settlement periods.
+                  </p>
+                </div>
+              </div>
+              
+              <div className="mt-6 pt-4 border-t border-primary/20">
+                <p className="text-sm text-foreground/70 leading-relaxed">
+                  Updates are staggered to prevent simultaneous API requests and reduce load on data providers. 
+                  The dashboard also refreshes automatically when you return to the tab after being away.
+                </p>
+              </div>
             </div>
 
             <div className="glass-morphism rounded-lg p-8 mb-8">
