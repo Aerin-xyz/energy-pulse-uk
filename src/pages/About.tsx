@@ -9,11 +9,13 @@ const About = () => {
     <>
       <Helmet>
         <title>UK Energy Mix 2025 | About Our Live Electricity Dashboard</title>
-        <meta name="description" content="Energy Mix makes the UK's electricity system transparent. See how power is generated and used, in real time, across renewables, gas, and interconnectors." />
+        <meta name="description" content="Energy Mix makes the UK's electricity system transparent — showing how power is generated and used in real time across renewables, gas and imports." />
         <link rel="canonical" href="https://energymix.info/about" />
-        <meta property="og:title" content="UK Energy Mix 2025 | About Our Live Electricity Dashboard" />
-        <meta property="og:description" content="Energy Mix makes the UK's electricity system transparent. See how power is generated and used, in real time, across renewables, gas, and interconnectors." />
+        <meta property="og:title" content="About Energy Mix | Making the Energy Transition Visible" />
+        <meta property="og:description" content="Energy Mix visualises real-time UK electricity data from National Grid ESO & Elexon BMRS." />
         <meta property="og:url" content="https://energymix.info/about" />
+        <meta property="og:image" content="https://energymix.info/og-about.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
       <div className="min-h-screen bg-background relative">

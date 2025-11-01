@@ -27,11 +27,13 @@ const Data = () => {
     <>
       <Helmet>
         <title>UK Energy Mix Data Sources | Elexon BMRS · National Grid ESO</title>
-        <meta name="description" content="Energy Mix draws live electricity data from Elexon BMRS, National Grid ESO, and other verified open datasets to show the UK's real-time energy generation mix." />
+        <meta name="description" content="Energy Mix draws live electricity data from Elexon BMRS, National Grid ESO and other verified open datasets to show the UK's real-time generation mix." />
         <link rel="canonical" href="https://energymix.info/data" />
-        <meta property="og:title" content="UK Energy Mix Data Sources | Elexon BMRS · National Grid ESO" />
-        <meta property="og:description" content="Energy Mix draws live electricity data from Elexon BMRS, National Grid ESO, and other verified open datasets to show the UK's real-time energy generation mix." />
+        <meta property="og:title" content="UK Energy Mix Data Sources" />
+        <meta property="og:description" content="Live datasets powering the UK Energy Mix dashboard — Elexon BMRS and National Grid ESO." />
         <meta property="og:url" content="https://energymix.info/data" />
+        <meta property="og:image" content="https://energymix.info/og-data.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
       <div className="min-h-screen bg-background relative">

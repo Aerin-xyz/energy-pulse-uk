@@ -28,9 +28,11 @@ const Newsletter = () => {
         <title>Energy Mix Newsletter | Weekly UK Electricity Insights</title>
         <meta name="description" content="Join the free Energy Mix newsletter for quick, weekly insights into how the UK's energy mix is evolving — straight from live grid data." />
         <link rel="canonical" href="https://energymix.info/newsletter" />
-        <meta property="og:title" content="Energy Mix Newsletter | Weekly UK Electricity Insights" />
-        <meta property="og:description" content="Join the free Energy Mix newsletter for quick, weekly insights into how the UK's energy mix is evolving — straight from live grid data." />
+        <meta property="og:title" content="Energy Mix Newsletter" />
+        <meta property="og:description" content="Weekly data snapshots from the UK Energy Mix dashboard." />
         <meta property="og:url" content="https://energymix.info/newsletter" />
+        <meta property="og:image" content="https://energymix.info/og-newsletter.jpg" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
 
       <div className="min-h-screen bg-background relative">
