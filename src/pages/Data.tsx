@@ -102,10 +102,50 @@ const Data = () => {
             </div>
 
             <div className="glass-morphism rounded-lg p-8">
-              <h2 className="text-2xl font-semibold mb-4 text-primary">License</h2>
-              <p className="text-foreground/80 leading-relaxed">
-                Data is used under the Open Government License (OGL) and equivalent open-data terms.
-              </p>
+              <h2 className="text-2xl font-semibold mb-4 text-primary">Licenses & Attribution</h2>
+              
+              <div className="space-y-4 text-foreground/80 leading-relaxed">
+                <p>
+                  This service uses data made available under open licenses. We are required to provide the following attributions:
+                </p>
+                
+                <div className="border-l-2 border-primary/30 pl-4 py-2">
+                  <h3 className="font-semibold text-foreground mb-2">Elexon BMRS Data</h3>
+                  <p className="text-sm">
+                    Contains BMRS data © Elexon Limited copyright and database right 2025. 
+                    Licensed under the <a href="https://www.elexon.co.uk/about/insights-and-reports/bmrs/" 
+                    target="_blank" rel="noopener noreferrer" 
+                    className="text-cosmic-cyan hover:underline">Elexon Open Data License</a>.
+                  </p>
+                </div>
+                
+                <div className="border-l-2 border-primary/30 pl-4 py-2">
+                  <h3 className="font-semibold text-foreground mb-2">NESO Data</h3>
+                  <p className="text-sm">
+                    Contains data from the National Energy System Operator (NESO), licensed under the{' '}
+                    <a href="https://www.neso.energy/data-portal/neso-open-licence" 
+                    target="_blank" rel="noopener noreferrer" 
+                    className="text-cosmic-cyan hover:underline">NESO Open Licence</a>, 
+                    which is based on the Open Government Licence v3.0.
+                  </p>
+                </div>
+                
+                <div className="border-l-2 border-primary/30 pl-4 py-2">
+                  <h3 className="font-semibold text-foreground mb-2">Carbon Intensity Data</h3>
+                  <p className="text-sm">
+                    Carbon intensity forecasts provided by the National Energy System Operator via the{' '}
+                    <a href="https://carbonintensity.org.uk/" 
+                    target="_blank" rel="noopener noreferrer" 
+                    className="text-cosmic-cyan hover:underline">Carbon Intensity API</a>.
+                  </p>
+                </div>
+                
+                <p className="text-sm pt-4">
+                  These licenses allow us to copy, publish, distribute and transmit the data; 
+                  adapt the data; and exploit the data commercially and non-commercially, 
+                  provided we acknowledge the source of the data as stated above.
+                </p>
+              </div>
             </div>
           </article>
         </main>
@@ -120,8 +160,9 @@ const Data = () => {
               <Link to="/insights" className="text-sm text-foreground/70 hover:text-primary transition-colors">Insights</Link>
               <Link to="/newsletter" className="text-sm text-foreground/70 hover:text-primary transition-colors">Newsletter</Link>
             </nav>
-            <div className="text-xs text-foreground/50 text-center">
-              Contains BMRS data © Elexon Limited copyright and database right 2025
+            <div className="text-xs text-foreground/50 text-center space-y-1">
+              <p>Contains BMRS data © Elexon Limited copyright and database right 2025</p>
+              <p>Data from National Energy System Operator (NESO) under the NESO Open Licence</p>
             </div>
           </div>
         </footer>
