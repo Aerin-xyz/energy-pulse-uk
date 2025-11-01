@@ -358,6 +358,12 @@ export const EnergyDashboard = () => {
       <footer className="border-t border-primary/20 glass-morphism mt-16 relative">
         <div className="absolute inset-0 bg-gradient-glow opacity-20"></div>
         <div className="container mx-auto px-4 py-6 relative z-10">
+          <nav className="flex justify-center gap-6 mb-4 flex-wrap">
+            <Link to="/about" className="text-sm text-foreground/70 hover:text-primary transition-colors">About</Link>
+            <Link to="/data" className="text-sm text-foreground/70 hover:text-primary transition-colors">Data</Link>
+            <Link to="/insights" className="text-sm text-foreground/70 hover:text-primary transition-colors">Insights</Link>
+            <Link to="/newsletter" className="text-sm text-foreground/70 hover:text-primary transition-colors">Newsletter</Link>
+          </nav>
           <div className="text-xs text-foreground/50 text-center">
             Contains BMRS data © Elexon Limited copyright and database right 2025
           </div>
