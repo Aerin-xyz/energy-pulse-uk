@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Home, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet-async';
+import '@/styles/mailerlite-overrides.css';
 
 const Insights = () => {
   return (
@@ -68,15 +69,70 @@ const Insights = () => {
               </ul>
             </div>
 
-            <div className="glass-morphism rounded-lg p-8 text-center">
-              <p className="text-muted-foreground mb-6">
+            <div className="glass-morphism rounded-lg p-8">
+              <p className="text-muted-foreground mb-6 text-center">
                 Subscribe below to receive weekly updates when new insights go live.
               </p>
-              <Link to="/newsletter">
-                <Button size="lg">
-                  Subscribe to Updates
-                </Button>
-              </Link>
+              
+              <div id="mlb2-32802782" className="ml-form-embedContainer ml-subscribe-form ml-subscribe-form-32802782">
+                <div className="ml-form-align-center">
+                  <div className="ml-form-embedWrapper embedForm">
+                    <div className="ml-form-embedBody ml-form-embedBodyHorizontal row-form">
+                      <form className="ml-block-form" action="https://assets.mailerlite.com/jsonp/343200/forms/169882898276550620/subscribe" data-code="" method="post" target="_blank">
+                        <div className="ml-form-formContent horozintalForm">
+                          <div className="ml-form-horizontalRow">
+                            <div className="ml-input-horizontal">
+                              <div style={{width: '100%'}} className="horizontal-fields">
+                                <div className="ml-field-group ml-field-email ml-validate-email ml-validate-required">
+                                  <input type="email" className="form-control" data-inputmask="" name="fields[email]" placeholder="Email" autoComplete="email" />
+                                </div>
+                              </div>
+                            </div>
+                            <div className="ml-button-horizontal primary">
+                              <button type="submit" className="primary">Subscribe</button>
+                              <button disabled style={{display: 'none'}} type="button" className="loading">
+                                <div className="ml-form-embedSubmitLoad"></div>
+                                <span className="sr-only">Loading...</span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="ml-form-recaptcha ml-validate-required" style={{float: 'left'}}>
+                          <script src="https://www.google.com/recaptcha/api.js"></script>
+                          <div className="g-recaptcha" data-sitekey="6Lf1KHQUAAAAAFNKEX1hdSWCS3mRMv4FlFaNslaD"></div>
+                        </div>
+                        <input type="hidden" name="ml-submit" value="1" />
+                        <div className="ml-mobileButton-horizontal">
+                          <button type="submit" className="primary">Subscribe</button>
+                          <button disabled style={{display: 'none'}} type="button" className="loading">
+                            <div className="ml-form-embedSubmitLoad"></div>
+                            <span className="sr-only">Loading...</span>
+                          </button>
+                        </div>
+                        <input type="hidden" name="anticsrf" value="true" />
+                      </form>
+                    </div>
+                    <div className="ml-form-successBody row-success" style={{display: 'none'}}>
+                      <div className="ml-form-successContent">
+                        <h4>Thank you!</h4>
+                        <p>You have successfully joined our subscriber list.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <script dangerouslySetInnerHTML={{__html: `
+                function ml_webform_success_32802782() {
+                  var $ = ml_jQuery || jQuery;
+                  $('.ml-subscribe-form-32802782 .row-success').show();
+                  $('.ml-subscribe-form-32802782 .row-form').hide();
+                }
+              `}} />
+              <script src="https://groot.mailerlite.com/js/w/webforms.min.js?v176e10baa5e7ed80d35ae235be3d5024" type="text/javascript"></script>
+              <script dangerouslySetInnerHTML={{__html: `
+                fetch("https://assets.mailerlite.com/jsonp/343200/forms/169882898276550620/takel")
+              `}} />
             </div>
           </article>
         </main>
