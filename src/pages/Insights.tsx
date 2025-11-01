@@ -3,9 +3,24 @@ import { Link } from 'react-router-dom';
 import { Home, TrendingUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet-async';
+import { useEffect } from 'react';
 import '@/styles/mailerlite-overrides.css';
 
 const Insights = () => {
+  useEffect(() => {
+    // MailerLite success handler
+    (window as any).ml_webform_success_32802782 = function() {
+      const $ = (window as any).ml_jQuery || (window as any).jQuery;
+      if ($) {
+        $('.ml-subscribe-form-32802782 .row-success').show();
+        $('.ml-subscribe-form-32802782 .row-form').hide();
+      }
+    };
+
+    // Fetch MailerLite form data
+    fetch("https://assets.mailerlite.com/jsonp/343200/forms/169882898276550620/takel").catch(() => {});
+  }, []);
+
   return (
     <>
       <Helmet>
@@ -17,6 +32,8 @@ const Insights = () => {
         <meta property="og:url" content="https://energymix.info/insights" />
         <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script src="https://groot.mailerlite.com/js/w/webforms.min.js?v176e10baa5e7ed80d35ae235be3d5024" type="text/javascript"></script>
       </Helmet>
 
       <div className="min-h-screen bg-background relative">
@@ -97,8 +114,7 @@ const Insights = () => {
                             </div>
                           </div>
                         </div>
-                        <div className="ml-form-recaptcha ml-validate-required" style={{float: 'left'}}>
-                          <script src="https://www.google.com/recaptcha/api.js"></script>
+                        <div className="ml-form-recaptcha ml-validate-required">
                           <div className="g-recaptcha" data-sitekey="6Lf1KHQUAAAAAFNKEX1hdSWCS3mRMv4FlFaNslaD"></div>
                         </div>
                         <input type="hidden" name="ml-submit" value="1" />
@@ -122,17 +138,6 @@ const Insights = () => {
                 </div>
               </div>
               
-              <script dangerouslySetInnerHTML={{__html: `
-                function ml_webform_success_32802782() {
-                  var $ = ml_jQuery || jQuery;
-                  $('.ml-subscribe-form-32802782 .row-success').show();
-                  $('.ml-subscribe-form-32802782 .row-form').hide();
-                }
-              `}} />
-              <script src="https://groot.mailerlite.com/js/w/webforms.min.js?v176e10baa5e7ed80d35ae235be3d5024" type="text/javascript"></script>
-              <script dangerouslySetInnerHTML={{__html: `
-                fetch("https://assets.mailerlite.com/jsonp/343200/forms/169882898276550620/takel")
-              `}} />
             </div>
           </article>
         </main>

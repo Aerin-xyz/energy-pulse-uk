@@ -268,6 +268,13 @@
 .ml-form-recaptcha {
   margin-bottom: 1.25rem !important;
   margin-top: 1.25rem !important;
+  display: block !important;
+  clear: both !important;
+  width: 100% !important;
+}
+
+.ml-form-recaptcha > div {
+  display: inline-block;
 }
 
 .ml-form-recaptcha.ml-error iframe {
