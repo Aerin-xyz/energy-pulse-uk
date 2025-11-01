@@ -31,7 +31,35 @@ const Newsletter = () => {
         <meta property="og:description" content="Weekly data snapshots from the UK Energy Mix dashboard." />
         <meta property="og:url" content="https://energymix.info/newsletter" />
         <meta property="og:image" content="https://energymix.info/og-newsletter.jpg" />
+        <meta property="og:site_name" content="Energy Mix" />
+        <meta property="og:locale" content="en_GB" />
+        <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Energy Mix Newsletter" />
+        <meta name="twitter:description" content="Weekly data snapshots from the UK Energy Mix dashboard." />
+        <meta name="twitter:image" content="https://energymix.info/og-newsletter.jpg" />
+        <meta name="author" content="Energy Mix" />
+        <meta name="robots" content="index, follow" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://energymix.info/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Newsletter",
+                "item": "https://energymix.info/newsletter"
+              }
+            ]
+          })}
+        </script>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <script src="https://groot.mailerlite.com/js/w/webforms.min.js?v176e10baa5e7ed80d35ae235be3d5024" type="text/javascript"></script>
       </Helmet>
@@ -61,7 +89,7 @@ const Newsletter = () => {
               <Mail className="w-16 h-16 mx-auto mb-6 text-primary" />
               <h1 className="text-4xl md:text-5xl font-bold mb-6 text-glow">Get Weekly Energy Mix Updates</h1>
               <p className="text-lg text-foreground/80 leading-relaxed">
-                Stay informed with a short, data-driven summary every week — tracking how the UK's energy mix changes over time.
+                Stay informed with a short, data-driven summary every week — tracking how the UK's energy mix changes over time. Each newsletter is drawn directly from <Link to="/" className="text-cosmic-cyan hover:underline">our live dashboard</Link> and includes <Link to="/insights" className="text-cosmic-cyan hover:underline">detailed insights</Link>.
               </p>
             </div>
 

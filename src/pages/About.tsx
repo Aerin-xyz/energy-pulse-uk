@@ -15,7 +15,35 @@ const About = () => {
         <meta property="og:description" content="Energy Mix visualises real-time UK electricity data from National Grid ESO & Elexon BMRS." />
         <meta property="og:url" content="https://energymix.info/about" />
         <meta property="og:image" content="https://energymix.info/og-about.jpg" />
+        <meta property="og:site_name" content="Energy Mix" />
+        <meta property="og:locale" content="en_GB" />
+        <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="About Energy Mix | Making the Energy Transition Visible" />
+        <meta name="twitter:description" content="Energy Mix visualises real-time UK electricity data from National Grid ESO & Elexon BMRS." />
+        <meta name="twitter:image" content="https://energymix.info/og-about.jpg" />
+        <meta name="author" content="Energy Mix" />
+        <meta name="robots" content="index, follow" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://energymix.info/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "About",
+                "item": "https://energymix.info/about"
+              }
+            ]
+          })}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-background relative">
@@ -47,11 +75,15 @@ const About = () => {
               </p>
               
               <p>
-                Our aim is simple: to make the energy transition visible. By combining open datasets from National Grid ESO, Elexon BMRS, and other public sources, Energy Mix offers a clear picture of where our power comes from and how it's changing.
+                Our aim is simple: to make the energy transition visible. By combining <Link to="/data" className="text-cosmic-cyan hover:underline">open datasets from National Grid ESO, Elexon BMRS, and other public sources</Link>, Energy Mix offers a clear picture of where our power comes from and how it's changing.
               </p>
 
               <p>
                 Built for transparency and usability, the dashboard helps policymakers, businesses, and individuals understand the UK's shifting energy landscape.
+              </p>
+
+              <p className="text-sm text-foreground/70 pt-4">
+                Want to understand where the data comes from? Visit our <Link to="/data" className="text-cosmic-cyan hover:underline">data sources page</Link> for detailed information on update frequencies and licensing.
               </p>
 
               <div className="pt-6 flex gap-4 flex-wrap">

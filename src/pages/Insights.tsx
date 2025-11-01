@@ -31,7 +31,35 @@ const Insights = () => {
         <meta property="og:description" content="Short, data-driven explainers on the UK's changing energy mix." />
         <meta property="og:url" content="https://energymix.info/insights" />
         <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
+        <meta property="og:site_name" content="Energy Mix" />
+        <meta property="og:locale" content="en_GB" />
+        <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Energy Mix Insights" />
+        <meta name="twitter:description" content="Short, data-driven explainers on the UK's changing energy mix." />
+        <meta name="twitter:image" content="https://energymix.info/og-insights.jpg" />
+        <meta name="author" content="Energy Mix" />
+        <meta name="robots" content="index, follow" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://energymix.info/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Insights",
+                "item": "https://energymix.info/insights"
+              }
+            ]
+          })}
+        </script>
         <script src="https://www.google.com/recaptcha/api.js" async defer></script>
         <script src="https://groot.mailerlite.com/js/w/webforms.min.js?v176e10baa5e7ed80d35ae235be3d5024" type="text/javascript"></script>
       </Helmet>
@@ -64,7 +92,7 @@ const Insights = () => {
                 Short explainers on what's changing in the UK's power system — drawn directly from the Energy Mix dashboard.
               </p>
               <p className="text-foreground/80 mt-4">
-                Each post highlights notable shifts in supply, demand, and emissions intensity, turning live data into quick, visual takeaways.
+                Each post highlights notable shifts in supply, demand, and emissions intensity, turning <Link to="/data" className="text-cosmic-cyan hover:underline">live data from verified sources</Link> into quick, visual takeaways. <Link to="/" className="text-cosmic-cyan hover:underline">View the live dashboard</Link> to explore current generation data.
               </p>
             </div>
 

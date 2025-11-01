@@ -33,7 +33,67 @@ const Data = () => {
         <meta property="og:description" content="Live datasets powering the UK Energy Mix dashboard — Elexon BMRS and National Grid ESO." />
         <meta property="og:url" content="https://energymix.info/data" />
         <meta property="og:image" content="https://energymix.info/og-data.jpg" />
+        <meta property="og:site_name" content="Energy Mix" />
+        <meta property="og:locale" content="en_GB" />
+        <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="UK Energy Mix Data Sources" />
+        <meta name="twitter:description" content="Live datasets powering the UK Energy Mix dashboard — Elexon BMRS and National Grid ESO." />
+        <meta name="twitter:image" content="https://energymix.info/og-data.jpg" />
+        <meta name="author" content="Energy Mix" />
+        <meta name="robots" content="index, follow" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://energymix.info/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Data Sources",
+                "item": "https://energymix.info/data"
+              }
+            ]
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "What data sources does Energy Mix use?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Energy Mix connects directly to open national datasets including Elexon BMRS for Balancing Mechanism Reporting System data, National Grid ESO for live generation and interconnector flow data, and the Carbon Intensity API for official hourly CO₂ estimates."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How often is Energy Mix data updated?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Energy Mix uses a multi-tier refresh system: High frequency updates every 5 minutes for embedded wind and solar generation, mid frequency updates every 15 minutes for interconnector flows and European generation mix, and full refresh every 30 minutes for complete data including BMRS generation outturn, all embedded sources, interconnectors, EU data, and carbon intensity forecasts."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "What licenses cover the Energy Mix data?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Energy Mix uses data under open licenses: BMRS data is licensed under the Elexon Open Data License, NESO data is licensed under the NESO Open Licence based on the Open Government Licence v3.0, and carbon intensity forecasts are provided by NESO via the Carbon Intensity API."
+                }
+              }
+            ]
+          })}
+        </script>
       </Helmet>
 
       <div className="min-h-screen bg-background relative">
@@ -61,7 +121,7 @@ const Data = () => {
             
             <div className="glass-morphism rounded-lg p-8 mb-8 leading-relaxed">
               <p className="text-lg text-foreground/90">
-                Energy Mix connects directly to open national datasets that track the UK's power system in real time.
+                Energy Mix connects directly to open national datasets that track the UK's power system in real time. Learn more <Link to="/about" className="text-cosmic-cyan hover:underline">about our mission</Link> or <Link to="/insights" className="text-cosmic-cyan hover:underline">read weekly insights</Link> drawn from this data.
               </p>
             </div>
 
@@ -176,6 +236,21 @@ const Data = () => {
                     className="text-cosmic-cyan hover:underline">Carbon Intensity API</a>.
                   </p>
                 </div>
+              </div>
+            </div>
+
+            <div className="glass-morphism rounded-lg p-6 mt-8">
+              <h2 className="text-lg font-semibold mb-4 text-primary">Related Pages</h2>
+              <div className="flex flex-wrap gap-4">
+                <Link to="/about">
+                  <Button variant="outline" size="sm">About Energy Mix</Button>
+                </Link>
+                <Link to="/insights">
+                  <Button variant="outline" size="sm">View Insights</Button>
+                </Link>
+                <Link to="/newsletter">
+                  <Button variant="outline" size="sm">Subscribe to Newsletter</Button>
+                </Link>
               </div>
             </div>
           </article>
