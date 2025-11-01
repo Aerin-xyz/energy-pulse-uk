@@ -112,51 +112,39 @@ export const EnergyBalanceDisplay = ({
         )}
       </div>
 
-      {/* Desktop: Full Energy Balance Equation */}
-      <div className="hidden lg:flex items-center gap-3 px-4 py-2 glass-morphism rounded-lg border-primary/20">
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-1">
-            Demand
-            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" className="w-4 h-4" />
-          </div>
-          <div className="font-bold text-lg">{formatGWfromMW(totalDemandMW)} GW</div>
+      {/* Desktop: Compact Energy Balance with Single Letters */}
+      <div className="hidden lg:flex items-center gap-2.5 px-3 py-2 glass-morphism rounded-lg border-primary/20 text-sm">
+        <div className="flex items-center gap-0.5">
+          <span className="font-semibold text-muted-foreground" title="Demand">D</span>
+          <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" className="w-3.5 h-3.5" />
+          <span className="font-bold ml-1">{formatGWfromMW(totalDemandMW)}</span>
         </div>
-        <div className="text-2xl text-muted-foreground">=</div>
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-1">
-            Generation
-            <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-4 h-4" />
-          </div>
-          <div className="font-bold text-lg text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)} GW</div>
+        <span className="text-muted-foreground">=</span>
+        <div className="flex items-center gap-0.5">
+          <span className="font-semibold text-muted-foreground" title="Generation">G</span>
+          <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-3.5 h-3.5" />
+          <span className="font-bold text-cosmic-cyan text-glow ml-1">{formatGWfromMW(totalGenerationMW)}</span>
         </div>
-        <div className="text-2xl text-muted-foreground">+</div>
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground mb-1">
-            Transfers
-            <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing, Negative = exporting" className="w-4 h-4" />
-          </div>
-          <div className="font-bold text-lg">{formatGWfromMW(interconnectorFlowMW)} GW</div>
+        <span className="text-muted-foreground">+</span>
+        <div className="flex items-center gap-0.5">
+          <span className="font-semibold text-muted-foreground" title="Transfers">T</span>
+          <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing, Negative = exporting" className="w-3.5 h-3.5" />
+          <span className="font-bold ml-1">{formatGWfromMW(interconnectorFlowMW)}</span>
         </div>
         {carbonIntensity && (
           <>
-            <div className="w-px h-12 bg-border mx-2" />
-            <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${
+            <div className="w-px h-6 bg-border mx-1" />
+            <div className="flex items-center gap-1.5">
+              <div className={`w-2.5 h-2.5 rounded-full ${
                 carbonIntensity.index.toLowerCase() === 'very low' || carbonIntensity.index.toLowerCase() === 'low' 
                   ? 'bg-carbon-low animate-pulse' 
                   : carbonIntensity.index.toLowerCase() === 'moderate'
                   ? 'bg-carbon-moderate animate-pulse'
                   : 'bg-carbon-high animate-pulse'
               }`} />
-              <div className="text-center">
-                <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
-                  Carbon
-                  <HelpTooltip content="Average carbon intensity of electricity generation, measured in grams of CO₂ per kilowatt-hour" className="w-4 h-4" />
-                </div>
-                <div className="font-bold font-mono text-lg">
-                  {carbonIntensity.actual} <span className="text-xs font-normal">gCO₂/kWh</span>
-                </div>
-              </div>
+              <span className="font-semibold text-muted-foreground" title="Carbon Intensity">C</span>
+              <HelpTooltip content="Average carbon intensity of electricity generation, measured in grams of CO₂ per kilowatt-hour" className="w-3.5 h-3.5" />
+              <span className="font-bold font-mono ml-0.5">{carbonIntensity.actual}</span>
             </div>
           </>
         )}
