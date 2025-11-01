@@ -15,8 +15,8 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
 
   return (
     <nav aria-label="Main navigation" className="w-full border-b border-primary/20 glass-morphism sticky top-0 z-50 shadow-lg shadow-primary/10">
-      {/* Desktop Layout (>1024px) - Single Row */}
-      <header className="hidden lg:block">
+      {/* Desktop Layout (>1280px) - Single Row */}
+      <header className="hidden xl:block">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center justify-between">
             {/* Logo Section with Tagline */}
@@ -113,8 +113,8 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
         </div>
       </header>
 
-      {/* Tablet Layout (768px-1024px) - Two Rows */}
-      <header className="hidden md:block lg:hidden">
+      {/* Tablet Layout (768px-1279px) - Two Rows */}
+      <header className="hidden md:block xl:hidden">
         {/* Row 1: Logo + Navigation */}
         <div className="container mx-auto px-4 py-3 border-b border-primary/10">
           <div className="flex items-center justify-between">

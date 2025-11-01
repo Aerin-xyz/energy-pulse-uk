@@ -63,7 +63,7 @@ export const EnergyBalanceDisplay = ({
       </div>
 
       {/* Tablet: Medium Energy Balance */}
-      <div className="hidden md:flex lg:hidden items-center gap-2.5 px-3 py-2 glass-morphism rounded-lg border-primary/20 text-sm">
+      <div className="hidden md:flex xl:hidden items-center gap-2.5 px-3 py-2 glass-morphism rounded-lg border-primary/20 text-sm">
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground mb-0.5">
             Demand
@@ -113,7 +113,7 @@ export const EnergyBalanceDisplay = ({
       </div>
 
       {/* Desktop: Compact Energy Balance with Single Letters */}
-      <div className="hidden lg:flex items-center gap-2.5 px-3 py-2 glass-morphism rounded-lg border-primary/20 text-sm">
+      <div className="hidden xl:flex items-center gap-2.5 px-3 py-2 glass-morphism rounded-lg border-primary/20 text-sm">
         <div className="flex items-center gap-0.5">
           <span className="font-semibold text-muted-foreground" title="Demand">D</span>
           <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" className="w-3.5 h-3.5" />
