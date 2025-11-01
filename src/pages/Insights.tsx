@@ -114,6 +114,7 @@ const Insights = () => {
                             </div>
                           </div>
                         </div>
+
                         <div className="ml-form-recaptcha ml-validate-required">
                           <div className="g-recaptcha" data-sitekey="6Lf1KHQUAAAAAFNKEX1hdSWCS3mRMv4FlFaNslaD"></div>
                         </div>

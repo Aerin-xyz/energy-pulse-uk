@@ -267,15 +267,11 @@
 /* reCAPTCHA styling */
 .ml-form-recaptcha {
   margin-bottom: 1.25rem !important;
-  margin-top: 1.75rem !important;
-  display: block !important;
+  margin-top: 2rem !important;
+  display: flex !important;
+  justify-content: center !important;
   clear: both !important;
   width: 100% !important;
-  text-align: center !important;
-}
-
-.ml-form-recaptcha > div {
-  display: inline-block;
 }
 
 .ml-form-recaptcha.ml-error iframe {
