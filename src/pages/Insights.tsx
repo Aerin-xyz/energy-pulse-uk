@@ -44,10 +44,10 @@ const Insights = () => {
           <div className="container mx-auto px-4 py-3">
             <div className="flex justify-between items-center">
               <AnimatedLogo />
-              <Link to="/">
-                <Button variant="outline" size="sm">
-                  <Home className="w-4 h-4 mr-2" />
-                  Dashboard
+              <Link to="/" aria-label="Back to Dashboard">
+                <Button variant="outline" size="sm" className="mr-1">
+                  <Home className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Dashboard</span>
                 </Button>
               </Link>
             </div>
