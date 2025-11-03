@@ -39,7 +39,40 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
         <div className="flex items-center gap-2">
           <h2 className="text-2xl font-bold text-card-foreground">Interconnector Flows</h2>
           <HelpTooltip 
-            content="Interconnector Status: Live (actively trading), Offline (temporarily not operational), BMRS Fallback (UK data when ENTSO-E unavailable), Unavailable (no current data). Interconnectors may be offline due to maintenance, market conditions, weather, or technical constraints. This is normal operation. Temporary overloads or reporting delays can push values over 100%."
+            content={
+              <div className="space-y-3">
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-cosmic-cyan rounded-full animate-pulse glow-cyan" />
+                    <span className="font-medium text-sm">Live</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground ml-4">Actively trading electricity</p>
+                  
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full" />
+                    <span className="font-medium text-sm">Offline</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground ml-4">Temporarily not operational</p>
+                  
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-amber-500 rounded-full" />
+                    <span className="font-medium text-sm">BMRS Fallback</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground ml-4">UK data when ENTSO-E unavailable</p>
+                  
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 bg-muted rounded-full" />
+                    <span className="font-medium text-sm">Unavailable</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground ml-4">No current data available</p>
+                </div>
+                
+                <div className="text-xs text-muted-foreground border-t border-border pt-2 space-y-1">
+                  <p>Interconnectors may be offline due to maintenance, market conditions, weather, or technical constraints.</p>
+                  <p className="text-[11px]">Note: Temporary overloads or reporting delays can push values over 100%.</p>
+                </div>
+              </div>
+            }
           />
         </div>
         <div className="flex items-center gap-2">

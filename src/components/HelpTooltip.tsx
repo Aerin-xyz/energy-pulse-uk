@@ -2,7 +2,7 @@ import { HelpCircle } from 'lucide-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface HelpTooltipProps {
-  content: string;
+  content: string | React.ReactNode;
   className?: string;
 }
 
@@ -19,7 +19,11 @@ export const HelpTooltip = ({ content, className = '' }: HelpTooltipProps) => {
         </button>
       </PopoverTrigger>
       <PopoverContent className="max-w-xs">
-        <p className="text-sm">{content}</p>
+        {typeof content === 'string' ? (
+          <p className="text-sm">{content}</p>
+        ) : (
+          content
+        )}
       </PopoverContent>
     </Popover>
   );
