@@ -1,6 +1,6 @@
 import { Card } from '@/components/ui/card';
-import { ArrowUpRight, ArrowDownLeft, Info } from 'lucide-react';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { ArrowUpRight, ArrowDownLeft } from 'lucide-react';
+import { HelpTooltip } from '@/components/HelpTooltip';
 
 interface InterconnectorData {
   name: string;
@@ -36,51 +36,11 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
   return (
     <Card className="p-6 border-primary/30 glow-cyan">
       <div className="flex justify-between items-center mb-6">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <h2 className="text-2xl font-bold text-card-foreground">Interconnector Flows</h2>
-          <HoverCard>
-            <HoverCardTrigger asChild>
-              <button className="text-muted-foreground hover:text-card-foreground transition-colors">
-                <Info className="w-4 h-4" />
-              </button>
-            </HoverCardTrigger>
-            <HoverCardContent className="w-80">
-              <div className="space-y-3">
-                <h4 className="font-semibold text-card-foreground">Interconnector Status</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-cosmic-cyan rounded-full animate-pulse glow-cyan" />
-                    <span className="font-medium">Live:</span>
-                    <span className="text-muted-foreground">Actively trading electricity</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-orange-500 rounded-full" />
-                    <span className="font-medium">Offline:</span>
-                    <span className="text-muted-foreground">Temporarily not operational</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-amber-500 rounded-full" />
-                    <span className="font-medium">BMRS Fallback:</span>
-                    <span className="text-muted-foreground">UK data when ENTSO-E unavailable</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="w-2 h-2 bg-muted rounded-full" />
-                    <span className="font-medium">Unavailable:</span>
-                    <span className="text-muted-foreground">No current data available</span>
-                  </div>
-                </div>
-                <div className="text-xs text-muted-foreground border-t pt-2 space-y-1">
-                  <p>
-                    Interconnectors may be offline due to planned maintenance, market conditions, weather, 
-                    or technical constraints. This is normal operation.
-                  </p>
-                  <p>
-                    Temporary overloads or reporting delays can push values over 100%.
-                  </p>
-                </div>
-              </div>
-            </HoverCardContent>
-          </HoverCard>
+          <HelpTooltip 
+            content="Interconnector Status: Live (actively trading), Offline (temporarily not operational), BMRS Fallback (UK data when ENTSO-E unavailable), Unavailable (no current data). Interconnectors may be offline due to maintenance, market conditions, weather, or technical constraints. This is normal operation. Temporary overloads or reporting delays can push values over 100%."
+          />
         </div>
         <div className="flex items-center gap-2">
           {interconnectorStatus === 'live' ? (
