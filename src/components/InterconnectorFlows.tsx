@@ -163,7 +163,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                   <div className="flex items-center gap-2">
                     {/* Flow direction indicator */}
                     {isActive && (
-                      <div className={`w-3 h-3 rounded-full ${isImport ? 'bg-energy-imports' : 'bg-energy-exports'}`} />
+                      <div className={`w-3 h-3 rounded-full ${isImport ? 'bg-energy-imports' : 'bg-cosmic-violet'}`} />
                     )}
                     
                     {/* Status indicator */}
@@ -199,9 +199,9 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                         {isImport ? (
                           <ArrowDownLeft className="w-4 h-4 text-energy-imports" />
                         ) : (
-                          <ArrowUpRight className="w-4 h-4 text-energy-exports" />
+                          <ArrowUpRight className="w-4 h-4 text-cosmic-violet" />
                         )}
-                        <span className={`text-lg font-bold ${isImport ? 'text-energy-imports' : 'text-energy-exports'}`}>
+                        <span className={`text-lg font-bold ${isImport ? 'text-energy-imports' : 'text-cosmic-violet'}`}>
                           {flowValue.toFixed(0)} MW
                         </span>
                       </div>
