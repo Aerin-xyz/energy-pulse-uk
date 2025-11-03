@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Menu, ChevronDown, Home } from 'lucide-react';
 import { AnimatedLogo } from '@/components/AnimatedLogo';
 import { useState, ReactNode, useEffect, useRef } from 'react';
@@ -13,6 +13,8 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
   const [isExploreOpen, setIsExploreOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const exploreRef = useRef<HTMLDivElement>(null);
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
 
   // Close explore section when clicking outside
   useEffect(() => {
@@ -42,13 +44,15 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
 
             {/* Navigation Menu - Text Based */}
             <div className="flex items-start gap-4">
-              <Link
-                to="/"
-                className="px-6 py-3 text-base font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]"
-                aria-label="Home page"
-              >
-                Home
-              </Link>
+              {!isHomePage && (
+                <Link
+                  to="/"
+                  className="px-6 py-3 text-base font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]"
+                  aria-label="Home page"
+                >
+                  Home
+                </Link>
+              )}
 
               {/* Explore Collapsible Section */}
               <div className="flex flex-col relative" ref={exploreRef}>
@@ -140,15 +144,17 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
 
             {/* Navigation Menu - Icon + Text */}
             <div className="flex items-start gap-3">
-              <Link
-                to="/"
-                className="flex items-center gap-1.5 px-5 py-3 text-sm font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]"
-                aria-label="Home page"
-                title="Home"
-              >
-                <Home className="w-6 h-6" />
-                <span className="text-sm">Home</span>
-              </Link>
+              {!isHomePage && (
+                <Link
+                  to="/"
+                  className="flex items-center gap-1.5 px-5 py-3 text-sm font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]"
+                  aria-label="Home page"
+                  title="Home"
+                >
+                  <Home className="w-6 h-6" />
+                  <span className="text-sm">Home</span>
+                </Link>
+              )}
 
               {/* Explore Collapsible Section with Icon */}
               <div className="flex flex-col relative">
