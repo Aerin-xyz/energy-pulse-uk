@@ -44,31 +44,31 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
             <div className="flex items-start gap-4">
               <Link
                 to="/"
-                className="px-4 py-2 text-sm font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]"
+                className="px-6 py-3 text-base font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]"
                 aria-label="Home page"
               >
                 Home
               </Link>
 
               {/* Explore Collapsible Section */}
-              <div className="flex flex-col" ref={exploreRef}>
+              <div className="flex flex-col relative" ref={exploreRef}>
                 <button
                   onClick={() => setIsExploreOpen(!isExploreOpen)}
                   className={cn(
-                    "px-4 py-2 text-sm font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)] flex items-center gap-1",
+                    "px-6 py-3 text-base font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)] flex items-center gap-1",
                     isExploreOpen && "text-primary bg-primary/10"
                   )}
                   aria-expanded={isExploreOpen}
                   aria-label="Explore pages menu"
                 >
                   Explore
-                  <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", isExploreOpen && "rotate-180")} />
+                  <ChevronDown className={cn("w-5 h-5 transition-transform duration-200", isExploreOpen && "rotate-180")} />
                 </button>
 
                 {/* Collapsible Section - Always in DOM for SEO */}
                 <div
                   className={cn(
-                    "transition-all duration-300 origin-top overflow-hidden",
+                    "absolute left-0 z-50 w-56 transition-all duration-300 origin-top overflow-hidden",
                     isExploreOpen ? "max-h-64 opacity-100 visible" : "max-h-0 opacity-0 invisible"
                   )}
                 >
@@ -142,35 +142,35 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
             <div className="flex items-start gap-3">
               <Link
                 to="/"
-                className="flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]"
+                className="flex items-center gap-1.5 px-5 py-3 text-sm font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]"
                 aria-label="Home page"
                 title="Home"
               >
-                <Home className="w-4 h-4" />
-                <span className="sr-only">Home</span>
+                <Home className="w-6 h-6" />
+                <span className="text-sm">Home</span>
               </Link>
 
               {/* Explore Collapsible Section with Icon */}
-              <div className="flex flex-col">
+              <div className="flex flex-col relative">
                 <button
                   onClick={() => setIsExploreOpen(!isExploreOpen)}
                   className={cn(
-                    "flex items-center gap-1.5 px-3 py-2 text-sm font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]",
+                    "flex items-center gap-1.5 px-5 py-3 text-base font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]",
                     isExploreOpen && "text-primary bg-primary/10"
                   )}
                   aria-expanded={isExploreOpen}
                   aria-label="Explore pages menu"
                   title="Explore"
                 >
-                  <Menu className="w-4 h-4" />
-                  <span className="text-xs">Explore</span>
-                  <ChevronDown className={cn("w-3.5 h-3.5 transition-transform duration-200", isExploreOpen && "rotate-180")} />
+                  <Menu className="w-6 h-6" />
+                  <span className="text-sm">Explore</span>
+                  <ChevronDown className={cn("w-5 h-5 transition-transform duration-200", isExploreOpen && "rotate-180")} />
                 </button>
 
                 {/* Collapsible Section - SEO Safe */}
                 <div
                   className={cn(
-                    "transition-all duration-300 origin-top overflow-hidden",
+                    "absolute left-0 z-50 w-52 transition-all duration-300 origin-top overflow-hidden",
                     isExploreOpen ? "max-h-64 opacity-100 visible" : "max-h-0 opacity-0 invisible"
                   )}
                 >
