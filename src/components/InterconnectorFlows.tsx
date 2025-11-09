@@ -40,24 +40,26 @@ const interconnectorDetails: Record<string, {
 }> = {
   'IFA / IFA2': {
     endpoints: {
-      uk: 'Sellindge, Kent (IFA) & Chilling, Hampshire (IFA2)',
-      foreign: 'Les Mandarins & Tourbe, Normandy, France'
+      uk: 'Sellindge, Kent (IFA) & Chilling, Hampshire (IFA2) & Folkestone, Kent (ElecLink)',
+      foreign: 'Les Mandarins & Tourbe, Normandy, France (IFA/IFA2) & Peuplingues, Calais, France (ElecLink)'
     },
     cable: {
-      length: 'IFA: 70 km | IFA2: 240 km (200 km subsea)',
+      length: 'IFA: 70 km | IFA2: 240 km (200 km subsea) | ElecLink: 51 km',
       type: 'HVDC (High Voltage Direct Current)',
-      commissioned: 'IFA: 1986 | IFA2: 2021'
+      commissioned: 'IFA: 1986 | IFA2: 2021 | ElecLink: 2022'
     },
     facts: [
-      'Combined 3,000 MW capacity between IFA (2,000 MW) and IFA2 (1,000 MW)',
+      'Combined 4,000 MW capacity across three cables: IFA (2,000 MW), IFA2 (1,000 MW), and ElecLink (1,000 MW)',
       'IFA was the first major electricity interconnector between UK and mainland Europe',
-      'Both cables run beneath the English Channel',
-      'IFA2 uses latest converter technology for improved efficiency'
+      'ElecLink runs through the Channel Tunnel service tunnel',
+      'All three cables run beneath the English Channel',
+      'IFA2 and ElecLink use latest converter technology for improved efficiency'
     ],
     sources: [
       { text: 'National Grid', url: 'https://www.nationalgrid.com/electricity-transmission/infrastructure/interconnectors' },
       { text: 'IFA Interconnector', url: 'https://www.ifa-interconnector.com/' },
-      { text: 'IFA2 Project', url: 'https://www.ifa2-interconnector.com/' }
+      { text: 'IFA2 Project', url: 'https://www.ifa2-interconnector.com/' },
+      { text: 'ElecLink', url: 'https://eleclink.co.uk/' }
     ]
   },
   'ElecLink': {
