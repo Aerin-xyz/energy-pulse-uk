@@ -118,7 +118,7 @@ const interconnectorDetails: Record<string, {
       { text: 'National Grid', url: 'https://www.nationalgrid.com/electricity-transmission/infrastructure/interconnectors' }
     ]
   },
-  'NEMO': {
+  'Nemo Link': {
     endpoints: {
       uk: 'Richborough, Kent',
       foreign: 'Herdersbrug, Bruges, Belgium'
@@ -178,7 +178,7 @@ const interconnectorDetails: Record<string, {
       { text: 'National Grid', url: 'https://www.nationalgrid.com/electricity-transmission/infrastructure/interconnectors' }
     ]
   },
-  'East-West': {
+  'EWIC': {
     endpoints: {
       uk: 'Shotton, Deeside, Wales',
       foreign: 'Rush North Beach, County Dublin, Ireland'
