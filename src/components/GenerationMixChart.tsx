@@ -1,8 +1,8 @@
-import { useState } from 'react';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { formatGWfromMW } from '@/lib/utils';
 
 interface GenerationData {
@@ -66,29 +66,12 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 };
 
 export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asOf }: GenerationMixChartProps) => {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null);
-
   // Format settlement period time
   const formatSPTime = (sp: number) => {
     const startMinutes = (sp - 1) * 30;
     const hours = Math.floor(startMinutes / 60);
     const minutes = startMinutes % 60;
     return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-  };
-
-  const renderActiveShape = (props: any) => {
-    const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill } = props;
-    return (
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={innerRadius}
-        outerRadius={outerRadius + 20}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={fill}
-      />
-    );
   };
 
 
@@ -129,11 +112,6 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                   fill="#8884d8"
                   dataKey="value"
                   stroke="none"
-                  activeIndex={activeIndex !== null ? activeIndex : undefined}
-                  activeShape={renderActiveShape}
-                  onClick={(_, index) => setActiveIndex(activeIndex === index ? null : index)}
-                  onMouseEnter={(_, index) => setActiveIndex(index)}
-                  onMouseLeave={() => setActiveIndex(null)}
                 >
                   {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} style={{ outline: 'none' }} />
@@ -175,19 +153,13 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                 {data.map((item, index) => (
                   <TableRow 
                     key={index}
-                    className="border-primary/10 hover:bg-primary/5 transition-all duration-200 cursor-pointer group"
-                    onClick={() => setActiveIndex(activeIndex === index ? null : index)}
-                    onMouseEnter={() => setActiveIndex(index)}
-                    onMouseLeave={() => setActiveIndex(null)}
+                    className="border-primary/10 hover:bg-primary/5 transition-all duration-200 group"
                   >
                     <TableCell className="py-3">
                       <div className="flex items-center gap-3">
                         <div 
                           className="w-3 h-3 rounded-sm flex-shrink-0 transition-all duration-200 group-hover:scale-125 group-hover:shadow-lg"
-                          style={{ 
-                            backgroundColor: item.color,
-                            boxShadow: activeIndex === index ? `0 0 8px ${item.color}` : 'none'
-                          }}
+                          style={{ backgroundColor: item.color }}
                         />
                         <span className="text-sm font-medium group-hover:text-cosmic-cyan transition-colors">
                           {item.name}
