@@ -811,7 +811,7 @@ const GB_EIC = "10YGB----------A";
 
 // Borders to report with standardized naming
 const ENTSOE_BORDERS = [
-  { name: "France",           eic: "10YFR-RTE------C",  mtuMin: 15, displayName: "IFA / IFA2",               country: "France" },
+  { name: "France",           eic: "10YFR-RTE------C",  mtuMin: 15, displayName: "IFA / IFA2 / ElecLink",    country: "France" },
   { name: "Belgium",          eic: "10YBE----------2",  mtuMin: 15, displayName: "Nemo Link",                country: "Belgium" },
   { name: "Netherlands",      eic: "10YNL----------L",  mtuMin: 15, displayName: "BritNed",                  country: "Netherlands" },
   { name: "Norway",           eic: "10YNO-2--------T",  mtuMin: 15, displayName: "North Sea Link",           country: "Norway" },
