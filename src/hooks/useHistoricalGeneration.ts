@@ -169,13 +169,9 @@ export const useHistoricalGeneration = () => {
     }
   }, [toast]);
 
-  // OPTIMIZATION: Lazy load - defer initial fetch by 2 seconds to prioritize critical data
+  // Fetch historical data in parallel with energy data for faster initial load
   useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchHistoricalData(false);
-    }, 2000);
-
-    return () => clearTimeout(timer);
+    fetchHistoricalData(false);
   }, [fetchHistoricalData]);
 
   // Auto-refresh every 30 minutes

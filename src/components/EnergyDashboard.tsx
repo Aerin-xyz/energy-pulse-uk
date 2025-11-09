@@ -44,6 +44,7 @@ export const EnergyDashboard = () => {
   // Calculate time until next settlement period
   const [timeUntilNextSP, setTimeUntilNextSP] = useState<string>('');
   const [dataAge, setDataAge] = useState<string>('');
+  const [loadingProgress, setLoadingProgress] = useState(0);
 
   useEffect(() => {
     if (!data?.lastUpdated) return;
@@ -67,6 +68,20 @@ export const EnergyDashboard = () => {
     const interval = setInterval(updateTimers, 1000);
     return () => clearInterval(interval);
   }, [data?.lastUpdated]);
+
+  // Update loading progress indicator
+  useEffect(() => {
+    if (loading && !data) {
+      setLoadingProgress(30); // Initial API call started
+    } else if (data && historicalLoading) {
+      setLoadingProgress(70); // Energy data loaded, historical loading
+    } else if (data && !historicalLoading) {
+      setLoadingProgress(100); // Everything loaded
+      // Hide progress bar after 500ms
+      const timer = setTimeout(() => setLoadingProgress(0), 500);
+      return () => clearTimeout(timer);
+    }
+  }, [loading, data, historicalLoading]);
 
   console.log('EnergyDashboard render:', { 
     hasData: !!data, 
@@ -146,6 +161,16 @@ export const EnergyDashboard = () => {
         )}
       />
 
+      {/* Loading Progress Bar */}
+      {loadingProgress > 0 && loadingProgress < 100 && (
+        <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-muted">
+          <div 
+            className="h-full bg-cosmic-cyan transition-all duration-300 shadow-glow"
+            style={{ width: `${loadingProgress}%` }}
+          />
+        </div>
+      )}
+
       {/* System Status Banner */}
       {data && (
         <SystemStatusBanner
@@ -196,66 +221,65 @@ export const EnergyDashboard = () => {
 
       {/* Main Content */}
       <main className="container mx-auto px-2 md:px-4 pt-0 pb-8">
-        {/* OPTIMIZATION: Progressive loading - show critical UI as soon as data arrives */}
-        {!data && loading ? (
-          <div className="space-y-8">
+        <div className="space-y-8">
+          {/* Generation Mix Chart - Progressive Loading */}
+          {!data && loading ? (
             <ChartSkeleton />
-            <InterconnectorSkeleton />
-          </div>
-        ) : data ? (
-          <div className="space-y-8">
-            {/* Show stub/LKG notice if no generation data */}
-            {data.generationMix.length === 0 && (
-              <div className="bg-muted/50 border border-border rounded-lg p-4 text-center">
-                <p className="text-muted-foreground">Awaiting live data (stub/LKG)</p>
-              </div>
-            )}
-            
-            {/* Generation Mix Chart - Hero Element */}
-            <div className="relative">
-              <GenerationMixChart 
-                data={data.generationMix} 
-                totalGenerationMW={data.totalGenerationMW || 0}
-                dataFreshness={data.dataFreshness}
-                asOf={data.asOf}
-              />
-            </div>
-
-            {/* Historical Generation Chart */}
-            {(
-              historicalLoading ? (
-                <ChartSkeleton />
-              ) : historicalError ? (
-                <div className="text-center text-destructive py-4">
-                  Failed to load historical data: {historicalError}
+          ) : data ? (
+            <>
+              {/* Show stub/LKG notice if no generation data */}
+              {data.generationMix.length === 0 && (
+                <div className="bg-muted/50 border border-border rounded-lg p-4 text-center">
+                  <p className="text-muted-foreground">Awaiting live data (stub/LKG)</p>
                 </div>
-              ) : (
-                <HistoricalGenerationChart 
-                  data={historicalData} 
-                  lastUpdated={historicalLastUpdated}
-                  meta={historicalMeta}
-                  weeklyData={weeklyData}
-                  weeklyLoading={weeklyLoading}
-                  weeklyError={weeklyError}
-                  weeklyLastUpdated={weeklyLastUpdated}
-                  weeklyMeta={weeklyMeta}
-                  onFetchWeeklyData={fetchWeeklyData}
+              )}
+              
+              {/* Generation Mix Chart - Hero Element */}
+              <div className="relative">
+                <GenerationMixChart 
+                  data={data.generationMix} 
+                  totalGenerationMW={data.totalGenerationMW || 0}
+                  dataFreshness={data.dataFreshness}
+                  asOf={data.asOf}
                 />
-              )
-            )}
+              </div>
+            </>
+          ) : null}
 
-            {/* Interconnector Flows */}
-            {(
-              <InterconnectorFlows 
-                data={data.interconnectors} 
-                interconnectorStatus={data.dataFreshness?.interconnectorStatus}
-              />
-            )}
+          {/* Historical Generation Chart - Progressive Loading */}
+          {historicalLoading ? (
+            <ChartSkeleton />
+          ) : historicalError ? (
+            <div className="bg-muted/50 border border-border rounded-lg p-4 text-center">
+              <p className="text-destructive">Failed to load historical data: {historicalError}</p>
+            </div>
+          ) : historicalData.length > 0 ? (
+            <HistoricalGenerationChart 
+              data={historicalData} 
+              lastUpdated={historicalLastUpdated}
+              meta={historicalMeta}
+              weeklyData={weeklyData}
+              weeklyLoading={weeklyLoading}
+              weeklyError={weeklyError}
+              weeklyLastUpdated={weeklyLastUpdated}
+              weeklyMeta={weeklyMeta}
+              onFetchWeeklyData={fetchWeeklyData}
+            />
+          ) : null}
 
-            {/* EU Debug Panel (only shows in debug mode) */}
-            <EUDebugPanel />
-          </div>
-        ) : null}
+          {/* Interconnector Flows - Progressive Loading */}
+          {!data && loading ? (
+            <InterconnectorSkeleton />
+          ) : data ? (
+            <InterconnectorFlows 
+              data={data.interconnectors} 
+              interconnectorStatus={data.dataFreshness?.interconnectorStatus}
+            />
+          ) : null}
+
+          {/* EU Debug Panel (only shows in debug mode) */}
+          <EUDebugPanel />
+        </div>
       </main>
 
       {/* Footer */}

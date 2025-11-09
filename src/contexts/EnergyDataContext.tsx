@@ -102,7 +102,7 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<EnergyData | null>(null);
   const [rawData, setRawData] = useState<any>(null);
   const [cachedData, setCachedData] = useState<EnergyData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [nextUpdateAt, setNextUpdateAt] = useState<Date | null>(null);
@@ -145,7 +145,7 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
         }
         
         // Only show loading on initial load if no cached data
-        if (!cachedData) {
+        if (!cachedData && initialLoad) {
           setLoading(true);
         }
         
