@@ -38,43 +38,25 @@ const interconnectorDetails: Record<string, {
   facts: string[];
   sources: Array<{ text: string; url: string }>;
 }> = {
-  'IFA': {
+  'IFA / IFA2': {
     endpoints: {
-      uk: 'Sellindge, Kent',
-      foreign: 'Les Mandarins, Normandy, France'
+      uk: 'Sellindge, Kent (IFA) & Chilling, Hampshire (IFA2)',
+      foreign: 'Les Mandarins & Tourbe, Normandy, France'
     },
     cable: {
-      length: '70 km subsea + land cables',
+      length: 'IFA: 70 km | IFA2: 240 km (200 km subsea)',
       type: 'HVDC (High Voltage Direct Current)',
-      commissioned: '1986'
+      commissioned: 'IFA: 1986 | IFA2: 2021'
     },
     facts: [
-      'First major electricity interconnector between UK and mainland Europe',
-      'Can power up to 1 million homes at full capacity',
-      'Runs beneath the English Channel alongside IFA2'
+      'Combined 3,000 MW capacity between IFA (2,000 MW) and IFA2 (1,000 MW)',
+      'IFA was the first major electricity interconnector between UK and mainland Europe',
+      'Both cables run beneath the English Channel',
+      'IFA2 uses latest converter technology for improved efficiency'
     ],
     sources: [
       { text: 'National Grid', url: 'https://www.nationalgrid.com/electricity-transmission/infrastructure/interconnectors' },
-      { text: 'IFA Interconnector', url: 'https://www.ifa-interconnector.com/' }
-    ]
-  },
-  'IFA2': {
-    endpoints: {
-      uk: 'Chilling, Hampshire',
-      foreign: 'Tourbe, Normandy, France'
-    },
-    cable: {
-      length: '240 km total (200 km subsea)',
-      type: 'HVDC (High Voltage Direct Current)',
-      commissioned: '2021'
-    },
-    facts: [
-      'Second interconnector between UK and France',
-      '1,000 MW capacity can supply power to 1 million British homes',
-      'Uses latest converter technology for improved efficiency'
-    ],
-    sources: [
-      { text: 'National Grid', url: 'https://www.nationalgrid.com/electricity-transmission/infrastructure/interconnectors' },
+      { text: 'IFA Interconnector', url: 'https://www.ifa-interconnector.com/' },
       { text: 'IFA2 Project', url: 'https://www.ifa2-interconnector.com/' }
     ]
   },
@@ -138,7 +120,7 @@ const interconnectorDetails: Record<string, {
       { text: 'National Grid', url: 'https://www.nationalgrid.com/electricity-transmission/infrastructure/interconnectors' }
     ]
   },
-  'NSL': {
+  'North Sea Link': {
     endpoints: {
       uk: 'Blyth, Northumberland',
       foreign: 'Kvilldal, Suldal, Norway'
@@ -178,7 +160,7 @@ const interconnectorDetails: Record<string, {
       { text: 'National Grid', url: 'https://www.nationalgrid.com/electricity-transmission/infrastructure/interconnectors' }
     ]
   },
-  'EWIC': {
+  'East–West Interconnector': {
     endpoints: {
       uk: 'Shotton, Deeside, Wales',
       foreign: 'Rush North Beach, County Dublin, Ireland'
