@@ -217,6 +217,27 @@ const interconnectorDetails: Record<string, {
       { text: 'National Grid Viking Link', url: 'https://www.viking-link.com/' },
       { text: 'Energinet', url: 'https://en.energinet.dk/' }
     ]
+  },
+  'Greenlink': {
+    endpoints: {
+      uk: 'Pembroke, Pembrokeshire, Wales',
+      foreign: 'Great Island, County Wexford, Ireland'
+    },
+    cable: {
+      length: '200 km (160 km subsea)',
+      type: 'HVDC (High Voltage Direct Current) - 320 kV',
+      commissioned: '2024'
+    },
+    facts: [
+      'Newest electricity interconnector between UK and Ireland',
+      '500 MW capacity can power up to 500,000 homes',
+      'Second electricity link between Great Britain and Republic of Ireland (after EWIC)',
+      'Bi-directional flow enables both countries to import/export as needed'
+    ],
+    sources: [
+      { text: 'National Grid', url: 'https://www.nationalgrid.com/media-centre/press-releases/greenlink-interconnector-live-connecting-national-grid-and-eirgrid-networks' },
+      { text: 'Greenlink Interconnector', url: 'https://www.greenlink.ie/' }
+    ]
   }
 };
 
