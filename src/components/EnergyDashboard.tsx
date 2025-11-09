@@ -14,6 +14,7 @@ import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
 import { EnergyBalanceDisplay } from '@/components/EnergyBalanceDisplay';
 import { SystemStatusBanner } from '@/components/SystemStatusBanner';
+import { HelpTooltip } from '@/components/HelpTooltip';
 import { useState, useEffect } from 'react';
 
 export const EnergyDashboard = () => {
@@ -192,7 +193,19 @@ export const EnergyDashboard = () => {
               <div className="flex items-center gap-1.5 md:gap-2">
                 <Leaf className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-green-400" />
                 <div>
-                  <div className="text-xs md:text-sm text-muted-foreground">Renewables</div>
+                  <div className="flex items-center gap-1 text-xs md:text-sm text-muted-foreground">
+                    <span>Renewables</span>
+                    <HelpTooltip 
+                      content={
+                        <div className="space-y-1">
+                          <p className="font-medium">Includes:</p>
+                          <p>Wind, Solar, Hydro, and Pumped Storage Hydro (PSH)</p>
+                          <p className="text-xs text-muted-foreground mt-2">Based on UK domestic generation only (excludes imports)</p>
+                        </div>
+                      }
+                      className="w-3 h-3 md:w-4 md:h-4"
+                    />
+                  </div>
                   <div className="font-bold text-lg md:text-xl lg:text-2xl text-green-400 text-glow">{energyCategories.renewables}%</div>
                 </div>
               </div>
@@ -201,7 +214,20 @@ export const EnergyDashboard = () => {
               <div className="flex items-center gap-1.5 md:gap-2">
                 <Flame className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-energy-gas" />
                 <div>
-                  <div className="text-xs md:text-sm text-muted-foreground">Fossil Fuels</div>
+                  <div className="flex items-center gap-1 text-xs md:text-sm text-muted-foreground">
+                    <span>Fossil Fuels</span>
+                    <HelpTooltip 
+                      content={
+                        <div className="space-y-1">
+                          <p className="font-medium">Includes:</p>
+                          <p>Gas and Oil</p>
+                          <p className="text-xs text-muted-foreground mt-1">(UK coal generation ended September 2024)</p>
+                          <p className="text-xs text-muted-foreground mt-2">Based on UK domestic generation only (excludes imports)</p>
+                        </div>
+                      }
+                      className="w-3 h-3 md:w-4 md:h-4"
+                    />
+                  </div>
                   <div className="font-bold text-lg md:text-xl lg:text-2xl text-energy-gas text-glow">{energyCategories.fossilFuels}%</div>
                 </div>
               </div>
@@ -210,7 +236,19 @@ export const EnergyDashboard = () => {
               <div className="flex items-center gap-1.5 md:gap-2">
                 <Zap className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-cosmic-cyan" />
                 <div>
-                  <div className="text-xs md:text-sm text-muted-foreground">Other</div>
+                  <div className="flex items-center gap-1 text-xs md:text-sm text-muted-foreground">
+                    <span>Other</span>
+                    <HelpTooltip 
+                      content={
+                        <div className="space-y-1">
+                          <p className="font-medium">Includes:</p>
+                          <p>Biomass, Nuclear, and other generation types</p>
+                          <p className="text-xs text-muted-foreground mt-2">Based on UK domestic generation only (excludes imports)</p>
+                        </div>
+                      }
+                      className="w-3 h-3 md:w-4 md:h-4"
+                    />
+                  </div>
                   <div className="font-bold text-lg md:text-xl lg:text-2xl text-cosmic-cyan text-glow">{energyCategories.other}%</div>
                 </div>
               </div>
