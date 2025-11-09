@@ -224,38 +224,39 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                       onOpenChange={() => toggleRow(item.name)}
                     >
                       {/* Main row - clickable trigger */}
-                      <TableRow 
-                        className="border-primary/10 hover:bg-primary/5 transition-all duration-200 group cursor-pointer"
-                      >
-                        <CollapsibleTrigger asChild>
-                          <TableCell className="py-3" colSpan={2}>
-                            <div className="flex items-center justify-between w-full">
-                              <div className="flex items-center gap-3">
-                                <div 
-                                  className="w-3 h-3 rounded-sm flex-shrink-0 transition-all duration-200 group-hover:scale-125 group-hover:shadow-lg"
-                                  style={{ backgroundColor: item.color }}
-                                />
-                                <span className="text-sm font-medium group-hover:text-cosmic-cyan transition-colors">
-                                  {item.name}
-                                </span>
-                                {info && (
-                                  isExpanded ? 
-                                    <ChevronUp className="w-4 h-4 text-muted-foreground group-hover:text-cosmic-cyan transition-colors ml-2" /> :
-                                    <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-cosmic-cyan transition-colors ml-2" />
-                                )}
+                      <CollapsibleTrigger asChild>
+                        <TableRow className="border-primary/10 hover:bg-primary/5 transition-all duration-200 group cursor-pointer">
+                          {/* Column 1: Generation Type */}
+                          <TableCell className="py-3">
+                            <div className="flex items-center gap-3">
+                              <div 
+                                className="w-3 h-3 rounded-sm flex-shrink-0 transition-all duration-200 group-hover:scale-125 group-hover:shadow-lg"
+                                style={{ backgroundColor: item.color }}
+                              />
+                              <span className="text-sm font-medium group-hover:text-cosmic-cyan transition-colors">
+                                {item.name}
+                              </span>
+                              {info && (
+                                isExpanded ? 
+                                  <ChevronUp className="w-4 h-4 text-muted-foreground group-hover:text-cosmic-cyan transition-colors ml-2" /> :
+                                  <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-cosmic-cyan transition-colors ml-2" />
+                              )}
+                            </div>
+                          </TableCell>
+                          
+                          {/* Column 2: Live Generation */}
+                          <TableCell className="py-3 text-right">
+                            <div className="space-y-0.5">
+                              <div className="text-base font-bold text-cosmic-cyan group-hover:text-glow transition-all">
+                                {formatGWfromMW(item.value, 2)} GW
                               </div>
-                              <div className="space-y-0.5 text-right">
-                                <div className="text-base font-bold text-cosmic-cyan group-hover:text-glow transition-all">
-                                  {formatGWfromMW(item.value, 2)} GW
-                                </div>
-                                <div className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
-                                  {item.percentage}% of mix
-                                </div>
+                              <div className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
+                                {item.percentage}% of mix
                               </div>
                             </div>
                           </TableCell>
-                        </CollapsibleTrigger>
-                      </TableRow>
+                        </TableRow>
+                      </CollapsibleTrigger>
 
                       {/* Expandable content row */}
                       {info && (
