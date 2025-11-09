@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { formatGWfromMW } from '@/lib/utils';
 
 interface GenerationData {
@@ -104,7 +104,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                     <Cell key={`cell-${index}`} fill={entry.color} style={{ outline: 'none' }} />
                   ))}
                 </Pie>
-                
+                <Tooltip cursor={false} content={() => null} />
               </PieChart>
             </ResponsiveContainer>
             
