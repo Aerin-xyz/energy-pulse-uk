@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Sector } from 'recharts';
 import { formatGWfromMW } from '@/lib/utils';
 
@@ -161,25 +162,52 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
             </div>
           </div>
           
-          {/* Detailed Legend */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-2 lg:gap-y-3">
-            {data.map((item, index) => (
-              <div key={index} className="flex items-center gap-3">
-                <div 
-                  className="w-4 h-4 rounded-sm flex-shrink-0"
-                  style={{ backgroundColor: item.color }}
-                />
-                <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-center gap-2">
-                    <span className="text-sm truncate">{item.name}</span>
-                    <div className="text-right flex-shrink-0">
-                      <div className="text-sm font-bold">{formatGWfromMW(item.value, 2)} GW</div>
-                      <div className="text-xs text-muted-foreground">{item.percentage}%</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
+          {/* Generation Table */}
+          <div className="flex-1 min-w-0">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-primary/20">
+                  <TableHead className="text-cosmic-cyan font-semibold">Generation Type</TableHead>
+                  <TableHead className="text-right text-cosmic-cyan font-semibold">Live Generation</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {data.map((item, index) => (
+                  <TableRow 
+                    key={index}
+                    className="border-primary/10 hover:bg-primary/5 transition-all duration-200 cursor-pointer group"
+                    onClick={() => setActiveIndex(activeIndex === index ? null : index)}
+                    onMouseEnter={() => setActiveIndex(index)}
+                    onMouseLeave={() => setActiveIndex(null)}
+                  >
+                    <TableCell className="py-3">
+                      <div className="flex items-center gap-3">
+                        <div 
+                          className="w-3 h-3 rounded-sm flex-shrink-0 transition-all duration-200 group-hover:scale-125 group-hover:shadow-lg"
+                          style={{ 
+                            backgroundColor: item.color,
+                            boxShadow: activeIndex === index ? `0 0 8px ${item.color}` : 'none'
+                          }}
+                        />
+                        <span className="text-sm font-medium group-hover:text-cosmic-cyan transition-colors">
+                          {item.name}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell className="text-right py-3">
+                      <div className="space-y-0.5">
+                        <div className="text-base font-bold text-cosmic-cyan group-hover:text-glow transition-all">
+                          {formatGWfromMW(item.value, 2)} GW
+                        </div>
+                        <div className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
+                          {item.percentage}% of mix
+                        </div>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
           </div>
         </div>
       </CardContent>
