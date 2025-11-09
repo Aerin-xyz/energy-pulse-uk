@@ -819,7 +819,6 @@ const ENTSOE_BORDERS = [
   { name: "Northern Ireland", eic: "10Y1001A1001A59C", mtuMin: 30, displayName: "Moyle",                    country: "Northern Ireland" },
   { name: "Greenlink",        eic: "10Y1001A1001A63L", mtuMin: 30, displayName: "Greenlink",                country: "Ireland" },
   { name: "Denmark DK1",      eic: "10YDK-1--------W",  mtuMin: 15, displayName: "Viking Link",              country: "Denmark" },
-  { name: "Denmark DK2",      eic: "10YDK-2--------M",  mtuMin: 15, displayName: "Denmark West",             country: "Denmark" },
 ];
 
 // Capacity hints using standardized border names
@@ -832,7 +831,6 @@ const CAPACITY_HINTS: Record<string, number> = {
   "Northern Ireland": 500,     // Moyle
   "Greenlink": 500,            // Greenlink
   "Denmark DK1": 1400,         // Viking Link
-  "Denmark DK2": 700,          // Denmark West
 };
 
 function pad2(n:number){ return n.toString().padStart(2,"0"); }

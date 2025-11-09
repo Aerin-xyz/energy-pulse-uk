@@ -62,26 +62,6 @@ const interconnectorDetails: Record<string, {
       { text: 'ElecLink', url: 'https://eleclink.co.uk/' }
     ]
   },
-  'ElecLink': {
-    endpoints: {
-      uk: 'Folkestone, Kent',
-      foreign: 'Peuplingues, Calais, France'
-    },
-    cable: {
-      length: '51 km',
-      type: 'HVDC (High Voltage Direct Current)',
-      commissioned: '2022'
-    },
-    facts: [
-      'First interconnector to use the Channel Tunnel infrastructure',
-      'Runs through the service tunnel of the Channel Tunnel',
-      'Can power up to 1 million homes'
-    ],
-    sources: [
-      { text: 'ElecLink', url: 'https://eleclink.co.uk/' },
-      { text: 'Getlink', url: 'https://www.getlinkgroup.com/' }
-    ]
-  },
   'BritNed': {
     endpoints: {
       uk: 'Isle of Grain, Kent',
