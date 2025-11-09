@@ -2,7 +2,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { formatGWfromMW } from '@/lib/utils';
 
 interface GenerationData {
@@ -29,19 +29,6 @@ interface GenerationMixChartProps {
   };
 }
 
-const CustomTooltip = ({ active, payload }: any) => {
-  if (active && payload && payload.length) {
-    const data = payload[0].payload;
-    return (
-      <div className="glass-morphism border-primary/30 rounded-lg p-3 shadow-lg glow-cyan">
-        <p className="text-muted-foreground text-xs">{data.name}</p>
-        <p className="font-bold text-sm text-cosmic-cyan">{formatGWfromMW(data.value, 2)} GW</p>
-        <p className="text-primary text-xs">{data.percentage}%</p>
-      </div>
-    );
-  }
-  return null;
-};
 
 const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percentage }: any) => {
   if (percentage < 5) return null; // Don't show labels for small slices
@@ -117,7 +104,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                     <Cell key={`cell-${index}`} fill={entry.color} style={{ outline: 'none' }} />
                   ))}
                 </Pie>
-                <Tooltip content={<CustomTooltip />} />
+                
               </PieChart>
             </ResponsiveContainer>
             
