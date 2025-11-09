@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { formatGWfromMW } from '@/lib/utils';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+
 interface GenerationData {
   name: string;
   value: number;
@@ -218,83 +218,82 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                   const info = generationTypeInfo[item.name];
                   
                   return (
-                    <Collapsible 
-                      key={index}
-                      open={isExpanded}
-                      onOpenChange={() => toggleRow(item.name)}
-                    >
-                      {/* Main row - clickable trigger */}
-                      <CollapsibleTrigger asChild>
-                        <TableRow className="border-primary/10 hover:bg-primary/5 transition-all duration-200 group cursor-pointer">
-                          {/* Column 1: Generation Type */}
-                          <TableCell className="py-3">
-                            <div className="flex items-center gap-3">
-                              <div 
-                                className="w-3 h-3 rounded-sm flex-shrink-0 transition-all duration-200 group-hover:scale-125 group-hover:shadow-lg"
-                                style={{ backgroundColor: item.color }}
-                              />
-                              <span className="text-sm font-medium group-hover:text-cosmic-cyan transition-colors">
-                                {item.name}
-                              </span>
-                              {info && (
-                                isExpanded ? 
-                                  <ChevronUp className="w-4 h-4 text-muted-foreground group-hover:text-cosmic-cyan transition-colors ml-2" /> :
-                                  <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-cosmic-cyan transition-colors ml-2" />
-                              )}
+                    <>
+                      {/* Main clickable row */}
+                      <TableRow 
+                        key={`row-${index}`}
+                        className="border-primary/10 hover:bg-primary/5 transition-all duration-200 group cursor-pointer"
+                        onClick={() => toggleRow(item.name)}
+                      >
+                        {/* Column 1: Generation Type */}
+                        <TableCell className="py-3">
+                          <div className="flex items-center gap-3">
+                            <div 
+                              className="w-3 h-3 rounded-sm flex-shrink-0 transition-all duration-200 group-hover:scale-125 group-hover:shadow-lg"
+                              style={{ backgroundColor: item.color }}
+                            />
+                            <span className="text-sm font-medium group-hover:text-cosmic-cyan transition-colors">
+                              {item.name}
+                            </span>
+                            {info && (
+                              isExpanded ? 
+                                <ChevronUp className="w-4 h-4 text-muted-foreground group-hover:text-cosmic-cyan transition-colors ml-2" /> :
+                                <ChevronDown className="w-4 h-4 text-muted-foreground group-hover:text-cosmic-cyan transition-colors ml-2" />
+                            )}
+                          </div>
+                        </TableCell>
+                        
+                        {/* Column 2: Live Generation */}
+                        <TableCell className="py-3 text-right">
+                          <div className="space-y-0.5">
+                            <div className="text-base font-bold text-cosmic-cyan group-hover:text-glow transition-all">
+                              {formatGWfromMW(item.value, 2)} GW
                             </div>
-                          </TableCell>
-                          
-                          {/* Column 2: Live Generation */}
-                          <TableCell className="py-3 text-right">
-                            <div className="space-y-0.5">
-                              <div className="text-base font-bold text-cosmic-cyan group-hover:text-glow transition-all">
-                                {formatGWfromMW(item.value, 2)} GW
+                            <div className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
+                              {item.percentage}% of mix
+                            </div>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+
+                      {/* Expandable detail row - conditionally rendered */}
+                      {info && isExpanded && (
+                        <TableRow 
+                          key={`detail-${index}`}
+                          className="border-primary/10 bg-primary/5 animate-in fade-in-0 slide-in-from-top-2 duration-200"
+                        >
+                          <TableCell colSpan={2} className="py-4 px-6">
+                            <div className="space-y-3 text-sm">
+                              {/* Description */}
+                              <div>
+                                <p className="text-muted-foreground leading-relaxed">
+                                  {info.description}
+                                </p>
                               </div>
-                              <div className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
-                                {item.percentage}% of mix
+                              
+                              {/* Data source */}
+                              <div className="grid grid-cols-[120px_1fr] gap-2">
+                                <span className="font-semibold text-cosmic-cyan">Data Source:</span>
+                                <span className="text-muted-foreground">{info.dataSource}</span>
+                              </div>
+                              
+                              {/* Update frequency */}
+                              <div className="grid grid-cols-[120px_1fr] gap-2">
+                                <span className="font-semibold text-cosmic-cyan">Update Freq:</span>
+                                <span className="text-muted-foreground">{info.updateFrequency}</span>
+                              </div>
+                              
+                              {/* Interesting fact */}
+                              <div className="pt-2 border-t border-primary/20">
+                                <p className="text-xs italic text-primary/80">
+                                  💡 {info.interestingFact}
+                                </p>
                               </div>
                             </div>
                           </TableCell>
                         </TableRow>
-                      </CollapsibleTrigger>
-
-                      {/* Expandable content row */}
-                      {info && (
-                        <CollapsibleContent asChild>
-                          <TableRow className="border-primary/10 bg-primary/5">
-                            <TableCell colSpan={2} className="py-4 px-6">
-                              <div className="space-y-3 text-sm animate-accordion-down">
-                                {/* Description */}
-                                <div>
-                                  <p className="text-muted-foreground leading-relaxed">
-                                    {info.description}
-                                  </p>
-                                </div>
-                                
-                                {/* Data source */}
-                                <div className="grid grid-cols-[120px_1fr] gap-2">
-                                  <span className="font-semibold text-cosmic-cyan">Data Source:</span>
-                                  <span className="text-muted-foreground">{info.dataSource}</span>
-                                </div>
-                                
-                                {/* Update frequency */}
-                                <div className="grid grid-cols-[120px_1fr] gap-2">
-                                  <span className="font-semibold text-cosmic-cyan">Update Freq:</span>
-                                  <span className="text-muted-foreground">{info.updateFrequency}</span>
-                                </div>
-                                
-                                {/* Interesting fact */}
-                                <div className="pt-2 border-t border-primary/20">
-                                  <p className="text-xs italic text-primary/80">
-                                    💡 {info.interestingFact}
-                                  </p>
-                                </div>
-                              </div>
-                            </TableCell>
-                          </TableRow>
-                        </CollapsibleContent>
                       )}
-                    </Collapsible>
+                    </>
                   );
                 })}
               </TableBody>
