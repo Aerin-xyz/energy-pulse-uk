@@ -162,17 +162,17 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
           </div>
           
           {/* Detailed Legend */}
-          <div className="space-y-2 lg:space-y-3">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-2 lg:gap-y-3">
             {data.map((item, index) => (
               <div key={index} className="flex items-center gap-3">
                 <div 
-                  className="w-4 h-4 rounded-sm"
+                  className="w-4 h-4 rounded-sm flex-shrink-0"
                   style={{ backgroundColor: item.color }}
                 />
-                <div className="flex-1">
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm">{item.name}</span>
-                    <div className="text-right">
+                <div className="flex-1 min-w-0">
+                  <div className="flex justify-between items-center gap-2">
+                    <span className="text-sm truncate">{item.name}</span>
+                    <div className="text-right flex-shrink-0">
                       <div className="text-sm font-bold">{formatGWfromMW(item.value, 2)} GW</div>
                       <div className="text-xs text-muted-foreground">{item.percentage}%</div>
                     </div>
