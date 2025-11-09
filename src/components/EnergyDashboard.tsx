@@ -100,7 +100,7 @@ export const EnergyDashboard = () => {
     }
 
     const renewables = ['Wind', 'Solar', 'Hydro', 'PSH'];
-    const fossilFuels = ['Gas', 'Coal', 'Oil'];
+    const fossilFuels = ['Gas', 'Oil']; // Coal removed - UK coal generation ended Sept 2024
     
     const renewablesMW = data.generationMix
       .filter(item => renewables.includes(item.name))

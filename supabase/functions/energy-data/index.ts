@@ -1249,7 +1249,11 @@ function labelFuel(raw: string): string {
   if (t.includes("BIOMASS")) return "Biomass";
   if (t.includes("HYDRO") || t === "NPSHYD") return "Hydro";
   if (t === "CCGT" || t === "OCGT" || t.includes("GAS")) return "Gas";
-  if (t.includes("COAL")) return "Coal";
+  if (t.includes("COAL")) {
+    // Coal generation ended in UK in September 2024 - map to Other for legacy data compatibility
+    console.warn(`[labelFuel] Coal fuel type detected: ${raw} - UK coal generation ended Sept 2024`);
+    return "Other";
+  }
   if (t.includes("OIL")) return "Oil";
   return "Other";
 }
