@@ -1757,7 +1757,11 @@ try {
       totalDemandMW: Math.round(totalDemand * 1000),
       units: "MW",
       lastUpdated: new Date().toISOString(),
-      carbonIntensity: carbonIntensity || null,
+      carbonIntensity: carbonIntensity ? {
+        ...carbonIntensity,
+        // Trim forecast to next 12 hours (24 half-hourly periods) to reduce payload size
+        forecastData: carbonIntensity.forecastData?.slice(0, 24)
+      } : null,
 dataFreshness: {
   source: "BMRS HV + ESO + PV Live",
   isRealtime: true,

@@ -1,6 +1,53 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
+// localStorage cache utilities for instant loading
+const CACHE_KEY = 'energymix_cache_v1';
+const CACHE_EXPIRY_MS = 30 * 60 * 1000; // 30 minutes
+
+interface CachedData {
+  data: EnergyData;
+  timestamp: number;
+}
+
+function loadFromLocalStorage(): EnergyData | null {
+  try {
+    const cached = localStorage.getItem(CACHE_KEY);
+    if (!cached) return null;
+    
+    const parsed: CachedData = JSON.parse(cached);
+    const age = Date.now() - parsed.timestamp;
+    
+    // Return cached data if less than 30 minutes old
+    if (age < CACHE_EXPIRY_MS) {
+      // Reconstruct Date objects
+      return {
+        ...parsed.data,
+        lastUpdated: new Date(parsed.data.lastUpdated)
+      };
+    }
+    
+    // Expired, remove it
+    localStorage.removeItem(CACHE_KEY);
+    return null;
+  } catch (error) {
+    console.error('[localStorage] Failed to load cache:', error);
+    return null;
+  }
+}
+
+function saveToLocalStorage(data: EnergyData): void {
+  try {
+    const cacheData: CachedData = {
+      data,
+      timestamp: Date.now()
+    };
+    localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
+  } catch (error) {
+    console.error('[localStorage] Failed to save cache:', error);
+  }
+}
+
 interface GenerationData {
   name: string;
   value: number;
@@ -99,9 +146,10 @@ async function fetchEnergyData(updateType: 'high' | 'mid' | 'full' = 'full'): Pr
 }
 
 export function EnergyDataProvider({ children }: { children: ReactNode }) {
-  const [data, setData] = useState<EnergyData | null>(null);
+  // Initialize from localStorage for instant loading
+  const [data, setData] = useState<EnergyData | null>(() => loadFromLocalStorage());
   const [rawData, setRawData] = useState<any>(null);
-  const [cachedData, setCachedData] = useState<EnergyData | null>(null);
+  const [cachedData, setCachedData] = useState<EnergyData | null>(() => loadFromLocalStorage());
   const [loading, setLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -142,6 +190,16 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
         if (cachedData) {
           setData(cachedData);
           setLoading(false);
+          
+          // Show toast if cache is stale (>10 minutes)
+          const cacheAge = Math.floor((Date.now() - cachedData.lastUpdated.getTime()) / 60000);
+          if (cacheAge > 10 && showToast && initialLoad) {
+            toast({
+              title: "Showing Recent Data",
+              description: `Data is ${cacheAge} minutes old. Refreshing now...`,
+              variant: "default"
+            });
+          }
         }
         
         // Only show loading on initial load if no cached data
@@ -201,6 +259,7 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
 
         setData(newData);
         setCachedData(newData); // Cache for next time
+        saveToLocalStorage(newData); // Persist to localStorage for instant loading
         setLastUpdateType(updateType);
         
         // Calculate next update times

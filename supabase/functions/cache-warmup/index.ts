@@ -32,6 +32,7 @@ serve(async (req) => {
         const responseData = await response.json();
         
         results.push({
+          function: 'energy-data',
           updateType,
           status: response.status,
           duration: `${duration}ms`,
@@ -39,17 +40,46 @@ serve(async (req) => {
           cacheTTL: responseData._cacheTTL || 0
         });
         
-        console.log(`[cache-warmup] ${updateType}: ${response.status} (${duration}ms, cached: ${responseData._cacheHit || false})`);
+        console.log(`[cache-warmup] energy-data ${updateType}: ${response.status} (${duration}ms, cached: ${responseData._cacheHit || false})`);
       } catch (err) {
         results.push({
+          function: 'energy-data',
           updateType,
           error: err instanceof Error ? err.message : String(err)
         });
-        console.error(`[cache-warmup] ${updateType} failed:`, err);
+        console.error(`[cache-warmup] energy-data ${updateType} failed:`, err);
       }
       
       // Small delay between requests to be gentle on the system
       await new Promise(resolve => setTimeout(resolve, 500));
+    }
+    
+    // Also warm historical-generation cache (daily data)
+    try {
+      const startTime = Date.now();
+      const response = await fetch(`${baseUrl}/historical-generation`, {
+        headers: {
+          'Authorization': `Bearer ${Deno.env.get('SUPABASE_ANON_KEY')}`
+        }
+      });
+      
+      const duration = Date.now() - startTime;
+      const responseData = await response.json();
+      
+      results.push({
+        function: 'historical-generation',
+        status: response.status,
+        duration: `${duration}ms`,
+        cacheHit: responseData._cacheHit || false
+      });
+      
+      console.log(`[cache-warmup] historical-generation: ${response.status} (${duration}ms, cached: ${responseData._cacheHit || false})`);
+    } catch (err) {
+      results.push({
+        function: 'historical-generation',
+        error: err instanceof Error ? err.message : String(err)
+      });
+      console.error(`[cache-warmup] historical-generation failed:`, err);
     }
     
     // Cleanup expired cache entries

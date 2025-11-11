@@ -8,3 +8,6 @@ verify_jwt = false
 
 [functions.cache-warmup]
 verify_jwt = false
+
+[functions.historical-generation]
+verify_jwt = false
