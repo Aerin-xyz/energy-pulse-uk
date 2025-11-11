@@ -38,7 +38,7 @@ const interconnectorDetails: Record<string, {
   facts: string[];
   sources: Array<{ text: string; url: string }>;
 }> = {
-  'IFA / IFA2': {
+  'IFA / IFA2 / ElecLink': {
     endpoints: {
       uk: 'Sellindge, Kent (IFA) & Chilling, Hampshire (IFA2) & Folkestone, Kent (ElecLink)',
       foreign: 'Les Mandarins & Tourbe, Normandy, France (IFA/IFA2) & Peuplingues, Calais, France (ElecLink)'
