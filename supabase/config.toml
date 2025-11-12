@@ -32,3 +32,6 @@ verify_jwt = false
 
 [functions.linkedin-ingest]
 verify_jwt = false
+
+[functions.test-mailerlite]
+verify_jwt = false
