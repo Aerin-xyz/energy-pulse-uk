@@ -11,3 +11,24 @@ verify_jwt = false
 
 [functions.historical-generation]
 verify_jwt = false
+
+[functions.collector-agent]
+verify_jwt = false
+
+[functions.scorer-agent]
+verify_jwt = false
+
+[functions.summariser-agent]
+verify_jwt = false
+
+[functions.snapshot-agent]
+verify_jwt = false
+
+[functions.assembler-agent]
+verify_jwt = false
+
+[functions.publisher-agent]
+verify_jwt = false
+
+[functions.linkedin-ingest]
+verify_jwt = false

@@ -62,6 +62,91 @@ export type Database = {
         }
         Relationships: []
       }
+      newsletter_issues: {
+        Row: {
+          approved_at: string | null
+          created_at: string | null
+          html_content: string | null
+          id: string
+          sent_at: string | null
+          snapshot_id: string | null
+          status: string
+          subject: string | null
+          text_content: string | null
+          week: string
+        }
+        Insert: {
+          approved_at?: string | null
+          created_at?: string | null
+          html_content?: string | null
+          id?: string
+          sent_at?: string | null
+          snapshot_id?: string | null
+          status?: string
+          subject?: string | null
+          text_content?: string | null
+          week: string
+        }
+        Update: {
+          approved_at?: string | null
+          created_at?: string | null
+          html_content?: string | null
+          id?: string
+          sent_at?: string | null
+          snapshot_id?: string | null
+          status?: string
+          subject?: string | null
+          text_content?: string | null
+          week?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "newsletter_issues_snapshot_id_fkey"
+            columns: ["snapshot_id"]
+            isOneToOne: false
+            referencedRelation: "snapshot_metrics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ranked_items: {
+        Row: {
+          id: string
+          is_included: boolean | null
+          ranked_at: string | null
+          raw_item_id: string | null
+          score: number
+          score_factors: Json | null
+          week: string
+        }
+        Insert: {
+          id?: string
+          is_included?: boolean | null
+          ranked_at?: string | null
+          raw_item_id?: string | null
+          score: number
+          score_factors?: Json | null
+          week: string
+        }
+        Update: {
+          id?: string
+          is_included?: boolean | null
+          ranked_at?: string | null
+          raw_item_id?: string | null
+          score?: number
+          score_factors?: Json | null
+          week?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ranked_items_raw_item_id_fkey"
+            columns: ["raw_item_id"]
+            isOneToOne: false
+            referencedRelation: "raw_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       rate_limits: {
         Row: {
           client_ip: string
@@ -91,6 +176,196 @@ export type Database = {
           window_type?: string
         }
         Relationships: []
+      }
+      raw_items: {
+        Row: {
+          collected_at: string | null
+          content_hash: string | null
+          id: string
+          published_at: string
+          raw_data: Json | null
+          source: string
+          summary: string | null
+          title: string
+          type: string
+          url: string
+        }
+        Insert: {
+          collected_at?: string | null
+          content_hash?: string | null
+          id?: string
+          published_at: string
+          raw_data?: Json | null
+          source: string
+          summary?: string | null
+          title: string
+          type: string
+          url: string
+        }
+        Update: {
+          collected_at?: string | null
+          content_hash?: string | null
+          id?: string
+          published_at?: string
+          raw_data?: Json | null
+          source?: string
+          summary?: string | null
+          title?: string
+          type?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      send_logs: {
+        Row: {
+          created_at: string | null
+          entity_id: string
+          entity_type: string
+          error_message: string | null
+          id: string
+          provider: string | null
+          response_data: Json | null
+          status: string
+        }
+        Insert: {
+          created_at?: string | null
+          entity_id: string
+          entity_type: string
+          error_message?: string | null
+          id?: string
+          provider?: string | null
+          response_data?: Json | null
+          status: string
+        }
+        Update: {
+          created_at?: string | null
+          entity_id?: string
+          entity_type?: string
+          error_message?: string | null
+          id?: string
+          provider?: string | null
+          response_data?: Json | null
+          status?: string
+        }
+        Relationships: []
+      }
+      snapshot_metrics: {
+        Row: {
+          avg_ci: number | null
+          avg_gas: number | null
+          avg_solar: number | null
+          avg_wind: number | null
+          biggest_swing: string | null
+          chart_url: string | null
+          computed_at: string | null
+          id: string
+          metrics_data: Json | null
+          week: string
+        }
+        Insert: {
+          avg_ci?: number | null
+          avg_gas?: number | null
+          avg_solar?: number | null
+          avg_wind?: number | null
+          biggest_swing?: string | null
+          chart_url?: string | null
+          computed_at?: string | null
+          id?: string
+          metrics_data?: Json | null
+          week: string
+        }
+        Update: {
+          avg_ci?: number | null
+          avg_gas?: number | null
+          avg_solar?: number | null
+          avg_wind?: number | null
+          biggest_swing?: string | null
+          chart_url?: string | null
+          computed_at?: string | null
+          id?: string
+          metrics_data?: Json | null
+          week?: string
+        }
+        Relationships: []
+      }
+      social_posts: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          newsletter_id: string | null
+          platform: string
+          post_type: string
+          scheduled_for: string | null
+          sent_at: string | null
+          status: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          newsletter_id?: string | null
+          platform?: string
+          post_type: string
+          scheduled_for?: string | null
+          sent_at?: string | null
+          status?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          newsletter_id?: string | null
+          platform?: string
+          post_type?: string
+          scheduled_for?: string | null
+          sent_at?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_posts_newsletter_id_fkey"
+            columns: ["newsletter_id"]
+            isOneToOne: false
+            referencedRelation: "newsletter_issues"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      summaries: {
+        Row: {
+          generated_at: string | null
+          id: string
+          model_used: string | null
+          ranked_item_id: string | null
+          summary_text: string
+          word_count: number | null
+        }
+        Insert: {
+          generated_at?: string | null
+          id?: string
+          model_used?: string | null
+          ranked_item_id?: string | null
+          summary_text: string
+          word_count?: number | null
+        }
+        Update: {
+          generated_at?: string | null
+          id?: string
+          model_used?: string | null
+          ranked_item_id?: string | null
+          summary_text?: string
+          word_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "summaries_ranked_item_id_fkey"
+            columns: ["ranked_item_id"]
+            isOneToOne: false
+            referencedRelation: "ranked_items"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

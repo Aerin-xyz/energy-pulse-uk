@@ -11,6 +11,7 @@ import About from "./pages/About";
 import Data from "./pages/Data";
 import Insights from "./pages/Insights";
 import Newsletter from "./pages/Newsletter";
+import DigestPreview from "./pages/DigestPreview";
 
 const queryClient = new QueryClient();
 
@@ -28,6 +29,7 @@ const App = () => (
             <Route path="/data" element={<Data />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/admin/digest-preview" element={<DigestPreview />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
