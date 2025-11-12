@@ -555,7 +555,7 @@ async function fetchEntsoePhysicalFlows(): Promise<{
 /**
  * Fetches all possible interconnectors showing their current status.
  * Returns all ENTSOE_BORDERS regardless of whether they have live data.
- * Includes BMRS fallback for Irish interconnectors when ENTSO-E fails.
+ * Includes BMRS fallback for ALL interconnectors when ENTSO-E fails.
  */
 async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRows?: any[]): Promise<{
   ok: boolean; 
@@ -668,13 +668,13 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
     attempts.push(result.attempt);
   }
 
-  // Strategy 2: BMRS fallback for Irish interconnectors when ENTSO-E fails
+  // Strategy 2: BMRS fallback for ALL interconnectors when ENTSO-E fails
   if (latestOutturnRows && latestOutturnRows.length > 0) {
-    const irishFallback = await fetchIrishInterconnectorFromBMRS(latestOutturnRows, debug);
+    const bmrsFallback = await fetchBMRSInterconnectorFallback(latestOutturnRows, debug);
     
-    if (irishFallback.length > 0) {
-      // Update Irish interconnectors with BMRS data
-      for (const bmrsData of irishFallback) {
+    if (bmrsFallback.length > 0) {
+      // Update all interconnectors with BMRS data where ENTSO-E failed
+      for (const bmrsData of bmrsFallback) {
         const interconnectorIndex = allInterconnectors.findIndex(ic => 
           ic.name === bmrsData.name
         );
@@ -715,38 +715,67 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
 }
 
 /**
- * Extracts Irish interconnector data from BMRS Generation Outturn Summary as fallback
- * when ENTSO-E API returns "no-points" for EWIC and Moyle.
+ * Mapping between ENTSO-E border display names and BMRS interconnector codes.
+ * France aggregates multiple cables (IFA + IFA2 + ElecLink).
  */
-async function fetchIrishInterconnectorFromBMRS(outturnRows: any[], debug = false): Promise<Array<{
+const ENTSOE_TO_BMRS_MAP: Record<string, string[]> = {
+  "IFA / IFA2 / ElecLink": ["INTFR", "INTFR2", "INTELEC", "INTIFA2"],
+  "Nemo Link": ["INTNEM", "INTBEL"],
+  "BritNed": ["INTNED"],
+  "North Sea Link": ["INTNSL", "INTNOR"],
+  "East–West Interconnector": ["INTEW"],
+  "Moyle": ["INTIRL"],
+  "Greenlink": ["INTGRNL"],
+  "Viking Link": ["INTDK1"]
+};
+
+/**
+ * Extracts ALL interconnector data from BMRS Generation Outturn Summary as fallback
+ * when ENTSO-E API is unavailable or returns errors.
+ */
+async function fetchBMRSInterconnectorFallback(outturnRows: any[], debug = false): Promise<Array<{
   name: string;
   country: string;
   flow: number;
   capacity: number | null;
 }>> {
   if (!outturnRows || outturnRows.length === 0) {
-    if (debug) dlog(true, "No BMRS outturn rows available for Irish interconnector fallback");
+    if (debug) dlog(true, "No BMRS outturn rows available for interconnector fallback");
     return [];
   }
 
-  // Extract interconnector data using existing function
-  const interconnectors = deriveICFromOutturnRowsVariant(outturnRows, "dataset");
+  // Extract ALL interconnector data using existing function
+  const rawInterconnectors = deriveICFromOutturnRowsVariant(outturnRows, "dataset");
   
-  // Filter for Irish interconnectors only (INTEW = EWIC, INTIRL = Moyle, INTGRNL = Greenlink)
-  const irishInterconnectors = interconnectors.filter(ic => 
-    ic.code === "INTEW" || ic.code === "INTIRL" || ic.code === "INTGRNL"
-  );
-
-  if (debug && irishInterconnectors.length > 0) {
-    dlog(true, `BMRS Irish interconnector fallback found: ${irishInterconnectors.map(ic => `${ic.name}=${ic.flow}MW`).join(", ")}`);
+  if (debug && rawInterconnectors.length > 0) {
+    dlog(true, `BMRS interconnectors found: ${rawInterconnectors.map(ic => `${ic.code}=${ic.flow}MW`).join(", ")}`);
   }
 
-  return irishInterconnectors.map(ic => ({
-    name: ic.name,
-    country: ic.country,
-    flow: ic.flow,
-    capacity: ic.capacity
-  }));
+  // Map BMRS codes to ENTSO-E display names and aggregate flows
+  const aggregatedFlows: Record<string, { name: string; country: string; flow: number; capacity: number | null }> = {};
+  
+  for (const [displayName, bmrsCodes] of Object.entries(ENTSOE_TO_BMRS_MAP)) {
+    const matchingInterconnectors = rawInterconnectors.filter(ic => bmrsCodes.includes(ic.code));
+    
+    if (matchingInterconnectors.length > 0) {
+      // Sum flows for borders with multiple cables (e.g., France)
+      const totalFlow = matchingInterconnectors.reduce((sum, ic) => sum + ic.flow, 0);
+      const totalCapacity = matchingInterconnectors.reduce((sum, ic) => sum + (ic.capacity || 0), 0);
+      
+      aggregatedFlows[displayName] = {
+        name: displayName,
+        country: matchingInterconnectors[0].country,
+        flow: totalFlow,
+        capacity: totalCapacity > 0 ? totalCapacity : null
+      };
+      
+      if (debug) {
+        dlog(true, `BMRS fallback aggregated for ${displayName}: ${totalFlow} MW from codes: ${bmrsCodes.join(", ")}`);
+      }
+    }
+  }
+
+  return Object.values(aggregatedFlows);
 }
 
 /**
