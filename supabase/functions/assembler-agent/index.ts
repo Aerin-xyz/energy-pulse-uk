@@ -111,8 +111,8 @@ serve(async (req) => {
       throw new Error('Snapshot not found for this week. Run snapshot-agent first.');
     }
 
-    // Get top headlines with summaries
-    const { data: headlines, error: headlinesError } = await supabase
+    // Get all ranked items for the week with their raw data
+    const { data: allItems, error: itemsError } = await supabase
       .from('ranked_items')
       .select(`
         *,
@@ -120,62 +120,83 @@ serve(async (req) => {
         summaries (*)
       `)
       .eq('week', targetWeek)
-      .eq('raw_items.type', 'headline')
       .eq('is_included', true)
-      .order('score', { ascending: false })
-      .limit(8);
+      .order('score', { ascending: false });
 
-    if (headlinesError) throw headlinesError;
+    if (itemsError) throw itemsError;
 
-    // Get top papers
-    const { data: papers, error: papersError } = await supabase
-      .from('ranked_items')
-      .select(`
-        *,
-        raw_items:raw_item_id (*)
-      `)
-      .eq('week', targetWeek)
-      .eq('raw_items.type', 'paper')
-      .eq('is_included', true)
-      .order('score', { ascending: false })
-      .limit(3);
+    // Filter headlines and papers in JavaScript
+    const headlines = allItems
+      ?.filter(item => item.raw_items?.type === 'headline')
+      .slice(0, 8) || [];
 
-    if (papersError) throw papersError;
+    const papers = allItems
+      ?.filter(item => item.raw_items?.type === 'paper')
+      .slice(0, 3) || [];
 
-    // Format data
-    const headlineData = headlines?.map(h => ({
-      title: h.raw_items.title,
-      summary: h.summaries?.[0]?.summary_text || h.raw_items.summary,
-      url: h.raw_items.url,
-      source: h.raw_items.source,
-    })) || [];
+    // Format data (filter out any items where raw_items is null)
+    const headlineData = headlines
+      ?.filter(h => h.raw_items)
+      .map(h => ({
+        title: h.raw_items.title,
+        summary: h.summaries?.[0]?.summary_text || h.raw_items.summary,
+        url: h.raw_items.url,
+        source: h.raw_items.source,
+      })) || [];
 
-    const paperData = papers?.map(p => ({
-      title: p.raw_items.title,
-      url: p.raw_items.url,
-      source: p.raw_items.source,
-    })) || [];
+    const paperData = papers
+      ?.filter(p => p.raw_items)
+      .map(p => ({
+        title: p.raw_items.title,
+        url: p.raw_items.url,
+        source: p.raw_items.source,
+      })) || [];
 
     // Assemble newsletter
     const htmlContent = assembleNewsletterHTML(snapshot, headlineData, paperData);
     const textContent = assemblePlainText(snapshot, headlineData, paperData);
     const subject = `Energy Mix Weekly: ${snapshot.biggest_swing}`;
 
-    // Create newsletter issue
-    const { data: newsletter, error: newsletterError } = await supabase
+    // Check if newsletter already exists for this week
+    const { data: existingNewsletter } = await supabase
       .from('newsletter_issues')
-      .upsert({
-        week: targetWeek,
-        status: 'draft',
-        subject,
-        html_content: htmlContent,
-        text_content: textContent,
-        snapshot_id: snapshot.id,
-      }, { onConflict: 'week' })
-      .select()
+      .select('id')
+      .eq('week', targetWeek)
       .single();
 
-    if (newsletterError) throw newsletterError;
+    let newsletter;
+    if (existingNewsletter) {
+      // Update existing
+      const { data, error: updateError } = await supabase
+        .from('newsletter_issues')
+        .update({
+          subject,
+          html_content: htmlContent,
+          text_content: textContent,
+          snapshot_id: snapshot.id,
+        })
+        .eq('week', targetWeek)
+        .select()
+        .single();
+      if (updateError) throw updateError;
+      newsletter = data;
+    } else {
+      // Insert new
+      const { data, error: insertError } = await supabase
+        .from('newsletter_issues')
+        .insert({
+          week: targetWeek,
+          status: 'draft',
+          subject,
+          html_content: htmlContent,
+          text_content: textContent,
+          snapshot_id: snapshot.id,
+        })
+        .select()
+        .single();
+      if (insertError) throw insertError;
+      newsletter = data;
+    }
 
     // Create social posts
     const socialPosts = [
@@ -199,9 +220,15 @@ serve(async (req) => {
       },
     ];
 
+    // Delete existing posts and insert new ones
+    await supabase
+      .from('social_posts')
+      .delete()
+      .eq('newsletter_id', newsletter.id);
+    
     const { error: postsError } = await supabase
       .from('social_posts')
-      .upsert(socialPosts, { onConflict: 'newsletter_id,post_type' });
+      .insert(socialPosts);
 
     if (postsError) throw postsError;
 
