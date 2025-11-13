@@ -26,7 +26,7 @@ async function publishToMailerLite(subject: string, htmlContent: string): Promis
         emails: [{
           subject,
           from_name: 'Energy Mix',
-          from: 'hello@energymix.info',
+          from: 'energymix@energymix.info',
           content: htmlContent,
         }],
       }),
