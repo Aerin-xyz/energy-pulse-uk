@@ -292,35 +292,47 @@ export type Database = {
         Row: {
           content: string
           created_at: string | null
+          error_message: string | null
           id: string
+          image_path: string | null
+          linkedin_post_id: string | null
           newsletter_id: string | null
           platform: string
           post_type: string
           scheduled_for: string | null
           sent_at: string | null
           status: string
+          week: string | null
         }
         Insert: {
           content: string
           created_at?: string | null
+          error_message?: string | null
           id?: string
+          image_path?: string | null
+          linkedin_post_id?: string | null
           newsletter_id?: string | null
           platform?: string
           post_type: string
           scheduled_for?: string | null
           sent_at?: string | null
           status?: string
+          week?: string | null
         }
         Update: {
           content?: string
           created_at?: string | null
+          error_message?: string | null
           id?: string
+          image_path?: string | null
+          linkedin_post_id?: string | null
           newsletter_id?: string | null
           platform?: string
           post_type?: string
           scheduled_for?: string | null
           sent_at?: string | null
           status?: string
+          week?: string | null
         }
         Relationships: [
           {
