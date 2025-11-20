@@ -35,3 +35,9 @@ verify_jwt = false
 
 [functions.test-mailerlite]
 verify_jwt = false
+
+[functions.approve-social-post]
+verify_jwt = false
+
+[functions.check-linkedin-config]
+verify_jwt = false
