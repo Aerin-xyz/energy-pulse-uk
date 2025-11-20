@@ -45,6 +45,7 @@ const AdminSocialPosts = () => {
   const [editContent, setEditContent] = useState("");
   const [editScheduledFor, setEditScheduledFor] = useState("");
   const [configError, setConfigError] = useState(false);
+  const [transport, setTransport] = useState<'api' | 'webhook' | null>(null);
 
   useEffect(() => {
     checkConfig();
@@ -56,9 +57,11 @@ const AdminSocialPosts = () => {
       const { data, error } = await supabase.functions.invoke('check-linkedin-config');
       if (error) throw error;
       setConfigError(!data.configured);
+      setTransport(data.transport || null);
     } catch (error) {
       console.error('Error checking config:', error);
       setConfigError(true);
+      setTransport(null);
     }
   };
 
@@ -221,8 +224,16 @@ const AdminSocialPosts = () => {
             <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-destructive" />
               <p className="text-sm text-destructive">
-                LinkedIn automation not configured. Please set MAKE_LINKEDIN_WEBHOOK_URL.
+                LinkedIn automation not configured. Add MAKE_API_TOKEN + MAKE_API_BASE_URL + MAKE_SCENARIO_ID_LINKEDIN_PUBLISHER or MAKE_LINKEDIN_WEBHOOK_URL.
               </p>
+            </div>
+          )}
+
+          {!configError && transport && (
+            <div className="mb-6 p-4 bg-primary/10 border border-primary/20 rounded-lg flex items-center gap-2">
+              <Badge variant="outline" className="bg-primary/10">
+                Transport: {transport === 'api' ? 'Make API' : 'Webhook'}
+              </Badge>
             </div>
           )}
 
