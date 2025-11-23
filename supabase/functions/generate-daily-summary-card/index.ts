@@ -253,7 +253,7 @@ Deno.serve(async (req) => {
     const { data: existingPosts, error: queryError } = await supabase
       .from('social_posts')
       .select('id')
-      .eq('post_type', 'daily_summary')
+      .eq('post_type', 'summary')
       .eq('summary_date', targetDate)
       .limit(1);
 
@@ -285,7 +285,7 @@ Deno.serve(async (req) => {
         .from('social_posts')
         .insert({
           platform: 'linkedin',
-          post_type: 'daily_summary',
+          post_type: 'summary',
           summary_date: targetDate,
           content: '', // To be filled later by agents/admin
           image_path: publicUrl,
