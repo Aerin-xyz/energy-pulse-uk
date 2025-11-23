@@ -30,14 +30,27 @@ async function sendToMakeWebhook(payload: LinkedInPostPayload, webhookUrl: strin
     body: JSON.stringify(payload),
   });
 
+  const text = await response.text();
+
   if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Webhook call failed: ${response.status} - ${errorText}`);
+    throw new Error(`Webhook call failed: ${response.status} - ${text}`);
   }
 
-  const result = await response.json();
-  console.log('Webhook response:', result);
-  return result;
+  // Handle non-JSON responses (e.g., "Accepted")
+  const contentType = response.headers.get('Content-Type') || '';
+  if (contentType.includes('application/json')) {
+    try {
+      const result = JSON.parse(text);
+      console.log('Webhook response:', result);
+      return result;
+    } catch (parseError) {
+      console.log('Webhook response (non-parseable JSON):', text);
+      return { raw: text };
+    }
+  } else {
+    console.log('Webhook response (non-JSON):', text);
+    return { raw: text || 'OK' };
+  }
 }
 
 Deno.serve(async (req) => {
@@ -148,12 +161,14 @@ Deno.serve(async (req) => {
       const makeData = await sendToMakeWebhook(payload, webhookUrl);
 
       // Update post as sent
+      const linkedinId = (makeData && (makeData.linkedin_post_id || makeData.post_id)) || null;
+      
       await supabaseClient
         .from('social_posts')
         .update({
           status: 'sent',
           sent_at: new Date().toISOString(),
-          linkedin_post_id: makeData.linkedin_post_id || makeData.post_id || null,
+          linkedin_post_id: linkedinId,
           error_message: null,
         })
         .eq('id', postId);
@@ -172,7 +187,7 @@ Deno.serve(async (req) => {
       return new Response(
         JSON.stringify({ 
           message: mode === 'now' ? 'Post sent successfully' : 'Post scheduled successfully',
-          linkedin_post_id: makeData.linkedin_post_id || makeData.post_id,
+          linkedin_post_id: linkedinId,
           transport: 'webhook'
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
