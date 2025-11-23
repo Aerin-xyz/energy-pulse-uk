@@ -15,9 +15,18 @@ Deno.serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    // Get week from request body or use current week
+    const { week } = await req.json().catch(() => ({}));
+    const targetWeek = week || (() => {
+      const now = new Date();
+      const year = now.getFullYear();
+      const weekNum = Math.ceil(((now.getTime() - new Date(year, 0, 1).getTime()) / 86400000 + new Date(year, 0, 1).getDay() + 1) / 7);
+      return `${year}-W${weekNum.toString().padStart(2, '0')}`;
+    })();
+
     const testPosts = [
       {
-        week: '2025-W48',
+        week: targetWeek,
         platform: 'linkedin',
         post_type: 'summary',
         content: `📊 This week in UK energy:
@@ -34,7 +43,7 @@ Read the full digest: [link]
         status: 'draft',
       },
       {
-        week: '2025-W48',
+        week: targetWeek,
         platform: 'linkedin',
         post_type: 'chart',
         content: `📈 Weekly generation snapshot (Week 48):
@@ -53,7 +62,7 @@ Wind dominates UK power generation this week!
         status: 'draft',
       },
       {
-        week: '2025-W48',
+        week: targetWeek,
         platform: 'linkedin',
         post_type: 'outlook',
         content: `Looking ahead at the UK energy system...
@@ -90,7 +99,7 @@ The energy transition continues to accelerate. Full technical analysis in this w
       JSON.stringify({ 
         success: true, 
         posts: data,
-        message: `Created ${data.length} test posts for week 2025-W48` 
+        message: `Created ${data.length} test posts for week ${targetWeek}` 
       }),
       { status: 200, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
