@@ -265,7 +265,6 @@ export function SatoriDailySummaryCard({
                     alignItems: 'center',
                     justifyContent: 'flex-end',
                     paddingRight: '24px',
-                    minWidth: item.percentage > 5 ? 'auto' : '0',
                   }}
                 >
                   {item.percentage > 5 && (
