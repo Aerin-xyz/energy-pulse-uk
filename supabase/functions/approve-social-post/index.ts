@@ -22,9 +22,9 @@ interface LinkedInPostPayload {
 
 // Make API helper
 async function runMakeLinkedInScenarioViaApi(payload: LinkedInPostPayload) {
-  const baseUrl = Deno.env.get('MAKE_API_BASE_URL');
-  const token = Deno.env.get('MAKE_API_TOKEN');
-  const scenarioId = Deno.env.get('MAKE_SCENARIO_ID_LINKEDIN_PUBLISHER');
+  const baseUrl = Deno.env.get('MAKE_API_BASE_URL_ENDED');
+  const token = Deno.env.get('MAKE_API_TOKEN_ENDED');
+  const scenarioId = Deno.env.get('MAKE_SCENARIO_ID_LINKEDIN_PUBLISHER_ENDED');
 
   if (!baseUrl || !token || !scenarioId) {
     throw new Error('Make API not configured');
@@ -136,9 +136,9 @@ Deno.serve(async (req) => {
     }
 
     // Determine transport method
-    const hasApi = !!Deno.env.get('MAKE_API_TOKEN') &&
-                   !!Deno.env.get('MAKE_API_BASE_URL') &&
-                   !!Deno.env.get('MAKE_SCENARIO_ID_LINKEDIN_PUBLISHER');
+    const hasApi = !!Deno.env.get('MAKE_API_TOKEN_ENDED') &&
+                   !!Deno.env.get('MAKE_API_BASE_URL_ENDED') &&
+                   !!Deno.env.get('MAKE_SCENARIO_ID_LINKEDIN_PUBLISHER_ENDED');
 
     const hasWebhook = !!Deno.env.get('MAKE_LINKEDIN_WEBHOOK_URL');
 
