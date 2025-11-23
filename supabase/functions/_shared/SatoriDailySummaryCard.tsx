@@ -1,4 +1,5 @@
 // Satori-compatible card component with inline styles
+// High-resolution (2x) version optimized for LinkedIn posting
 // This must use inline styles only - no Tailwind classes or external CSS
 
 // @deno-types="npm:@types/react@18"
@@ -35,34 +36,36 @@ export function SatoriDailySummaryCard({
   return (
     <div
       style={{
-        width: '1200px',
-        height: '630px',
+        width: '2400px',
+        height: '1260px',
         display: 'flex',
         flexDirection: 'column',
-        padding: '48px',
+        padding: '96px',
         background: 'linear-gradient(135deg, rgb(25, 28, 36) 0%, rgb(32, 28, 47) 50%, rgb(28, 23, 39) 100%)',
         fontFamily: 'Inter, system-ui, sans-serif',
       }}
     >
       {/* Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '64px' }}>
         <div style={{ display: 'flex', flexDirection: 'column' }}>
           <div
             style={{
-              fontSize: '60px',
+              fontSize: '100px',
               fontWeight: 'bold',
               color: 'rgb(250, 251, 252)',
-              marginBottom: '8px',
+              marginBottom: '16px',
               display: 'flex',
+              letterSpacing: '-2px',
             }}
           >
             UK Energy Mix
           </div>
           <div
             style={{
-              fontSize: '28px',
+              fontSize: '48px',
               color: 'rgb(175, 183, 196)',
               display: 'flex',
+              fontWeight: '500',
             }}
           >
             {dateLabel}
@@ -72,67 +75,116 @@ export function SatoriDailySummaryCard({
           src={logoDataUrl}
           alt="Energy Mix"
           style={{
-            width: '64px',
-            height: '64px',
+            width: '128px',
+            height: '128px',
             opacity: 0.9,
           }}
         />
       </div>
 
-      {/* Main metrics */}
+      {/* Main metrics - Hero layout with carbon intensity prominent */}
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-around',
-          marginBottom: '40px',
+          gap: '64px',
+          marginBottom: '80px',
+          alignItems: 'stretch',
         }}
       >
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        {/* Carbon Intensity - Hero metric */}
+        <div 
+          style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: '1',
+            background: 'rgba(56, 217, 232, 0.08)',
+            borderRadius: '32px',
+            padding: '64px 48px',
+            border: '3px solid rgba(56, 217, 232, 0.2)',
+          }}
+        >
           <div
             style={{
-              fontSize: '72px',
+              fontSize: '140px',
               fontWeight: 'bold',
               color: 'rgb(56, 217, 232)',
-              marginBottom: '8px',
+              marginBottom: '16px',
               display: 'flex',
+              lineHeight: '1',
             }}
           >
             {carbonIntensity}
           </div>
-          <div style={{ fontSize: '24px', color: 'rgb(175, 183, 196)', display: 'flex' }}>
+          <div style={{ fontSize: '44px', color: 'rgb(175, 183, 196)', display: 'flex', fontWeight: '600' }}>
             gCO₂/kWh
           </div>
-        </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div
-            style={{
-              fontSize: '72px',
-              fontWeight: 'bold',
-              color: 'rgb(114, 195, 177)',
-              marginBottom: '8px',
-              display: 'flex',
-            }}
-          >
-            {lowCarbonPercent.toFixed(1)}%
-          </div>
-          <div style={{ fontSize: '24px', color: 'rgb(175, 183, 196)', display: 'flex' }}>
-            Low Carbon
+          <div style={{ fontSize: '32px', color: 'rgb(135, 143, 156)', display: 'flex', marginTop: '8px' }}>
+            Carbon Intensity
           </div>
         </div>
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <div
-            style={{
-              fontSize: '72px',
-              fontWeight: 'bold',
-              color: 'rgb(249, 182, 73)',
-              marginBottom: '8px',
-              display: 'flex',
+
+        {/* Secondary metrics */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '32px', flex: '1' }}>
+          <div 
+            style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center',
+              background: 'rgba(114, 195, 177, 0.08)',
+              borderRadius: '24px',
+              padding: '48px 32px',
+              flex: '1',
+              justifyContent: 'center',
+              border: '2px solid rgba(114, 195, 177, 0.15)',
             }}
           >
-            {renewablesPercent.toFixed(1)}%
+            <div
+              style={{
+                fontSize: '96px',
+                fontWeight: 'bold',
+                color: 'rgb(114, 195, 177)',
+                marginBottom: '8px',
+                display: 'flex',
+                lineHeight: '1',
+              }}
+            >
+              {lowCarbonPercent.toFixed(1)}%
+            </div>
+            <div style={{ fontSize: '36px', color: 'rgb(175, 183, 196)', display: 'flex', fontWeight: '600' }}>
+              Low Carbon
+            </div>
           </div>
-          <div style={{ fontSize: '24px', color: 'rgb(175, 183, 196)', display: 'flex' }}>
-            Renewables
+          
+          <div 
+            style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              alignItems: 'center',
+              background: 'rgba(249, 182, 73, 0.08)',
+              borderRadius: '24px',
+              padding: '48px 32px',
+              flex: '1',
+              justifyContent: 'center',
+              border: '2px solid rgba(249, 182, 73, 0.15)',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '96px',
+                fontWeight: 'bold',
+                color: 'rgb(249, 182, 73)',
+                marginBottom: '8px',
+                display: 'flex',
+                lineHeight: '1',
+              }}
+            >
+              {renewablesPercent.toFixed(1)}%
+            </div>
+            <div style={{ fontSize: '36px', color: 'rgb(175, 183, 196)', display: 'flex', fontWeight: '600' }}>
+              Renewables
+            </div>
           </div>
         </div>
       </div>
@@ -140,10 +192,11 @@ export function SatoriDailySummaryCard({
       {/* Separator */}
       <div
         style={{
-          height: '2px',
-          background: 'rgba(51, 54, 65, 0.5)',
-          marginBottom: '32px',
+          height: '3px',
+          background: 'rgba(51, 54, 65, 0.6)',
+          marginBottom: '64px',
           display: 'flex',
+          borderRadius: '2px',
         }}
       />
 
@@ -151,11 +204,12 @@ export function SatoriDailySummaryCard({
       <div style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
         <div
           style={{
-            fontSize: '28px',
-            fontWeight: '600',
+            fontSize: '52px',
+            fontWeight: '700',
             color: 'rgb(250, 251, 252)',
-            marginBottom: '16px',
+            marginBottom: '32px',
             display: 'flex',
+            letterSpacing: '-1px',
           }}
         >
           Generation Sources
@@ -164,7 +218,7 @@ export function SatoriDailySummaryCard({
           style={{
             display: 'flex',
             flexDirection: 'column',
-            gap: '12px',
+            gap: '20px',
           }}
         >
           {sortedMix.map((item) => (
@@ -173,18 +227,19 @@ export function SatoriDailySummaryCard({
               style={{
                 display: 'flex',
                 alignItems: 'center',
-                gap: '16px',
+                gap: '32px',
               }}
             >
               <div
                 style={{
-                  width: '120px',
+                  width: '220px',
                   textAlign: 'right',
-                  fontSize: '20px',
-                  color: 'rgb(175, 183, 196)',
+                  fontSize: '38px',
+                  color: 'rgb(200, 206, 216)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'flex-end',
+                  fontWeight: '500',
                 }}
               >
                 {item.fuelType}
@@ -194,9 +249,10 @@ export function SatoriDailySummaryCard({
                   flex: 1,
                   display: 'flex',
                   alignItems: 'center',
-                  height: '32px',
-                  background: 'rgba(51, 54, 65, 0.3)',
-                  borderRadius: '16px',
+                  height: '56px',
+                  background: 'rgba(51, 54, 65, 0.4)',
+                  borderRadius: '28px',
+                  border: '2px solid rgba(51, 54, 65, 0.6)',
                 }}
               >
                 <div
@@ -204,25 +260,41 @@ export function SatoriDailySummaryCard({
                     width: `${item.percentage}%`,
                     height: '100%',
                     background: item.color,
-                    borderRadius: '16px',
+                    borderRadius: '28px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'flex-end',
-                    paddingRight: '12px',
+                    paddingRight: '24px',
+                    minWidth: item.percentage > 5 ? 'auto' : '0',
                   }}
                 >
+                  {item.percentage > 5 && (
+                    <div
+                      style={{
+                        fontSize: '32px',
+                        fontWeight: '700',
+                        color: 'rgba(250, 251, 252, 0.95)',
+                        textShadow: '0 2px 4px rgba(0,0,0,0.6)',
+                        display: 'flex',
+                      }}
+                    >
+                      {item.percentage.toFixed(1)}%
+                    </div>
+                  )}
+                </div>
+                {item.percentage <= 5 && (
                   <div
                     style={{
-                      fontSize: '16px',
+                      fontSize: '32px',
                       fontWeight: '600',
-                      color: 'rgba(250, 251, 252, 0.9)',
-                      textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                      color: 'rgb(175, 183, 196)',
                       display: 'flex',
+                      marginLeft: '24px',
                     }}
                   >
                     {item.percentage.toFixed(1)}%
                   </div>
-                </div>
+                )}
               </div>
             </div>
           ))}
@@ -235,13 +307,13 @@ export function SatoriDailySummaryCard({
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          marginTop: '32px',
+          marginTop: '64px',
         }}
       >
-        <div style={{ fontSize: '22px', color: 'rgb(175, 183, 196)', display: 'flex' }}>
+        <div style={{ fontSize: '42px', color: 'rgb(175, 183, 196)', display: 'flex', fontWeight: '600' }}>
           energymix.info
         </div>
-        <div style={{ fontSize: '16px', color: 'rgb(175, 183, 196)', display: 'flex' }}>
+        <div style={{ fontSize: '32px', color: 'rgb(135, 143, 156)', display: 'flex' }}>
           Daily average • UK electricity generation
         </div>
       </div>
