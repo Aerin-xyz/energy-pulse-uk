@@ -1,4 +1,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import satori from 'npm:satori@0.10.14';
+import { Resvg } from 'npm:@resvg/resvg-js@2.6.0';
+import { SatoriDailySummaryCard } from '../_shared/SatoriDailySummaryCard.tsx';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -7,6 +10,129 @@ const corsHeaders = {
 
 interface RequestBody {
   date?: string; // YYYY-MM-DD format
+}
+
+// Fuel type color mapping using design system colors
+const FUEL_COLORS: Record<string, string> = {
+  'Wind': 'hsl(168, 42%, 59%)',
+  'Solar': 'hsl(40, 92%, 58%)',
+  'Gas': 'hsl(6, 87%, 59%)',
+  'Nuclear': 'hsl(260, 54%, 74%)',
+  'Imports': 'hsl(0, 0%, 84%)',
+  'Biomass': 'hsl(150, 40%, 70%)',
+  'Hydro': 'hsl(212, 28%, 53%)',
+  'Coal': 'hsl(35, 22%, 82%)',
+  'Other': 'hsl(220, 20%, 50%)',
+};
+
+// Base64 encoded Energy Mix logo (placeholder - will be loaded from actual asset)
+const LOGO_DATA_URL = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
+
+async function fetchHistoricalData(supabase: any, targetDate: string) {
+  console.log(`[generate-daily-summary-card] Fetching historical data for ${targetDate}`);
+  
+  const { data: response, error } = await supabase.functions.invoke(
+    'historical-generation',
+    {
+      body: { 
+        period: '24h',
+        date: targetDate
+      }
+    }
+  );
+
+  if (error) throw new Error(`Failed to fetch historical data: ${error.message}`);
+  if (response.error) throw new Error(`Historical data error: ${response.error}`);
+
+  const historicalData = response.data || [];
+  
+  if (historicalData.length === 0) {
+    throw new Error('No data available for this date');
+  }
+
+  return historicalData;
+}
+
+function processHistoricalData(historicalData: any[]) {
+  console.log(`[generate-daily-summary-card] Processing ${historicalData.length} data points`);
+  
+  // Calculate daily averages
+  const fuelTotals: Record<string, { mw: number; count: number }> = {};
+  let totalMW = 0;
+
+  historicalData.forEach((period: any) => {
+    totalMW += period.totalMW || 0;
+    
+    // Aggregate fuel mix
+    period.fuelMix?.forEach((fuel: any) => {
+      if (!fuelTotals[fuel.fuelType]) {
+        fuelTotals[fuel.fuelType] = { mw: 0, count: 0 };
+      }
+      fuelTotals[fuel.fuelType].mw += fuel.mw || 0;
+      fuelTotals[fuel.fuelType].count += 1;
+    });
+  });
+
+  // Calculate percentages and create mix breakdown
+  const avgTotalMW = totalMW / historicalData.length;
+  const mixBreakdown = Object.entries(fuelTotals).map(([fuelType, data]) => {
+    const avgMW = data.mw / data.count;
+    const percentage = (avgMW / avgTotalMW) * 100;
+    return {
+      fuelType,
+      percentage,
+      color: FUEL_COLORS[fuelType] || FUEL_COLORS['Other'],
+    };
+  });
+
+  // Calculate low carbon % (everything except Gas and Coal)
+  const lowCarbonFuels = ['Wind', 'Solar', 'Nuclear', 'Hydro', 'Biomass'];
+  const lowCarbonPercent = mixBreakdown
+    .filter(item => lowCarbonFuels.includes(item.fuelType))
+    .reduce((sum, item) => sum + item.percentage, 0);
+
+  // Calculate renewables % (Wind, Solar, Hydro, Biomass)
+  const renewableFuels = ['Wind', 'Solar', 'Hydro', 'Biomass'];
+  const renewablesPercent = mixBreakdown
+    .filter(item => renewableFuels.includes(item.fuelType))
+    .reduce((sum, item) => sum + item.percentage, 0);
+
+  // Estimate carbon intensity (simplified calculation)
+  const emissionFactors: Record<string, number> = {
+    'Gas': 400,
+    'Coal': 900,
+    'Biomass': 120,
+    'Wind': 0,
+    'Solar': 0,
+    'Nuclear': 0,
+    'Hydro': 0,
+    'Imports': 200,
+    'Other': 300,
+  };
+  
+  const carbonIntensity = Math.round(
+    mixBreakdown.reduce((sum, item) => {
+      const factor = emissionFactors[item.fuelType] || 200;
+      return sum + (factor * item.percentage / 100);
+    }, 0)
+  );
+
+  return {
+    carbonIntensity,
+    lowCarbonPercent,
+    renewablesPercent,
+    mixBreakdown,
+  };
+}
+
+function formatDate(dateStr: string): string {
+  const d = new Date(dateStr + 'T12:00:00Z');
+  return d.toLocaleDateString('en-GB', {
+    weekday: 'short',
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
 }
 
 Deno.serve(async (req) => {
@@ -23,16 +149,6 @@ Deno.serve(async (req) => {
     const supabaseServiceKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get screenshot API credentials
-    const screenshotApiUrl = Deno.env.get('SCREENSHOT_API_URL');
-    const screenshotApiKey = Deno.env.get('SCREENSHOT_API_KEY');
-
-    if (!screenshotApiUrl || !screenshotApiKey) {
-      throw new Error(
-        'Screenshot API not configured. Please set SCREENSHOT_API_URL and SCREENSHOT_API_KEY environment variables.'
-      );
-    }
-
     // Parse request body
     const body: RequestBody = req.method === 'POST' ? await req.json() : {};
     
@@ -47,42 +163,72 @@ Deno.serve(async (req) => {
 
     console.log(`[generate-daily-summary-card] Target date: ${targetDate}`);
 
-    // Build the share page URL
-    const sharePageUrl = `${supabaseUrl.replace('.supabase.co', '')}/share/daily-summary?date=${targetDate}`;
-    console.log(`[generate-daily-summary-card] Share page URL: ${sharePageUrl}`);
+    // Fetch and process historical data
+    const historicalData = await fetchHistoricalData(supabase, targetDate);
+    const { carbonIntensity, lowCarbonPercent, renewablesPercent, mixBreakdown } = 
+      processHistoricalData(historicalData);
 
-    // Take screenshot using the API
-    console.log('[generate-daily-summary-card] Requesting screenshot...');
-    const screenshotResponse = await fetch(screenshotApiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${screenshotApiKey}`,
-      },
-      body: JSON.stringify({
-        url: sharePageUrl,
-        viewport: {
-          width: 1200,
-          height: 630,
-        },
-        format: 'png',
-        fullPage: false,
+    const dateLabel = formatDate(targetDate);
+
+    console.log('[generate-daily-summary-card] Rendering card with Satori...');
+    console.log(`[generate-daily-summary-card] Data: CI=${carbonIntensity}, LC=${lowCarbonPercent.toFixed(1)}%, RE=${renewablesPercent.toFixed(1)}%`);
+
+    // Render card to SVG using Satori
+    const svg = await satori(
+      SatoriDailySummaryCard({
+        dateLabel,
+        carbonIntensity,
+        lowCarbonPercent,
+        renewablesPercent,
+        mixBreakdown,
+        logoDataUrl: LOGO_DATA_URL,
       }),
+      {
+        width: 1200,
+        height: 630,
+        fonts: [
+          {
+            name: 'Inter',
+            data: await fetch('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff').then(res => res.arrayBuffer()),
+            weight: 400,
+            style: 'normal',
+          },
+          {
+            name: 'Inter',
+            data: await fetch('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hiA.woff').then(res => res.arrayBuffer()),
+            weight: 600,
+            style: 'normal',
+          },
+          {
+            name: 'Inter',
+            data: await fetch('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiA.woff').then(res => res.arrayBuffer()),
+            weight: 700,
+            style: 'normal',
+          },
+        ],
+      }
+    );
+
+    console.log(`[generate-daily-summary-card] SVG generated: ${svg.length} bytes`);
+
+    // Convert SVG to PNG using Resvg
+    console.log('[generate-daily-summary-card] Converting SVG to PNG with Resvg...');
+    const resvg = new Resvg(svg, {
+      fitTo: {
+        mode: 'width',
+        value: 1200,
+      },
     });
+    const pngData = resvg.render();
+    const pngBuffer = pngData.asPng();
 
-    if (!screenshotResponse.ok) {
-      const errorText = await screenshotResponse.text();
-      throw new Error(`Screenshot API error: ${screenshotResponse.status} - ${errorText}`);
-    }
-
-    const screenshotBlob = await screenshotResponse.blob();
-    console.log(`[generate-daily-summary-card] Screenshot received: ${screenshotBlob.size} bytes`);
+    console.log(`[generate-daily-summary-card] PNG generated: ${pngBuffer.length} bytes`);
 
     // Upload to Supabase Storage
     const fileName = `daily-summary-${targetDate}.png`;
     const { error: uploadError } = await supabase.storage
       .from('social_cards')
-      .upload(fileName, screenshotBlob, {
+      .upload(fileName, pngBuffer, {
         contentType: 'image/png',
         upsert: true, // Overwrite if exists
       });
