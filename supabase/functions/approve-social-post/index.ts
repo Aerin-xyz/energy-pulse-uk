@@ -20,70 +20,24 @@ interface LinkedInPostPayload {
   mode: 'now' | 'schedule';
 }
 
-// Make API helper
-async function runMakeLinkedInScenarioViaApi(payload: LinkedInPostPayload) {
-  const baseUrl = Deno.env.get('MAKE_API_BASE_URL_ENDED');
-  const token = Deno.env.get('MAKE_API_TOKEN_ENDED');
-  const scenarioId = Deno.env.get('MAKE_SCENARIO_ID_LINKEDIN_PUBLISHER_ENDED');
-
-  if (!baseUrl || !token || !scenarioId) {
-    throw new Error('Make API not configured');
-  }
-
-  const url = `${baseUrl.replace(/\/$/, '')}/scenarios/${scenarioId}/run`;
-  console.log('Making API call to:', url);
-
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Authorization': `Token ${token}`,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      data: payload,
-      responsive: false
-    })
-  });
-
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`Make API call failed (${res.status}): ${text}`);
-  }
-
-  let json: any = null;
-  try { 
-    json = await res.json(); 
-    console.log('Make API response:', json);
-  } catch {}
-
-  return json;
-}
-
-// Webhook fallback helper
-async function sendToMakeWebhook(payload: LinkedInPostPayload) {
-  const url = Deno.env.get('MAKE_LINKEDIN_WEBHOOK_URL');
-  if (!url) throw new Error('Webhook URL missing');
-
-  console.log('Sending to webhook:', url);
-
-  const res = await fetch(url, {
+// Make webhook helper
+async function sendToMakeWebhook(payload: LinkedInPostPayload, webhookUrl: string) {
+  console.log('Sending to Make webhook:', webhookUrl);
+  
+  const response = await fetch(webhookUrl, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    body: JSON.stringify(payload),
   });
 
-  if (!res.ok) {
-    const text = await res.text().catch(() => '');
-    throw new Error(`Make webhook call failed (${res.status}): ${text}`);
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Webhook call failed: ${response.status} - ${errorText}`);
   }
 
-  let json: any = null;
-  try { 
-    json = await res.json(); 
-    console.log('Webhook response:', json);
-  } catch {}
-  
-  return json;
+  const result = await response.json();
+  console.log('Webhook response:', result);
+  return result;
 }
 
 Deno.serve(async (req) => {
@@ -135,19 +89,11 @@ Deno.serve(async (req) => {
       );
     }
 
-    // Determine transport method
-    const hasApi = !!Deno.env.get('MAKE_API_TOKEN_ENDED') &&
-                   !!Deno.env.get('MAKE_API_BASE_URL_ENDED') &&
-                   !!Deno.env.get('MAKE_SCENARIO_ID_LINKEDIN_PUBLISHER_ENDED');
+    // Check webhook configuration
+    const webhookUrl = Deno.env.get('MAKE_LINKEDIN_WEBHOOK_URL');
 
-    const hasWebhook = !!Deno.env.get('MAKE_LINKEDIN_WEBHOOK_URL');
-
-    let transport: 'api' | 'webhook' | null = null;
-    if (hasApi) transport = 'api';
-    else if (hasWebhook) transport = 'webhook';
-
-    if (!transport) {
-      const errorMsg = 'No Make transport available (need API credentials or webhook URL)';
+    if (!webhookUrl) {
+      const errorMsg = 'LinkedIn webhook not configured';
       console.error(errorMsg);
       
       await supabaseClient
@@ -164,7 +110,7 @@ Deno.serve(async (req) => {
       );
     }
 
-    console.log(`Using transport: ${transport}`);
+    console.log('Using webhook transport');
 
     // Update status to approved
     await supabaseClient
@@ -197,19 +143,9 @@ Deno.serve(async (req) => {
 
     console.log('Sending payload:', payload);
 
-    // Send using selected transport
+    // Send via webhook
     try {
-      let makeData: any = {};
-      let executionId: string | null = null;
-
-      if (transport === 'api') {
-        const apiResponse = await runMakeLinkedInScenarioViaApi(payload);
-        makeData = apiResponse;
-        executionId = apiResponse?.executionId || null;
-      } else {
-        const webhookResponse = await sendToMakeWebhook(payload);
-        makeData = webhookResponse;
-      }
+      const makeData = await sendToMakeWebhook(payload, webhookUrl);
 
       // Update post as sent
       await supabaseClient
@@ -229,7 +165,7 @@ Deno.serve(async (req) => {
           entity_id: postId,
           entity_type: 'social_post',
           status: 'success',
-          provider: transport === 'api' ? 'make_api' : 'make_webhook',
+          provider: 'make_webhook',
           response_data: makeData,
         });
 
@@ -237,8 +173,7 @@ Deno.serve(async (req) => {
         JSON.stringify({ 
           message: mode === 'now' ? 'Post sent successfully' : 'Post scheduled successfully',
           linkedin_post_id: makeData.linkedin_post_id || makeData.post_id,
-          transport: transport,
-          execution_id: executionId
+          transport: 'webhook'
         }),
         { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
       );
@@ -263,7 +198,7 @@ Deno.serve(async (req) => {
           entity_id: postId,
           entity_type: 'social_post',
           status: 'failed',
-          provider: transport === 'api' ? 'make_api' : 'make_webhook',
+          provider: 'make_webhook',
           error_message: errorMessage,
         });
 
