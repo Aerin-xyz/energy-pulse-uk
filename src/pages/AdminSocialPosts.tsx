@@ -10,7 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { RefreshCw, Edit, Send, Clock, AlertCircle } from "lucide-react";
+import { RefreshCw, Edit, Send, Clock, AlertCircle, Plus } from "lucide-react";
 import { Helmet } from "react-helmet-async";
 
 interface SocialPost {
@@ -39,6 +39,7 @@ const AdminSocialPosts = () => {
   const { toast } = useToast();
   const [posts, setPosts] = useState<SocialPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [generating, setGenerating] = useState(false);
   const [selectedWeek, setSelectedWeek] = useState(getCurrentWeek());
   const [selectedChannel, setSelectedChannel] = useState("linkedin");
   const [editingPost, setEditingPost] = useState<SocialPost | null>(null);
@@ -175,6 +176,32 @@ const AdminSocialPosts = () => {
     }
   };
 
+  const generateTestPosts = async () => {
+    setGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('create-test-posts', {
+        body: { week: selectedWeek }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: data.message || `Created test posts for ${selectedWeek}`,
+      });
+      fetchPosts();
+    } catch (error: any) {
+      console.error('Error generating posts:', error);
+      toast({
+        title: "Error",
+        description: error.message || "Failed to generate test posts",
+        variant: "destructive",
+      });
+    } finally {
+      setGenerating(false);
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'draft': return 'secondary';
@@ -215,9 +242,28 @@ const AdminSocialPosts = () => {
               <h1 className="text-4xl font-bold mb-2">LinkedIn Post Approval</h1>
               <p className="text-muted-foreground">Review and approve social media posts</p>
             </div>
-            <Button onClick={fetchPosts} variant="outline" size="icon">
-              <RefreshCw className="h-4 w-4" />
-            </Button>
+            <div className="flex gap-2">
+              <Button 
+                onClick={generateTestPosts} 
+                disabled={generating || loading}
+                className="gap-2"
+              >
+                {generating ? (
+                  <>
+                    <RefreshCw className="h-4 w-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Plus className="h-4 w-4" />
+                    Generate Posts
+                  </>
+                )}
+              </Button>
+              <Button onClick={fetchPosts} variant="outline" size="icon">
+                <RefreshCw className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
 
           {configError && (
