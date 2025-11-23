@@ -200,19 +200,19 @@ Deno.serve(async (req) => {
         fonts: [
           {
             name: 'Inter',
-            data: await fetch('https://og-playground.vercel.app/inter-latin-ext-400-normal.woff').then(res => res.arrayBuffer()),
+            data: await fetch('https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-400-normal.woff').then(res => res.arrayBuffer()),
             weight: 400,
             style: 'normal',
           },
           {
             name: 'Inter',
-            data: await fetch('https://og-playground.vercel.app/inter-latin-ext-600-normal.woff').then(res => res.arrayBuffer()),
+            data: await fetch('https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-600-normal.woff').then(res => res.arrayBuffer()),
             weight: 600,
             style: 'normal',
           },
           {
             name: 'Inter',
-            data: await fetch('https://og-playground.vercel.app/inter-latin-ext-700-normal.woff').then(res => res.arrayBuffer()),
+            data: await fetch('https://cdn.jsdelivr.net/fontsource/fonts/inter@latest/latin-700-normal.woff').then(res => res.arrayBuffer()),
             weight: 700,
             style: 'normal',
           },
