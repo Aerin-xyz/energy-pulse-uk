@@ -136,11 +136,13 @@ const AdminSocialPosts = () => {
         body: { postId, mode: 'now' }
       });
 
-      if (error) throw error;
+      if (error) {
+        throw new Error(data?.error || error.message);
+      }
 
       toast({
         title: "Success",
-        description: data.message || "Post sent successfully",
+        description: data?.message || "Post sent successfully",
       });
       fetchPosts();
     } catch (error: any) {
@@ -159,11 +161,13 @@ const AdminSocialPosts = () => {
         body: { postId, mode: 'schedule' }
       });
 
-      if (error) throw error;
+      if (error) {
+        throw new Error(data?.error || error.message);
+      }
 
       toast({
         title: "Success",
-        description: data.message || "Post scheduled successfully",
+        description: data?.message || "Post scheduled successfully",
       });
       fetchPosts();
     } catch (error: any) {
