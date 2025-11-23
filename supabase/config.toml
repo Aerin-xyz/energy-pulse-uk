@@ -44,3 +44,9 @@ verify_jwt = false
 
 [functions.create-test-posts]
 verify_jwt = false
+
+[functions.generate-daily-summary-card]
+verify_jwt = false
+
+[functions.eu-generation-mix]
+verify_jwt = false
