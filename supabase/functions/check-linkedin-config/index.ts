@@ -10,9 +10,9 @@ Deno.serve(async (req) => {
 
   try {
     // Check if either API or webhook is configured
-    const hasApi = !!Deno.env.get('MAKE_API_TOKEN') &&
-                   !!Deno.env.get('MAKE_API_BASE_URL') &&
-                   !!Deno.env.get('MAKE_SCENARIO_ID_LINKEDIN_PUBLISHER');
+    const hasApi = !!Deno.env.get('MAKE_API_TOKEN_ENDED') &&
+                   !!Deno.env.get('MAKE_API_BASE_URL_ENDED') &&
+                   !!Deno.env.get('MAKE_SCENARIO_ID_LINKEDIN_PUBLISHER_ENDED');
 
     const hasWebhook = !!Deno.env.get('MAKE_LINKEDIN_WEBHOOK_URL');
 
