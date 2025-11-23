@@ -41,3 +41,6 @@ verify_jwt = false
 
 [functions.check-linkedin-config]
 verify_jwt = false
+
+[functions.create-test-posts]
+verify_jwt = false
