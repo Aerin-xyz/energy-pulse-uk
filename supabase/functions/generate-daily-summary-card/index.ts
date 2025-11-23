@@ -184,7 +184,7 @@ Deno.serve(async (req) => {
     console.log('[generate-daily-summary-card] Rendering card with Satori...');
     console.log(`[generate-daily-summary-card] Data: CI=${carbonIntensity}, LC=${lowCarbonPercent.toFixed(1)}%, RE=${renewablesPercent.toFixed(1)}%`);
 
-    // Render card to SVG using Satori
+    // Render card to SVG using Satori (2x resolution for retina displays)
     const svg = await satori(
       SatoriDailySummaryCard({
         dateLabel,
@@ -195,13 +195,19 @@ Deno.serve(async (req) => {
         logoDataUrl: LOGO_DATA_URL,
       }),
       {
-        width: 1200,
-        height: 630,
+        width: 2400,
+        height: 1260,
         fonts: [
           {
             name: 'Inter',
             data: await fetch('https://og-playground.vercel.app/inter-latin-ext-400-normal.woff').then(res => res.arrayBuffer()),
             weight: 400,
+            style: 'normal',
+          },
+          {
+            name: 'Inter',
+            data: await fetch('https://og-playground.vercel.app/inter-latin-ext-600-normal.woff').then(res => res.arrayBuffer()),
+            weight: 600,
             style: 'normal',
           },
           {
@@ -216,12 +222,12 @@ Deno.serve(async (req) => {
 
     console.log(`[generate-daily-summary-card] SVG generated: ${svg.length} bytes`);
 
-    // Convert SVG to PNG using Resvg
+    // Convert SVG to PNG using Resvg (high resolution)
     console.log('[generate-daily-summary-card] Converting SVG to PNG with Resvg...');
     const resvg = new Resvg(svg, {
       fitTo: {
         mode: 'width',
-        value: 1200,
+        value: 2400,
       },
     });
     const pngData = resvg.render();
@@ -229,8 +235,8 @@ Deno.serve(async (req) => {
 
     console.log(`[generate-daily-summary-card] PNG generated: ${pngBuffer.length} bytes`);
 
-    // Upload to Supabase Storage
-    const fileName = `daily-summary-${targetDate}.png`;
+    // Upload to Supabase Storage (2x resolution for LinkedIn)
+    const fileName = `daily-summary-${targetDate}-2x.png`;
     const { error: uploadError } = await supabase.storage
       .from('social_cards')
       .upload(fileName, pngBuffer, {
