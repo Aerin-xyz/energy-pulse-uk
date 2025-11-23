@@ -1,6 +1,9 @@
 // Satori-compatible card component with inline styles
 // This must use inline styles only - no Tailwind classes or external CSS
 
+// @deno-types="npm:@types/react@18"
+import React from 'npm:react@18';
+
 interface FuelMixItem {
   fuelType: string;
   percentage: number;
@@ -38,7 +41,7 @@ export function SatoriDailySummaryCard({
         flexDirection: 'column',
         justifyContent: 'space-between',
         padding: '48px',
-        background: 'linear-gradient(135deg, hsl(220, 30%, 10%), hsl(250, 40%, 15%), hsl(280, 35%, 12%))',
+        background: 'linear-gradient(135deg, rgb(25, 28, 36) 0%, rgb(32, 28, 47) 50%, rgb(28, 23, 39) 100%)',
         position: 'relative',
         fontFamily: 'Inter, system-ui, sans-serif',
       }}
@@ -47,8 +50,8 @@ export function SatoriDailySummaryCard({
       <div
         style={{
           position: 'absolute',
-          inset: 0,
-          background: 'radial-gradient(circle at 20% 50%, hsla(280, 50%, 20%, 0.3), transparent 70%)',
+          inset: '0',
+          background: 'radial-gradient(circle at 20% 50%, rgba(96, 60, 128, 0.3) 0%, transparent 70%)',
           pointerEvents: 'none',
         }}
       />
@@ -65,13 +68,13 @@ export function SatoriDailySummaryCard({
       >
         {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
             <h1
               style={{
                 fontSize: '60px',
                 fontWeight: 'bold',
-                color: 'hsl(210, 40%, 98%)',
-                margin: 0,
+                color: 'rgb(250, 251, 252)',
+                margin: '0',
                 marginBottom: '8px',
               }}
             >
@@ -80,8 +83,8 @@ export function SatoriDailySummaryCard({
             <p
               style={{
                 fontSize: '28px',
-                color: 'hsl(210, 20%, 70%)',
-                margin: 0,
+                color: 'rgb(175, 183, 196)',
+                margin: '0',
               }}
             >
               {dateLabel}
@@ -107,48 +110,48 @@ export function SatoriDailySummaryCard({
             marginBottom: '32px',
           }}
         >
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
               style={{
                 fontSize: '72px',
                 fontWeight: 'bold',
-                color: 'hsl(187, 89%, 55%)',
+                color: 'rgb(56, 217, 232)',
                 marginBottom: '8px',
               }}
             >
               {carbonIntensity}
             </div>
-            <div style={{ fontSize: '24px', color: 'hsl(210, 20%, 70%)' }}>
+            <div style={{ fontSize: '24px', color: 'rgb(175, 183, 196)' }}>
               gCO₂/kWh
             </div>
           </div>
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
               style={{
                 fontSize: '72px',
                 fontWeight: 'bold',
-                color: 'hsl(168, 42%, 59%)',
+                color: 'rgb(114, 195, 177)',
                 marginBottom: '8px',
               }}
             >
               {lowCarbonPercent.toFixed(1)}%
             </div>
-            <div style={{ fontSize: '24px', color: 'hsl(210, 20%, 70%)' }}>
+            <div style={{ fontSize: '24px', color: 'rgb(175, 183, 196)' }}>
               Low Carbon
             </div>
           </div>
-          <div style={{ textAlign: 'center' }}>
+          <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <div
               style={{
                 fontSize: '72px',
                 fontWeight: 'bold',
-                color: 'hsl(40, 92%, 58%)',
+                color: 'rgb(249, 182, 73)',
                 marginBottom: '8px',
               }}
             >
               {renewablesPercent.toFixed(1)}%
             </div>
-            <div style={{ fontSize: '24px', color: 'hsl(210, 20%, 70%)' }}>
+            <div style={{ fontSize: '24px', color: 'rgb(175, 183, 196)' }}>
               Renewables
             </div>
           </div>
@@ -158,19 +161,19 @@ export function SatoriDailySummaryCard({
         <div
           style={{
             height: '2px',
-            background: 'hsla(220, 25%, 18%, 0.5)',
+            background: 'rgba(51, 54, 65, 0.5)',
             marginTop: '24px',
             marginBottom: '24px',
           }}
         />
 
         {/* Generation mix bars */}
-        <div style={{ marginTop: '16px' }}>
+        <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column' }}>
           <h2
             style={{
               fontSize: '28px',
               fontWeight: '600',
-              color: 'hsl(210, 40%, 98%)',
+              color: 'rgb(250, 251, 252)',
               marginBottom: '16px',
             }}
           >
@@ -198,19 +201,20 @@ export function SatoriDailySummaryCard({
                     width: '128px',
                     textAlign: 'right',
                     fontSize: '20px',
-                    color: 'hsl(210, 20%, 70%)',
+                    color: 'rgb(175, 183, 196)',
                   }}
                 >
                   {item.fuelType}
                 </div>
                 <div
                   style={{
-                    flex: 1,
+                    flex: '1',
                     height: '32px',
-                    background: 'hsla(220, 20%, 18%, 0.3)',
+                    background: 'rgba(51, 54, 65, 0.3)',
                     borderRadius: '16px',
                     overflow: 'hidden',
                     position: 'relative',
+                    display: 'flex',
                   }}
                 >
                   <div
@@ -224,7 +228,7 @@ export function SatoriDailySummaryCard({
                   <div
                     style={{
                       position: 'absolute',
-                      inset: 0,
+                      inset: '0',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'flex-end',
@@ -235,7 +239,7 @@ export function SatoriDailySummaryCard({
                       style={{
                         fontSize: '16px',
                         fontWeight: '600',
-                        color: 'hsla(210, 40%, 98%, 0.9)',
+                        color: 'rgba(250, 251, 252, 0.9)',
                         textShadow: '0 1px 2px rgba(0,0,0,0.5)',
                       }}
                     >
@@ -257,10 +261,10 @@ export function SatoriDailySummaryCard({
             marginTop: '32px',
           }}
         >
-          <div style={{ fontSize: '22px', color: 'hsl(210, 20%, 70%)' }}>
+          <div style={{ fontSize: '22px', color: 'rgb(175, 183, 196)' }}>
             energymix.info
           </div>
-          <div style={{ fontSize: '16px', color: 'hsl(210, 20%, 70%)' }}>
+          <div style={{ fontSize: '16px', color: 'rgb(175, 183, 196)' }}>
             Daily average • UK electricity generation
           </div>
         </div>
