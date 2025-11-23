@@ -1,6 +1,6 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import satori from 'npm:satori@0.10.14';
-import { Resvg } from 'npm:@resvg/resvg-js@2.6.0';
+import { Resvg, initWasm } from 'npm:@resvg/resvg-wasm';
 import { SatoriDailySummaryCard } from '../_shared/SatoriDailySummaryCard.tsx';
 
 const corsHeaders = {
@@ -135,6 +135,9 @@ function formatDate(dateStr: string): string {
   });
 }
 
+// Initialize WASM once when the function starts
+let wasmInitialized = false;
+
 Deno.serve(async (req) => {
   // Handle CORS preflight
   if (req.method === 'OPTIONS') {
@@ -143,6 +146,14 @@ Deno.serve(async (req) => {
 
   try {
     console.log('[generate-daily-summary-card] Starting function');
+
+    // Initialize WASM module if not already done
+    if (!wasmInitialized) {
+      console.log('[generate-daily-summary-card] Initializing WASM module...');
+      await initWasm(fetch('https://unpkg.com/@resvg/resvg-wasm/index_bg.wasm'));
+      wasmInitialized = true;
+      console.log('[generate-daily-summary-card] WASM module initialized');
+    }
 
     // Get Supabase client with service role
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -189,19 +200,13 @@ Deno.serve(async (req) => {
         fonts: [
           {
             name: 'Inter',
-            data: await fetch('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiA.woff').then(res => res.arrayBuffer()),
+            data: await fetch('https://og-playground.vercel.app/inter-latin-ext-400-normal.woff').then(res => res.arrayBuffer()),
             weight: 400,
             style: 'normal',
           },
           {
             name: 'Inter',
-            data: await fetch('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuFuYAZ9hiA.woff').then(res => res.arrayBuffer()),
-            weight: 600,
-            style: 'normal',
-          },
-          {
-            name: 'Inter',
-            data: await fetch('https://fonts.gstatic.com/s/inter/v12/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuGKYAZ9hiA.woff').then(res => res.arrayBuffer()),
+            data: await fetch('https://og-playground.vercel.app/inter-latin-ext-700-normal.woff').then(res => res.arrayBuffer()),
             weight: 700,
             style: 'normal',
           },
