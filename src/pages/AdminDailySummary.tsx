@@ -30,7 +30,7 @@ const AdminDailySummary = () => {
       const { data, error } = await supabase
         .from('social_posts')
         .select('*')
-        .eq('post_type', 'daily_summary')
+        .eq('post_type', 'summary')
         .order('summary_date', { ascending: false })
         .limit(7);
 
