@@ -302,6 +302,7 @@ export type Database = {
           scheduled_for: string | null
           sent_at: string | null
           status: string
+          summary_date: string | null
           week: string | null
         }
         Insert: {
@@ -317,6 +318,7 @@ export type Database = {
           scheduled_for?: string | null
           sent_at?: string | null
           status?: string
+          summary_date?: string | null
           week?: string | null
         }
         Update: {
@@ -332,6 +334,7 @@ export type Database = {
           scheduled_for?: string | null
           sent_at?: string | null
           status?: string
+          summary_date?: string | null
           week?: string | null
         }
         Relationships: [

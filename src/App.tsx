@@ -13,6 +13,8 @@ import Insights from "./pages/Insights";
 import Newsletter from "./pages/Newsletter";
 import DigestPreview from "./pages/DigestPreview";
 import AdminSocialPosts from "./pages/AdminSocialPosts";
+import ShareDailySummary from "./pages/ShareDailySummary";
+import AdminDailySummary from "./pages/AdminDailySummary";
 
 const queryClient = new QueryClient();
 
@@ -30,8 +32,10 @@ const App = () => (
             <Route path="/data" element={<Data />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/share/daily-summary" element={<ShareDailySummary />} />
             <Route path="/admin/digest-preview" element={<DigestPreview />} />
             <Route path="/admin/social-posts" element={<AdminSocialPosts />} />
+            <Route path="/admin/daily-summary" element={<AdminDailySummary />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
