@@ -38,6 +38,20 @@ interface DailyDataPoint {
   totalPeriods?: number;
 }
 
+// Forecast data types
+interface ForecastDataPoint {
+  timestamp: string;
+  windForecastMW: number;
+  solarForecastMW: number;
+  source: 'day-ahead' | 'latest';
+}
+
+interface ForecastData {
+  data: ForecastDataPoint[];
+  source: string;
+  count: number;
+}
+
 interface HistoricalGenerationData {
   data: HistoricalDataPoint[];
   lastUpdated: string;
@@ -50,6 +64,7 @@ interface HistoricalGenerationData {
     solarMatchedDays?: number;
     totalDays?: number;
   };
+  forecast?: ForecastData;
 }
 
 interface HistoricalCachedData {
@@ -57,6 +72,7 @@ interface HistoricalCachedData {
   timestamp: number;
   lastUpdated: string;
   meta: any;
+  forecast?: ForecastData;
 }
 
 interface WeeklyCachedData {
@@ -162,6 +178,15 @@ export const useHistoricalGeneration = () => {
     cachedHistorical ? new Date(cachedHistorical.lastUpdated) : null
   );
   const [meta, setMeta] = useState<{periods: number; solarMatchedCount: number; pvSource: string} | null>(cachedHistorical?.meta || null);
+  
+  // Forecast data state
+  const [forecastData, setForecastData] = useState<ForecastDataPoint[]>(
+    cachedHistorical?.forecast?.data || []
+  );
+  const [forecastSource, setForecastSource] = useState<string>(
+    cachedHistorical?.forecast?.source || 'none'
+  );
+  const [forecastLoading, setForecastLoading] = useState(false);
   
   // Initialize weekly data state with cache
   const [weeklyData, setWeeklyData] = useState<DailyDataPoint[]>(
@@ -307,6 +332,47 @@ export const useHistoricalGeneration = () => {
     return () => clearInterval(interval);
   }, [fetchHistoricalData]);
 
+  // Fetch forecast data separately
+  const fetchForecastData = useCallback(async (showToast = false) => {
+    try {
+      setForecastLoading(true);
+
+      const { data: response, error: supabaseError } = await supabase.functions.invoke('historical-generation?includeForecast=true');
+
+      if (supabaseError) {
+        throw new Error(supabaseError.message);
+      }
+
+      if (response.error) {
+        throw new Error(response.error);
+      }
+
+      if (response.forecast) {
+        setForecastData(response.forecast.data || []);
+        setForecastSource(response.forecast.source || 'none');
+        
+        if (showToast) {
+          toast({
+            title: "Forecast data loaded",
+            description: `Loaded ${response.forecast.count} forecast points from ${response.forecast.source}`,
+          });
+        }
+      }
+
+    } catch (err) {
+      console.error('Error fetching forecast data:', err);
+      if (showToast) {
+        toast({
+          title: "Error loading forecast",
+          description: err instanceof Error ? err.message : 'Failed to fetch forecast',
+          variant: "destructive",
+        });
+      }
+    } finally {
+      setForecastLoading(false);
+    }
+  }, [toast]);
+
   return {
     data,
     loading,
@@ -320,6 +386,11 @@ export const useHistoricalGeneration = () => {
     weeklyError,
     weeklyLastUpdated,
     weeklyMeta,
-    fetchWeeklyData: () => fetchWeeklyData(true)
+    fetchWeeklyData: () => fetchWeeklyData(true),
+    // Forecast data
+    forecastData,
+    forecastSource,
+    forecastLoading,
+    fetchForecastData: () => fetchForecastData(true)
   };
 };

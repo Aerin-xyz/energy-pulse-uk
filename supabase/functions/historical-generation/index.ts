@@ -190,6 +190,116 @@ async function fetchPVLiveNationalSeries(startISO: string, endISO: string, DEBUG
   return data;
 }
 
+/*** Wind and Solar Forecast Fetching from BMRS ***/
+interface ForecastDataPoint {
+  timestamp: string;
+  windForecastMW: number;
+  solarForecastMW: number;
+  source: 'day-ahead' | 'latest';
+}
+
+async function fetchWindSolarForecast(DEBUG = false): Promise<{ data: ForecastDataPoint[], source: string }> {
+  console.log('[Forecast] Fetching wind and solar forecast data from BMRS');
+  
+  const forecastData: ForecastDataPoint[] = [];
+  let source = 'none';
+  
+  // Try day-ahead wind and solar forecast first
+  try {
+    const dayAheadUrl = 'https://data.elexon.co.uk/bmrs/api/v1/forecast/generation/wind-and-solar/day-ahead?format=json';
+    if (DEBUG) console.log(`[Forecast] Trying day-ahead: ${dayAheadUrl}`);
+    
+    const response = await fetch(dayAheadUrl, { 
+      headers: HEADERS, 
+      cache: "no-store" 
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      if (DEBUG) console.log(`[Forecast] Day-ahead response:`, JSON.stringify(data).slice(0, 500));
+      
+      // BMRS returns array of forecast records
+      const records = Array.isArray(data) ? data : (data?.data || []);
+      
+      for (const record of records) {
+        // Day-ahead format has startTime, generation, and businessType (Wind/Solar)
+        const timestamp = record.startTime || record.settlementDate;
+        if (!timestamp) continue;
+        
+        // Find or create entry for this timestamp
+        let entry = forecastData.find(f => f.timestamp === timestamp);
+        if (!entry) {
+          entry = {
+            timestamp,
+            windForecastMW: 0,
+            solarForecastMW: 0,
+            source: 'day-ahead'
+          };
+          forecastData.push(entry);
+        }
+        
+        const genMW = Number(record.generation || record.quantity || 0);
+        const businessType = (record.businessType || record.fuelType || '').toLowerCase();
+        
+        if (businessType.includes('wind')) {
+          entry.windForecastMW = genMW;
+        } else if (businessType.includes('solar')) {
+          entry.solarForecastMW = genMW;
+        }
+      }
+      
+      if (forecastData.length > 0) {
+        source = 'day-ahead';
+        console.log(`[Forecast] Day-ahead loaded ${forecastData.length} forecast points`);
+      }
+    }
+  } catch (error) {
+    if (DEBUG) console.log(`[Forecast] Day-ahead error: ${error}`);
+  }
+  
+  // If day-ahead failed, try latest wind forecast
+  if (forecastData.length === 0) {
+    try {
+      const latestWindUrl = 'https://data.elexon.co.uk/bmrs/api/v1/forecast/generation/wind/latest?format=json';
+      if (DEBUG) console.log(`[Forecast] Trying latest wind: ${latestWindUrl}`);
+      
+      const response = await fetch(latestWindUrl, { 
+        headers: HEADERS, 
+        cache: "no-store" 
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        const records = Array.isArray(data) ? data : (data?.data || []);
+        
+        for (const record of records) {
+          const timestamp = record.startTime || record.publishTime;
+          if (!timestamp) continue;
+          
+          forecastData.push({
+            timestamp,
+            windForecastMW: Number(record.generation || record.quantity || 0),
+            solarForecastMW: 0, // Latest endpoint is wind-only
+            source: 'latest'
+          });
+        }
+        
+        if (forecastData.length > 0) {
+          source = 'latest-wind';
+          console.log(`[Forecast] Latest wind loaded ${forecastData.length} forecast points`);
+        }
+      }
+    } catch (error) {
+      if (DEBUG) console.log(`[Forecast] Latest wind error: ${error}`);
+    }
+  }
+  
+  // Sort by timestamp
+  forecastData.sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
+  
+  return { data: forecastData, source };
+}
+
 /*** Build the past-week series using FUELHH with settlement filters ***/
 async function buildPastWeekGeneration(DEBUG=false){
   // Compute last 7 full UTC days up to "today"
@@ -932,6 +1042,11 @@ Deno.serve(async (req) => {
     let processedData: any[];
     let pvSource = 'none';
     let pvLiveData: Array<{t: string, mw: number}> = [];
+    let forecastData: ForecastDataPoint[] = [];
+    let forecastSource = 'none';
+    
+    // Check if forecast data is requested
+    const includeForecast = url.searchParams.get('includeForecast') === 'true';
     
     if (period === '7d') {
       // Use FUELHH for weekly data
@@ -951,6 +1066,14 @@ Deno.serve(async (req) => {
       processedData = await processHistoricalData(rawData, pvLiveData, pvSource, period, debug);
     }
     
+    // Fetch forecast data if requested
+    if (includeForecast) {
+      const forecast = await fetchWindSolarForecast(debug);
+      forecastData = forecast.data;
+      forecastSource = forecast.source;
+      console.log(`[Forecast] Fetched ${forecastData.length} forecast points from ${forecastSource}`);
+    }
+    
     // Calculate statistics
     const solarMatchedCount = processedData.filter(p => p.solarMatched).length;
     
@@ -968,6 +1091,14 @@ Deno.serve(async (req) => {
           totalDays: processedData.length
         })
       },
+      // Include forecast data in response if requested
+      ...(includeForecast && {
+        forecast: {
+          data: forecastData,
+          source: forecastSource,
+          count: forecastData.length
+        }
+      }),
       ...(debug && period !== '7d' && {
         diagnostics: {
           pv: {
