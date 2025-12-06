@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Tooltip as UITooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -8,15 +9,18 @@ import {
   Area, 
   BarChart,
   Bar,
+  Line,
   XAxis, 
   YAxis, 
   CartesianGrid, 
   Tooltip, 
   Legend, 
-  ResponsiveContainer 
+  ResponsiveContainer,
+  ComposedChart
 } from 'recharts';
 import { formatGWfromMW, formatGWh } from '@/lib/utils';
 import { useState, useEffect } from 'react';
+import { TrendingUp, Loader2 } from 'lucide-react';
 
 interface HistoricalDataPoint {
   settlementDate: string;
@@ -49,6 +53,13 @@ interface DailyDataPoint {
   totalPeriods?: number;
 }
 
+interface ForecastDataPoint {
+  timestamp: string;
+  windForecastMW: number;
+  solarForecastMW: number;
+  source: 'day-ahead' | 'latest';
+}
+
 interface HistoricalGenerationChartProps {
   data: HistoricalDataPoint[];
   lastUpdated?: Date | null;
@@ -68,9 +79,12 @@ interface HistoricalGenerationChartProps {
     pvSource: string;
   } | null;
   onFetchWeeklyData: () => void;
+  forecastData?: ForecastDataPoint[];
+  forecastLoading?: boolean;
+  onFetchForecastData?: () => void;
 }
 
-const CustomTooltip = ({ active, payload, label }: any) => {
+const CustomTooltip = ({ active, payload, label, showForecast }: any) => {
   if (active && payload && payload.length) {
     // Handle both timestamp (number) and day name (string)
     let timestamp: Date;
@@ -82,17 +96,30 @@ const CustomTooltip = ({ active, payload, label }: any) => {
         ? new Date(payload[0].payload.timestamp)
         : new Date();
     }
+
+    // Separate actual generation from forecast data
+    const actualPayload = payload.filter((item: any) => 
+      !['windForecast', 'solarForecast'].includes(item.dataKey)
+    );
+    const forecastPayload = payload.filter((item: any) => 
+      ['windForecast', 'solarForecast'].includes(item.dataKey)
+    );
     
-    const total = payload.reduce((sum: number, item: any) => sum + item.value, 0);
+    const total = actualPayload.reduce((sum: number, item: any) => sum + (item.value || 0), 0);
+    const isForecastOnly = payload[0]?.payload?.isForecastOnly;
     
     return (
       <div className="glass-morphism border-primary/30 rounded-lg p-3 shadow-lg max-w-xs glow-cyan">
         <p className="text-muted-foreground text-xs mb-2">
           {timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {isForecastOnly && <span className="ml-1 text-primary">(Forecast)</span>}
         </p>
-        <p className="font-bold text-sm mb-2">Total: {formatGWh(total / 1000, 1)}</p>
+        {!isForecastOnly && (
+          <p className="font-bold text-sm mb-2">Total: {formatGWh(total / 1000, 1)}</p>
+        )}
         <div className="space-y-1">
-          {payload
+          {actualPayload
+            .filter((entry: any) => entry.value > 0)
             .sort((a: any, b: any) => b.value - a.value)
             .map((entry: any, index: number) => (
               <div key={index} className="flex items-center justify-between gap-2">
@@ -109,6 +136,35 @@ const CustomTooltip = ({ active, payload, label }: any) => {
               </div>
             ))}
         </div>
+        {/* Forecast section */}
+        {showForecast && forecastPayload.length > 0 && (
+          <div className="mt-2 pt-2 border-t border-primary/20">
+            <p className="text-xs text-muted-foreground mb-1">Forecast:</p>
+            <div className="space-y-1">
+              {forecastPayload
+                .filter((entry: any) => entry.value != null && entry.value > 0)
+                .map((entry: any, index: number) => (
+                  <div key={index} className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1">
+                      <div 
+                        className="w-2 h-0.5"
+                        style={{ 
+                          backgroundColor: entry.color,
+                          borderTop: entry.dataKey === 'windForecast' ? '2px dashed' : '2px dotted'
+                        }}
+                      />
+                      <span className="text-xs">
+                        {entry.dataKey === 'windForecast' ? 'Wind' : 'Solar'}
+                      </span>
+                    </div>
+                    <span className="text-xs font-medium text-primary">
+                      {formatGWh(entry.value / 1000, 1)}
+                    </span>
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
       </div>
     );
   }
@@ -124,10 +180,15 @@ export const HistoricalGenerationChart = ({
   weeklyError, 
   weeklyLastUpdated, 
   weeklyMeta, 
-  onFetchWeeklyData 
+  onFetchWeeklyData,
+  forecastData,
+  forecastLoading,
+  onFetchForecastData
 }: HistoricalGenerationChartProps) => {
   const [activeTab, setActiveTab] = useState("chart");
   const [weeklyDataFetched, setWeeklyDataFetched] = useState(false);
+  const [showForecast, setShowForecast] = useState(false);
+  const [forecastFetched, setForecastFetched] = useState(false);
 
   // Automatically fetch weekly data when tab is first accessed
   useEffect(() => {
@@ -136,6 +197,14 @@ export const HistoricalGenerationChart = ({
       setWeeklyDataFetched(true);
     }
   }, [activeTab, weeklyDataFetched, weeklyLoading, weeklyData.length, onFetchWeeklyData]);
+
+  // Fetch forecast data when toggle is enabled
+  useEffect(() => {
+    if (showForecast && !forecastFetched && !forecastLoading && onFetchForecastData) {
+      onFetchForecastData();
+      setForecastFetched(true);
+    }
+  }, [showForecast, forecastFetched, forecastLoading, onFetchForecastData]);
 
   if (!data || data.length === 0) {
     return (
@@ -152,7 +221,7 @@ export const HistoricalGenerationChart = ({
     );
   }
 
-  // Transform data for stacked area chart
+  // Transform data for stacked area chart with forecast overlay
   const chartData = data.map(point => {
     const chartPoint: any = {
       timestamp: point.timestamp.getTime(),
@@ -164,9 +233,43 @@ export const HistoricalGenerationChart = ({
     point.fuelMix.forEach(fuel => {
       chartPoint[fuel.fuelType] = fuel.mw;
     });
+
+    // Merge forecast data if enabled and available
+    if (showForecast && forecastData && forecastData.length > 0) {
+      const forecastPoint = forecastData.find(f => {
+        const forecastTime = new Date(f.timestamp).getTime();
+        // Match within 15 minutes (half a settlement period)
+        return Math.abs(forecastTime - point.timestamp.getTime()) < 15 * 60 * 1000;
+      });
+      if (forecastPoint) {
+        chartPoint.windForecast = forecastPoint.windForecastMW;
+        chartPoint.solarForecast = forecastPoint.solarForecastMW;
+      }
+    }
     
     return chartPoint;
   });
+
+  // Add future forecast points that extend beyond historical data
+  const forecastOnlyPoints: any[] = [];
+  if (showForecast && forecastData && forecastData.length > 0 && data.length > 0) {
+    const lastHistoricalTime = data[data.length - 1].timestamp.getTime();
+    
+    forecastData.forEach(f => {
+      const forecastTime = new Date(f.timestamp).getTime();
+      if (forecastTime > lastHistoricalTime) {
+        forecastOnlyPoints.push({
+          timestamp: forecastTime,
+          time: new Date(forecastTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          windForecast: f.windForecastMW,
+          solarForecast: f.solarForecastMW,
+          isForecastOnly: true
+        });
+      }
+    });
+  }
+
+  const combinedChartData = [...chartData, ...forecastOnlyPoints];
 
   // Get all unique fuel types and their colors
   const allFuelTypes = Array.from(
@@ -246,14 +349,44 @@ export const HistoricalGenerationChart = ({
   return (
     <Card className="glow-cyan border-primary/30">
       <CardHeader>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle>Historical Generation</CardTitle>
-          {lastUpdated && (
-            <Badge variant="outline" className="text-xs">
-              Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-            </Badge>
-          )}
+          <div className="flex items-center gap-2">
+            {onFetchForecastData && (
+              <Button
+                variant={showForecast ? "default" : "outline"}
+                size="sm"
+                onClick={() => setShowForecast(!showForecast)}
+                className="text-xs gap-1.5"
+                disabled={forecastLoading}
+              >
+                {forecastLoading ? (
+                  <Loader2 className="h-3 w-3 animate-spin" />
+                ) : (
+                  <TrendingUp className="h-3 w-3" />
+                )}
+                {showForecast ? 'Hide Forecast' : 'Show Forecast'}
+              </Button>
+            )}
+            {lastUpdated && (
+              <Badge variant="outline" className="text-xs">
+                Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </Badge>
+            )}
+          </div>
         </div>
+        {showForecast && forecastData && forecastData.length > 0 && (
+          <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-0.5 border-t-2 border-dashed border-energy-wind" />
+              <span>Wind Forecast</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-4 h-0.5 border-t-2 border-dotted border-energy-solar" />
+              <span>Solar Forecast</span>
+            </div>
+          </div>
+        )}
       </CardHeader>
       <CardContent className="px-2 md:px-6 pt-0">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -265,7 +398,7 @@ export const HistoricalGenerationChart = ({
           <TabsContent value="chart" className="mt-4">
             <div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                <ComposedChart data={combinedChartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                   <XAxis 
                     dataKey="timestamp"
@@ -279,7 +412,7 @@ export const HistoricalGenerationChart = ({
                     tickFormatter={(value) => `${(value / 1000).toFixed(0)}GW`}
                     tick={{ fontSize: 12 }}
                   />
-                  <Tooltip content={<CustomTooltip />} />
+                  <Tooltip content={<CustomTooltip showForecast={showForecast} />} />
                   <Legend 
                     wrapperStyle={{ fontSize: '12px' }}
                     iconType="rect"
@@ -297,7 +430,35 @@ export const HistoricalGenerationChart = ({
                       strokeWidth={1}
                     />
                   ))}
-                </AreaChart>
+
+                  {/* Forecast overlay lines */}
+                  {showForecast && (
+                    <>
+                      <Line
+                        type="monotone"
+                        dataKey="windForecast"
+                        stroke="hsl(var(--energy-wind))"
+                        strokeWidth={2}
+                        strokeDasharray="8 4"
+                        dot={false}
+                        name="Wind Forecast"
+                        legendType="none"
+                        connectNulls
+                      />
+                      <Line
+                        type="monotone"
+                        dataKey="solarForecast"
+                        stroke="hsl(var(--energy-solar))"
+                        strokeWidth={2}
+                        strokeDasharray="4 2"
+                        dot={false}
+                        name="Solar Forecast"
+                        legendType="none"
+                        connectNulls
+                      />
+                    </>
+                  )}
+                </ComposedChart>
               </ResponsiveContainer>
             </div>
           </TabsContent>

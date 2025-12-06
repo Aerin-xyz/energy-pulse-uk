@@ -39,7 +39,10 @@ export const EnergyDashboard = () => {
     weeklyError,
     weeklyLastUpdated,
     weeklyMeta,
-    fetchWeeklyData
+    fetchWeeklyData,
+    forecastData,
+    forecastLoading,
+    fetchForecastData
   } = useHistoricalGeneration();
 
   // Calculate time until next settlement period
@@ -302,6 +305,9 @@ export const EnergyDashboard = () => {
               weeklyLastUpdated={weeklyLastUpdated}
               weeklyMeta={weeklyMeta}
               onFetchWeeklyData={fetchWeeklyData}
+              forecastData={forecastData}
+              forecastLoading={forecastLoading}
+              onFetchForecastData={fetchForecastData}
             />
           ) : null}
 
