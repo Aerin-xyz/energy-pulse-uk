@@ -1591,7 +1591,8 @@ Deno.serve(async (req) => {
     
     const demandMW = itsdo ?? indo ?? legacyDemand ?? 0;
     
-    return Math.round((demandMW / 1000) * 100) / 100;
+    // Return demand in MW (API already returns MW, no conversion needed)
+    return Math.round(demandMW);
   }
 
   let carbonIntensity = null;
