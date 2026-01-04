@@ -352,22 +352,6 @@ export const HistoricalGenerationChart = ({
         <div className="flex items-center justify-between flex-wrap gap-2">
           <CardTitle>Historical Generation</CardTitle>
           <div className="flex items-center gap-2">
-            {onFetchForecastData && (
-              <Button
-                variant={showForecast ? "default" : "outline"}
-                size="sm"
-                onClick={() => setShowForecast(!showForecast)}
-                className="text-xs gap-1.5"
-                disabled={forecastLoading}
-              >
-                {forecastLoading ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                ) : (
-                  <TrendingUp className="h-3 w-3" />
-                )}
-                {showForecast ? 'Hide Forecast' : 'Show Forecast'}
-              </Button>
-            )}
             {lastUpdated && (
               <Badge variant="outline" className="text-xs">
                 Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -375,18 +359,6 @@ export const HistoricalGenerationChart = ({
             )}
           </div>
         </div>
-        {showForecast && forecastData && forecastData.length > 0 && (
-          <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1.5">
-              <div className="w-4 h-0.5 border-t-2 border-dashed border-energy-wind" />
-              <span>Wind Forecast</span>
-            </div>
-            <div className="flex items-center gap-1.5">
-              <div className="w-4 h-0.5 border-t-2 border-dotted border-energy-solar" />
-              <span>Solar Forecast</span>
-            </div>
-          </div>
-        )}
       </CardHeader>
       <CardContent className="px-2 md:px-6 pt-0">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
