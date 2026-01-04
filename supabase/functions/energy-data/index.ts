@@ -1813,7 +1813,7 @@ try {
       interconnectors,
       euGenerationMix,
       totalGenerationMW: Math.round(totalGenerationMW),
-      totalDemandMW: Math.round(totalDemand * 1000),
+      totalDemandMW: Math.round(totalDemand),
       units: "MW",
       lastUpdated: new Date().toISOString(),
       carbonIntensity: carbonIntensity ? {
