@@ -1436,9 +1436,11 @@ Deno.serve(async (req) => {
     });
   }
 
-  // Response caching based on update type with new key strategy
+  // Response caching based on update type with versioned key strategy
+  // CACHE_VERSION: bump this to invalidate all cached responses after logic changes
+  const CACHE_VERSION = 'v2-itsdo';
   const cacheTTL = UPDATE_TYPE === 'high' ? 240 : UPDATE_TYPE === 'mid' ? 840 : 1500; // 4min, 14min, 25min
-  const globalCacheKey = `energy-data:${UPDATE_TYPE}:global`;
+  const globalCacheKey = `energy-data:${CACHE_VERSION}:${UPDATE_TYPE}:global`;
   
   const cachedResponse = await getCachedResponse(globalCacheKey);
   if (cachedResponse.hit && cachedResponse.data) {

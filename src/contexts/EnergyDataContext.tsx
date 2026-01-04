@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback, useRef, Re
 import { useToast } from '@/hooks/use-toast';
 
 // localStorage cache utilities for instant loading
-const CACHE_KEY = 'energymix_cache_v1';
+const CACHE_KEY = 'energymix_cache_v2'; // Bumped to invalidate stale demand values
 const CACHE_EXPIRY_MS = 30 * 60 * 1000; // 30 minutes
 
 interface CachedData {
@@ -250,11 +250,8 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
             return cachedItem || item;
           });
         } else if (updateType === 'mid' && cachedData) {
-          // Update embedded sources and interconnectors for mid frequency
-          newData.totalGeneration = cachedData.totalGeneration;
-          newData.totalDemand = cachedData.totalDemand;
-          newData.totalGenerationMW = cachedData.totalGenerationMW;
-          newData.totalDemandMW = cachedData.totalDemandMW;
+          // Mid frequency updates interconnectors - keep demand/generation from fresh response
+          // (Previously we froze demand here, but that prevented updates from propagating)
         }
 
         setData(newData);
