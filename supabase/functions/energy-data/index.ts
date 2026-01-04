@@ -800,12 +800,15 @@ async function fetchInterconnectorsEnhanced(debug = false): Promise<{
     interconnectors: result.interconnectors
   };
 }
-// Fetch demand with dual host support
+// Fetch demand with dual host support - using /demand/outturn for ITSDO (Transmission System Demand)
+// ITSDO includes: transmission losses, station transformer load, pumped storage, interconnector demand
+// This provides a more accurate balance: Demand = Generation + Net Transfers
 async function fetchDemand() {
   const hosts = [DATA_HOST, BMRS_HOST];
   
   for (const host of hosts) {
-    const url = `https://${host}/bmrs/api/v1/demand/outturn/summary?format=json`;
+    // Use /demand/outturn instead of /demand/outturn/summary to get ITSDO records
+    const url = `https://${host}/bmrs/api/v1/demand/outturn?format=json`;
     try {
       const res = await fetch(url, { headers: HEADERS, cache: "no-store", redirect: "manual" as RequestRedirect });
       const ct = res.headers.get("content-type") || "";
@@ -1558,11 +1561,37 @@ Deno.serve(async (req) => {
       capacity: pickNum(r, capKeys),
     }));
   }
+  // Parse demand data - prioritize ITSDO (Initial Transmission System Demand Out-Turn)
+  // which includes transmission losses, pumped storage, and interconnector demand
+  // for accurate energy balance: Demand = Generation + Net Transfers
+  // 
+  // API response format: { data: [{ settlementDate, settlementPeriod, 
+  //   initialDemandOutturn: INDO, initialTransmissionSystemDemandOutturn: ITSDO }] }
   function parseDemand(dData: any): number {
     const dRows = asArray(dData);
-    const national = dRows.find((r:any) => String(pickStr(r, ["region","area","name"]) || "NATIONAL").toUpperCase().includes("NATIONAL")) ?? dRows[0] ?? {};
-    const totalDemandMW = pickNum(national, ["demand","demandMW","mw","value","totalDemandMW"]) ?? 0;
-    return Math.round((totalDemandMW/1000)*100)/100;
+    
+    // Sort by settlementDate and settlementPeriod descending to get the most recent
+    const sortedRows = dRows.sort((a: any, b: any) => {
+      const dateA = a.settlementDate || '';
+      const dateB = b.settlementDate || '';
+      if (dateA !== dateB) return dateB.localeCompare(dateA);
+      return (b.settlementPeriod || 0) - (a.settlementPeriod || 0);
+    });
+    
+    const latestRecord = sortedRows[0] || {};
+    
+    // Priority: ITSDO > INDO (using the correct field names from the API)
+    // ITSDO includes: transmission losses, station transformer load, pumped storage, interconnector demand
+    // INDO excludes: station transformer load, pumped storage, interconnector demand
+    const itsdo = latestRecord.initialTransmissionSystemDemandOutturn;
+    const indo = latestRecord.initialDemandOutturn;
+    
+    // Fall back to the old field names for backwards compatibility
+    const legacyDemand = pickNum(latestRecord, ["demand", "demandMW", "mw", "value", "totalDemandMW"]);
+    
+    const demandMW = itsdo ?? indo ?? legacyDemand ?? 0;
+    
+    return Math.round((demandMW / 1000) * 100) / 100;
   }
 
   let carbonIntensity = null;
