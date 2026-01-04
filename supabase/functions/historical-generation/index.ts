@@ -204,77 +204,97 @@ async function fetchWindSolarForecast(DEBUG = false): Promise<{ data: ForecastDa
   const forecastData: ForecastDataPoint[] = [];
   let source = 'none';
   
-  // Calculate datetime range for forecast - use full ISO datetime format
   const now = new Date();
-  const fromDateTime = now.toISOString().replace('Z', '');
-  const toDateTime = new Date(now.getTime() + 48 * 60 * 60 * 1000).toISOString().replace('Z', '');
+  const todayDate = now.toISOString().split('T')[0];
+  const tomorrowDate = new Date(now.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0];
   
-  // Use the correct BMRS datasets endpoint: /datasets/DGWS (Day-Ahead Generation For Wind And Solar / B1440)
+  // Try endpoint 1: Day-ahead forecast (most reliable for future data)
   try {
-    const dgwsUrl = `https://data.elexon.co.uk/bmrs/api/v1/datasets/DGWS?publishDateTimeFrom=${encodeURIComponent(fromDateTime)}&publishDateTimeTo=${encodeURIComponent(toDateTime)}&format=json`;
-    console.log(`[Forecast] Trying DGWS endpoint: ${dgwsUrl}`);
+    const dayAheadUrl = `https://data.elexon.co.uk/bmrs/api/v1/forecast/generation/wind-and-solar/day-ahead?from=${todayDate}&to=${tomorrowDate}&processType=all&format=json`;
+    console.log(`[Forecast] Trying day-ahead endpoint: ${dayAheadUrl}`);
     
-    const response = await fetch(dgwsUrl, { 
-      headers: HEADERS, 
-      cache: "no-store" 
-    });
-    
-    console.log(`[Forecast] DGWS response status: ${response.status}`);
+    const response = await fetch(dayAheadUrl, { headers: HEADERS, cache: "no-store" });
+    console.log(`[Forecast] Day-ahead response status: ${response.status}`);
     
     if (response.ok) {
       const data = await response.json();
-      
-      // BMRS returns data in .data array
       const records = data?.data || (Array.isArray(data) ? data : []);
-      console.log(`[Forecast] DGWS records count: ${records.length}`);
-      
-      if (records.length > 0 && DEBUG) {
-        console.log(`[Forecast] Sample record:`, JSON.stringify(records[0]));
-      }
+      console.log(`[Forecast] Day-ahead records count: ${records.length}`);
       
       for (const record of records) {
-        // DGWS uses startTime and quantity for MW value
-        const timestamp = record.startTime || record.settlementDate;
+        const timestamp = record.startTime;
         if (!timestamp) continue;
         
-        // Find or create entry for this timestamp
         let entry = forecastData.find(f => f.timestamp === timestamp);
         if (!entry) {
-          entry = {
-            timestamp,
-            windForecastMW: 0,
-            solarForecastMW: 0,
-            source: 'DGWS'
-          };
+          entry = { timestamp, windForecastMW: 0, solarForecastMW: 0, source: 'day-ahead' };
           forecastData.push(entry);
         }
         
-        // BMRS uses 'quantity' field for MW value
-        const genMW = Number(record.quantity || 0);
-        // businessType is "Wind generation", "Solar", "Wind Offshore", "Wind Onshore"
+        const genMW = Number(record.quantity || record.generation || 0);
         const businessType = (record.businessType || '').toLowerCase();
-        const psrType = (record.psrType || '').toLowerCase();
         
-        if (businessType.includes('wind') || psrType.includes('wind')) {
+        if (businessType.includes('wind')) {
           entry.windForecastMW += genMW;
-        } else if (businessType.includes('solar') || psrType.includes('solar')) {
+        } else if (businessType.includes('solar')) {
           entry.solarForecastMW += genMW;
         }
       }
       
       if (forecastData.length > 0) {
-        source = 'DGWS';
-        console.log(`[Forecast] DGWS loaded ${forecastData.length} forecast points`);
-        if (forecastData.length > 0) {
-          console.log(`[Forecast] Sample point:`, JSON.stringify(forecastData[0]));
-        }
+        source = 'day-ahead';
       }
     } else {
       const errorText = await response.text();
-      console.log(`[Forecast] DGWS failed: ${response.status} - ${errorText.slice(0, 500)}`);
+      console.log(`[Forecast] Day-ahead failed: ${response.status} - ${errorText.slice(0, 200)}`);
     }
   } catch (error) {
-    console.log(`[Forecast] DGWS error: ${error}`);
+    console.log(`[Forecast] Day-ahead error: ${error}`);
+  }
+  
+  // Fallback: Try DGWS dataset if day-ahead didn't return data
+  if (forecastData.length === 0) {
+    try {
+      const dgwsUrl = `https://data.elexon.co.uk/bmrs/api/v1/datasets/DGWS?settlementDate=${todayDate}&format=json`;
+      console.log(`[Forecast] Trying DGWS fallback: ${dgwsUrl}`);
+      
+      const response = await fetch(dgwsUrl, { headers: HEADERS, cache: "no-store" });
+      console.log(`[Forecast] DGWS response status: ${response.status}`);
+      
+      if (response.ok) {
+        const data = await response.json();
+        const records = data?.data || [];
+        console.log(`[Forecast] DGWS records count: ${records.length}`);
+        
+        for (const record of records) {
+          const timestamp = record.startTime || record.settlementDate;
+          if (!timestamp) continue;
+          
+          let entry = forecastData.find(f => f.timestamp === timestamp);
+          if (!entry) {
+            entry = { timestamp, windForecastMW: 0, solarForecastMW: 0, source: 'DGWS' };
+            forecastData.push(entry);
+          }
+          
+          const genMW = Number(record.quantity || 0);
+          const businessType = (record.businessType || '').toLowerCase();
+          const psrType = (record.psrType || '').toLowerCase();
+          
+          if (businessType.includes('wind') || psrType.includes('wind')) {
+            entry.windForecastMW += genMW;
+          } else if (businessType.includes('solar') || psrType.includes('solar')) {
+            entry.solarForecastMW += genMW;
+          }
+        }
+        
+        if (forecastData.length > 0) source = 'DGWS';
+      } else {
+        const errorText = await response.text();
+        console.log(`[Forecast] DGWS failed: ${response.status} - ${errorText.slice(0, 200)}`);
+      }
+    } catch (error) {
+      console.log(`[Forecast] DGWS error: ${error}`);
+    }
   }
   
   // Sort by timestamp
@@ -1029,8 +1049,17 @@ Deno.serve(async (req) => {
     let forecastData: ForecastDataPoint[] = [];
     let forecastSource = 'none';
     
-    // Check if forecast data is requested
-    const includeForecast = url.searchParams.get('includeForecast') === 'true';
+    // Check if forecast data is requested (from URL params or request body)
+    let body: { includeForecast?: boolean; period?: string } = {};
+    if (req.method === 'POST') {
+      try {
+        body = await req.json();
+      } catch {
+        body = {};
+      }
+    }
+    const includeForecast = url.searchParams.get('includeForecast') === 'true' || body.includeForecast === true;
+    console.log(`[Request] method=${req.method}, includeForecast=${includeForecast}, body=`, JSON.stringify(body));
     
     if (period === '7d') {
       // Use FUELHH for weekly data

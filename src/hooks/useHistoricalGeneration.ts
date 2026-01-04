@@ -337,7 +337,9 @@ export const useHistoricalGeneration = () => {
     try {
       setForecastLoading(true);
 
-      const { data: response, error: supabaseError } = await supabase.functions.invoke('historical-generation?includeForecast=true');
+      const { data: response, error: supabaseError } = await supabase.functions.invoke('historical-generation', {
+        body: { includeForecast: true }
+      });
 
       if (supabaseError) {
         throw new Error(supabaseError.message);
