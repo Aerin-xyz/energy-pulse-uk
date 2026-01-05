@@ -8,7 +8,7 @@ const About = () => {
   return (
     <>
       <Helmet>
-        <title>UK Energy Mix 2025 | About Our Live Electricity Dashboard</title>
+        <title>UK Energy Mix 2026 | About Our Live Electricity Dashboard</title>
         <meta name="description" content="Energy Mix makes the UK's electricity system transparent — showing how power is generated and used in real time across renewables, gas and imports." />
         <link rel="canonical" href="https://energymix.info/about" />
         <meta property="og:title" content="About Energy Mix | Making the Energy Transition Visible" />
@@ -113,7 +113,7 @@ const About = () => {
               <Link to="/newsletter" className="text-sm text-foreground/70 hover:text-primary transition-colors">Newsletter</Link>
             </nav>
             <div className="text-xs text-foreground/50 text-center">
-              Contains BMRS data © Elexon Limited copyright and database right 2025
+              Contains BMRS data © Elexon Limited copyright and database right 2026
             </div>
           </div>
         </footer>

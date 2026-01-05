@@ -209,8 +209,8 @@ const Data = () => {
                 <div className="border-l-2 border-primary/30 pl-4 py-2">
                   <h3 className="font-semibold text-foreground mb-2">Elexon BMRS Data</h3>
                   <p className="text-sm">
-                    Contains BMRS data © Elexon Limited copyright and database right 2025. 
-                    Licensed under the <a href="https://www.elexon.co.uk/about/insights-and-reports/bmrs/" 
+                    Contains BMRS data © Elexon Limited copyright and database right 2026. 
+                    Licensed under the <a href="https://www.elexon.co.uk/about/insights-and-reports/bmrs/"
                     target="_blank" rel="noopener noreferrer" 
                     className="text-cosmic-cyan hover:underline">Elexon Open Data License</a>.
                   </p>
@@ -267,7 +267,7 @@ const Data = () => {
               <Link to="/newsletter" className="text-sm text-foreground/70 hover:text-primary transition-colors">Newsletter</Link>
             </nav>
             <div className="text-xs text-foreground/50 text-center space-y-1">
-              <p>Contains BMRS data © Elexon Limited copyright and database right 2025</p>
+              <p>Contains BMRS data © Elexon Limited copyright and database right 2026</p>
               <p>Data from National Energy System Operator (NESO) under the NESO Open Licence</p>
             </div>
           </div>

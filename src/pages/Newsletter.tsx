@@ -191,7 +191,7 @@ const Newsletter = () => {
               <Link to="/newsletter" className="text-sm text-foreground/70 hover:text-primary transition-colors">Newsletter</Link>
             </nav>
             <div className="text-xs text-foreground/50 text-center">
-              Contains BMRS data © Elexon Limited copyright and database right 2025
+              Contains BMRS data © Elexon Limited copyright and database right 2026
             </div>
           </div>
         </footer>
