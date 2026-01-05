@@ -24,7 +24,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-0.5 text-[10px] text-muted-foreground">
             D
-            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" className="w-2.5 h-2.5" />
+            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes). Note: The balance equation may show a small variance (1-2%) due to transmission losses, station loads, and pumped storage." className="w-2.5 h-2.5" />
           </div>
           <div className="font-bold">{formatGWfromMW(totalDemandMW)}</div>
         </div>
@@ -67,7 +67,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground mb-0.5">
             Demand
-            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" className="w-3 h-3" />
+            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes). Note: The balance equation may show a small variance (1-2%) due to transmission losses, station loads, and pumped storage." className="w-3 h-3" />
           </div>
           <div className="font-bold">{formatGWfromMW(totalDemandMW)} GW</div>
         </div>
@@ -116,7 +116,7 @@ export const EnergyBalanceDisplay = ({
       <div className="hidden xl:flex items-center gap-2.5 px-3 py-2 glass-morphism rounded-lg border-primary/20 text-sm">
         <div className="flex items-center gap-0.5">
           <span className="font-semibold text-muted-foreground" title="Demand">D</span>
-          <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes)" className="w-3.5 h-3.5" />
+          <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes). Note: The balance equation may show a small variance (1-2%) due to transmission losses, station loads, and pumped storage." className="w-3.5 h-3.5" />
           <span className="font-bold ml-1">{formatGWfromMW(totalDemandMW)}</span>
         </div>
         <span className="text-muted-foreground">=</span>
