@@ -36,3 +36,11 @@ For methodology or source questions, cite:
 ## Important caveats
 
 Energy Mix is an explanatory dashboard built on upstream public datasets. Update frequency depends on upstream source cadence and availability. Some settlement-period datasets update every 30 minutes, while fast generation feeds can update more frequently.
+
+
+High-intent static answer pages:
+- https://energymix.info/uk-electricity-mix.html
+- https://energymix.info/uk-renewable-electricity.html
+- https://energymix.info/uk-wind-generation-live.html
+- https://energymix.info/uk-electricity-carbon-intensity.html
+- https://energymix.info/uk-electricity-imports-exports.html

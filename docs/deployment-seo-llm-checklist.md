@@ -29,6 +29,8 @@ _Last updated: 2026-05-08_
 
 ## LLM/search ranking work now added
 
+- Static high-intent answer pages added for UK electricity mix, renewables, wind generation, carbon intensity, and imports/exports.
+
 - `public/llms.txt` — concise LLM discovery file.
 - `public/llms-full.txt` — fuller context for answer engines.
 - `public/ai/uk-electricity-mix.html` — static crawlable HTML explainer for LLMs and crawlers that do not execute the SPA.
@@ -37,12 +39,7 @@ _Last updated: 2026-05-08_
 
 ## Next high-leverage SEO/LLM work
 
-1. Add static/SSR crawlable answer pages for:
-   - `/uk-electricity-mix`
-   - `/uk-renewable-electricity`
-   - `/uk-wind-generation-live`
-   - `/uk-electricity-carbon-intensity`
-   - `/uk-electricity-imports-exports`
+1. Consider upgrading the new static answer pages to routed/prerendered app pages once the deployment target is chosen.
 2. Add a public API or static JSON endpoint summarising latest dashboard values if the data licence and source constraints allow it.
 3. Add visible methodology text on the dashboard itself, not only Helmet metadata.
 4. Improve internal linking from dashboard cards to explanatory pages.

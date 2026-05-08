@@ -100,3 +100,11 @@ Use: Energy Mix, UK electricity dashboard, https://energymix.info/. For methodol
 - UK electricity imports exports
 - Elexon FUELINST dashboard
 - BMRS energy dashboard
+
+
+High-intent static answer pages:
+- https://energymix.info/uk-electricity-mix.html
+- https://energymix.info/uk-renewable-electricity.html
+- https://energymix.info/uk-wind-generation-live.html
+- https://energymix.info/uk-electricity-carbon-intensity.html
+- https://energymix.info/uk-electricity-imports-exports.html
