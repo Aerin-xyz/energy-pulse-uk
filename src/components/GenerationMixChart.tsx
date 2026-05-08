@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { formatGWfromMW } from '@/lib/utils';
@@ -22,11 +23,13 @@ interface GenerationMixChartProps {
     variant?: string;
     interconnectorStatus?: string;
     status?: string;
+    sourceFreshness?: Record<string, { timestamp?: string | null; source?: string; cadenceMinutes?: number; status?: string; label?: string }>;
   };
   asOf?: {
     settlementDate?: string;
     settlementPeriod?: number;
     percentageSum?: number;
+    endISO?: string;
   };
 }
 
@@ -92,7 +95,48 @@ const generationTypeInfo: Record<string, {
   }
 };
 
-const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percentage }: any) => {
+const FILTERS = [
+  { key: 'all', label: 'All' },
+  { key: 'renewables', label: 'Renewables' },
+  { key: 'low-carbon', label: 'Low-carbon' },
+  { key: 'fossil', label: 'Fossil' },
+  { key: 'imports-storage', label: 'Imports/storage' },
+] as const;
+
+type FilterKey = typeof FILTERS[number]['key'];
+type UnitMode = 'gw' | 'percent';
+
+const RENEWABLES = new Set(['Wind', 'Solar', 'Hydro', 'PSH']);
+const LOW_CARBON = new Set(['Wind', 'Solar', 'Hydro', 'PSH', 'Nuclear', 'Biomass']);
+const FOSSIL = new Set(['Gas', 'Oil', 'Coal']);
+const IMPORTS_STORAGE = new Set(['Imports', 'Pumped Storage', 'PSH']);
+
+const matchesFilter = (name: string, filter: FilterKey) => {
+  if (filter === 'all') return true;
+  if (filter === 'renewables') return RENEWABLES.has(name);
+  if (filter === 'low-carbon') return LOW_CARBON.has(name);
+  if (filter === 'fossil') return FOSSIL.has(name);
+  if (filter === 'imports-storage') return IMPORTS_STORAGE.has(name);
+  return true;
+};
+
+const formatSourceTime = (iso?: string | null) => {
+  if (!iso) return null;
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+};
+
+interface PieLabelProps {
+  cx: number;
+  cy: number;
+  midAngle: number;
+  innerRadius: number;
+  outerRadius: number;
+  percentage: number;
+}
+
+const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, percentage }: PieLabelProps) => {
   if (percentage < 5) return null; // Don't show labels for small slices
   
   const RADIAN = Math.PI / 180;
@@ -116,6 +160,26 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
 
 export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asOf }: GenerationMixChartProps) => {
   const [expandedRows, setExpandedRows] = useState<Set<string>>(new Set());
+  const [unitMode, setUnitMode] = useState<UnitMode>('gw');
+  const [filter, setFilter] = useState<FilterKey>('all');
+
+  const filteredData = useMemo(() => {
+    const selected = data.filter((item) => matchesFilter(item.name, filter));
+    const selectedTotal = selected.reduce((sum, item) => sum + item.value, 0);
+    return selected.map((item) => {
+      const displayPercentage = selectedTotal ? (item.value / selectedTotal) * 100 : 0;
+      return {
+        ...item,
+        fullPercentage: item.percentage,
+        percentage: displayPercentage,
+        displayPercentage,
+      };
+    });
+  }, [data, filter]);
+
+  const selectedTotalMW = filteredData.reduce((sum, item) => sum + item.value, 0);
+  const sourceTime = formatSourceTime(dataFreshness?.sourceFreshness?.generation?.timestamp || asOf?.endISO);
+
 
   const toggleRow = (name: string) => {
     setExpandedRows(prev => {
@@ -154,10 +218,47 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
               {asOf.settlementDate && ` on ${new Date(asOf.settlementDate).toLocaleDateString()}`}
             </p>
             <p className="text-xs text-muted-foreground">
-              Mix updates each settlement period (every 30 min); values may fast-follow embedded Solar
+              Primary generation fast-follows Elexon FUELINST where available; settlement-period sources update at their native cadence.
+              {sourceTime && ` Latest upstream generation point: ${sourceTime}.`}
             </p>
           </div>
         )}
+        <div className="flex flex-col gap-3 pt-2 md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-wrap gap-1.5">
+            {FILTERS.map((item) => (
+              <Button
+                key={item.key}
+                type="button"
+                size="sm"
+                variant={filter === item.key ? 'default' : 'outline'}
+                className="h-7 px-2 text-xs"
+                onClick={() => setFilter(item.key)}
+              >
+                {item.label}
+              </Button>
+            ))}
+          </div>
+          <div className="flex gap-1.5">
+            <Button
+              type="button"
+              size="sm"
+              variant={unitMode === 'gw' ? 'default' : 'outline'}
+              className="h-7 px-3 text-xs"
+              onClick={() => setUnitMode('gw')}
+            >
+              GW
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant={unitMode === 'percent' ? 'default' : 'outline'}
+              className="h-7 px-3 text-xs"
+              onClick={() => setUnitMode('percent')}
+            >
+              %
+            </Button>
+          </div>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col lg:flex-row items-center gap-8">
@@ -165,7 +266,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
             <ResponsiveContainer width="100%" height="100%">
               <PieChart style={{ outline: 'none' }}>
                 <Pie
-                  data={data}
+                  data={filteredData}
                   cx="50%"
                   cy="50%"
                   labelLine={false}
@@ -176,7 +277,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                   dataKey="value"
                   stroke="none"
                 >
-                  {data.map((entry, index) => (
+                  {filteredData.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={entry.color} style={{ outline: 'none' }} />
                   ))}
                 </Pie>
@@ -188,10 +289,10 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
               <div className="text-center space-y-1">
                 <div className="text-3xl font-bold text-cosmic-cyan text-glow">
-                  {formatGWfromMW(totalGenerationMW + (data.find(item => item.name === "Imports")?.value || 0))} GW
+                  {unitMode === 'gw' ? `${formatGWfromMW(selectedTotalMW)} GW` : '100%'}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Total Supply
+                  {filter === 'all' ? 'Selected Supply' : 'Selected View'}
                 </div>
                 <div className="text-xl font-semibold text-primary mt-2">
                   {formatGWfromMW(totalGenerationMW)} GW
@@ -209,16 +310,16 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
               <TableHeader>
                 <TableRow className="border-primary/20">
                   <TableHead className="text-cosmic-cyan font-semibold">Generation Type</TableHead>
-                  <TableHead className="text-right text-cosmic-cyan font-semibold">Live Generation</TableHead>
+                  <TableHead className="text-right text-cosmic-cyan font-semibold">{unitMode === 'gw' ? 'Live Generation' : 'Share'}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {data.map((item, index) => {
+                {filteredData.map((item, index) => {
                   const isExpanded = expandedRows.has(item.name);
                   const info = generationTypeInfo[item.name];
                   
                   return (
-                    <>
+                    <Fragment key={item.name}>
                       {/* Main clickable row */}
                       <TableRow 
                         key={`row-${index}`}
@@ -247,10 +348,10 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                         <TableCell className="py-3 text-right">
                           <div className="space-y-0.5">
                             <div className="text-base font-bold text-cosmic-cyan group-hover:text-glow transition-all">
-                              {formatGWfromMW(item.value, 2)} GW
+                              {unitMode === 'gw' ? `${formatGWfromMW(item.value, 2)} GW` : `${item.displayPercentage.toFixed(1)}%`}
                             </div>
                             <div className="text-xs text-muted-foreground group-hover:text-primary transition-colors">
-                              {item.percentage}% of mix
+                              {unitMode === 'gw' ? `${item.fullPercentage}% of full mix` : `${formatGWfromMW(item.value, 2)} GW`}
                             </div>
                           </div>
                         </TableCell>
@@ -293,7 +394,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                           </TableCell>
                         </TableRow>
                       )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </TableBody>

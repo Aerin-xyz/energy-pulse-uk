@@ -1,8 +1,8 @@
 import { XMLParser } from "https://esm.sh/fast-xml-parser@4.5.0";
-import { 
-  checkRateLimit, 
-  getCachedResponse, 
-  setCachedResponse, 
+import {
+  checkRateLimit,
+  getCachedResponse,
+  setCachedResponse,
   getClientIP,
   validateOptionalEnum,
   ValidationError
@@ -59,7 +59,7 @@ async function tryOnce(url: string, variant: string): Promise<StrictResult> {
 async function fetchBMRSGeneration(): Promise<StrictResult> {
   const hosts = [DATA_HOST, BMRS_HOST];
   const variants: { v: string; url: string }[] = [];
-  
+
   for (const host of hosts) {
     const base = `https://${host}/bmrs/api/v1`;
     const hostPrefix = host === DATA_HOST ? "data" : "bmrs";
@@ -68,7 +68,7 @@ async function fetchBMRSGeneration(): Promise<StrictResult> {
       { v: `outturn-current@${hostPrefix}`, url: withFormat(`${base}/generation/outturn/current`) }
     );
   }
-  
+
   for (const { v, url } of variants) {
     const r = await tryOnce(url, v);
     if (r.ok) return r;
@@ -112,10 +112,10 @@ async function fetchEmbeddedWindESO(anchorDate: string, anchorSP: number): Promi
 
 // PV Live embedded solar — column-aware parser with 45m tolerance
 // Fetch Carbon Intensity from National Grid API
-async function fetchCarbonIntensity(debug = false): Promise<{ 
-  actual: number; 
-  forecast: number; 
-  index: string; 
+async function fetchCarbonIntensity(debug = false): Promise<{
+  actual: number;
+  forecast: number;
+  index: string;
   timestamp: string;
   percentOfAverage: number;
   forecastData?: Array<{ from: string; to: string; intensity: { forecast: number; index: string } }>;
@@ -126,20 +126,20 @@ async function fetchCarbonIntensity(debug = false): Promise<{
       headers: { 'Accept': 'application/json' },
       cache: 'no-store'
     });
-    
+
     if (!currentRes.ok) {
       if (debug) console.log('[carbon] Current intensity API error:', currentRes.status);
       return null;
     }
-    
+
     const currentData = await currentRes.json();
     const latest = currentData?.data?.[0];
-    
+
     if (!latest?.intensity) {
       if (debug) console.log('[carbon] No intensity data in response');
       return null;
     }
-    
+
     // Fetch forecast for next 24 hours
     let forecastData: any[] = [];
     try {
@@ -147,7 +147,7 @@ async function fetchCarbonIntensity(debug = false): Promise<{
         headers: { 'Accept': 'application/json' },
         cache: 'no-store'
       });
-      
+
       if (forecastRes.ok) {
         const forecastJson = await forecastRes.json();
         forecastData = forecastJson?.data || [];
@@ -155,16 +155,16 @@ async function fetchCarbonIntensity(debug = false): Promise<{
     } catch (e) {
       if (debug) console.log('[carbon] Forecast fetch error:', (e as Error).message);
     }
-    
+
     const actual = latest.intensity.actual || latest.intensity.forecast;
     const forecast = latest.intensity.forecast;
     const index = latest.intensity.index;
     const timestamp = latest.from;
-    
+
     // GB annual average is ~233 gCO2/kWh
     const GB_AVERAGE = 233;
     const percentOfAverage = ((actual / GB_AVERAGE) * 100) - 100;
-    
+
     if (debug) {
       console.log('[carbon] Fetched carbon intensity:', {
         actual,
@@ -175,7 +175,7 @@ async function fetchCarbonIntensity(debug = false): Promise<{
         forecastPoints: forecastData.length
       });
     }
-    
+
     return {
       actual,
       forecast,
@@ -282,26 +282,26 @@ async function fetchEmbeddedSolarPVLive(anchorEndISO: string, debug = false): Pr
 async function fetchEUGenerationMix(debug = false, euFocus = false, timeoutMs = 3000): Promise<any[]> {
   const dlog = (important: boolean, ...args: any[]) => debug && console.log('[energy-data]', ...args);
   const token = Deno.env.get("ENTSOE_API_TOKEN");
-  
+
   if (debug || euFocus) dlog(true, 'EU mix: Starting fetch', { hasToken: !!token });
-  
+
   if (!token) {
     if (debug || euFocus) dlog(true, 'EU mix: No ENTSO-E API token configured');
     return [];
   }
-  
+
   // Wrap the entire fetch in a timeout promise
   const fetchPromise = (async () => {
     // Start with just France to test
     const countries = [
       { code: 'FR', eic: '10YFR-RTE------C', name: 'France' }
     ];
-    
+
     // Use a 24-hour window ending 2 hours ago for more reliable data
     const now = new Date();
     const endTime = new Date(now.getTime() - 2 * 60 * 60 * 1000);
     const startTime = new Date(endTime.getTime() - 24 * 60 * 60 * 1000);
-  
+
   // ENTSO-E expects YYYYMMDDHHMM format in UTC
   const formatDateTime = (date: Date) => {
     const year = date.getUTCFullYear();
@@ -311,17 +311,17 @@ async function fetchEUGenerationMix(debug = false, euFocus = false, timeoutMs = 
     const minute = String(date.getUTCMinutes()).padStart(2, '0');
     return `${year}${month}${day}${hour}${minute}`;
   };
-  
+
   const startDate = formatDateTime(startTime);
   const endDate = formatDateTime(endTime);
-  
-  if (debug || euFocus) dlog(true, 'EU mix: Date range', { 
-    startDate, 
+
+  if (debug || euFocus) dlog(true, 'EU mix: Date range', {
+    startDate,
     endDate,
     startUTC: startTime.toISOString(),
     endUTC: endTime.toISOString()
   });
-  
+
   const results: any[] = [];
   const parser = new XMLParser({
     ignoreAttributes: false,
@@ -333,23 +333,23 @@ async function fetchEUGenerationMix(debug = false, euFocus = false, timeoutMs = 
     try {
       // Use A74 (Actual Generation Per Type) instead of A75
       const url = `https://web-api.tp.entsoe.eu/api?securityToken=${token}&documentType=A74&processType=A16&outBiddingZone_Domain=${country.eic}&periodStart=${startDate}&periodEnd=${endDate}`;
-      
+
       if (debug || euFocus) dlog(true, `Fetching ${country.name} (${country.code}) with URL: ${url.replace(token, 'TOKEN_HIDDEN')}`);
-      
+
       const response = await fetch(url, {
         method: 'GET',
-        headers: { 
+        headers: {
           'Accept': 'application/xml',
           'User-Agent': 'EnergyDashboard/1.0',
           'Content-Type': 'application/xml'
         }
       });
-      
+
       if (!response.ok) {
         const errorText = await response.text();
         if (debug || euFocus) {
           dlog(true, `${country.code}: HTTP ${response.status} - Error response:`);
-          
+
           // Try to parse XML error for better understanding
           try {
             const errorParsed = parser.parse(errorText);
@@ -366,61 +366,61 @@ async function fetchEUGenerationMix(debug = false, euFocus = false, timeoutMs = 
         }
         continue;
       }
-      
+
       const xmlText = await response.text();
       if (debug || euFocus) dlog(true, `${country.code}: Received XML response (${xmlText.length} chars)`);
-      
+
       const parsed = parser.parse(xmlText);
       const doc = parsed.GL_MarketDocument || parsed.Publication_MarketDocument;
-      
+
       if (!doc) {
         if (debug || euFocus) dlog(true, `${country.code}: No valid document structure in response`);
         continue;
       }
-      
+
       if (!doc.TimeSeries) {
         if (debug || euFocus) dlog(true, `${country.code}: No TimeSeries in response, available keys:`, Object.keys(doc));
         continue;
       }
-      
+
       // Extract generation data by fuel type
       const timeSeries = Array.isArray(doc.TimeSeries) ? doc.TimeSeries : [doc.TimeSeries];
       const mixByFuel: Record<string, number> = {};
       let latestTime: string | undefined;
-      
+
       if (debug || euFocus) dlog(true, `${country.code}: Found ${timeSeries.length} time series`);
-      
+
       for (const series of timeSeries) {
         try {
           const psrType = series.MktPSRType?.psrType || 'Other';
           const periods = Array.isArray(series.Period) ? series.Period : [series.Period];
-          
+
           if (!periods || periods.length === 0) {
             if (debug || euFocus) dlog(true, `${country.code}: No periods found for ${psrType}`);
             continue;
           }
-          
+
           // Get the most recent period with data
           const validPeriods = periods.filter((p: any) => p?.Point && p?.timeInterval?.start);
           if (validPeriods.length === 0) {
             if (debug || euFocus) dlog(true, `${country.code}: No valid periods for ${psrType}`);
             continue;
           }
-          
-          const latestPeriod = validPeriods.sort((a: any, b: any) => 
+
+          const latestPeriod = validPeriods.sort((a: any, b: any) =>
             new Date(b.timeInterval.start).getTime() - new Date(a.timeInterval.start).getTime()
           )[0];
-          
+
           if (!latestPeriod) continue;
-          
+
           latestTime = latestPeriod.timeInterval.start;
           const points = Array.isArray(latestPeriod.Point) ? latestPeriod.Point : [latestPeriod.Point];
-          
+
           // Sum all points for this fuel type
           const totalMW = points
             .filter((p: any) => p?.quantity !== undefined && !isNaN(Number(p.quantity)))
             .reduce((sum: number, p: any) => sum + Number(p.quantity), 0);
-          
+
           if (totalMW > 0) {
             mixByFuel[psrType] = (mixByFuel[psrType] || 0) + totalMW;
             if (debug || euFocus) dlog(true, `${country.code}: ${psrType} = ${totalMW.toFixed(1)} MW`);
@@ -429,32 +429,32 @@ async function fetchEUGenerationMix(debug = false, euFocus = false, timeoutMs = 
           if (debug || euFocus) dlog(true, `${country.code}: Error processing series - ${(seriesError as Error).message}`);
         }
       }
-      
+
       if (Object.keys(mixByFuel).length > 0) {
         const totalMW = Object.values(mixByFuel).reduce((sum, mw) => sum + mw, 0);
-        
+
         results.push({
           code: country.code,
           ts: latestTime || new Date().toISOString(),
           mixByFuel,
           ok: true
         });
-        
+
         if (debug || euFocus) {
           dlog(true, `${country.code}: SUCCESS - ${Object.keys(mixByFuel).length} fuel types, ${Math.round(totalMW)} MW total`);
         }
       } else {
         if (debug || euFocus) dlog(true, `${country.code}: No valid generation data found`);
       }
-      
+
       // Be respectful to the API
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
     } catch (error) {
       if (debug || euFocus) dlog(true, `${country.code}: Error - ${(error as Error).message}`);
     }
   }
-  
+
   if (debug || euFocus) dlog(true, `EU mix: Complete - ${results.length} countries successful`);
   return results;
   })();
@@ -495,7 +495,7 @@ async function fetchEntsoePhysicalFlows(): Promise<{
     for (const border of ENTSOE_BORDERS) {
       try {
         const result = await entsoeNetForBorderMW(apiToken, border.eic, border.mtuMin, now);
-        
+
         attempts.push({
           border: border.name,
           eic: border.eic,
@@ -508,7 +508,7 @@ async function fetchEntsoePhysicalFlows(): Promise<{
         if (result.ok && Number.isFinite(result.netMW)) {
           // Get capacity from hints
           const capacity = CAPACITY_HINTS[border.name] || null;
-          
+
           interconnectors.push({
             name: border.displayName,
             country: border.country,
@@ -529,25 +529,25 @@ async function fetchEntsoePhysicalFlows(): Promise<{
 
     // Success if we got any valid interconnector data
     if (interconnectors.length > 0) {
-      return { 
-        ok: true, 
+      return {
+        ok: true,
         interconnectors,
         attempts,
         flows: undefined // Legacy compatibility - not needed with new format
       };
     }
 
-    return { 
-      ok: false, 
+    return {
+      ok: false,
       reason: 'no-valid-interconnectors',
-      attempts 
+      attempts
     };
 
   } catch (e) {
-    return { 
-      ok: false, 
+    return {
+      ok: false,
       reason: (e as Error).message,
-      attempts 
+      attempts
     };
   }
 }
@@ -558,7 +558,7 @@ async function fetchEntsoePhysicalFlows(): Promise<{
  * Includes BMRS fallback for ALL interconnectors when ENTSO-E fails.
  */
 async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRows?: any[]): Promise<{
-  ok: boolean; 
+  ok: boolean;
   attempts: any[];
   status: string;
   interconnectors: any[];
@@ -569,11 +569,11 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
   // Strategy 1: Try to get live ENTSO-E data for all borders
   const apiToken = Deno.env.get('ENTSOE_API_TOKEN');
   const hasEntsoeToken = Boolean(apiToken);
-  
+
   if (hasEntsoeToken && debug) dlog(true, "Trying ENTSO-E physical flows for all interconnectors...");
-  
+
   const now = new Date();
-  
+
   // CIRCUIT BREAKER: Test first border to fail fast if ENTSO-E is down
   let skipEntsoe = false;
   if (hasEntsoeToken && apiToken) {
@@ -581,15 +581,15 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
     try {
       const timeoutMs = 8000; // 8 second timeout - enough for 2 API calls per border
       const testPromise = entsoeNetForBorderMW(apiToken, testBorder.eic, testBorder.mtuMin, now);
-      const timeoutPromise = new Promise((_, reject) => 
+      const timeoutPromise = new Promise((_, reject) =>
         setTimeout(() => reject(new Error('circuit-breaker-timeout')), timeoutMs)
       );
-      
+
       const testResult = await Promise.race([testPromise, timeoutPromise]) as any;
-      
+
       // Only trigger circuit breaker on HTTP 400/parameter errors or no-xml, NOT on timeouts
-      if (!testResult.ok && testResult.reason && 
-          (testResult.reason.includes('parameter') || testResult.reason.includes('400') || 
+      if (!testResult.ok && testResult.reason &&
+          (testResult.reason.includes('parameter') || testResult.reason.includes('400') ||
            testResult.reason.includes('no-xml'))) {
         skipEntsoe = true;
         if (debug) dlog(true, `Circuit breaker triggered: ${testResult.reason} - skipping ENTSO-E, using fallback`);
@@ -600,14 +600,14 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
       if (debug) dlog(true, `Circuit breaker test slow: ${errorMsg} - continuing with normal fetch`);
     }
   }
-  
+
   // OPTIMIZATION: Process all interconnectors in parallel with timeouts
   const borderPromises = ENTSOE_BORDERS.map(async (border) => {
     const capacity = CAPACITY_HINTS[border.name] || null;
     let flow = 0;
     let interconnectorStatus: "live" | "offline" | "unavailable" | "bmrs-fallback" = "unavailable";
     const attempt: any = { border: border.name, eic: border.eic };
-    
+
     // Skip ENTSO-E if circuit breaker triggered
     if (skipEntsoe || !hasEntsoeToken || !apiToken) {
       attempt.ok = false;
@@ -618,12 +618,12 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
         // Add 9-second timeout per border (allows 2 x 4s API calls + overhead)
         const timeoutMs = 9000;
         const fetchPromise = entsoeNetForBorderMW(apiToken, border.eic, border.mtuMin, now);
-        const timeoutPromise = new Promise((_, reject) => 
+        const timeoutPromise = new Promise((_, reject) =>
           setTimeout(() => reject(new Error('border-timeout')), timeoutMs)
         );
-        
+
         const result = await Promise.race([fetchPromise, timeoutPromise]) as any;
-        
+
         Object.assign(attempt, {
           ok: result.ok,
           netMW: result.netMW,
@@ -645,7 +645,7 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
         interconnectorStatus = "unavailable";
       }
     }
-    
+
     return {
       interconnector: {
         name: border.displayName,
@@ -661,7 +661,7 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
 
   // Wait for all borders to complete in parallel
   const borderResults = await Promise.all(borderPromises);
-  
+
   // Extract interconnectors and attempts from results
   for (const result of borderResults) {
     allInterconnectors.push(result.interconnector);
@@ -671,14 +671,14 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
   // Strategy 2: BMRS fallback for ALL interconnectors when ENTSO-E fails
   if (latestOutturnRows && latestOutturnRows.length > 0) {
     const bmrsFallback = await fetchBMRSInterconnectorFallback(latestOutturnRows, debug);
-    
+
     if (bmrsFallback.length > 0) {
       // Update all interconnectors with BMRS data where ENTSO-E failed
       for (const bmrsData of bmrsFallback) {
-        const interconnectorIndex = allInterconnectors.findIndex(ic => 
+        const interconnectorIndex = allInterconnectors.findIndex(ic =>
           ic.name === bmrsData.name
         );
-        
+
         if (interconnectorIndex !== -1) {
           const currentIC = allInterconnectors[interconnectorIndex];
           // Only use BMRS fallback if ENTSO-E failed
@@ -688,7 +688,7 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
               flow: bmrsData.flow,
               status: "bmrs-fallback"
             };
-            
+
             if (debug) {
               dlog(true, `BMRS fallback applied for ${bmrsData.name}: ${bmrsData.flow} MW`);
             }
@@ -701,7 +701,7 @@ async function fetchAllInterconnectorsWithStatus(debug = false, latestOutturnRow
   const liveCount = allInterconnectors.filter(ic => ic.status === "live").length;
   const bmrsFallbackCount = allInterconnectors.filter(ic => ic.status === "bmrs-fallback").length;
   const overallStatus = (liveCount + bmrsFallbackCount) > 0 ? "live" : (hasEntsoeToken ? "cached" : "unavailable");
-  
+
   if (debug) {
     dlog(true, `All interconnectors processed: ${liveCount}/${allInterconnectors.length} live, ${bmrsFallbackCount} BMRS fallback`);
   }
@@ -746,29 +746,29 @@ async function fetchBMRSInterconnectorFallback(outturnRows: any[], debug = false
 
   // Extract ALL interconnector data using existing function
   const rawInterconnectors = deriveICFromOutturnRowsVariant(outturnRows, "dataset");
-  
+
   if (debug && rawInterconnectors.length > 0) {
     dlog(true, `BMRS interconnectors found: ${rawInterconnectors.map(ic => `${ic.code}=${ic.flow}MW`).join(", ")}`);
   }
 
   // Map BMRS codes to ENTSO-E display names and aggregate flows
   const aggregatedFlows: Record<string, { name: string; country: string; flow: number; capacity: number | null }> = {};
-  
+
   for (const [displayName, bmrsCodes] of Object.entries(ENTSOE_TO_BMRS_MAP)) {
     const matchingInterconnectors = rawInterconnectors.filter(ic => bmrsCodes.includes(ic.code));
-    
+
     if (matchingInterconnectors.length > 0) {
       // Sum flows for borders with multiple cables (e.g., France)
       const totalFlow = matchingInterconnectors.reduce((sum, ic) => sum + ic.flow, 0);
       const totalCapacity = matchingInterconnectors.reduce((sum, ic) => sum + (ic.capacity || 0), 0);
-      
+
       aggregatedFlows[displayName] = {
         name: displayName,
         country: matchingInterconnectors[0].country,
         flow: totalFlow,
         capacity: totalCapacity > 0 ? totalCapacity : null
       };
-      
+
       if (debug) {
         dlog(true, `BMRS fallback aggregated for ${displayName}: ${totalFlow} MW from codes: ${bmrsCodes.join(", ")}`);
       }
@@ -782,15 +782,15 @@ async function fetchBMRSInterconnectorFallback(outturnRows: any[], debug = false
  * Legacy function for backward compatibility
  */
 async function fetchInterconnectorsEnhanced(debug = false): Promise<{
-  ok: boolean; 
-  data?: any; 
+  ok: boolean;
+  data?: any;
   attempts: any[];
   source?: string;
   status?: string;
   interconnectors?: any[];
 }> {
   const result = await fetchAllInterconnectorsWithStatus(debug);
-  
+
   return {
     ok: result.ok,
     data: result.interconnectors,
@@ -805,7 +805,7 @@ async function fetchInterconnectorsEnhanced(debug = false): Promise<{
 // This provides a more accurate balance: Demand = Generation + Net Transfers
 async function fetchDemand() {
   const hosts = [DATA_HOST, BMRS_HOST];
-  
+
   for (const host of hosts) {
     // Use /demand/outturn instead of /demand/outturn/summary to get ITSDO records
     const url = `https://${host}/bmrs/api/v1/demand/outturn?format=json`;
@@ -994,12 +994,12 @@ async function entsoeA11Raw(token: string, inDomain: string, outDomain: string, 
   const periodStart = toPeriod(start);
   const periodEnd   = toPeriod(end);
   const url = `${ENTSOE_BASE}?securityToken=${encodeURIComponent(token)}&documentType=A11&in_Domain=${inDomain}&out_Domain=${outDomain}&periodStart=${periodStart}&periodEnd=${periodEnd}`;
-  
+
   const fetchPromise = fetch(url, { headers: { "Accept": "application/xml" }, redirect: "manual" as RequestRedirect, cache: "no-store" });
-  const timeoutPromise = new Promise<Response>((_, reject) => 
+  const timeoutPromise = new Promise<Response>((_, reject) =>
     setTimeout(() => reject(new Error('fetch-timeout')), timeoutMs)
   );
-  
+
   try {
     const res = await Promise.race([fetchPromise, timeoutPromise]);
     const text = await res.text();
@@ -1008,11 +1008,11 @@ async function entsoeA11Raw(token: string, inDomain: string, outDomain: string, 
     return { status: res.status, isXML, text, url };
   } catch (e) {
     // Return a timeout error response
-    return { 
-      status: 408, 
-      isXML: false, 
-      text: `Timeout after ${timeoutMs}ms: ${(e as Error).message}`, 
-      url 
+    return {
+      status: 408,
+      isXML: false,
+      text: `Timeout after ${timeoutMs}ms: ${(e as Error).message}`,
+      url
     };
   }
 }
@@ -1033,13 +1033,13 @@ async function entsoeA11WithRetry(token: string, inDomain: string, outDomain: st
     const resp  = await entsoeA11Raw(token, inDomain, outDomain, start, end, 4000); // 4 second timeout per API call
     const rec: any = { url: resp.url, status: resp.status, mtu: plan.mtu, windowMin: plan.windowMin };
 
-    if (!resp.isXML) { 
-      rec.reason = "non-xml"; 
-      attempts.push(rec); 
+    if (!resp.isXML) {
+      rec.reason = "non-xml";
+      attempts.push(rec);
       // Don't retry on non-XML responses - likely a permanent error
       return { ok: false, xml: "", attempts };
     }
-    
+
     if (resp.status === 400 && resp.text.includes("Acknowledgement_MarketDocument")) {
       rec.reason = ackReason(resp.text) || "ack";
       attempts.push(rec);
@@ -1047,7 +1047,7 @@ async function entsoeA11WithRetry(token: string, inDomain: string, outDomain: st
       if (i === 0) continue;
       return { ok: false, xml: "", attempts };
     }
-    
+
     // success or at least a proper Publication doc; hand to parser
     attempts.push(rec);
     return { ok: true, xml: resp.text, attempts };
@@ -1257,7 +1257,7 @@ function pickLatestSP(rows: any[]) {
 const EXCLUDE = /INTERCONNECT|^INT|PUMP|^PS$/i;
 
 // Color mapping for generation types
-const COLORS: Record<string, string> = { 
+const COLORS: Record<string, string> = {
   Wind: "#6BC1B0",      // Teal Blue
   "LV Wind": "#6BC1B0", // Teal Blue
   Nuclear: "#B8A4E8",   // Pastel Purple
@@ -1406,6 +1406,13 @@ async function fetchFUELHHStream(limit = 200): Promise<StrictResult> {
   return { ok: false, url: '', status: 502, reason: 'fuelhh-all-hosts-failed', variant: 'exhausted' } as any;
 }
 
+function anchorEndISOFromSP(anchorDate: string, anchorSP: number): string | null {
+  if (!anchorDate || !anchorSP) return null;
+  const dt = new Date(`${anchorDate}T00:00:00Z`);
+  dt.setUTCMinutes((anchorSP - 1) * 30 + 30);
+  return dt.toISOString();
+}
+
 function parseFUELHHtoMW(rows: any[]) {
   const latest = pickLatestSP(rows);
   const hvByFuelMW: Record<string, number> = {};
@@ -1440,7 +1447,13 @@ function parseFUELHHtoMW(rows: any[]) {
       anchorDate = parseSettlementDate(r);
     }
   }
-  return { hvByFuelMW, anchorSP, anchorDate, otherBreakdown };
+
+  const anchorEndISO = anchorDate && anchorSP ? (() => {
+    const dt = new Date(`${anchorDate}T00:00:00Z`);
+    dt.setUTCMinutes((anchorSP - 1) * 30 + 30);
+    return dt.toISOString();
+  })() : null;
+  return { hvByFuelMW, anchorSP, anchorDate, otherBreakdown, latestStartTime: anchorEndISO };
 }
 
 Deno.serve(async (req) => {
@@ -1492,8 +1505,8 @@ Deno.serve(async (req) => {
   if (!rateLimitResult.allowed) {
     return new Response(JSON.stringify({ error: 'Rate limit exceeded. Please try again later.' }), {
       status: 429,
-      headers: { 
-        ...corsHeaders, 
+      headers: {
+        ...corsHeaders,
         ...rateLimitResult.headers,
         'Content-Type': 'application/json',
       },
@@ -1505,7 +1518,7 @@ Deno.serve(async (req) => {
   const CACHE_VERSION = 'v3-fuelinst-fast';
   const cacheTTL = UPDATE_TYPE === 'high' ? 75 : UPDATE_TYPE === 'mid' ? 240 : 300; // 75s, 4min, 5min
   const globalCacheKey = `energy-data:${CACHE_VERSION}:${UPDATE_TYPE}:global`;
-  
+
   const cachedResponse = await getCachedResponse(globalCacheKey);
   if (cachedResponse.hit && cachedResponse.data) {
     const cachedData = JSON.parse(cachedResponse.data);
@@ -1630,33 +1643,41 @@ Deno.serve(async (req) => {
   // Parse demand data - prioritize ITSDO (Initial Transmission System Demand Out-Turn)
   // which includes transmission losses, pumped storage, and interconnector demand
   // for accurate energy balance: Demand = Generation + Net Transfers
-  // 
-  // API response format: { data: [{ settlementDate, settlementPeriod, 
+  //
+  // API response format: { data: [{ settlementDate, settlementPeriod,
   //   initialDemandOutturn: INDO, initialTransmissionSystemDemandOutturn: ITSDO }] }
-  function parseDemand(dData: any): number {
+  function latestDemandRow(dData: any): any {
     const dRows = asArray(dData);
-    
-    // Sort by settlementDate and settlementPeriod descending to get the most recent
-    const sortedRows = dRows.sort((a: any, b: any) => {
-      const dateA = a.settlementDate || '';
-      const dateB = b.settlementDate || '';
-      if (dateA !== dateB) return dateB.localeCompare(dateA);
-      return (b.settlementPeriod || 0) - (a.settlementPeriod || 0);
-    });
-    
-    const latestRecord = sortedRows[0] || {};
-    
+    return dRows.sort((a: any, b: any) => {
+      const dateA = a.settlementDate || a.SETTLEMENT_DATE || '';
+      const dateB = b.settlementDate || b.SETTLEMENT_DATE || '';
+      if (dateA !== dateB) return String(dateB).localeCompare(String(dateA));
+      const spA = Number(a.settlementPeriod || a.SETTLEMENT_PERIOD || 0);
+      const spB = Number(b.settlementPeriod || b.SETTLEMENT_PERIOD || 0);
+      return spB - spA;
+    })[0] || {};
+  }
+
+  function demandRowEndISO(row: any): string | null {
+    const date = String(row.settlementDate || row.SETTLEMENT_DATE || '').slice(0, 10);
+    const sp = Number(row.settlementPeriod || row.SETTLEMENT_PERIOD || 0);
+    return anchorEndISOFromSP(date, sp);
+  }
+
+  function parseDemand(dData: any): number {
+    const latestRecord = latestDemandRow(dData);
+
     // Priority: ITSDO > INDO (using the correct field names from the API)
     // ITSDO includes: transmission losses, station transformer load, pumped storage, interconnector demand
     // INDO excludes: station transformer load, pumped storage, interconnector demand
     const itsdo = latestRecord.initialTransmissionSystemDemandOutturn;
     const indo = latestRecord.initialDemandOutturn;
-    
+
     // Fall back to the old field names for backwards compatibility
     const legacyDemand = pickNum(latestRecord, ["demand", "demandMW", "mw", "value", "totalDemandMW"]);
-    
+
     const demandMW = itsdo ?? indo ?? legacyDemand ?? 0;
-    
+
     // Return demand in MW (API already returns MW, no conversion needed)
     return Math.round(demandMW);
   }
@@ -1670,25 +1691,25 @@ Deno.serve(async (req) => {
       fetchBMRSGeneration(),
       fetchDemand(),
       // Fetch carbon intensity (for full/mid updates)
-      (UPDATE_TYPE === 'full' || UPDATE_TYPE === 'mid') 
-        ? fetchCarbonIntensity(DEBUG) 
+      (UPDATE_TYPE === 'full' || UPDATE_TYPE === 'mid')
+        ? fetchCarbonIntensity(DEBUG)
         : Promise.resolve(null),
       // EU generation with 3s timeout (optional, non-critical)
       fetchEUGenerationMix(DEBUG, EU_FOCUS, 3000),
     ]);
-    
-    console.log('[energy-data] Parallel fetch complete:', { 
+
+    console.log('[energy-data] Parallel fetch complete:', {
       fuelinst: fuelinstR.ok,
-      bmrs: bmrsR.ok, 
+      bmrs: bmrsR.ok,
       demand: demandR.ok,
       carbon: !!carbonIntensity,
-      eu: euGenerationMix.length 
+      eu: euGenerationMix.length
     });
 
-    if (DEBUG) dlog(true, "Data fetch results:", { 
+    if (DEBUG) dlog(true, "Data fetch results:", {
       fuelinst: { ok: fuelinstR.ok, variant: fuelinstR.variant, status: (fuelinstR as any).status },
-      bmrs: { ok: bmrsR.ok, variant: bmrsR.variant, status: (bmrsR as any).status }, 
-      demand: { ok: demandR.ok } 
+      bmrs: { ok: bmrsR.ok, variant: bmrsR.variant, status: (bmrsR as any).status },
+      demand: { ok: demandR.ok }
     });
 
     // Resolve BMRS HV baseline → dataset fallback → LKG
@@ -1700,6 +1721,7 @@ let variant = bmrsR.variant;
 let bmrsRows: any[] = [];
 let outturnVariant: "insights" | "dataset" = "insights";
 let latestOutturnRows: any[] = [];
+let generationSourceTime: string | null = null;
 
     if (fuelinstR.ok) {
       const rows = asArray(fuelinstR.data);
@@ -1713,6 +1735,7 @@ let latestOutturnRows: any[] = [];
         variant = fuelinstR.variant;
         latestOutturnRows = parsed.latestRows;
         outturnVariant = "dataset";
+        generationSourceTime = parsed.latestStartTime;
         if (DEBUG) dlog(true, "FUELINST parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, latestStartTime: parsed.latestStartTime });
       }
     }
@@ -1731,6 +1754,7 @@ let latestOutturnRows: any[] = [];
           variant = "dataset-fuelhh-stream";
           latestOutturnRows = pickLatestSP(rows);
           outturnVariant = "dataset";
+          generationSourceTime = parsed.latestStartTime;
         } else {
           const lkgResponse = await serveLKG("BMRS unavailable; served LKG");
           if (lkgResponse) return lkgResponse;
@@ -1765,6 +1789,7 @@ let latestOutturnRows: any[] = [];
               variant = "dataset-fuelhh-stream";
               latestOutturnRows = pickLatestSP(rows);
               outturnVariant = "dataset";
+              generationSourceTime = p2.latestStartTime;
             } else {
               if (DEBUG) dlog(true, "Dataset fallback also implausible", { hvTotal2 });
               const lkgResponse = await serveLKG("HV baseline implausible; served LKG");
@@ -1783,9 +1808,7 @@ let latestOutturnRows: any[] = [];
     }
 
     // Compute anchor end ISO for the settlement period
-    const anchorDateTime = new Date(`${anchorDate}T00:00:00Z`);
-    anchorDateTime.setUTCMinutes((anchorSP - 1) * 30 + 30);
-    const anchorEndISO = anchorDateTime.toISOString();
+    const anchorEndISO = anchorEndISOFromSP(anchorDate, anchorSP) || new Date().toISOString();
 
     // Optional embedded feeds with tolerance
     const [windEmb, solarEmb] = await Promise.all([
@@ -1807,7 +1830,7 @@ let latestOutturnRows: any[] = [];
         generationMix.push({ name: fuel, value: Math.round(mw), percentage: 0, color: COLORS[fuel] || "#6b7280" });
       }
     }
-    
+
     // Consolidate all wind (HV + embedded) into single "Wind" category
     if (embeddedWindMW > 0) {
       const windEntry = generationMix.find(item => item.name === "Wind");
@@ -1817,12 +1840,12 @@ let latestOutturnRows: any[] = [];
         generationMix.push({ name: "Wind", value: Math.round(embeddedWindMW), percentage: 0, color: COLORS["Wind"] || "#10b981" });
       }
     }
-    
+
     generationMix.push({ name: "Solar", value: Math.round(embeddedSolarMW), percentage: 0, color: COLORS["Solar"] || "#fbbf24" });
 
     // Calculate total net imports from interconnectors (will be added later after interconnectors are fetched)
     // This placeholder will be filled after interconnector data is available
-    
+
     // Compute percentages now that total is final (excluding imports for now)
     for (const item of generationMix) {
       item.percentage = totalGenerationMW ? Math.round((item.value / totalGenerationMW) * 100) : 0;
@@ -1842,21 +1865,18 @@ let icDiag: any = { source: "enhanced", ok: false, tries: [] as any[], status: "
 try {
   // Use the new enhanced method that shows all possible interconnectors with BMRS fallback for Irish
   const icResult = await fetchAllInterconnectorsWithStatus(DEBUG, latestOutturnRows);
-  
+
   interconnectors = icResult.interconnectors; // Always populated with all borders
   interconnectorStatus = icResult.status as "live" | "cached" | "unavailable";
-  
-  if (DEBUG) {
-    icDiag.ok = true;
-    icDiag.status = interconnectorStatus;
-    icDiag.source = "entso-e-all-borders";
-    icDiag.tries = icResult.attempts || [];
-    icDiag.count = interconnectors.length;
-    icDiag.liveCount = interconnectors.filter(ic => ic.status === 'live').length;
-  }
+  icDiag.ok = true;
+  icDiag.status = interconnectorStatus;
+  icDiag.source = "entso-e-all-borders";
+  icDiag.tries = icResult.attempts || [];
+  icDiag.count = interconnectors.length;
+  icDiag.liveCount = interconnectors.filter(ic => ic.status === 'live').length;
 } catch (e) {
   if (DEBUG) dlog(true, `IC resolution error: ${(e as Error).message}`);
-  
+
   // Fallback: show all interconnectors as unavailable
   interconnectors = ENTSOE_BORDERS.map(border => ({
     name: border.displayName,
@@ -1868,9 +1888,55 @@ try {
   interconnectorStatus = "unavailable";
 }
 
+    const demandLatestRow = demandR.ok ? latestDemandRow(demandR.data) : null;
     const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;
 
-    const fullLive = variant.startsWith("outturn-") && windEmb.matched && solarEmb.matched;
+    const sourceFreshness = {
+      generation: {
+        label: variant?.includes('fuelinst') ? 'Live generation' : 'Generation fallback',
+        source: variant?.includes('fuelinst') ? 'Elexon FUELINST' : 'BMRS/FUELHH',
+        timestamp: generationSourceTime || anchorEndISO,
+        cadenceMinutes: variant?.includes('fuelinst') ? 5 : 30,
+        status: Object.keys(hvByFuelMW).length ? 'live' : 'unavailable',
+      },
+      wind: {
+        label: 'Embedded wind',
+        source: 'NESO embedded wind',
+        timestamp: windEmb.matched ? anchorEndISO : null,
+        cadenceMinutes: 30,
+        status: windEmb.matched ? 'live' : 'fallback',
+      },
+      solar: {
+        label: 'Solar',
+        source: 'PV Live',
+        timestamp: (solarEmb as any).debug?.picked?.t || null,
+        cadenceMinutes: 30,
+        status: solarEmb.matched ? 'live' : 'fallback',
+      },
+      interconnectors: {
+        label: 'Transfers',
+        source: interconnectorStatus === 'live' ? 'ENTSO-E/BMRS' : 'Last known/BMRS fallback',
+        timestamp: icDiag.tries?.find((t: any) => t?.timestamp)?.timestamp || anchorEndISO,
+        cadenceMinutes: 30,
+        status: interconnectorStatus,
+      },
+      demand: {
+        label: 'Demand',
+        source: 'BMRS ITSDO',
+        timestamp: demandLatestRow ? demandRowEndISO(demandLatestRow) : null,
+        cadenceMinutes: 30,
+        status: demandR.ok ? 'live' : 'unavailable',
+      },
+      carbon: {
+        label: 'Carbon',
+        source: 'Carbon Intensity API',
+        timestamp: carbonIntensity?.timestamp || null,
+        cadenceMinutes: 30,
+        status: carbonIntensity ? 'live' : 'cached',
+      },
+    };
+
+    const fullLive = Boolean(generationSourceTime) && windEmb.matched && solarEmb.matched;
 
     // Calculate total net imports from interconnectors and add to generation mix
     const totalImportsMW = interconnectors.reduce((sum, ic) => {
@@ -1878,13 +1944,13 @@ try {
     }, 0);
 
     if (totalImportsMW > 0) {
-      generationMix.push({ 
-        name: "Imports", 
-        value: Math.round(totalImportsMW), 
-        percentage: 0, 
+      generationMix.push({
+        name: "Imports",
+        value: Math.round(totalImportsMW),
+        percentage: 0,
         color: COLORS["Imports"] || "#8b5cf6"
       });
-      
+
       // Recalculate percentages including imports
       const totalWithImports = totalGenerationMW + totalImportsMW;
       for (const item of generationMix) {
@@ -1912,6 +1978,7 @@ dataFreshness: {
   variant,
   interconnectorStatus,
   status: fullLive ? "live" : "live-partial",
+  sourceFreshness,
 },
       asOf: {
         settlementDate: anchorDate,
@@ -1948,11 +2015,11 @@ if (DEBUG) {
       percentOfTotal: totalGenerationMW ? parseFloat(((otherTotalMW / totalGenerationMW) * 100).toFixed(2)) : 0
     } : null,
     wind: { matched: windEmb.matched, reason: windEmb.reason, mw: windEmb.mw },
-    solar: { 
-      reason: solarEmb.reason, 
-      matched: solarEmb.matched, 
-      mw: solarEmb.mw, 
-      columns: (solarEmb as any).debug?.columns ?? null, 
+    solar: {
+      reason: solarEmb.reason,
+      matched: solarEmb.matched,
+      mw: solarEmb.mw,
+      columns: (solarEmb as any).debug?.columns ?? null,
       picked: (solarEmb as any).debug?.picked ?? null,
       anchorEndISO,
       effectiveAnchorISO: new Date(Math.min(Date.parse(anchorEndISO), Date.now())).toISOString(),
@@ -2031,37 +2098,37 @@ await insertLKG(payload.lastUpdated, payload, totalGenerationMW);
     delete (cacheablePayload as any).diagnostics;
     delete (cacheablePayload as any).interconnectorAttempts;
     delete (cacheablePayload as any).apiKeysUsed;
-    
+
     // Cache the compressed, stripped-down response with global key
     const cacheBody = JSON.stringify(cacheablePayload);
     await setCachedResponse(globalCacheKey, cacheBody, cacheTTL);
-    
+
     // Return full payload (with debug info if requested)
     const responseBody = JSON.stringify(payload);
 
-    return new Response(responseBody, { 
-      headers: { 
-        ...corsHeaders, 
+    return new Response(responseBody, {
+      headers: {
+        ...corsHeaders,
         ...rateLimitResult.headers,
-        "Content-Type": "application/json", 
+        "Content-Type": "application/json",
         "Cache-Control": "no-store",
         "X-Cache-Status": "MISS",
         "X-Cache-TTL": cacheTTL.toString(),
-      } 
+      }
     });
 
   } catch (error) {
     console.error('Error in energy-data function:', error);
-    
+
     // Try LKG before returning error
     const lkgResponse = await serveLKG("Unexpected error; served LKG");
     if (lkgResponse) return lkgResponse;
-    
-    return new Response(JSON.stringify({ 
-      error: 'Internal server error', 
-      generationMix: [], 
-      interconnectors: [], 
-      totalGenerationMW: 0, 
+
+    return new Response(JSON.stringify({
+      error: 'Internal server error',
+      generationMix: [],
+      interconnectors: [],
+      totalGenerationMW: 0,
       totalDemandMW: 0,
       dataFreshness: { source: "BMRS", isRealtime: false, note: "Error occurred" }
     }), {

@@ -1,5 +1,6 @@
-import { Clock, Database, RefreshCw } from 'lucide-react';
+import { Clock, Database } from 'lucide-react';
 import { HelpTooltip } from './HelpTooltip';
+import { SourceFreshnessBar } from '@/components/SourceFreshnessBar';
 
 interface SystemStatusBannerProps {
   settlementPeriod?: number;
@@ -7,6 +8,13 @@ interface SystemStatusBannerProps {
   dataAge?: string;
   isRealtime?: boolean;
   nextUpdate?: string;
+  sourceFreshness?: Record<string, {
+    label?: string;
+    source?: string;
+    timestamp?: string | null;
+    cadenceMinutes?: number;
+    status?: string;
+  }>;
 }
 
 export const SystemStatusBanner = ({
@@ -15,6 +23,7 @@ export const SystemStatusBanner = ({
   dataAge,
   isRealtime = false,
   nextUpdate,
+  sourceFreshness,
 }: SystemStatusBannerProps) => {
   const statusColor = isRealtime 
     ? 'bg-green-500' 
@@ -52,8 +61,18 @@ export const SystemStatusBanner = ({
             <HelpTooltip content="Live dashboard refreshes every 2 minutes using Elexon's 5-minute FUELINST feed plus BMRS/ESO fallbacks. Some settlement-period datasets still have a 5-30 minute validation delay." />
           </div>
 
+          {nextUpdate && (
+            <>
+              <div className="hidden md:block w-px h-6 bg-border" />
+              <div className="flex items-center gap-2">
+                <span className="text-muted-foreground">Next page refresh:</span>
+                <span className="font-semibold text-foreground">{nextUpdate}</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
+      <SourceFreshnessBar sourceFreshness={sourceFreshness} />
     </div>
   );
 };

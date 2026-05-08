@@ -14,6 +14,7 @@ import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
 import { EnergyBalanceDisplay } from '@/components/EnergyBalanceDisplay';
 import { SystemStatusBanner } from '@/components/SystemStatusBanner';
+import { TopMetricsStrip } from '@/components/TopMetricsStrip';
 import { HelpTooltip } from '@/components/HelpTooltip';
 import { useState, useEffect } from 'react';
 
@@ -124,6 +125,8 @@ export const EnergyDashboard = () => {
   };
 
   const energyCategories = calculateEnergyCategories();
+  const netInterconnectorFlowMW = data?.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0;
+  const lastLivePoint = data?.dataFreshness?.sourceFreshness?.generation?.timestamp || data?.asOf?.endISO || null;
 
   if (error) {
     return (
@@ -183,6 +186,17 @@ export const EnergyDashboard = () => {
           dataAge={dataAge}
           isRealtime={data.dataFreshness?.isRealtime}
           nextUpdate={nextUpdateAt ? new Date(nextUpdateAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : undefined}
+          sourceFreshness={data.dataFreshness?.sourceFreshness}
+        />
+      )}
+
+      {data && (
+        <TopMetricsStrip
+          totalDemandMW={data.totalDemandMW || 0}
+          totalGenerationMW={data.totalGenerationMW || 0}
+          interconnectorFlowMW={netInterconnectorFlowMW}
+          carbonIntensity={data.carbonIntensity}
+          lastLivePoint={lastLivePoint}
         />
       )}
 

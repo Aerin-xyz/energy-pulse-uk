@@ -103,10 +103,18 @@ interface EnergyData {
     variant?: string;
     note?: string;
     interconnectorStatus?: 'live' | 'cached' | 'unavailable';
+    sourceFreshness?: Record<string, {
+      label?: string;
+      source?: string;
+      timestamp?: string | null;
+      cadenceMinutes?: number;
+      status?: string;
+    }>;
   };
   asOf?: {
     settlementDate?: string;
     settlementPeriod?: number;
+    endISO?: string;
     percentageSum?: number;
   };
 }
