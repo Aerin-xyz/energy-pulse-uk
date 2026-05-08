@@ -1331,6 +1331,70 @@ function datetimeToSP(datetimeUTC: string): { date: string, period: number } {
   return { date: dateStr, period };
 }
 
+// Five-minute transmission-connected generation, matching the fast cadence used by
+// comparable UK grid dashboards (Elexon FUELINST). This is fresher than settlement
+// outturn/summary, while embedded wind/solar still fast-follow their 30-min feeds.
+async function fetchFUELINSTRecent(): Promise<StrictResult> {
+  const now = new Date();
+  const from = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+  const fromIso = from.toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const toIso = now.toISOString().replace(/\.\d{3}Z$/, 'Z');
+  const hosts = [DATA_HOST, BMRS_HOST];
+
+  for (const host of hosts) {
+    const url = `https://${host}/bmrs/api/v1/datasets/FUELINST/stream?publishDateTimeFrom=${encodeURIComponent(fromIso)}&publishDateTimeTo=${encodeURIComponent(toIso)}&format=json`;
+    const r = await tryOnce(url, `dataset-fuelinst-stream@${host === DATA_HOST ? 'data' : 'bmrs'}`);
+    if (r.ok) return r;
+  }
+
+  return { ok: false, url: '', status: 502, reason: 'fuelinst-all-hosts-failed', variant: 'exhausted' } as any;
+}
+
+function parseFUELINSTtoMW(rows: any[]) {
+  const usableRows = rows
+    .map((r) => {
+      const t = String(r.startTime ?? r.publishDateTime ?? r.START_TIME ?? r.time ?? '');
+      const d = Date.parse(t);
+      return { row: r, time: Number.isFinite(d) ? d : 0 };
+    })
+    .filter((x) => x.time > 0);
+
+  if (!usableRows.length) {
+    return { hvByFuelMW: {}, anchorSP: 0, anchorDate: '', otherBreakdown: {}, latestRows: [] as any[], latestStartTime: null as string | null };
+  }
+
+  const latestTime = Math.max(...usableRows.map((x) => x.time));
+  const latestRows = usableRows.filter((x) => x.time === latestTime).map((x) => x.row);
+  const latestDate = new Date(latestTime);
+  const sp = datetimeToSP(latestDate.toISOString());
+  const hvByFuelMW: Record<string, number> = {};
+  const otherBreakdown: Record<string, number> = {};
+
+  for (const r of latestRows) {
+    const fuelRaw = r.fuelType ?? r.FUEL_TYPE ?? r.FUELTYPE ?? r.fuel ?? r.name ?? '';
+    if (EXCLUDE.test(fuelRaw)) continue;
+
+    const mw = Number(r.generation ?? r.generationMW ?? r.GENERATION_MW ?? r.value ?? r.actual);
+    if (!Number.isFinite(mw) || mw <= 0) continue;
+
+    const fuelLabel = labelFuel(fuelRaw);
+    hvByFuelMW[fuelLabel] = (hvByFuelMW[fuelLabel] || 0) + mw;
+
+    if (fuelLabel === 'Other' && fuelRaw) {
+      otherBreakdown[fuelRaw] = (otherBreakdown[fuelRaw] || 0) + mw;
+    }
+  }
+
+  return {
+    hvByFuelMW,
+    anchorSP: sp.period,
+    anchorDate: sp.date,
+    otherBreakdown,
+    latestRows,
+    latestStartTime: latestDate.toISOString(),
+  };
+}
+
 // Dataset fallback: FUELHH stream
 async function fetchFUELHHStream(limit = 200): Promise<StrictResult> {
   const hosts = [DATA_HOST, BMRS_HOST];
@@ -1438,8 +1502,8 @@ Deno.serve(async (req) => {
 
   // Response caching based on update type with versioned key strategy
   // CACHE_VERSION: bump this to invalidate all cached responses after logic changes
-  const CACHE_VERSION = 'v2-itsdo';
-  const cacheTTL = UPDATE_TYPE === 'high' ? 240 : UPDATE_TYPE === 'mid' ? 840 : 1500; // 4min, 14min, 25min
+  const CACHE_VERSION = 'v3-fuelinst-fast';
+  const cacheTTL = UPDATE_TYPE === 'high' ? 75 : UPDATE_TYPE === 'mid' ? 240 : 300; // 75s, 4min, 5min
   const globalCacheKey = `energy-data:${CACHE_VERSION}:${UPDATE_TYPE}:global`;
   
   const cachedResponse = await getCachedResponse(globalCacheKey);
@@ -1601,7 +1665,8 @@ Deno.serve(async (req) => {
 
   try {
     // OPTIMIZATION: Parallelize ALL independent data sources with timeout for EU
-    const [bmrsR, demandR, carbonIntensity, euGenerationMix] = await Promise.all([
+    const [fuelinstR, bmrsR, demandR, carbonIntensity, euGenerationMix] = await Promise.all([
+      fetchFUELINSTRecent(),
       fetchBMRSGeneration(),
       fetchDemand(),
       // Fetch carbon intensity (for full/mid updates)
@@ -1613,6 +1678,7 @@ Deno.serve(async (req) => {
     ]);
     
     console.log('[energy-data] Parallel fetch complete:', { 
+      fuelinst: fuelinstR.ok,
       bmrs: bmrsR.ok, 
       demand: demandR.ok,
       carbon: !!carbonIntensity,
@@ -1620,6 +1686,7 @@ Deno.serve(async (req) => {
     });
 
     if (DEBUG) dlog(true, "Data fetch results:", { 
+      fuelinst: { ok: fuelinstR.ok, variant: fuelinstR.variant, status: (fuelinstR as any).status },
       bmrs: { ok: bmrsR.ok, variant: bmrsR.variant, status: (bmrsR as any).status }, 
       demand: { ok: demandR.ok } 
     });
@@ -1634,67 +1701,83 @@ let bmrsRows: any[] = [];
 let outturnVariant: "insights" | "dataset" = "insights";
 let latestOutturnRows: any[] = [];
 
-    if (!bmrsR.ok) {
-      if (DEBUG) dlog(true, "BMRS failed, trying dataset fallback...");
-const ds = await fetchFUELHHStream(200);
-if (ds.ok) {
-  const rows = asArray(ds.data);
-  const parsed = parseFUELHHtoMW(rows);
-  hvByFuelMW = parsed.hvByFuelMW; 
-  otherBreakdown = parsed.otherBreakdown || {};
-  anchorSP = parsed.anchorSP; 
-  anchorDate = parsed.anchorDate; 
-  variant = "dataset-fuelhh-stream";
-  latestOutturnRows = pickLatestSP(rows);
-  outturnVariant = "dataset";
-} else {
-        const lkgResponse = await serveLKG("BMRS unavailable; served LKG");
-        if (lkgResponse) return lkgResponse;
-        const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "BMRS unavailable", variant: "stub" } };
-        if (DEBUG) (stub as any).diagnostics = { reason: "bmrs-failed", variant: "stub" };
-        return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+    if (fuelinstR.ok) {
+      const rows = asArray(fuelinstR.data);
+      const parsed = parseFUELINSTtoMW(rows);
+      const hvTotalNow = Object.values(parsed.hvByFuelMW).reduce((s, v) => s + v, 0);
+      if (hvTotalNow >= 10000 && hvTotalNow <= 80000) {
+        hvByFuelMW = parsed.hvByFuelMW;
+        otherBreakdown = parsed.otherBreakdown || {};
+        anchorSP = parsed.anchorSP;
+        anchorDate = parsed.anchorDate;
+        variant = fuelinstR.variant;
+        latestOutturnRows = parsed.latestRows;
+        outturnVariant = "dataset";
+        if (DEBUG) dlog(true, "FUELINST parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, latestStartTime: parsed.latestStartTime });
       }
-    } else {
-      // Parse BMRS HV generation
-bmrsRows = asArray(bmrsR.data);
-const parsed = parseBMRSHVGeneration(bmrsRows);
-hvByFuelMW = parsed.hvByFuelMW; 
-otherBreakdown = parsed.otherBreakdown || {};
-anchorSP = parsed.anchorSP; 
-anchorDate = parsed.anchorDate;
-latestOutturnRows = pickLatestSP(bmrsRows);
-outturnVariant = "insights";
-if (DEBUG) dlog(true, "BMRS HV parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, sample: Object.entries(hvByFuelMW).slice(0, 3) });
+    }
 
-      // Sanity band on HV baseline; if out of range, try dataset fallback
-      const hvTotalNow = Object.values(hvByFuelMW).reduce((s, v) => s + v, 0);
-      if (!(hvTotalNow >= 10000 && hvTotalNow <= 80000)) {
-        if (DEBUG) dlog(true, "HV baseline out of band, trying dataset fallback", { hvTotalNow });
-const ds = await fetchFUELHHStream(200);
-if (ds.ok) {
-  const rows = asArray(ds.data);
-  const p2 = parseFUELHHtoMW(rows);
-  const hvTotal2 = Object.values(p2.hvByFuelMW).reduce((s, v) => s + v, 0);
-  if (hvTotal2 >= 10000 && hvTotal2 <= 80000) {
-    hvByFuelMW = p2.hvByFuelMW; 
-    otherBreakdown = p2.otherBreakdown || {};
-    anchorSP = p2.anchorSP; 
-    anchorDate = p2.anchorDate; 
-    variant = "dataset-fuelhh-stream";
-    latestOutturnRows = pickLatestSP(rows);
-    outturnVariant = "dataset";
-  } else {
-            if (DEBUG) dlog(true, "Dataset fallback also implausible", { hvTotal2 });
+    if (!Object.keys(hvByFuelMW).length) {
+      if (!bmrsR.ok) {
+        if (DEBUG) dlog(true, "BMRS failed, trying dataset fallback...");
+        const ds = await fetchFUELHHStream(200);
+        if (ds.ok) {
+          const rows = asArray(ds.data);
+          const parsed = parseFUELHHtoMW(rows);
+          hvByFuelMW = parsed.hvByFuelMW;
+          otherBreakdown = parsed.otherBreakdown || {};
+          anchorSP = parsed.anchorSP;
+          anchorDate = parsed.anchorDate;
+          variant = "dataset-fuelhh-stream";
+          latestOutturnRows = pickLatestSP(rows);
+          outturnVariant = "dataset";
+        } else {
+          const lkgResponse = await serveLKG("BMRS unavailable; served LKG");
+          if (lkgResponse) return lkgResponse;
+          const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "BMRS unavailable", variant: "stub" } };
+          if (DEBUG) (stub as any).diagnostics = { reason: "bmrs-failed", variant: "stub" };
+          return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+        }
+      } else {
+        bmrsRows = asArray(bmrsR.data);
+        const parsed = parseBMRSHVGeneration(bmrsRows);
+        hvByFuelMW = parsed.hvByFuelMW;
+        otherBreakdown = parsed.otherBreakdown || {};
+        anchorSP = parsed.anchorSP;
+        anchorDate = parsed.anchorDate;
+        latestOutturnRows = pickLatestSP(bmrsRows);
+        outturnVariant = "insights";
+        if (DEBUG) dlog(true, "BMRS HV parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, sample: Object.entries(hvByFuelMW).slice(0, 3) });
+
+        const hvTotalNow = Object.values(hvByFuelMW).reduce((s, v) => s + v, 0);
+        if (!(hvTotalNow >= 10000 && hvTotalNow <= 80000)) {
+          if (DEBUG) dlog(true, "HV baseline out of band, trying dataset fallback", { hvTotalNow });
+          const ds = await fetchFUELHHStream(200);
+          if (ds.ok) {
+            const rows = asArray(ds.data);
+            const p2 = parseFUELHHtoMW(rows);
+            const hvTotal2 = Object.values(p2.hvByFuelMW).reduce((s, v) => s + v, 0);
+            if (hvTotal2 >= 10000 && hvTotal2 <= 80000) {
+              hvByFuelMW = p2.hvByFuelMW;
+              otherBreakdown = p2.otherBreakdown || {};
+              anchorSP = p2.anchorSP;
+              anchorDate = p2.anchorDate;
+              variant = "dataset-fuelhh-stream";
+              latestOutturnRows = pickLatestSP(rows);
+              outturnVariant = "dataset";
+            } else {
+              if (DEBUG) dlog(true, "Dataset fallback also implausible", { hvTotal2 });
+              const lkgResponse = await serveLKG("HV baseline implausible; served LKG");
+              if (lkgResponse) return lkgResponse;
+              const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: HV implausible" } };
+              return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
+            }
+          } else {
             const lkgResponse = await serveLKG("HV baseline implausible; served LKG");
             if (lkgResponse) return lkgResponse;
             const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: HV implausible" } };
             return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
           }
-        } else {
-          const lkgResponse = await serveLKG("HV baseline implausible; served LKG");
-          if (lkgResponse) return lkgResponse;
-          const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: HV implausible" } };
-          return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
         }
       }
     }
@@ -1824,7 +1907,7 @@ try {
         forecastData: carbonIntensity.forecastData?.slice(0, 24)
       } : null,
 dataFreshness: {
-  source: "BMRS HV + ESO + PV Live",
+  source: "Elexon FUELINST/BMRS + ESO + PV Live",
   isRealtime: true,
   variant,
   interconnectorStatus,

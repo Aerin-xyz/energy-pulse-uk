@@ -49,7 +49,7 @@ export const SystemStatusBanner = ({
             <span className="font-semibold text-foreground">
               {isRealtime ? 'Live' : dataAge ? `${dataAge} min old` : 'Unknown'}
             </span>
-            <HelpTooltip content="Live data updates every 5 minutes from BMRS (Balancing Mechanism Reporting Service). There's typically a 5-10 minute validation delay." />
+            <HelpTooltip content="Live dashboard refreshes every 2 minutes using Elexon's 5-minute FUELINST feed plus BMRS/ESO fallbacks. Some settlement-period datasets still have a 5-30 minute validation delay." />
           </div>
 
         </div>

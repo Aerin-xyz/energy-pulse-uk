@@ -6,7 +6,7 @@ const Index = () => {
     <>
       <Helmet>
         <title>UK Electricity Dashboard - Live Energy Mix Data | Energy Mix</title>
-        <meta name="description" content="Real-time UK electricity generation dashboard tracking renewable energy, fossil fuels, carbon intensity, and grid demand. Live data from BMRS updated every 30 minutes." />
+        <meta name="description" content="Real-time UK electricity generation dashboard tracking renewable energy, fossil fuels, carbon intensity, and grid demand. Live data from Elexon FUELINST and BMRS with fast refreshes." />
         <link rel="canonical" href="https://energymix.info/" />
         
         {/* Open Graph */}

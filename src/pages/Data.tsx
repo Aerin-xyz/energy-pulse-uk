@@ -72,7 +72,7 @@ const Data = () => {
                 "name": "What data sources does Energy Mix use?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Energy Mix connects directly to open national datasets including Elexon BMRS for Balancing Mechanism Reporting System data, National Grid ESO for live generation and interconnector flow data, and the Carbon Intensity API for official hourly CO₂ estimates."
+                  "text": "Energy Mix connects directly to open national datasets including Elexon BMRS/FUELINST for fast transmission generation and Balancing Mechanism data, National Grid ESO for embedded generation, ENTSO-E for interconnector flows, and the Carbon Intensity API for official CO₂ estimates."
                 }
               },
               {
@@ -80,7 +80,7 @@ const Data = () => {
                 "name": "How often is Energy Mix data updated?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Energy Mix uses a multi-tier refresh system: High frequency updates every 5 minutes for embedded wind and solar generation, mid frequency updates every 15 minutes for interconnector flows and European generation mix, and full refresh every 30 minutes for complete data including BMRS generation outturn, all embedded sources, interconnectors, EU data, and carbon intensity forecasts."
+                  "text": "Energy Mix uses a multi-tier refresh system: high-frequency dashboard refreshes every 2 minutes using Elexon FUELINST's 5-minute generation feed, mid-frequency refreshes every 5 minutes for interconnectors and European generation mix, and full refreshes every 10 minutes for complete data including demand, embedded sources and carbon intensity forecasts."
                 }
               },
               {
@@ -151,40 +151,37 @@ const Data = () => {
               <h2 className="text-2xl font-semibold mb-4 text-primary">Update Frequency</h2>
               
               <p className="text-foreground/80 leading-relaxed mb-6">
-                Energy Mix uses a multi-tier refresh system designed to balance data freshness with API reliability. Different data types update at different frequencies based on how quickly they change.
+                Energy Mix uses a multi-tier refresh system designed to feel live while staying gentle on public APIs. Fast-changing generation is polled more often; slower settlement-period data is refreshed on a steadier cadence.
               </p>
               
               <div className="space-y-4">
                 <div className="border-l-2 border-green-500/30 pl-4 py-2">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 rounded-full bg-green-500"></div>
-                    <h3 className="font-semibold text-foreground">High Frequency — Every 5 minutes</h3>
+                    <h3 className="font-semibold text-foreground">High Frequency — Every 2 minutes</h3>
                   </div>
                   <p className="text-sm text-foreground/70">
-                    Embedded wind and solar generation (from National Grid ESO and Sheffield Solar's PV Live API). 
-                    These sources change rapidly as weather conditions shift.
+                    Transmission-connected generation from Elexon FUELINST's 5-minute feed, plus the latest embedded wind and solar estimates where available. This keeps the visible mix moving much closer to live.
                   </p>
                 </div>
                 
                 <div className="border-l-2 border-blue-500/30 pl-4 py-2">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                    <h3 className="font-semibold text-foreground">Mid Frequency — Every 15 minutes</h3>
+                    <h3 className="font-semibold text-foreground">Mid Frequency — Every 5 minutes</h3>
                   </div>
                   <p className="text-sm text-foreground/70">
-                    Interconnector flows and European generation mix (from ENTSO-E). 
-                    Cross-border electricity flows change less frequently than domestic embedded generation.
+                    Interconnector flows and European generation mix from ENTSO-E/BMRS fallbacks. These update frequently enough for live dashboard use without hammering the upstream services.
                   </p>
                 </div>
                 
                 <div className="border-l-2 border-purple-500/30 pl-4 py-2">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="w-2 h-2 rounded-full bg-purple-500"></div>
-                    <h3 className="font-semibold text-foreground">Full Refresh — Every 30 minutes</h3>
+                    <h3 className="font-semibold text-foreground">Full Refresh — Every 10 minutes</h3>
                   </div>
                   <p className="text-sm text-foreground/70">
-                    Complete data refresh including BMRS generation outturn, all embedded sources, 
-                    interconnectors, EU data, and carbon intensity forecasts. Aligns with BMRS settlement periods.
+                    Complete data refresh including demand outturn, embedded sources, interconnectors, EU data, and carbon intensity forecasts. Settlement-period datasets still update at their native 30-minute cadence.
                   </p>
                 </div>
               </div>
