@@ -19,6 +19,8 @@ const formatTime = (iso?: string | null) => {
   if (!iso) return '—';
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return '—';
+  // Do not present future settlement-period fallbacks as source freshness.
+  if (date.getTime() > Date.now() + 2 * 60 * 1000) return '—';
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
 

@@ -1413,6 +1413,16 @@ function anchorEndISOFromSP(anchorDate: string, anchorSP: number): string | null
   return dt.toISOString();
 }
 
+function safeSourceTimestamp(iso: string | null | undefined, responseNow = new Date()): string | null {
+  if (!iso) return null;
+  const parsed = Date.parse(iso);
+  if (!Number.isFinite(parsed)) return null;
+  // Settlement-period fields can be expressed as local clock labels but marked Z;
+  // never expose a future timestamp as upstream source freshness.
+  if (parsed > responseNow.getTime() + 2 * 60 * 1000) return null;
+  return new Date(parsed).toISOString();
+}
+
 function parseFUELHHtoMW(rows: any[]) {
   const latest = pickLatestSP(rows);
   const hvByFuelMW: Record<string, number> = {};
@@ -1515,7 +1525,7 @@ Deno.serve(async (req) => {
 
   // Response caching based on update type with versioned key strategy
   // CACHE_VERSION: bump this to invalidate all cached responses after logic changes
-  const CACHE_VERSION = 'v3-fuelinst-fast';
+  const CACHE_VERSION = 'v4-source-freshness';
   const cacheTTL = UPDATE_TYPE === 'high' ? 75 : UPDATE_TYPE === 'mid' ? 240 : 300; // 75s, 4min, 5min
   const globalCacheKey = `energy-data:${CACHE_VERSION}:${UPDATE_TYPE}:global`;
 
@@ -1890,47 +1900,48 @@ try {
 
     const demandLatestRow = demandR.ok ? latestDemandRow(demandR.data) : null;
     const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;
+    const responseNow = new Date();
 
     const sourceFreshness = {
       generation: {
         label: variant?.includes('fuelinst') ? 'Live generation' : 'Generation fallback',
         source: variant?.includes('fuelinst') ? 'Elexon FUELINST' : 'BMRS/FUELHH',
-        timestamp: generationSourceTime || anchorEndISO,
+        timestamp: safeSourceTimestamp(generationSourceTime || anchorEndISO, responseNow),
         cadenceMinutes: variant?.includes('fuelinst') ? 5 : 30,
         status: Object.keys(hvByFuelMW).length ? 'live' : 'unavailable',
       },
       wind: {
         label: 'Embedded wind',
         source: 'NESO embedded wind',
-        timestamp: windEmb.matched ? anchorEndISO : null,
+        timestamp: windEmb.matched ? safeSourceTimestamp(anchorEndISO, responseNow) : null,
         cadenceMinutes: 30,
         status: windEmb.matched ? 'live' : 'fallback',
       },
       solar: {
         label: 'Solar',
         source: 'PV Live',
-        timestamp: (solarEmb as any).debug?.picked?.t || null,
+        timestamp: safeSourceTimestamp((solarEmb as any).debug?.picked?.t || null, responseNow),
         cadenceMinutes: 30,
         status: solarEmb.matched ? 'live' : 'fallback',
       },
       interconnectors: {
         label: 'Transfers',
         source: interconnectorStatus === 'live' ? 'ENTSO-E/BMRS' : 'Last known/BMRS fallback',
-        timestamp: icDiag.tries?.find((t: any) => t?.timestamp)?.timestamp || anchorEndISO,
+        timestamp: safeSourceTimestamp(icDiag.tries?.find((t: any) => t?.timestamp)?.timestamp || anchorEndISO, responseNow),
         cadenceMinutes: 30,
         status: interconnectorStatus,
       },
       demand: {
         label: 'Demand',
         source: 'BMRS ITSDO',
-        timestamp: demandLatestRow ? demandRowEndISO(demandLatestRow) : null,
+        timestamp: safeSourceTimestamp(demandLatestRow ? demandRowEndISO(demandLatestRow) : null, responseNow),
         cadenceMinutes: 30,
         status: demandR.ok ? 'live' : 'unavailable',
       },
       carbon: {
         label: 'Carbon',
         source: 'Carbon Intensity API',
-        timestamp: carbonIntensity?.timestamp || null,
+        timestamp: safeSourceTimestamp(carbonIntensity?.timestamp || null, responseNow),
         cadenceMinutes: 30,
         status: carbonIntensity ? 'live' : 'cached',
       },

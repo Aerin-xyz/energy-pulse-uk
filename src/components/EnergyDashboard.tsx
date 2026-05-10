@@ -126,7 +126,16 @@ export const EnergyDashboard = () => {
 
   const energyCategories = calculateEnergyCategories();
   const netInterconnectorFlowMW = data?.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0;
-  const lastLivePoint = data?.dataFreshness?.sourceFreshness?.generation?.timestamp || data?.asOf?.endISO || null;
+  const generationLivePoint = data?.dataFreshness?.sourceFreshness?.generation?.timestamp || null;
+  const lastLivePoint = (() => {
+    if (!generationLivePoint) return null;
+    const parsed = Date.parse(generationLivePoint);
+    // Only show a true upstream source timestamp here. Settlement-period end
+    // fallbacks can be future-looking around BST/local settlement handling and
+    // should not be labelled as the latest live datapoint.
+    if (!Number.isFinite(parsed) || parsed > Date.now() + 2 * 60 * 1000) return null;
+    return generationLivePoint;
+  })();
 
   if (error) {
     return (
