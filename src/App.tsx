@@ -16,6 +16,8 @@ import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Citation from "./pages/Citation";
 import { UkElectricityMix, CarbonIntensity, Renewables, CleanestTimeToUseElectricity } from "./pages/CoreExplainers";
+import Today from "./pages/Today";
+import { ReportsIndex, WeeklyReport20260511 } from "./pages/Reports";
 import DigestPreview from "./pages/DigestPreview";
 import AdminSocialPosts from "./pages/AdminSocialPosts";
 import ShareDailySummary from "./pages/ShareDailySummary";
@@ -45,6 +47,9 @@ const App = () => (
             <Route path="/carbon-intensity" element={<CarbonIntensity />} />
             <Route path="/renewables" element={<Renewables />} />
             <Route path="/cleanest-time-to-use-electricity" element={<CleanestTimeToUseElectricity />} />
+            <Route path="/today" element={<Today />} />
+            <Route path="/reports" element={<ReportsIndex />} />
+            <Route path="/reports/weekly/2026-05-11" element={<WeeklyReport20260511 />} />
             <Route path="/share/daily-summary" element={<ShareDailySummary />} />
             <Route path="/admin/digest-preview" element={<DigestPreview />} />
             <Route path="/admin/social-posts" element={<AdminSocialPosts />} />

@@ -17,6 +17,8 @@ const footerLinks = [
   { to: '/carbon-intensity', label: 'Carbon intensity' },
   { to: '/renewables', label: 'Renewables' },
   { to: '/cleanest-time-to-use-electricity', label: 'Cleanest time' },
+  { to: '/today', label: 'Today' },
+  { to: '/reports', label: 'Reports' },
   { to: '/citation', label: 'Citation' },
   { to: '/contact', label: 'Contact' },
   { to: '/privacy', label: 'Privacy' },
