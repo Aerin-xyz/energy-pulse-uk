@@ -1,21 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { StaticPageLayout } from '@/components/StaticPageLayout';
+import generated from '@/data/energyMixGenerated.json';
 
-const posts = [
-  {
-    title: 'Monday weekly grid brief',
-    body: `Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: 53.2% on Sunday 10 May\n• Highest average wind output: ~4.0 GW on Sunday 10 May\n• Highest average solar output: ~1.9 GW on Saturday 9 May\n• Highest average gas output: ~5.7 GW on Thursday 7 May\n\nThe shift was clear: gas-heavy weekdays gave way to a cleaner, wind-led weekend.\n\nFull report: https://energymix.info/reports/weekly/2026-05-11`,
-  },
-  {
-    title: 'Wednesday explainer',
-    body: `What does “UK electricity mix” actually mean?\n\nFor live grid dashboards, it usually means Great Britain’s electricity system: England, Scotland and Wales. Northern Ireland is part of the UK, but operates in a separate electricity market.\n\nThat distinction matters if you’re citing live generation, demand, carbon intensity or renewables data.\n\nExplainer: https://energymix.info/uk-electricity-mix`,
-  },
-  {
-    title: 'Friday practical clean-electricity post',
-    body: `The cleanest time to use electricity is not a fixed hour.\n\nIt changes with wind, solar, demand, imports and gas generation. Windy overnight periods and sunny middays can be much cleaner than still early-evening peaks.\n\nUseful for EV charging, home batteries, appliances and flexible business demand.\n\nGuide: https://energymix.info/cleanest-time-to-use-electricity`,
-  },
-];
+const posts = generated.socialPosts;
 
 const Social = () => (
   <>

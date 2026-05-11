@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { StaticPageLayout } from '@/components/StaticPageLayout';
+import generated from '@/data/energyMixGenerated.json';
 
 type RecordPage = {
   slug: string;
@@ -19,7 +20,7 @@ const recordPages: Record<string, RecordPage> = {
     title: 'Highest Renewable Share Record',
     metaTitle: 'Highest Renewable Share | UK Electricity Mix Records',
     description: 'EnergyMix.info record page for Britain’s highest renewable electricity share, with source notes and related live dashboard links.',
-    currentRecord: 'Current measured 7-day high: 53.2% average renewable share on Sunday 10 May 2026, based on the available historical generation feed.',
+    currentRecord: generated.records.highestRenewableShare.text,
     why: 'Renewable share records are useful because they show when wind, solar and hydro are doing enough work to materially reduce fossil generation and carbon intensity.',
     notes: ['This is an initial record from the current reporting feed, not yet an all-time archive.', 'Future versions should track settlement-period highs, daily highs and all-time records separately.', 'Renewable share here uses wind, solar and hydro from available generation categories.'],
     related: [{ to: '/renewables', label: 'Renewables' }, { to: '/reports/weekly/2026-05-11', label: 'Weekly report' }, { to: '/', label: 'Live dashboard' }],
@@ -29,7 +30,7 @@ const recordPages: Record<string, RecordPage> = {
     title: 'Highest Wind Generation Record',
     metaTitle: 'Highest Wind Generation | UK Electricity Mix Records',
     description: 'EnergyMix.info record page for Britain’s highest wind generation observations and wind-led electricity mix periods.',
-    currentRecord: 'Current measured 7-day high: about 4.0 GW average wind output on Sunday 10 May 2026, based on the available historical generation feed.',
+    currentRecord: generated.records.highestWindGeneration.text,
     why: 'Wind is often the largest swing factor in Britain’s electricity mix. High wind periods can lower gas generation and create cleaner electricity windows.',
     notes: ['This first record uses daily averages from the available 7-day feed.', 'Future versions should add settlement-period wind peaks and all-time UK wind records.', 'Wind records are strong candidates for LinkedIn/shareable updates.'],
     related: [{ to: '/renewables', label: 'Renewables' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/reports', label: 'Reports' }],
@@ -39,7 +40,7 @@ const recordPages: Record<string, RecordPage> = {
     title: 'Highest Solar Generation Record',
     metaTitle: 'Highest Solar Generation | UK Electricity Mix Records',
     description: 'EnergyMix.info record page for Britain’s strongest solar generation periods and solar contribution to the daily electricity mix.',
-    currentRecord: 'Current measured 7-day high: about 1.9 GW average solar output on Saturday 9 May 2026, based on the available historical generation feed.',
+    currentRecord: generated.records.highestSolarGeneration.text,
     why: 'Solar records matter because solar reshapes the daytime grid, often lowering gas demand through the middle of bright days.',
     notes: ['Solar is highly seasonal and time-of-day dependent.', 'Future versions should distinguish daily averages from midday peak solar output.', 'Solar pages should link into cleanest-time and EV-charging guidance.'],
     related: [{ to: '/renewables', label: 'Renewables' }, { to: '/cleanest-time-to-use-electricity', label: 'Cleanest time' }, { to: '/today', label: 'Today' }],
@@ -49,7 +50,7 @@ const recordPages: Record<string, RecordPage> = {
     title: 'Highest Gas Generation Record',
     metaTitle: 'Highest Gas Generation | UK Electricity Mix Records',
     description: 'EnergyMix.info record page for high gas generation periods, demand peaks and carbon-intensive electricity mix conditions.',
-    currentRecord: 'Current measured 7-day high: about 5.7 GW average gas output on Thursday 7 May 2026, based on the available historical generation feed.',
+    currentRecord: generated.records.highestGasGeneration.text,
     why: 'Gas highs show when the system is leaning more heavily on flexible fossil generation, often because demand is high or wind and solar are lower.',
     notes: ['This is currently a 7-day reporting high, not an all-time record.', 'Future versions should add gas share, settlement-period highs and carbon-intensity context.', 'Gas records should be framed carefully as system explanation, not sensationalism.'],
     related: [{ to: '/gas-generation', label: 'Gas generation' }, { to: '/electricity-demand', label: 'Demand' }, { to: '/carbon-intensity', label: 'Carbon intensity' }],

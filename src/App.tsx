@@ -17,7 +17,8 @@ import Privacy from "./pages/Privacy";
 import Citation from "./pages/Citation";
 import { UkElectricityMix, CarbonIntensity, Renewables, GasGeneration, NuclearPower, Interconnectors, ElectricityDemand, UkElectricityGenerationLive, CleanestTimeToUseElectricity } from "./pages/CoreExplainers";
 import Today from "./pages/Today";
-import { ReportsIndex, WeeklyReport20260511 } from "./pages/Reports";
+import Yesterday from "./pages/Yesterday";
+import { ReportsIndex, WeeklyReportPage } from "./pages/Reports";
 import { RecordsIndex, HighestRenewableShare, HighestWindGeneration, HighestSolarGeneration, HighestGasGeneration } from "./pages/Records";
 import Social from "./pages/Social";
 import Measurement from "./pages/Measurement";
@@ -56,8 +57,9 @@ const App = () => (
             <Route path="/uk-electricity-generation-live" element={<UkElectricityGenerationLive />} />
             <Route path="/cleanest-time-to-use-electricity" element={<CleanestTimeToUseElectricity />} />
             <Route path="/today" element={<Today />} />
+            <Route path="/yesterday" element={<Yesterday />} />
             <Route path="/reports" element={<ReportsIndex />} />
-            <Route path="/reports/weekly/2026-05-11" element={<WeeklyReport20260511 />} />
+            <Route path="/reports/weekly/:date" element={<WeeklyReportPage />} />
             <Route path="/records" element={<RecordsIndex />} />
             <Route path="/records/highest-renewable-share" element={<HighestRenewableShare />} />
             <Route path="/records/highest-wind-generation" element={<HighestWindGeneration />} />

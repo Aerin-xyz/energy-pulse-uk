@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build && node scripts/prerender-static.mjs",
+    "generate:weekly": "node scripts/generate-weekly-report.mjs",
+    "build": "npm run generate:weekly && vite build && node scripts/prerender-static.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview"
