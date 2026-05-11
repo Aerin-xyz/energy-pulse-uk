@@ -37,6 +37,9 @@ for (const [route, title, description, h1, paragraphs] of pages) {
     .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${description}" />`)
     .replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${canonical}" />`)
     .replace(/<div id="root">[\s\S]*?<\/div>\s*<\/body>/, `<div id="root">${content}</div>\n  </body>`);
+  if (route === '/social' || route === '/measurement') {
+    html = html.replace('</head>', '    <meta name="robots" content="noindex, follow" />\n  </head>');
+  }
   const out = route === '/' ? join(distDir, 'index.html') : join(distDir, route, 'index.html');
   mkdirSync(dirname(out), { recursive: true });
   writeFileSync(out, html);
