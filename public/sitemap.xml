@@ -127,6 +127,36 @@
     <priority>0.75</priority>
   </url>
   <url>
+    <loc>https://energymix.info/records</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://energymix.info/records/highest-renewable-share</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://energymix.info/records/highest-wind-generation</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://energymix.info/records/highest-solar-generation</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://energymix.info/records/highest-gas-generation</loc>
+    <lastmod>2026-05-11</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
     <loc>https://energymix.info/uk-electricity-mix.html</loc>
     <lastmod>2026-05-08</lastmod>
     <changefreq>hourly</changefreq>

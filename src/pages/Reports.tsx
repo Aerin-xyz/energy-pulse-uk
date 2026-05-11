@@ -131,6 +131,8 @@ export const WeeklyReport20260511 = () => (
       <section>
         <h2 className="text-2xl font-semibold text-primary mb-3">Related pages</h2>
         <div className="grid md:grid-cols-2 gap-3">
+          <Link to="/newsletter" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Get the weekly briefing</Link>
+          <Link to="/records" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Records hub</Link>
           <Link to="/" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Live dashboard</Link>
           <Link to="/today" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Today’s electricity mix</Link>
           <Link to="/carbon-intensity" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Carbon intensity</Link>

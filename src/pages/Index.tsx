@@ -73,6 +73,7 @@ const Index = () => {
               <a href="/electricity-demand" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Demand</a>
               <a href="/today" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Today</a>
               <a href="/reports" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Reports</a>
+              <a href="/records" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Records</a>
             </nav>
           </div>
         </div>

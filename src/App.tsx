@@ -18,6 +18,9 @@ import Citation from "./pages/Citation";
 import { UkElectricityMix, CarbonIntensity, Renewables, GasGeneration, NuclearPower, Interconnectors, ElectricityDemand, UkElectricityGenerationLive, CleanestTimeToUseElectricity } from "./pages/CoreExplainers";
 import Today from "./pages/Today";
 import { ReportsIndex, WeeklyReport20260511 } from "./pages/Reports";
+import { RecordsIndex, HighestRenewableShare, HighestWindGeneration, HighestSolarGeneration, HighestGasGeneration } from "./pages/Records";
+import Social from "./pages/Social";
+import Measurement from "./pages/Measurement";
 import DigestPreview from "./pages/DigestPreview";
 import AdminSocialPosts from "./pages/AdminSocialPosts";
 import ShareDailySummary from "./pages/ShareDailySummary";
@@ -55,6 +58,13 @@ const App = () => (
             <Route path="/today" element={<Today />} />
             <Route path="/reports" element={<ReportsIndex />} />
             <Route path="/reports/weekly/2026-05-11" element={<WeeklyReport20260511 />} />
+            <Route path="/records" element={<RecordsIndex />} />
+            <Route path="/records/highest-renewable-share" element={<HighestRenewableShare />} />
+            <Route path="/records/highest-wind-generation" element={<HighestWindGeneration />} />
+            <Route path="/records/highest-solar-generation" element={<HighestSolarGeneration />} />
+            <Route path="/records/highest-gas-generation" element={<HighestGasGeneration />} />
+            <Route path="/social" element={<Social />} />
+            <Route path="/measurement" element={<Measurement />} />
             <Route path="/share/daily-summary" element={<ShareDailySummary />} />
             <Route path="/admin/digest-preview" element={<DigestPreview />} />
             <Route path="/admin/social-posts" element={<AdminSocialPosts />} />
