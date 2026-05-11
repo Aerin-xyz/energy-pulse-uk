@@ -82,6 +82,114 @@ const explainers: Record<string, Explainer> = {
     ],
     related: [{ to: '/', label: 'Live dashboard' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/uk-electricity-mix', label: 'UK electricity mix' }, { to: '/methodology', label: 'Methodology' }],
   },
+  '/gas-generation': {
+    slug: '/gas-generation',
+    title: 'UK Gas Generation',
+    metaTitle: 'UK Gas Power Generation Live | Why Gas Is High Today',
+    description: 'Plain-English guide to gas power generation in Great Britain: why gas rises, how it backs up wind and solar, and what it means for carbon intensity.',
+    eyebrow: 'Flexible generation',
+    intro: 'Gas generation is the flexible part of Britain’s electricity system. It often rises when demand is high, wind is low, solar has faded or imports are not covering the gap.',
+    shortAnswer: 'Gas plants can ramp up and down more easily than many other sources, so they often provide backup during still, dark or high-demand periods. When gas share rises, carbon intensity usually rises too.',
+    sections: [
+      { heading: 'Gas generation right now', body: ['Use the live dashboard to see current gas output alongside demand, wind, solar, imports and carbon intensity. Gas is most useful to interpret in context: a high gas number usually means something else is low, demand is high, or both.'] },
+      { heading: 'Why gas plants run', body: ['Gas plants are dispatchable, meaning they can respond to system needs. They help cover evening peaks, low renewable periods, unexpected outages and times when imports are less available or less economic.'] },
+      { heading: 'Wind and gas relationship', body: ['Wind is often the biggest swing factor. When wind output is strong, gas generation can fall sharply. When wind drops across Britain and nearby systems, gas often picks up the slack.'] },
+      { heading: 'Demand peaks', body: ['Early evening demand peaks are a common reason gas rises. Solar is falling, people are home, lighting and cooking demand increase, and flexible generation becomes more valuable.'] },
+      { heading: 'Carbon impact', body: ['Gas is less carbon intensive than coal, but far higher than wind, solar, nuclear or hydro. That means gas-heavy periods are usually higher-carbon electricity periods.'] },
+    ],
+    faqs: [
+      { question: 'Why is gas generation high today?', answer: 'Usually because demand is high, wind or solar is low, imports are limited, or other generation is unavailable.' },
+      { question: 'Is gas always bad for the grid?', answer: 'Gas provides flexibility and reliability, but it increases carbon intensity compared with low-carbon sources.' },
+      { question: 'Does more wind reduce gas?', answer: 'Often yes. Strong wind output can displace gas generation and lower carbon intensity.' },
+    ],
+    related: [{ to: '/', label: 'Live dashboard' }, { to: '/renewables', label: 'Renewables' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/electricity-demand', label: 'Electricity demand' }],
+  },
+  '/nuclear-power': {
+    slug: '/nuclear-power',
+    title: 'UK Nuclear Power',
+    metaTitle: 'UK Nuclear Power Today | Live Nuclear Electricity Share',
+    description: 'Guide to nuclear power in Britain’s electricity mix: live output, low-carbon baseload, outages and how nuclear differs from wind and solar.',
+    eyebrow: 'Low-carbon generation',
+    intro: 'Nuclear power is one of Britain’s steadier low-carbon electricity sources. It does not move with the weather in the same way as wind and solar, but output can change during outages and maintenance.',
+    shortAnswer: 'Nuclear generation usually provides a stable low-carbon foundation for the grid. Its share rises or falls depending on plant availability, demand and how much wind, solar, gas and imports are generating at the same time.',
+    sections: [
+      { heading: 'Nuclear output right now', body: ['The live dashboard shows nuclear as part of the current generation mix. Nuclear output tends to move less dramatically than wind, solar or gas over a normal day.'] },
+      { heading: 'Why nuclear is steadier', body: ['Nuclear stations are designed to run continuously for long periods. They are not usually used as fast flexible backup in the same way as gas, batteries or pumped storage.'] },
+      { heading: 'Planned outages', body: ['Nuclear output can fall during refuelling, maintenance or unplanned outages. During lower nuclear availability, other sources must cover more of demand.'] },
+      { heading: 'Role in low-carbon electricity', body: ['Because nuclear generation has low operational carbon emissions, higher nuclear availability can help keep carbon intensity lower, especially when renewable output is modest.'] },
+    ],
+    faqs: [
+      { question: 'Is nuclear counted as renewable?', answer: 'No. Nuclear is low-carbon but not normally classified as renewable.' },
+      { question: 'Why does nuclear output not change much?', answer: 'Nuclear plants are generally run steadily rather than ramping up and down to follow short-term demand.' },
+      { question: 'Does nuclear lower carbon intensity?', answer: 'Yes, higher nuclear output usually helps lower grid carbon intensity compared with fossil generation.' },
+    ],
+    related: [{ to: '/', label: 'Live dashboard' }, { to: '/uk-electricity-mix', label: 'UK electricity mix' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/renewables', label: 'Renewables' }],
+  },
+  '/interconnectors': {
+    slug: '/interconnectors',
+    title: 'UK Electricity Interconnectors',
+    metaTitle: 'UK Electricity Imports and Exports Live | Interconnector Flows',
+    description: 'Explain Britain’s electricity interconnectors, imports, exports, country flows and carbon impact in plain English.',
+    eyebrow: 'Imports and exports',
+    intro: 'Interconnectors are high-voltage links that move electricity between Britain and neighbouring countries. They can import power into Britain or export British power abroad.',
+    shortAnswer: 'Britain imports when neighbouring electricity is useful, available or cheaper, and exports when Britain has surplus or market conditions favour sending power out. The carbon impact depends on what is generating on each side of the link.',
+    sections: [
+      { heading: 'Imports and exports right now', body: ['The live dashboard shows interconnector flows where data is available. Positive and negative flows indicate whether Britain is importing from or exporting to linked markets.'] },
+      { heading: 'What interconnectors are', body: ['Interconnectors connect Britain to electricity markets such as France, Norway, Belgium, the Netherlands, Ireland and Denmark. They help balance systems across borders.'] },
+      { heading: 'Why Britain imports electricity', body: ['Imports can help when British demand is high, domestic generation is constrained, neighbouring power is cheaper, or low-carbon electricity is available abroad.'] },
+      { heading: 'Why Britain exports electricity', body: ['Exports can happen when Britain has strong renewable output, lower domestic demand, or market prices that favour sending electricity to another country.'] },
+      { heading: 'Carbon impact', body: ['Imports are not automatically clean or dirty. Their carbon impact depends on the exporting country’s live generation mix and the wider market context.'] },
+    ],
+    faqs: [
+      { question: 'Does imported electricity count in the UK electricity mix?', answer: 'It affects electricity consumption and balancing, but generation-mix charts may show imports separately from domestic generation.' },
+      { question: 'Can Britain export renewable electricity?', answer: 'Yes. During strong renewable periods and favourable market conditions, Britain can export electricity.' },
+      { question: 'Are imports always lower carbon?', answer: 'No. It depends on the exporting system’s generation mix at that time.' },
+    ],
+    related: [{ to: '/', label: 'Live dashboard' }, { to: '/uk-electricity-mix', label: 'UK electricity mix' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/methodology', label: 'Methodology' }],
+  },
+  '/electricity-demand': {
+    slug: '/electricity-demand',
+    title: 'UK Electricity Demand',
+    metaTitle: 'UK Electricity Demand Live | GB Grid Demand Today',
+    description: 'Track and understand Great Britain electricity demand, daily demand curves, evening peaks, seasonal changes and carbon-intensity impact.',
+    eyebrow: 'Grid demand',
+    intro: 'Electricity demand is how much power homes, businesses and industry need at a given moment. It shapes which generators run and how carbon intensive the grid becomes.',
+    shortAnswer: 'Demand usually rises in the morning, peaks in the early evening and changes with weather, daylight, weekday patterns and season. High demand often requires more flexible generation.',
+    sections: [
+      { heading: 'Demand right now', body: ['EnergyMix.info shows live demand alongside generation and interconnector flows so you can see whether the system is tight, quiet, clean or gas-heavy.'] },
+      { heading: 'Daily demand curve', body: ['A typical day has a morning rise, a daytime plateau or dip, and an early evening peak. Solar can reduce grid demand during daylight hours, while winter evenings can be especially demanding.'] },
+      { heading: 'Peak demand', body: ['Peak demand matters because the grid must have enough available generation and imports to meet it. Flexible sources such as gas, storage and interconnectors often become more important at peaks.'] },
+      { heading: 'Seasonal changes', body: ['Demand is usually higher in colder, darker months because of heating, lighting and longer evening peaks. Heatwaves can also change demand through cooling and industrial patterns.'] },
+      { heading: 'Demand and carbon intensity', body: ['Higher demand does not automatically mean higher carbon intensity, but it often increases the chance that fossil generation is needed if low-carbon output is not enough.'] },
+    ],
+    faqs: [
+      { question: 'When is electricity demand highest?', answer: 'Often during early evening, especially in colder months when people are home and solar output has faded.' },
+      { question: 'Why does demand matter for carbon intensity?', answer: 'If extra demand is met by gas or other fossil generation, carbon intensity rises.' },
+      { question: 'Can shifting demand help?', answer: 'Yes. Moving flexible use to cleaner, lower-demand periods can reduce emissions and sometimes cost.' },
+    ],
+    related: [{ to: '/', label: 'Live dashboard' }, { to: '/cleanest-time-to-use-electricity', label: 'Cleanest time' }, { to: '/gas-generation', label: 'Gas generation' }, { to: '/carbon-intensity', label: 'Carbon intensity' }],
+  },
+  '/uk-electricity-generation-live': {
+    slug: '/uk-electricity-generation-live',
+    title: 'UK Electricity Generation Live',
+    metaTitle: 'UK Electricity Generation Live | GB Grid Dashboard by Source',
+    description: 'Live Great Britain electricity generation by source, including wind, solar, gas, nuclear, hydro, biomass, storage and interconnectors.',
+    eyebrow: 'Live generation dashboard',
+    intro: 'This page is for people looking specifically for live electricity generation by source rather than a broad energy-mix explainer.',
+    shortAnswer: 'EnergyMix.info tracks live Great Britain electricity generation by source and explains what the numbers mean in plain English. It complements the main dashboard with a search-focused generation page.',
+    sections: [
+      { heading: 'Live generation by source', body: ['The dashboard shows the latest available generation mix across major fuel categories, including wind, solar, gas, nuclear, hydro, biomass and other sources.'] },
+      { heading: 'Generation vs demand', body: ['Generation and demand are related but not identical in a live dashboard. Storage, imports, exports and measurement conventions can create differences between headline figures.'] },
+      { heading: 'Why sources change', body: ['Wind and solar follow weather and daylight. Gas responds flexibly. Nuclear is steadier. Interconnectors reflect cross-border market and system conditions.'] },
+      { heading: 'Source freshness', body: ['Live electricity data can arrive at different cadences depending on the source. EnergyMix.info uses freshness labels and methodology notes to avoid false precision.'] },
+    ],
+    faqs: [
+      { question: 'Is this National Grid live data?', answer: 'EnergyMix.info uses public electricity datasets including Elexon BMRS/FUELINST, NESO-related sources and carbon-intensity data where available.' },
+      { question: 'Why do totals differ between sites?', answer: 'Sites may group embedded generation, storage, imports or settlement-period data differently.' },
+      { question: 'Does this include Northern Ireland?', answer: 'Most live data here covers Great Britain, not Northern Ireland’s separate electricity market.' },
+    ],
+    related: [{ to: '/', label: 'Live dashboard' }, { to: '/uk-electricity-mix', label: 'UK electricity mix' }, { to: '/electricity-demand', label: 'Electricity demand' }, { to: '/methodology', label: 'Methodology' }],
+  },
   '/cleanest-time-to-use-electricity': {
     slug: '/cleanest-time-to-use-electricity',
     title: 'Cleanest Time to Use Electricity',
@@ -175,4 +283,9 @@ const ExplainerPage = ({ page }: { page: Explainer }) => (
 export const UkElectricityMix = () => <ExplainerPage page={explainers['/uk-electricity-mix']} />;
 export const CarbonIntensity = () => <ExplainerPage page={explainers['/carbon-intensity']} />;
 export const Renewables = () => <ExplainerPage page={explainers['/renewables']} />;
+export const GasGeneration = () => <ExplainerPage page={explainers['/gas-generation']} />;
+export const NuclearPower = () => <ExplainerPage page={explainers['/nuclear-power']} />;
+export const Interconnectors = () => <ExplainerPage page={explainers['/interconnectors']} />;
+export const ElectricityDemand = () => <ExplainerPage page={explainers['/electricity-demand']} />;
+export const UkElectricityGenerationLive = () => <ExplainerPage page={explainers['/uk-electricity-generation-live']} />;
 export const CleanestTimeToUseElectricity = () => <ExplainerPage page={explainers['/cleanest-time-to-use-electricity']} />;

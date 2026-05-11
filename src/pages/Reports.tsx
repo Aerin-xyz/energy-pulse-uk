@@ -85,16 +85,12 @@ export const WeeklyReport20260511 = () => (
     <StaticPageLayout
       eyebrow="Weekly grid brief"
       title="UK Electricity Mix Weekly Report: 11 May 2026"
-      intro="This is the first EnergyMix.info weekly report shell. It establishes the public report format now, while measured weekly summaries can be automated and backfilled from reliable historical data."
+      intro="A first measured weekly report for EnergyMix.info using the available 7-day historical generation feed for 5-11 May 2026. Values are calculated from settlement-period generation aggregates and should be read as public grid intelligence, not billing-grade metering."
     >
-      <section className="rounded-lg border border-yellow-500/30 bg-yellow-500/10 p-5">
-        <h2 className="text-2xl font-semibold text-primary mb-3">Status</h2>
-        <p>This report is a template edition, not a final measured weekly dataset. It is published to establish the report architecture, internal links, structured data and newsletter workflow before automated weekly statistics are added.</p>
-      </section>
-
       <section>
         <h2 className="text-2xl font-semibold text-primary mb-3">Summary</h2>
-        <p>Future weekly reports will explain how Britain’s electricity mix changed during the week, which periods were cleanest or most carbon intensive, and what practical lessons follow for EV charging, home batteries, flexible appliances and business energy use.</p>
+        <p>The week from 5-11 May 2026 shifted from gas-heavy weekdays into a cleaner, wind-led weekend. The strongest renewable day in the available data was Sunday 10 May, when wind, solar and hydro together averaged about 53.2% of measured generation across settlement periods. Gas was highest on Thursday 7 May and lowest on Sunday 10 May.</p>
+        <p className="mt-3">The practical takeaway: flexible electricity use was most attractive during the windier, lower-gas weekend periods. For EV charging, batteries and flexible appliances, the signal to watch is the combination of high wind, lower gas and lower carbon intensity.</p>
       </section>
 
       <section>
@@ -102,26 +98,34 @@ export const WeeklyReport20260511 = () => (
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <tbody className="divide-y divide-primary/20">
-              <tr><th className="py-3 pr-4">Average carbon intensity</th><td className="py-3 text-foreground/70">To be calculated from historical data</td></tr>
-              <tr><th className="py-3 pr-4">Highest renewable share</th><td className="py-3 text-foreground/70">To be calculated from historical data</td></tr>
-              <tr><th className="py-3 pr-4">Highest wind output</th><td className="py-3 text-foreground/70">To be calculated from historical data</td></tr>
-              <tr><th className="py-3 pr-4">Peak demand</th><td className="py-3 text-foreground/70">To be calculated from historical data</td></tr>
-              <tr><th className="py-3 pr-4">Highest gas share</th><td className="py-3 text-foreground/70">To be calculated from historical data</td></tr>
+              <tr><th className="py-3 pr-4">Average measured generation</th><td className="py-3 text-foreground/70">~12.0 GW across available settlement-period aggregates</td></tr>
+              <tr><th className="py-3 pr-4">Highest renewable share</th><td className="py-3 text-foreground/70">53.2% on Sunday 10 May</td></tr>
+              <tr><th className="py-3 pr-4">Highest average wind output</th><td className="py-3 text-foreground/70">~4.0 GW on Sunday 10 May</td></tr>
+              <tr><th className="py-3 pr-4">Highest average solar output</th><td className="py-3 text-foreground/70">~1.9 GW on Saturday 9 May</td></tr>
+              <tr><th className="py-3 pr-4">Highest average gas output</th><td className="py-3 text-foreground/70">~5.7 GW on Thursday 7 May</td></tr>
             </tbody>
           </table>
         </div>
       </section>
 
       <section>
-        <h2 className="text-2xl font-semibold text-primary mb-3">Report sections to populate</h2>
-        <ul className="space-y-2 list-disc pl-5">
-          <li>Cleanest period of the week and what caused it.</li>
-          <li>Highest-carbon period of the week and what caused it.</li>
-          <li>Wind, solar and renewable generation highlights.</li>
-          <li>Gas generation and demand peak context.</li>
-          <li>Interconnector import/export patterns where available.</li>
-          <li>One practical takeaway for flexible electricity use.</li>
-        </ul>
+        <h2 className="text-2xl font-semibold text-primary mb-3">Wind, solar and renewables</h2>
+        <p>Sunday 10 May was the standout renewable day in the available 7-day feed, with wind doing most of the work. Saturday 9 May had the strongest average solar output, reflecting the usual daylight-driven pattern where solar helps most around the middle of the day rather than during evening peaks.</p>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold text-primary mb-3">Gas generation</h2>
+        <p>Gas was highest on Thursday 7 May in the available data, then materially lower over the weekend. That is the pattern EnergyMix.info should keep explaining: gas is often the flexible source that rises when demand, weather or system conditions require it.</p>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold text-primary mb-3">Practical takeaway</h2>
+        <p>For flexible electricity use, the cleanest opportunities are likely to appear when wind is strong, gas is low and demand is not at a peak. This is the foundation for future “cleanest time to use electricity” alerts, EV-charging guidance and weekly newsletter summaries.</p>
+      </section>
+
+      <section>
+        <h2 className="text-2xl font-semibold text-primary mb-3">Data notes</h2>
+        <p>This first report uses the site’s available 7-day historical generation feed. Carbon-intensity highs/lows and interconnector summaries should be added once the reporting pipeline has reliable historical carbon and flow aggregates.</p>
       </section>
 
       <section>

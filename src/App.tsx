@@ -15,7 +15,7 @@ import Methodology from "./pages/Methodology";
 import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Citation from "./pages/Citation";
-import { UkElectricityMix, CarbonIntensity, Renewables, CleanestTimeToUseElectricity } from "./pages/CoreExplainers";
+import { UkElectricityMix, CarbonIntensity, Renewables, GasGeneration, NuclearPower, Interconnectors, ElectricityDemand, UkElectricityGenerationLive, CleanestTimeToUseElectricity } from "./pages/CoreExplainers";
 import Today from "./pages/Today";
 import { ReportsIndex, WeeklyReport20260511 } from "./pages/Reports";
 import DigestPreview from "./pages/DigestPreview";
@@ -46,6 +46,11 @@ const App = () => (
             <Route path="/uk-electricity-mix" element={<UkElectricityMix />} />
             <Route path="/carbon-intensity" element={<CarbonIntensity />} />
             <Route path="/renewables" element={<Renewables />} />
+            <Route path="/gas-generation" element={<GasGeneration />} />
+            <Route path="/nuclear-power" element={<NuclearPower />} />
+            <Route path="/interconnectors" element={<Interconnectors />} />
+            <Route path="/electricity-demand" element={<ElectricityDemand />} />
+            <Route path="/uk-electricity-generation-live" element={<UkElectricityGenerationLive />} />
             <Route path="/cleanest-time-to-use-electricity" element={<CleanestTimeToUseElectricity />} />
             <Route path="/today" element={<Today />} />
             <Route path="/reports" element={<ReportsIndex />} />
