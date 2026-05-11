@@ -26,8 +26,8 @@ const Data = () => {
   return (
     <>
       <Helmet>
-        <title>UK Energy Mix Data Sources | Elexon BMRS · National Grid ESO</title>
-        <meta name="description" content="Energy Mix draws live electricity data from Elexon BMRS, National Grid ESO and other verified open datasets to show the UK's real-time generation mix." />
+        <title>Energy Mix Data Sources & Methodology | Elexon, NESO, Carbon Intensity</title>
+        <meta name="description" content="How EnergyMix.info collects, cleans and displays UK/GB electricity data from public grid, balancing and carbon-intensity sources." />
         <link rel="canonical" href="https://energymix.info/data" />
         <meta property="og:title" content="UK Energy Mix Data Sources" />
         <meta property="og:description" content="Live datasets powering the UK Energy Mix dashboard — Elexon BMRS and National Grid ESO." />

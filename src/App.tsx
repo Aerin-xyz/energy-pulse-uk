@@ -11,6 +11,10 @@ import About from "./pages/About";
 import Data from "./pages/Data";
 import Insights from "./pages/Insights";
 import Newsletter from "./pages/Newsletter";
+import Methodology from "./pages/Methodology";
+import Contact from "./pages/Contact";
+import Privacy from "./pages/Privacy";
+import Citation from "./pages/Citation";
 import DigestPreview from "./pages/DigestPreview";
 import AdminSocialPosts from "./pages/AdminSocialPosts";
 import ShareDailySummary from "./pages/ShareDailySummary";
@@ -32,6 +36,10 @@ const App = () => (
             <Route path="/data" element={<Data />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/methodology" element={<Methodology />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/citation" element={<Citation />} />
             <Route path="/share/daily-summary" element={<ShareDailySummary />} />
             <Route path="/admin/digest-preview" element={<DigestPreview />} />
             <Route path="/admin/social-posts" element={<AdminSocialPosts />} />

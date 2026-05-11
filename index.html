@@ -23,24 +23,24 @@
     </script>
     
     <!-- SEO Meta Tags -->
-    <title>UK Energy Mix 2026 | Live Electricity Dashboard & Data Insights</title>
-    <meta name="description" content="Explore the UK's real-time electricity mix — renewables, gas, nuclear, carbon intensity, demand, and interconnector flows — updated from Elexon BMRS/FUELINST, NESO and other open data sources." />
+    <title>UK Electricity Mix Live | GB Grid Demand, Carbon Intensity & Renewables</title>
+    <meta name="description" content="Live Great Britain electricity mix: demand, generation, renewables, gas, nuclear, imports and carbon intensity, updated from public grid data." />
     <meta name="keywords" content="UK energy mix, UK electricity mix, live electricity data, renewables, carbon intensity, National Grid ESO, NESO, Elexon BMRS, FUELINST, energy dashboard" />
     <link rel="canonical" href="https://energymix.info/" />
     <link rel="alternate" type="text/plain" href="https://energymix.info/llms.txt" title="LLM summary for Energy Mix" />
     <meta name="theme-color" content="#1A7D3B" />
 
     <!-- Open Graph -->
-    <meta property="og:title" content="UK Energy Mix | Live Dashboard" />
-    <meta property="og:description" content="Live visualisation of the UK's power generation & carbon intensity." />
+    <meta property="og:title" content="UK Electricity Mix Live" />
+    <meta property="og:description" content="Live Great Britain electricity mix, demand, renewables, gas, nuclear, imports and carbon intensity." />
     <meta property="og:url" content="https://energymix.info/" />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="https://energymix.info/og-default.jpg" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="UK Energy Mix | Live Dashboard" />
-    <meta name="twitter:description" content="Track the UK's real-time electricity mix & carbon intensity." />
+    <meta name="twitter:title" content="UK Electricity Mix Live" />
+    <meta name="twitter:description" content="Live Great Britain electricity mix, demand, renewables, gas, nuclear, imports and carbon intensity." />
     <meta name="twitter:image" content="https://energymix.info/og-default.jpg" />
 
     <!-- Structured Data - Organization -->
@@ -48,10 +48,10 @@
     {
       "@context": "https://schema.org",
       "@type": "Organization",
-      "name": "Energy Mix",
-      "url": "https://energymix.info",
+      "name": "EnergyMix.info",
+      "url": "https://energymix.info/",
       "logo": "https://energymix.info/favicon.png",
-      "description": "Real-time UK electricity generation data, carbon intensity, demand and interconnector insights",
+      "description": "Live Great Britain electricity mix, demand, carbon intensity and renewable generation data.",
       "sameAs": []
     }
     </script>
@@ -61,9 +61,9 @@
     {
       "@context": "https://schema.org",
       "@type": "Dataset",
-      "name": "UK Energy Mix Live Data",
-      "description": "Real-time UK electricity generation mix, demand, carbon intensity and interconnector context from Elexon BMRS/FUELINST, NESO, Carbon Intensity API and related open electricity datasets",
-      "url": "https://energymix.info",
+      "name": "EnergyMix.info UK Electricity Mix Data",
+      "description": "Live and historical electricity mix, demand and carbon intensity summaries for Great Britain, based on public electricity data sources.",
+      "url": "https://energymix.info/",
       "license": "https://www.elexon.co.uk/about/copyright-licence/",
       "creator": {
         "@type": "Organization",
@@ -78,7 +78,7 @@
       "temporalCoverage": "2026/..",
       "spatialCoverage": {
         "@type": "Place",
-        "name": "United Kingdom"
+        "name": "Great Britain"
       }
     }
     </script>
@@ -89,7 +89,14 @@
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K3QJHHTW"
     height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <!-- End Google Tag Manager (noscript) -->
-    <div id="root"></div>
+    <div id="root">
+      <section aria-label="EnergyMix.info summary">
+        <h1>UK electricity mix right now</h1>
+        <p>EnergyMix.info shows Great Britain’s live electricity mix, including demand, wind, solar, gas, nuclear, imports, storage, hydro, biomass and carbon intensity.</p>
+        <p>Most live grid data covers Great Britain’s electricity system: England, Scotland and Wales. Northern Ireland is part of the UK but operates in a separate electricity market.</p>
+        <p>The dashboard updates from public electricity and carbon-intensity data sources and explains how clean the grid is now, what changed today, and what it means for homes, EV charging and businesses.</p>
+      </section>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -24,8 +24,8 @@ const Newsletter = () => {
   return (
     <>
       <Helmet>
-        <title>Energy Mix Newsletter | Weekly UK Electricity Insights</title>
-        <meta name="description" content="Join the free Energy Mix newsletter for quick, weekly insights into how the UK's energy mix is evolving — straight from live grid data." />
+        <title>Energy Mix Newsletter | Weekly UK Electricity & Carbon Insights</title>
+        <meta name="description" content="Get a weekly summary of Britain’s electricity mix, renewables, gas, carbon intensity, records and grid trends." />
         <link rel="canonical" href="https://energymix.info/newsletter" />
         <meta property="og:title" content="Energy Mix Newsletter" />
         <meta property="og:description" content="Weekly data snapshots from the UK Energy Mix dashboard." />
