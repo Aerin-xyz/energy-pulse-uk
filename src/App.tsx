@@ -15,6 +15,7 @@ import Methodology from "./pages/Methodology";
 import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Citation from "./pages/Citation";
+import { UkElectricityMix, CarbonIntensity, Renewables, CleanestTimeToUseElectricity } from "./pages/CoreExplainers";
 import DigestPreview from "./pages/DigestPreview";
 import AdminSocialPosts from "./pages/AdminSocialPosts";
 import ShareDailySummary from "./pages/ShareDailySummary";
@@ -40,6 +41,10 @@ const App = () => (
             <Route path="/contact" element={<Contact />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route path="/citation" element={<Citation />} />
+            <Route path="/uk-electricity-mix" element={<UkElectricityMix />} />
+            <Route path="/carbon-intensity" element={<CarbonIntensity />} />
+            <Route path="/renewables" element={<Renewables />} />
+            <Route path="/cleanest-time-to-use-electricity" element={<CleanestTimeToUseElectricity />} />
             <Route path="/share/daily-summary" element={<ShareDailySummary />} />
             <Route path="/admin/digest-preview" element={<DigestPreview />} />
             <Route path="/admin/social-posts" element={<AdminSocialPosts />} />

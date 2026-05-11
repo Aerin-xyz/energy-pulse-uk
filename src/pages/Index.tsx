@@ -63,6 +63,12 @@ const Index = () => {
                 The dashboard updates from public electricity and carbon-intensity data sources and explains how clean the grid is now, what changed today, and what it means for homes, EV charging and businesses.
               </p>
             </div>
+            <nav className="mt-6 flex flex-wrap gap-3" aria-label="Energy Mix explainers">
+              <a href="/uk-electricity-mix" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">UK electricity mix</a>
+              <a href="/carbon-intensity" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Carbon intensity</a>
+              <a href="/renewables" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Renewables</a>
+              <a href="/cleanest-time-to-use-electricity" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Cleanest time to use electricity</a>
+            </nav>
           </div>
         </div>
       </section>
