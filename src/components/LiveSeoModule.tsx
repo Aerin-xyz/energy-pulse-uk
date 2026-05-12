@@ -107,11 +107,15 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
   });
   const marketIndexPrice = data?.marketIndexPrice || gridSignals.marketIndexPrice;
   const storage = data?.storage || gridSignals.storage;
+  const derivedDemandMW = data ? Math.max(0, data.totalGenerationMW + imports - exports + (storage?.netMW || 0)) : 0;
+  const displayDemandMW = data && derivedDemandMW > 0 && Math.abs(derivedDemandMW - data.totalDemandMW) > 2500
+    ? derivedDemandMW
+    : data?.totalDemandMW;
   const copy = focusCopy[focus];
 
   const cardsByFocus: Record<Focus, Array<{ label: string; value: string; note: string }>> = {
     mix: [
-      { label: 'Demand', value: fmtGW(data?.totalDemandMW), note: 'GB grid demand' },
+      { label: 'Demand', value: fmtGW(displayDemandMW), note: 'GB grid demand' },
       { label: 'Generation', value: fmtGW(data?.totalGenerationMW), note: 'domestic generation' },
       { label: 'Low-carbon', value: pct(lowCarbon, totalMix), note: 'wind, solar, nuclear, hydro, biomass' },
       { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
@@ -130,14 +134,14 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
     ],
     gas: [
       { label: 'Gas', value: fmtGW(gas), note: `${pct(gas, totalMix)} of visible mix` },
-      { label: 'Demand', value: fmtGW(data?.totalDemandMW), note: 'demand pressure' },
+      { label: 'Demand', value: fmtGW(displayDemandMW), note: 'demand pressure' },
       { label: 'Renewables', value: pct(renewables, totalMix), note: 'renewable share' },
       { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
     ],
     nuclear: [
       { label: 'Nuclear', value: fmtGW(nuclear), note: `${pct(nuclear, totalMix)} of visible mix` },
       { label: 'Low-carbon', value: pct(lowCarbon, totalMix), note: 'including nuclear' },
-      { label: 'Demand', value: fmtGW(data?.totalDemandMW), note: 'current grid demand' },
+      { label: 'Demand', value: fmtGW(displayDemandMW), note: 'current grid demand' },
       { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
     ],
     interconnectors: [
@@ -147,7 +151,7 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
       { label: 'Links tracked', value: `${data?.interconnectors?.length || 0}`, note: data?.dataFreshness?.interconnectorStatus || 'status unknown' },
     ],
     demand: [
-      { label: 'Demand', value: fmtGW(data?.totalDemandMW), note: 'GB transmission demand' },
+      { label: 'Demand', value: fmtGW(displayDemandMW), note: 'derived GB demand' },
       { label: 'Generation', value: fmtGW(data?.totalGenerationMW), note: 'domestic generation' },
       { label: 'Net imports', value: fmtGW(Math.max(imports - exports, 0)), note: 'transfer contribution' },
       { label: storage?.mode === 'charging' ? 'Storage charging' : 'Storage output', value: fmtGW(storage?.absMW), note: storage?.label || 'pumped storage status' },

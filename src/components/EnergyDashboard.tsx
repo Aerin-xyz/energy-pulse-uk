@@ -18,6 +18,7 @@ import { TopMetricsStrip } from '@/components/TopMetricsStrip';
 import { HelpTooltip } from '@/components/HelpTooltip';
 import { PowerFlowCard } from '@/components/PowerFlowCard';
 import { GridSignalsPanel } from '@/components/GridSignalsPanel';
+import { useGridSignals } from '@/hooks/useGridSignals';
 import { useState, useEffect, ReactNode } from 'react';
 
 interface EnergyDashboardProps {
@@ -131,7 +132,17 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
   };
 
   const energyCategories = calculateEnergyCategories();
+  const gridSignals = useGridSignals({
+    marketIndexPrice: data?.marketIndexPrice || null,
+    systemFrequency: data?.systemFrequency || null,
+    storage: data?.storage || null,
+  });
+  const storageSignal = data?.storage || gridSignals.storage;
   const netInterconnectorFlowMW = data?.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0;
+  const derivedDemandMW = data ? Math.max(0, data.totalGenerationMW + netInterconnectorFlowMW + (storageSignal?.netMW || 0)) : 0;
+  const displayDemandMW = data && derivedDemandMW > 0 && Math.abs(derivedDemandMW - data.totalDemandMW) > 2500
+    ? derivedDemandMW
+    : (data?.totalDemandMW || 0);
   const generationLivePoint = data?.dataFreshness?.sourceFreshness?.generation?.timestamp || null;
   const lastLivePoint = (() => {
     if (!generationLivePoint) return null;
@@ -167,7 +178,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
       <NavigationBar
         desktopActions={data && (
           <EnergyBalanceDisplay
-            totalDemandMW={data.totalDemandMW || 0}
+            totalDemandMW={displayDemandMW}
             totalGenerationMW={data.totalGenerationMW || 0}
             interconnectorFlowMW={data.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0}
             carbonIntensity={data.carbonIntensity}
@@ -175,7 +186,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
         )}
         mobileActions={data && (
           <EnergyBalanceDisplay
-            totalDemandMW={data.totalDemandMW || 0}
+            totalDemandMW={displayDemandMW}
             totalGenerationMW={data.totalGenerationMW || 0}
             interconnectorFlowMW={data.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0}
             carbonIntensity={data.carbonIntensity}
@@ -207,7 +218,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
 
       {data && (
         <TopMetricsStrip
-          totalDemandMW={data.totalDemandMW || 0}
+          totalDemandMW={displayDemandMW}
           totalGenerationMW={data.totalGenerationMW || 0}
           interconnectorFlowMW={netInterconnectorFlowMW}
           carbonIntensity={data.carbonIntensity}
@@ -310,7 +321,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
               <PowerFlowCard
                 generationMix={data.generationMix}
                 interconnectors={data.interconnectors}
-                totalDemandMW={data.totalDemandMW || 0}
+                totalDemandMW={displayDemandMW}
                 totalGenerationMW={data.totalGenerationMW || 0}
                 carbonIntensity={data.carbonIntensity}
                 settlementPeriod={data.asOf?.settlementPeriod}
@@ -320,7 +331,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
               <GridSignalsPanel
                 marketIndexPrice={data.marketIndexPrice}
                 systemFrequency={data.systemFrequency}
-                storage={data.storage}
+                storage={storageSignal}
               />
               
               {/* Generation Mix Chart - Hero Element */}
