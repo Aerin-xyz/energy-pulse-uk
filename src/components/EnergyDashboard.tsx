@@ -289,7 +289,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
       )}
 
       {/* Main Content */}
-      <main className="container mx-auto px-2 pt-3 pb-8 md:px-4 md:pt-0">
+      <main className="container mx-auto px-4 pt-4 pb-8 md:px-4 md:pt-0">
         <div className="space-y-5 md:space-y-8">
           {/* Generation Mix Chart - Progressive Loading */}
           {!data && loading ? (

@@ -94,7 +94,7 @@ const flowDuration = (valueMW: number, maxMW: number) => {
 const EnergyCircle = ({ node }: { node: FlowNode }) => {
   const Icon = node.icon;
   return (
-    <div className={cn('em-pfc-circle-container', node.muted && 'opacity-45')} style={{ '--em-pfc-color': node.color } as React.CSSProperties}>
+    <div className={cn('em-pfc-node', `em-pfc-node-${node.id}`, 'em-pfc-circle-container', node.muted && 'opacity-45')} style={{ '--em-pfc-color': node.color } as React.CSSProperties}>
       <div className="em-pfc-circle">
         <Icon className="em-pfc-icon" />
         {node.id === 'transfers' ? (
@@ -176,15 +176,15 @@ export const PowerFlowCard = ({
       { id: 'nuclear', label: 'Nuclear', valueMW: nuclear, color: '#aa86ff', icon: RadioTower, row: 'top', slot: 'right', flowPath: 'M 83 25 C 70 25, 64 43, 50 50' },
       { id: 'transfers', label: 'Transfers', valueMW: transferMW, color: exporting ? '#fb7185' : '#67e8f9', icon: exporting ? ArrowLeft : ArrowRight, row: 'middle', slot: 'left', flowPath: 'M 17 50 H 50', reverse: exporting, importMW, exportMW },
       { id: 'hydro', label: 'Hydro', valueMW: hydro, color: '#7ca7d8', icon: Waves, row: 'middle', slot: 'right', flowPath: 'M 83 50 H 50' },
-      { id: 'gas', label: 'Gas', valueMW: gas, color: '#f45b69', icon: Flame, row: 'bottom', slot: 'centre', flowPath: 'M 50 84 C 50 70, 50 60, 50 50' },
-      { id: 'biomass', label: 'Biomass', valueMW: biomass, color: '#8fe3b0', icon: Leaf, row: 'bottom', slot: 'left', flowPath: 'M 17 78 C 30 78, 36 57, 50 50' },
+      { id: 'gas', label: 'Gas', valueMW: gas, color: '#f45b69', icon: Flame, row: 'bottom', slot: 'left', flowPath: 'M 17 80 C 30 80, 36 58, 50 50' },
+      { id: 'biomass', label: 'Biomass', valueMW: biomass, color: '#8fe3b0', icon: Leaf, row: 'bottom', slot: 'centre', flowPath: 'M 50 84 C 50 70, 50 60, 50 50' },
       { id: 'other', label: 'Other', valueMW: other, color: '#c8d0dc', icon: Factory, row: 'bottom', slot: 'right', flowPath: 'M 83 78 C 70 78, 64 57, 50 50' },
     ];
     const nodes: FlowNode[] = baseNodes.map((node) => ({ ...node, muted: node.valueMW <= 1 }));
     const flowNodes: FlowNode[] = [
       ...nodes.filter((node) => node.id !== 'transfers'),
-      { ...nodes.find((node) => node.id === 'transfers')!, id: 'imports-flow', label: 'Imports', valueMW: importMW, color: '#67e8f9', flowPath: 'M 17 47.7 H 50', reverse: false, muted: importMW <= 1 },
-      { ...nodes.find((node) => node.id === 'transfers')!, id: 'exports-flow', label: 'Exports', valueMW: exportMW, color: '#fb7185', flowPath: 'M 17 52.3 H 50', reverse: true, muted: exportMW <= 1 },
+      { ...nodes.find((node) => node.id === 'transfers')!, id: 'imports-flow', label: 'Imports', valueMW: importMW, color: '#67e8f9', flowPath: 'M 17 47.5 H 50', reverse: false, muted: importMW <= 1 },
+      { ...nodes.find((node) => node.id === 'transfers')!, id: 'exports-flow', label: 'Exports', valueMW: exportMW, color: '#fb7185', flowPath: 'M 17 52.8 H 50', reverse: true, muted: exportMW <= 1 },
     ];
 
     return {
@@ -214,8 +214,8 @@ export const PowerFlowCard = ({
   let offset = 0;
 
   return (
-    <Card id="power-flow" className="relative scroll-mt-28 overflow-hidden border-primary/30 bg-card/70 shadow-2xl shadow-primary/10">
-      <div className="absolute inset-0 bg-gradient-glow opacity-50" />
+    <Card id="power-flow" className="relative scroll-mt-28 overflow-hidden rounded-2xl border-primary/20 bg-card/65 shadow-xl shadow-primary/5">
+      <div className="absolute inset-0 bg-gradient-glow opacity-35" />
       <CardHeader className="relative z-10 px-3 pb-2 pt-3 sm:px-6 sm:pb-3 sm:pt-5">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
@@ -244,7 +244,7 @@ export const PowerFlowCard = ({
               <div className="em-pfc-row em-pfc-row-middle">
                 <EnergyCircle node={middle[0]} />
                 <Spacer />
-                <div className="em-pfc-home-container" style={{ '--em-pfc-color': 'hsl(var(--primary))' } as React.CSSProperties}>
+                <div className="em-pfc-node em-pfc-home-node em-pfc-home-container" style={{ '--em-pfc-color': 'hsl(var(--primary))' } as React.CSSProperties}>
                   <div className="em-pfc-circle em-pfc-home-circle">
                     <svg className="em-pfc-home-ring" viewBox="0 0 84 84">
                       {model.ring.map((slice) => {
@@ -273,7 +273,7 @@ export const PowerFlowCard = ({
             </div>
           </div>
 
-          <aside className="space-y-3 rounded-2xl border border-primary/15 bg-background/35 p-4">
+          <aside className="em-pfc-snapshot space-y-3 rounded-2xl border border-primary/15 bg-background/35 p-4">
             <div>
               <p className="text-xs uppercase tracking-[0.22em] text-muted-foreground">Snapshot</p>
               <h3 className="mt-1 text-lg font-semibold">{sourceTime || 'Latest update'}</h3>
@@ -307,7 +307,7 @@ export const PowerFlowCard = ({
             </div>
             <p className="flex gap-2 text-xs leading-relaxed text-muted-foreground">
               <CircleHelp className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-              Uses normal React data, not Home Assistant state objects. A local test fixture is available in <code>src/components/powerFlowDemoData.ts</code>.
+              Live generation, demand and interconnector flows are shown as a simplified system view, not a physical grid map.
             </p>
           </aside>
         </div>

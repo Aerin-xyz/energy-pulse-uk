@@ -72,6 +72,13 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 220 25% 18%;
     --sidebar-ring: 187 89% 55%;
+
+    --space-micro: 4px;
+    --space-tight: 8px;
+    --space-compact: 12px;
+    --space-standard: 16px;
+    --space-section: 24px;
+    --space-large: 32px;
   }
 
   .dark {
@@ -195,12 +202,13 @@ All colors MUST be HSL.
   }
 
   .em-pfc-card {
-    max-width: 520px;
+    width: 100%;
+    max-width: 540px;
     margin: 0 auto;
-    border-radius: 1.5rem;
-    border: 1px solid hsl(187 89% 55% / 0.16);
+    border-radius: 1.25rem;
+    border: 1px solid hsl(187 89% 55% / 0.14);
     background:
-      radial-gradient(circle at 50% 50%, hsl(187 89% 55% / 0.12), transparent 42%),
+      radial-gradient(circle at 50% 50%, hsl(187 89% 55% / 0.10), transparent 44%),
       hsl(220 30% 8% / 0.45);
     overflow: hidden;
   }
@@ -208,10 +216,10 @@ All colors MUST be HSL.
   .em-pfc-card-content {
     --em-pfc-size-circle-entity: 80px;
     position: relative;
-    max-width: 500px;
-    min-height: 392px;
+    max-width: 520px;
+    min-height: 402px;
     margin: 0 auto;
-    padding: 18px 12px 12px;
+    padding: var(--space-standard) var(--space-compact) var(--space-compact);
   }
 
   .em-pfc-row {
@@ -220,7 +228,7 @@ All colors MUST be HSL.
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 500px;
+    max-width: 520px;
     margin: 0 auto;
   }
 
@@ -263,7 +271,7 @@ All colors MUST be HSL.
     box-sizing: border-box;
     border: 2px solid var(--em-pfc-color);
     background: hsl(220 28% 10% / 0.86);
-    box-shadow: 0 0 18px hsl(187 89% 55% / 0.12);
+    box-shadow: 0 0 14px hsl(187 89% 55% / 0.10);
     backdrop-filter: blur(10px);
     display: flex;
     flex-direction: column;
@@ -280,7 +288,7 @@ All colors MUST be HSL.
     border: 0;
     background: hsl(220 30% 7% / 0.94);
     color: hsl(var(--primary));
-    box-shadow: 0 0 26px hsl(187 89% 55% / 0.24);
+    box-shadow: 0 0 22px hsl(187 89% 55% / 0.22);
   }
 
   .em-pfc-home-ring {
@@ -297,7 +305,7 @@ All colors MUST be HSL.
     height: 20px;
     margin-bottom: 3px;
     color: var(--em-pfc-color);
-    filter: drop-shadow(0 0 6px currentColor);
+    filter: drop-shadow(0 0 4px currentColor);
   }
 
   .em-pfc-value {
@@ -358,41 +366,59 @@ All colors MUST be HSL.
   }
 
   .em-pfc-dot {
-    filter: drop-shadow(0 0 5px currentColor);
+    opacity: 0.86;
+    filter: drop-shadow(0 0 4px currentColor);
   }
 
   @media (max-width: 430px) {
     .em-pfc-card {
-      max-width: min(100%, 390px);
+      max-width: 100%;
       border-radius: 1.25rem;
     }
 
     .em-pfc-card-content {
-      --em-pfc-size-circle-entity: 66px;
-      min-height: 346px;
-      padding: 14px 5px 8px;
+      --em-pfc-size-circle-entity: clamp(66px, 18.5vw, 78px);
+      min-height: clamp(352px, 94vw, 392px);
+      padding: var(--space-compact) var(--space-tight) var(--space-tight);
     }
 
-    .em-pfc-row-top,
-    .em-pfc-row-middle,
-    .em-pfc-row-bottom {
-      height: 101px;
+    .em-pfc-row {
+      display: contents;
     }
 
-    .em-pfc-row-bottom {
-      align-items: flex-start;
-      padding-top: 8px;
+    .em-pfc-spacer {
+      display: none;
+    }
+
+    .em-pfc-node {
+      position: absolute;
+      z-index: 2;
+      transform: translate(-50%, -50%);
+    }
+
+    .em-pfc-node-wind { left: 17%; top: 24%; }
+    .em-pfc-node-solar { left: 50%; top: 14%; }
+    .em-pfc-node-nuclear { left: 83%; top: 24%; }
+    .em-pfc-node-transfers { left: 17%; top: 50%; }
+    .em-pfc-home-node { left: 50%; top: 50%; }
+    .em-pfc-node-hydro { left: 83%; top: 50%; }
+    .em-pfc-node-gas { left: 17%; top: 79%; }
+    .em-pfc-node-biomass { left: 50%; top: 84%; }
+    .em-pfc-node-other { left: 83%; top: 79%; }
+
+    .em-pfc-node-other.opacity-45 {
+      opacity: 0.36;
     }
 
     .em-pfc-lines {
-      inset: 14px 6px 8px;
-      width: calc(100% - 12px);
-      height: calc(100% - 22px);
+      inset: var(--space-compact) var(--space-tight) var(--space-tight);
+      width: calc(100% - 16px);
+      height: calc(100% - 20px);
     }
 
     .em-pfc-home-circle {
-      width: 80px;
-      height: 80px;
+      width: clamp(82px, 22vw, 92px);
+      height: clamp(82px, 22vw, 92px);
     }
 
     .em-pfc-icon {
