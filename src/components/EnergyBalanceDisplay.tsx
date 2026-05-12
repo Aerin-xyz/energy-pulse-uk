@@ -22,11 +22,11 @@ export const EnergyBalanceDisplay = ({
       {/* Mobile: clear metric pills, replacing the old equation shorthand */}
       <div className="grid md:hidden grid-cols-2 gap-2 text-xs w-full">
         <div className="rounded-xl border border-primary/15 bg-background/45 px-3 py-2.5">
-          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Demand</div>
+          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Displayed demand</div>
           <div className="mt-0.5 font-mono text-base font-bold text-foreground">{formatGWfromMW(totalDemandMW)} <span className="text-[10px] font-medium text-muted-foreground">GW</span></div>
         </div>
         <div className="rounded-xl border border-primary/20 bg-primary/5 px-3 py-2.5 shadow-[0_0_18px_rgba(28,222,228,0.10)]">
-          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Generation</div>
+          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">GB production</div>
           <div className="mt-0.5 font-mono text-base font-bold text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)} <span className="text-[10px] font-medium text-muted-foreground">GW</span></div>
         </div>
         <div className="rounded-xl border border-primary/15 bg-background/45 px-3 py-2.5">
@@ -55,16 +55,16 @@ export const EnergyBalanceDisplay = ({
       <div className="hidden md:flex xl:hidden items-center gap-2.5 px-3 py-2 glass-morphism rounded-lg border-primary/20 text-sm">
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground mb-0.5">
-            Demand
-            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes). Note: The balance equation may show a small variance (1-2%) due to transmission losses, station loads, and pumped storage." className="w-3 h-3" />
+            Displayed demand
+            <HelpTooltip content="Consumer-facing GB demand derived from live power balance: GB production plus net imports/exports plus pumped-storage transfer. This differs from raw BMRS transmission demand." className="w-3 h-3" />
           </div>
           <div className="font-bold">{formatGWfromMW(totalDemandMW)} GW</div>
         </div>
         <div className="text-lg text-muted-foreground">=</div>
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground mb-0.5">
-            Generation
-            <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-3 h-3" />
+            GB production
+            <HelpTooltip content="Domestic Great Britain electricity production, including embedded wind and solar estimates, excluding imports." className="w-3 h-3" />
           </div>
           <div className="font-bold text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)} GW</div>
         </div>
@@ -72,7 +72,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground mb-0.5">
             Transfers
-            <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing, Negative = exporting" className="w-3 h-3" />
+            <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing into GB, negative = exporting from GB." className="w-3 h-3" />
           </div>
           <div className="font-bold">{formatGWfromMW(interconnectorFlowMW)} GW</div>
         </div>
@@ -104,20 +104,20 @@ export const EnergyBalanceDisplay = ({
       {/* Desktop: Compact Energy Balance with Single Letters */}
       <div className="hidden xl:flex items-center gap-2.5 px-3 py-2 glass-morphism rounded-lg border-primary/20 text-sm">
         <div className="flex items-center gap-0.5">
-          <span className="font-semibold text-muted-foreground" title="Demand">D</span>
-          <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes). Note: The balance equation may show a small variance (1-2%) due to transmission losses, station loads, and pumped storage." className="w-3.5 h-3.5" />
+          <span className="font-semibold text-muted-foreground" title="Displayed demand">D</span>
+          <HelpTooltip content="Displayed GB demand derived from live power balance. This is not the raw BMRS ITSDO transmission-demand field." className="w-3.5 h-3.5" />
           <span className="font-bold ml-1">{formatGWfromMW(totalDemandMW)}</span>
         </div>
         <span className="text-muted-foreground">=</span>
         <div className="flex items-center gap-0.5">
-          <span className="font-semibold text-muted-foreground" title="Generation">G</span>
-          <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-3.5 h-3.5" />
+          <span className="font-semibold text-muted-foreground" title="GB production">P</span>
+          <HelpTooltip content="GB production: domestic generation including embedded wind and solar estimates, excluding imports." className="w-3.5 h-3.5" />
           <span className="font-bold text-cosmic-cyan text-glow ml-1">{formatGWfromMW(totalGenerationMW)}</span>
         </div>
         <span className="text-muted-foreground">+</span>
         <div className="flex items-center gap-0.5">
           <span className="font-semibold text-muted-foreground" title="Transfers">T</span>
-          <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing, Negative = exporting" className="w-3.5 h-3.5" />
+          <HelpTooltip content="Net interconnector transfer. Positive = importing into GB, negative = exporting from GB." className="w-3.5 h-3.5" />
           <span className="font-bold ml-1">{formatGWfromMW(interconnectorFlowMW)}</span>
         </div>
         {carbonIntensity && (

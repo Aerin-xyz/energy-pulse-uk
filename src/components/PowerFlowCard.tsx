@@ -364,7 +364,7 @@ export const PowerFlowCard = ({
                 <p className="font-mono text-xl font-bold text-green-300">{model.lowCarbonShare.toFixed(1)}%</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
-                <p className="text-xs text-muted-foreground">Transfers</p>
+                <p className="text-xs text-muted-foreground">Net transfers</p>
                 <p className="font-mono text-xl font-bold text-cosmic-cyan">{formatGWfromMW(model.transferMW)} GW</p>
                 <p className="text-[11px] text-muted-foreground">imports {formatGWfromMW(model.importMW)} · exports {formatGWfromMW(model.exportMW)}</p>
               </div>
@@ -387,7 +387,7 @@ export const PowerFlowCard = ({
             </div>
             <p className="flex gap-2 text-xs leading-relaxed text-muted-foreground">
               <CircleHelp className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-              Live generation, demand and interconnector flows are shown as a simplified system view, not a physical grid map.
+              Displayed demand is a live power-balance view: GB production plus net transfers and storage. This is a simplified system view, not a physical grid map.
             </p>
           </aside>
         </div>
@@ -402,7 +402,7 @@ export const PowerFlowCard = ({
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm text-foreground/80">
-            <p>EnergyMix maps Home to GB demand, Grid to imports/exports, and surrounding nodes to wind, solar, nuclear, hydro, gas, biomass and other generation.</p>
+            <p>EnergyMix maps Home to displayed GB demand, Grid to imports/exports, and surrounding nodes to GB production sources: wind, solar, nuclear, hydro, gas, biomass and other generation.</p>
             <p>Supported by National Energy SO Open Data. Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
           </div>
         </DialogContent>

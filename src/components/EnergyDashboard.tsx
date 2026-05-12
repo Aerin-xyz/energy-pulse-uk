@@ -18,6 +18,7 @@ import { TopMetricsStrip } from '@/components/TopMetricsStrip';
 import { HelpTooltip } from '@/components/HelpTooltip';
 import { PowerFlowCard } from '@/components/PowerFlowCard';
 import { GridSignalsPanel } from '@/components/GridSignalsPanel';
+import { DemandReconciliationPanel } from '@/components/DemandReconciliationPanel';
 import { useGridSignals } from '@/hooks/useGridSignals';
 import { useState, useEffect, ReactNode } from 'react';
 
@@ -139,10 +140,13 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
   });
   const storageSignal = data?.storage || gridSignals.storage;
   const netInterconnectorFlowMW = data?.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0;
-  const derivedDemandMW = data ? Math.max(0, data.totalGenerationMW + netInterconnectorFlowMW + (storageSignal?.netMW || 0)) : 0;
-  const displayDemandMW = data && derivedDemandMW > 0 && Math.abs(derivedDemandMW - data.totalDemandMW) > 2500
+  const storageTransferMW = storageSignal?.netMW || 0;
+  const derivedDemandMW = data ? Math.max(0, data.totalGenerationMW + netInterconnectorFlowMW + storageTransferMW) : 0;
+  const isUsingDerivedDemand = data && derivedDemandMW > 0 && Math.abs(derivedDemandMW - data.totalDemandMW) > 2500;
+  const displayDemandMW = isUsingDerivedDemand
     ? derivedDemandMW
     : (data?.totalDemandMW || 0);
+  const showDemandQA = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debugDemand') === '1';
   const generationLivePoint = data?.dataFreshness?.sourceFreshness?.generation?.timestamp || null;
   const lastLivePoint = (() => {
     if (!generationLivePoint) return null;
@@ -327,6 +331,16 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                 settlementPeriod={data.asOf?.settlementPeriod}
                 sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp || data.asOf?.endISO}
               />
+
+              {showDemandQA && (
+                <DemandReconciliationPanel
+                  rawDemandMW={data.totalDemandMW || 0}
+                  displayedDemandMW={displayDemandMW}
+                  generationMW={data.totalGenerationMW || 0}
+                  netTransfersMW={netInterconnectorFlowMW}
+                  storageMW={storageTransferMW}
+                />
+              )}
 
               <GridSignalsPanel
                 marketIndexPrice={data.marketIndexPrice}

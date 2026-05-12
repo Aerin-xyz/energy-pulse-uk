@@ -59,25 +59,25 @@ export const TopMetricsStrip = ({
 
   const metrics = [
     {
-      label: 'Demand',
+      label: 'Displayed demand',
       value: `${formatGWfromMW(totalDemandMW)} GW`,
       icon: Gauge,
       tone: 'text-foreground',
-      help: 'Total GB transmission system demand from BMRS ITSDO where available.',
+      help: 'Consumer-facing GB demand derived from live power balance: GB production + net imports/exports + pumped-storage transfer. This is intentionally different from raw BMRS transmission demand.',
     },
     {
-      label: 'Generation',
+      label: 'GB production',
       value: `${formatGWfromMW(totalGenerationMW)} GW`,
       icon: Factory,
       tone: 'text-cosmic-cyan',
-      help: 'Domestic GB generation. Fast path uses Elexon FUELINST where available.',
+      help: 'Domestic Great Britain electricity production, including embedded wind/solar estimates where available and excluding imports.',
     },
     {
       label: transferLabel,
       value: `${formatGWfromMW(transferValue)} GW`,
       icon: ArrowLeftRight,
       tone: interconnectorFlowMW >= 0 ? 'text-primary' : 'text-orange-300',
-      help: 'Net interconnector flow. Positive values mean GB is importing electricity; negative values mean exporting.',
+      help: 'Net interconnector transfer. Positive values mean electricity is importing into GB; negative values mean exporting from GB.',
     },
     {
       label: 'Carbon',
@@ -137,7 +137,7 @@ export const TopMetricsStrip = ({
         </div>
         <div className="mt-2 flex items-center justify-center gap-1.5 text-[11px] text-muted-foreground">
           <Activity className="w-3 h-3 text-green-400" />
-          <span>Auto-refreshing every 2 minutes; primary generation source cadence is 5 minutes.</span>
+          <span>Page refreshes every 2 minutes; live sources update at their native cadence, typically 5–30 minutes by dataset.</span>
         </div>
       </div>
     </section>
