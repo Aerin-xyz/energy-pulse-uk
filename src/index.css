@@ -165,13 +165,6 @@ All colors MUST be HSL.
     border: 1px solid hsl(187 89% 55% / 0.1);
   }
 
-  .power-flow-pulse {
-    animation-name: power-flow-dash;
-    animation-timing-function: linear;
-    animation-iteration-count: infinite;
-  }
-
-
   .site-logo-compact {
     gap: 0.65rem;
   }
@@ -254,8 +247,8 @@ All colors MUST be HSL.
   }
 
   .flow-dot {
-    opacity: 0.72;
-    filter: drop-shadow(0 0 3px currentColor);
+    opacity: 0.82;
+    filter: drop-shadow(0 0 5px currentColor);
   }
 
   .flow-node-group {
@@ -279,8 +272,6 @@ All colors MUST be HSL.
     stroke-width: 4;
     stroke-dasharray: 5 5;
     vector-effect: non-scaling-stroke;
-    transform-origin: center;
-    animation: flow-demand-ring-spin 26s linear infinite;
   }
 
   .flow-node-icon {
@@ -381,15 +372,4 @@ All colors MUST be HSL.
     }
   }
 
-  @keyframes flow-demand-ring-spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
-
-  @keyframes power-flow-dash {
-    to {
-      stroke-dashoffset: -180;
-    }
-  }
 }

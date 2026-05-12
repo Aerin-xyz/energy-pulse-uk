@@ -175,7 +175,9 @@ const FlowNodeSvg = ({ node }: { node: FlowNode }) => {
     <g className={cn('flow-node-group', `flow-node-group-${node.id}`, node.muted && 'is-muted')} transform={`translate(${node.point.x} ${node.point.y})`}>
       <circle r={radius} className={cn('flow-node', `flow-node-${node.id}`, 'flow-node-circle')} data-node-id={node.id} style={{ stroke: node.color }} />
       {node.demand && (
-        <circle r={layout.demandRadius - 4} className="flow-demand-ring" />
+        <circle r={layout.demandRadius - 4} className="flow-demand-ring">
+          <animateTransform attributeName="transform" type="rotate" from="0 0 0" to="360 0 0" dur="26s" repeatCount="indefinite" />
+        </circle>
       )}
       <SvgIcon icon={node.icon} x={0} y={node.demand ? -18 : -20} size={node.demand ? 20 : layout.iconSize} className="flow-node-icon" />
       {node.id === 'transfers' ? (
@@ -213,7 +215,7 @@ const FlowLines = ({ lines, maxMW }: { lines: FlowLine[]; maxMW: number }) => (
           <path d={path} className="flow-line-track" strokeWidth={width + 2.2} />
           <path id={`flow-path-${line.id}`} d={path} className="flow-line" stroke={line.color} strokeWidth={width} />
           {!line.muted && line.valueMW > 1 && (
-            <circle r="1.55" fill={line.color} className="flow-dot">
+            <circle r="3.1" fill={line.color} className="flow-dot">
               <animateMotion dur={`${duration}s`} repeatCount="indefinite" calcMode="paced" keyPoints={line.reverse ? '1;0' : undefined} keyTimes={line.reverse ? '0;1' : undefined}>
                 <mpath href={`#flow-path-${line.id}`} />
               </animateMotion>
