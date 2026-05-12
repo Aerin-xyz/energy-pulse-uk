@@ -138,6 +138,8 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
     systemFrequency: data?.systemFrequency || null,
     storage: data?.storage || null,
   });
+  const marketIndexPriceSignal = data?.marketIndexPrice || gridSignals.marketIndexPrice;
+  const systemFrequencySignal = data?.systemFrequency || gridSignals.systemFrequency;
   const storageSignal = data?.storage || gridSignals.storage;
   const netInterconnectorFlowMW = data?.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0;
   const storageTransferMW = storageSignal?.netMW || 0;
@@ -147,16 +149,6 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
     ? derivedDemandMW
     : (data?.totalDemandMW || 0);
   const showDemandQA = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debugDemand') === '1';
-  const generationLivePoint = data?.dataFreshness?.sourceFreshness?.generation?.timestamp || null;
-  const lastLivePoint = (() => {
-    if (!generationLivePoint) return null;
-    const parsed = Date.parse(generationLivePoint);
-    // Only show a true upstream source timestamp here. Settlement-period end
-    // fallbacks can be future-looking around BST/local settlement handling and
-    // should not be labelled as the latest live datapoint.
-    if (!Number.isFinite(parsed) || parsed > Date.now() + 2 * 60 * 1000) return null;
-    return generationLivePoint;
-  })();
 
   if (error) {
     return (
@@ -226,10 +218,9 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
           totalGenerationMW={data.totalGenerationMW || 0}
           interconnectorFlowMW={netInterconnectorFlowMW}
           carbonIntensity={data.carbonIntensity}
-          lastLivePoint={lastLivePoint}
-          marketIndexPrice={data.marketIndexPrice}
-          systemFrequency={data.systemFrequency}
-          storage={data.storage}
+          marketIndexPrice={marketIndexPriceSignal}
+          systemFrequency={systemFrequencySignal}
+          storage={storageSignal}
         />
       )}
 
@@ -322,6 +313,12 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                 </div>
               )}
 
+              <GridSignalsPanel
+                marketIndexPrice={marketIndexPriceSignal}
+                systemFrequency={systemFrequencySignal}
+                storage={storageSignal}
+              />
+
               <PowerFlowCard
                 generationMix={data.generationMix}
                 interconnectors={data.interconnectors}
@@ -342,12 +339,6 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                 />
               )}
 
-              <GridSignalsPanel
-                marketIndexPrice={data.marketIndexPrice}
-                systemFrequency={data.systemFrequency}
-                storage={storageSignal}
-              />
-              
               {/* Generation Mix Chart - Hero Element */}
               <div className="relative">
                 <GenerationMixChart 

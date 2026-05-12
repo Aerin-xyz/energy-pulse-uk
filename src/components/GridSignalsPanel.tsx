@@ -27,6 +27,9 @@ export function GridSignalsPanel({ marketIndexPrice, systemFrequency, storage }:
   const price = marketIndexPrice || signals.marketIndexPrice;
   const frequency = systemFrequency || signals.systemFrequency;
   const storageSignal = storage || signals.storage;
+  const cards = [price, frequency, storageSignal].filter(Boolean).length;
+
+  if (!cards) return null;
 
   return (
     <section className="glass-morphism rounded-2xl border border-primary/20 p-4 md:p-5 shadow-[0_0_30px_rgba(28,222,228,0.08)]">
@@ -39,38 +42,38 @@ export function GridSignalsPanel({ marketIndexPrice, systemFrequency, storage }:
       </div>
 
       <div className="grid gap-3 md:grid-cols-3">
-        <div className="rounded-xl border border-amber-300/20 bg-amber-300/5 p-3">
+        {price && <div className="rounded-xl border border-amber-300/20 bg-amber-300/5 p-3">
           <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground mb-1">
             <PoundSterling className="w-4 h-4 text-amber-300" />
             <span>Market price</span>
           </div>
           <div className="font-mono text-2xl font-bold text-amber-300">
-            {price ? `£${price.priceGBPPerMWh.toFixed(2)}` : '—'}
+            £{price.priceGBPPerMWh.toFixed(2)}
           </div>
-          <p className="text-xs text-muted-foreground mt-1">per MWh wholesale • {formatTime(price?.startTime)}</p>
-        </div>
+          <p className="text-xs text-muted-foreground mt-1">per MWh wholesale • {formatTime(price.startTime)}</p>
+        </div>}
 
-        <div className="rounded-xl border border-emerald-300/20 bg-emerald-300/5 p-3">
+        {frequency && <div className="rounded-xl border border-emerald-300/20 bg-emerald-300/5 p-3">
           <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground mb-1">
             <RadioTower className="w-4 h-4 text-emerald-300" />
             <span>Frequency</span>
           </div>
           <div className="font-mono text-2xl font-bold text-emerald-300">
-            {frequency ? `${frequency.hz.toFixed(3)}` : '—'}
+            {frequency.hz.toFixed(3)}
           </div>
           <p className="text-xs text-muted-foreground mt-1">Hz, target 50.000</p>
-        </div>
+        </div>}
 
-        <div className="rounded-xl border border-sky-300/20 bg-sky-300/5 p-3">
+        {storageSignal && <div className="rounded-xl border border-sky-300/20 bg-sky-300/5 p-3">
           <div className="flex items-center gap-2 text-xs uppercase tracking-wide text-muted-foreground mb-1">
             <BatteryCharging className={`w-4 h-4 ${storageTone(storageSignal?.mode)}`} />
             <span>Pumped storage</span>
           </div>
           <div className={`font-mono text-2xl font-bold ${storageTone(storageSignal?.mode)}`}>
-            {storageSignal ? `${formatGWfromMW(storageSignal.absMW)} GW` : '—'}
+            {formatGWfromMW(storageSignal.absMW)} GW
           </div>
-          <p className="text-xs text-muted-foreground mt-1">{storageSignal?.label || 'Latest Elexon PS status'}</p>
-        </div>
+          <p className="text-xs text-muted-foreground mt-1">{storageSignal.label || 'Latest Elexon PS status'}</p>
+        </div>}
       </div>
     </section>
   );
