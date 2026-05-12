@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn, formatGWfromMW } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, BatteryCharging, CircleHelp, Factory, Flame, Home, Info, Leaf, RadioTower, Sun, Waves, Wind, Zap } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CircleHelp, Factory, Flame, Home, Info, Leaf, RadioTower, Sun, Waves, Wind } from 'lucide-react';
 
 /*
   EnergyMix Power Flow Card
@@ -63,6 +63,8 @@ type FlowNode = {
   flowPath: string;
   reverse?: boolean;
   muted?: boolean;
+  importMW?: number;
+  exportMW?: number;
 };
 
 const valueFor = (mix: GenerationData[], names: string[]) =>
@@ -95,8 +97,17 @@ const EnergyCircle = ({ node }: { node: FlowNode }) => {
     <div className={cn('em-pfc-circle-container', node.muted && 'opacity-45')} style={{ '--em-pfc-color': node.color } as React.CSSProperties}>
       <div className="em-pfc-circle">
         <Icon className="em-pfc-icon" />
-        <span className="em-pfc-value">{formatGWfromMW(node.valueMW)}</span>
-        <span className="em-pfc-unit">GW</span>
+        {node.id === 'transfers' ? (
+          <span className="em-pfc-transfer-values">
+            <span className="em-pfc-transfer-line em-pfc-import"><ArrowRight className="em-pfc-mini-arrow" />{formatGWfromMW(node.importMW || 0)}</span>
+            <span className="em-pfc-transfer-line em-pfc-export"><ArrowLeft className="em-pfc-mini-arrow" />{formatGWfromMW(node.exportMW || 0)}</span>
+          </span>
+        ) : (
+          <>
+            <span className="em-pfc-value">{formatGWfromMW(node.valueMW)}</span>
+            <span className="em-pfc-unit">GW</span>
+          </>
+        )}
       </div>
       <span className="em-pfc-label">{node.label}</span>
     </div>
@@ -146,9 +157,14 @@ export const PowerFlowCard = ({
     const hydro = valueFor(generationMix, ['Hydro', 'PSH', 'Pumped Storage']);
     const biomass = valueFor(generationMix, ['Biomass']);
     const importsCategory = valueFor(generationMix, ['Imports']);
-    const netTransfer = interconnectors.reduce((sum, item) => sum + (item.flow || 0), 0);
-    const transferMW = Math.max(Math.abs(netTransfer), importsCategory);
-    const exporting = netTransfer < 0;
+    const importMW = Math.max(
+      importsCategory,
+      interconnectors.filter((item) => (item.flow || 0) > 0).reduce((sum, item) => sum + (item.flow || 0), 0)
+    );
+    const exportMW = interconnectors.filter((item) => (item.flow || 0) < 0).reduce((sum, item) => sum + Math.abs(item.flow || 0), 0);
+    const netTransfer = importMW - exportMW;
+    const transferMW = Math.max(importMW, exportMW, Math.abs(netTransfer));
+    const exporting = exportMW > importMW;
     const named = wind + solar + gas + nuclear + hydro + biomass + importsCategory;
     const other = Math.max(0, totalGenerationMW - named);
     const lowCarbon = wind + solar + nuclear + hydro + biomass;
@@ -158,18 +174,26 @@ export const PowerFlowCard = ({
       { id: 'wind', label: 'Wind', valueMW: wind, color: '#5dd6c0', icon: Wind, row: 'top', slot: 'left', flowPath: 'M 17 25 C 30 25, 36 43, 50 50' },
       { id: 'solar', label: 'Solar', valueMW: solar, color: '#f5bd41', icon: Sun, row: 'top', slot: 'centre', flowPath: 'M 50 16 C 50 30, 50 40, 50 50' },
       { id: 'nuclear', label: 'Nuclear', valueMW: nuclear, color: '#aa86ff', icon: RadioTower, row: 'top', slot: 'right', flowPath: 'M 83 25 C 70 25, 64 43, 50 50' },
-      { id: 'imports', label: exporting ? 'Exports' : 'Imports', valueMW: transferMW, color: exporting ? '#fb7185' : '#67e8f9', icon: exporting ? ArrowLeft : ArrowRight, row: 'middle', slot: 'left', flowPath: 'M 17 50 H 50', reverse: exporting },
+      { id: 'transfers', label: 'Transfers', valueMW: transferMW, color: exporting ? '#fb7185' : '#67e8f9', icon: exporting ? ArrowLeft : ArrowRight, row: 'middle', slot: 'left', flowPath: 'M 17 50 H 50', reverse: exporting, importMW, exportMW },
       { id: 'hydro', label: 'Hydro', valueMW: hydro, color: '#7ca7d8', icon: Waves, row: 'middle', slot: 'right', flowPath: 'M 83 50 H 50' },
       { id: 'gas', label: 'Gas', valueMW: gas, color: '#f45b69', icon: Flame, row: 'bottom', slot: 'centre', flowPath: 'M 50 84 C 50 70, 50 60, 50 50' },
       { id: 'biomass', label: 'Biomass', valueMW: biomass, color: '#8fe3b0', icon: Leaf, row: 'bottom', slot: 'left', flowPath: 'M 17 78 C 30 78, 36 57, 50 50' },
       { id: 'other', label: 'Other', valueMW: other, color: '#c8d0dc', icon: Factory, row: 'bottom', slot: 'right', flowPath: 'M 83 78 C 70 78, 64 57, 50 50' },
     ];
     const nodes: FlowNode[] = baseNodes.map((node) => ({ ...node, muted: node.valueMW <= 1 }));
+    const flowNodes: FlowNode[] = [
+      ...nodes.filter((node) => node.id !== 'transfers'),
+      { ...nodes.find((node) => node.id === 'transfers')!, id: 'imports-flow', label: 'Imports', valueMW: importMW, color: '#67e8f9', flowPath: 'M 17 47.7 H 50', reverse: false, muted: importMW <= 1 },
+      { ...nodes.find((node) => node.id === 'transfers')!, id: 'exports-flow', label: 'Exports', valueMW: exportMW, color: '#fb7185', flowPath: 'M 17 52.3 H 50', reverse: true, muted: exportMW <= 1 },
+    ];
 
     return {
       nodes,
+      flowNodes,
       maxMW,
       transferMW,
+      importMW,
+      exportMW,
       exporting,
       lowCarbonShare: totalGenerationMW ? (lowCarbon / totalGenerationMW) * 100 : 0,
       ring: [
@@ -208,11 +232,11 @@ export const PowerFlowCard = ({
         </div>
       </CardHeader>
 
-      <CardContent className="relative z-10">
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px]">
+      <CardContent className="relative z-10 px-3 pb-4 pt-0 sm:px-6 sm:pb-6">
+        <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-5">
           <div className="em-pfc-card" data-reference="power-flow-card-plus">
             <div className="em-pfc-card-content">
-              <FlowSvg nodes={model.nodes} maxMW={model.maxMW} />
+              <FlowSvg nodes={model.flowNodes} maxMW={model.maxMW} />
 
               <div className="em-pfc-row em-pfc-row-top">
                 {top.map((node) => <EnergyCircle key={node.id} node={node} />)}
@@ -264,7 +288,7 @@ export const PowerFlowCard = ({
               <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
                 <p className="text-xs text-muted-foreground">Transfers</p>
                 <p className="font-mono text-xl font-bold text-cosmic-cyan">{formatGWfromMW(model.transferMW)} GW</p>
-                <p className="text-[11px] text-muted-foreground">net {model.exporting ? 'exporting' : 'importing'}</p>
+                <p className="text-[11px] text-muted-foreground">imports {formatGWfromMW(model.importMW)} · exports {formatGWfromMW(model.exportMW)}</p>
               </div>
             </div>
             <div className="space-y-2">
