@@ -16,9 +16,13 @@ import { EnergyBalanceDisplay } from '@/components/EnergyBalanceDisplay';
 import { SystemStatusBanner } from '@/components/SystemStatusBanner';
 import { TopMetricsStrip } from '@/components/TopMetricsStrip';
 import { HelpTooltip } from '@/components/HelpTooltip';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 
-export const EnergyDashboard = () => {
+interface EnergyDashboardProps {
+  belowContent?: ReactNode;
+}
+
+export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
   const {
     data, 
     loading, 
@@ -348,6 +352,8 @@ export const EnergyDashboard = () => {
           <EUDebugPanel />
         </div>
       </main>
+
+      {belowContent}
 
       {/* Footer */}
       <footer className="border-t border-primary/20 glass-morphism mt-16 relative">

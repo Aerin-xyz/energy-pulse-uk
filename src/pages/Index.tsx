@@ -47,38 +47,27 @@ const Index = () => {
       </Helmet>
       
       <h1 className="sr-only">UK Electricity Mix Live - Great Britain Generation, Demand and Carbon Intensity</h1>
-      <section className="bg-background border-b border-primary/20">
-        <div className="container mx-auto px-4 py-8 md:py-10">
-          <div className="max-w-4xl">
-            <p className="text-sm uppercase tracking-[0.24em] text-primary/80 mb-3">Live GB electricity intelligence</p>
-            <h2 className="text-3xl md:text-5xl font-bold mb-4 text-glow">UK electricity mix right now</h2>
-            <div className="space-y-4 text-foreground/80 leading-relaxed text-base md:text-lg">
-              <p>
-                EnergyMix.info shows Great Britain’s live electricity mix, including demand, wind, solar, gas, nuclear, imports, storage, hydro, biomass and carbon intensity.
-              </p>
-              <p>
-                Most live grid data covers Great Britain’s electricity system: England, Scotland and Wales. Northern Ireland is part of the UK but operates in a separate electricity market.
-              </p>
-              <p>
-                The dashboard updates from public electricity and carbon-intensity data sources and explains how clean the grid is now, what changed today, and what it means for homes, EV charging and businesses.
-              </p>
+      <EnergyDashboard
+        belowContent={(
+          <section className="container mx-auto px-4 py-12 md:py-16" aria-labelledby="about-uk-electricity-mix">
+            <div className="max-w-4xl rounded-2xl border border-primary/20 bg-card/50 p-5 md:p-8 shadow-lg shadow-primary/5">
+              <p className="mb-3 text-sm uppercase tracking-[0.24em] text-primary/80">Live GB electricity intelligence</p>
+              <h2 id="about-uk-electricity-mix" className="mb-4 text-2xl md:text-3xl font-bold text-glow">About the UK electricity mix</h2>
+              <div className="space-y-4 text-foreground/80 leading-relaxed">
+                <p>
+                  EnergyMix.info shows Great Britain’s live electricity mix, including demand, wind, solar, gas, nuclear, imports, storage, hydro, biomass and carbon intensity.
+                </p>
+                <p>
+                  Most live grid data covers Great Britain’s electricity system: England, Scotland and Wales. Northern Ireland is part of the UK but operates in a separate electricity market.
+                </p>
+                <p>
+                  The dashboard updates from public electricity and carbon-intensity data sources and explains how clean the grid is now, what changed today, and what it means for homes, EV charging and businesses.
+                </p>
+              </div>
             </div>
-            <nav className="mt-6 flex flex-wrap gap-3" aria-label="Energy Mix explainers">
-              <a href="/uk-electricity-mix" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">UK electricity mix</a>
-              <a href="/carbon-intensity" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Carbon intensity</a>
-              <a href="/renewables" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Renewables</a>
-              <a href="/cleanest-time-to-use-electricity" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Cleanest time to use electricity</a>
-              <a href="/gas-generation" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Gas generation</a>
-              <a href="/interconnectors" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Interconnectors</a>
-              <a href="/electricity-demand" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Demand</a>
-              <a href="/today" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Today</a>
-              <a href="/reports" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Reports</a>
-              <a href="/records" className="rounded-md border border-primary/30 px-3 py-2 text-sm text-cosmic-cyan hover:bg-primary/10">Records</a>
-            </nav>
-          </div>
-        </div>
-      </section>
-      <EnergyDashboard />
+          </section>
+        )}
+      />
     </>
   );
 };
