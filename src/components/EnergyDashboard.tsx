@@ -16,6 +16,7 @@ import { EnergyBalanceDisplay } from '@/components/EnergyBalanceDisplay';
 import { SystemStatusBanner } from '@/components/SystemStatusBanner';
 import { TopMetricsStrip } from '@/components/TopMetricsStrip';
 import { HelpTooltip } from '@/components/HelpTooltip';
+import { PowerFlowCard } from '@/components/PowerFlowCard';
 import { useState, useEffect, ReactNode } from 'react';
 
 interface EnergyDashboardProps {
@@ -301,6 +302,16 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                   <p className="text-muted-foreground">Awaiting live data (stub/LKG)</p>
                 </div>
               )}
+
+              <PowerFlowCard
+                generationMix={data.generationMix}
+                interconnectors={data.interconnectors}
+                totalDemandMW={data.totalDemandMW || 0}
+                totalGenerationMW={data.totalGenerationMW || 0}
+                carbonIntensity={data.carbonIntensity}
+                settlementPeriod={data.asOf?.settlementPeriod}
+                sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp || data.asOf?.endISO}
+              />
               
               {/* Generation Mix Chart - Hero Element */}
               <div className="relative">

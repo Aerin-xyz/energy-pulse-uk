@@ -18,6 +18,7 @@ import Citation from "./pages/Citation";
 import { UkElectricityMix, CarbonIntensity, Renewables, GasGeneration, NuclearPower, Interconnectors, ElectricityDemand, UkElectricityGenerationLive, CleanestTimeToUseElectricity } from "./pages/CoreExplainers";
 import Today from "./pages/Today";
 import Yesterday from "./pages/Yesterday";
+import PowerFlow from "./pages/PowerFlow";
 import { ReportsIndex, WeeklyReportPage } from "./pages/Reports";
 import { RecordsIndex, HighestRenewableShare, HighestWindGeneration, HighestSolarGeneration, HighestGasGeneration } from "./pages/Records";
 import Social from "./pages/Social";
@@ -58,6 +59,7 @@ const App = () => (
             <Route path="/cleanest-time-to-use-electricity" element={<CleanestTimeToUseElectricity />} />
             <Route path="/today" element={<Today />} />
             <Route path="/yesterday" element={<Yesterday />} />
+            <Route path="/power-flow" element={<PowerFlow />} />
             <Route path="/reports" element={<ReportsIndex />} />
             <Route path="/reports/weekly/:date" element={<WeeklyReportPage />} />
             <Route path="/records" element={<RecordsIndex />} />

@@ -150,4 +150,16 @@ All colors MUST be HSL.
     backdrop-filter: blur(12px);
     border: 1px solid hsl(187 89% 55% / 0.1);
   }
+
+  .power-flow-pulse {
+    animation-name: power-flow-dash;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes power-flow-dash {
+    to {
+      stroke-dashoffset: -180;
+    }
+  }
 }

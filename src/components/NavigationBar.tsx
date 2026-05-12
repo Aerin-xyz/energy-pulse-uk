@@ -25,6 +25,7 @@ const topicLinks = [
   { to: '/interconnectors', label: 'Interconnectors' },
   { to: '/electricity-demand', label: 'Demand' },
   { to: '/today', label: 'Today' },
+  { to: '/power-flow', label: 'Power flow' },
   { to: '/reports', label: 'Reports' },
   { to: '/records', label: 'Records' },
 ];
