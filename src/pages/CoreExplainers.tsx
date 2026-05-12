@@ -1,6 +1,8 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { StaticPageLayout } from '@/components/StaticPageLayout';
+import { LiveSeoModule } from '@/components/LiveSeoModule';
+import { RegionalCarbonPanel } from '@/components/RegionalCarbonPanel';
 
 type Explainer = {
   slug: string;
@@ -13,6 +15,8 @@ type Explainer = {
   sections: { heading: string; body: string[]; bullets?: string[] }[];
   faqs: { question: string; answer: string }[];
   related: { to: string; label: string }[];
+  liveFocus: 'mix' | 'carbon' | 'renewables' | 'gas' | 'nuclear' | 'interconnectors' | 'demand' | 'generation' | 'cleanest';
+  showRegionalCarbon?: boolean;
 };
 
 const explainers: Record<string, Explainer> = {
@@ -37,6 +41,7 @@ const explainers: Record<string, Explainer> = {
       { question: 'Is the electricity mix the same as carbon intensity?', answer: 'No. The mix shows generation by source, while carbon intensity estimates the emissions associated with electricity consumption.' },
     ],
     related: [{ to: '/', label: 'Live dashboard' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/renewables', label: 'Renewables' }, { to: '/methodology', label: 'Methodology' }],
+    liveFocus: 'mix',
   },
   '/carbon-intensity': {
     slug: '/carbon-intensity',
@@ -59,6 +64,8 @@ const explainers: Record<string, Explainer> = {
       { question: 'Why can imports affect carbon intensity?', answer: 'Imported electricity reflects conditions in neighbouring systems, so its carbon impact depends on where it comes from and what is generating there.' },
     ],
     related: [{ to: '/', label: 'Live dashboard' }, { to: '/cleanest-time-to-use-electricity', label: 'Cleanest time to use electricity' }, { to: '/renewables', label: 'Renewables' }, { to: '/uk-electricity-mix', label: 'UK electricity mix' }],
+    liveFocus: 'carbon',
+    showRegionalCarbon: true,
   },
   '/renewables': {
     slug: '/renewables',
@@ -81,6 +88,7 @@ const explainers: Record<string, Explainer> = {
       { question: 'Does high renewable output lower carbon intensity?', answer: 'Usually yes, especially when it reduces gas generation. The exact carbon intensity also depends on demand, imports and other sources.' },
     ],
     related: [{ to: '/', label: 'Live dashboard' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/uk-electricity-mix', label: 'UK electricity mix' }, { to: '/methodology', label: 'Methodology' }],
+    liveFocus: 'renewables',
   },
   '/gas-generation': {
     slug: '/gas-generation',
@@ -103,6 +111,7 @@ const explainers: Record<string, Explainer> = {
       { question: 'Does more wind reduce gas?', answer: 'Often yes. Strong wind output can displace gas generation and lower carbon intensity.' },
     ],
     related: [{ to: '/', label: 'Live dashboard' }, { to: '/renewables', label: 'Renewables' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/electricity-demand', label: 'Electricity demand' }],
+    liveFocus: 'gas',
   },
   '/nuclear-power': {
     slug: '/nuclear-power',
@@ -124,6 +133,7 @@ const explainers: Record<string, Explainer> = {
       { question: 'Does nuclear lower carbon intensity?', answer: 'Yes, higher nuclear output usually helps lower grid carbon intensity compared with fossil generation.' },
     ],
     related: [{ to: '/', label: 'Live dashboard' }, { to: '/uk-electricity-mix', label: 'UK electricity mix' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/renewables', label: 'Renewables' }],
+    liveFocus: 'nuclear',
   },
   '/interconnectors': {
     slug: '/interconnectors',
@@ -146,6 +156,7 @@ const explainers: Record<string, Explainer> = {
       { question: 'Are imports always lower carbon?', answer: 'No. It depends on the exporting system’s generation mix at that time.' },
     ],
     related: [{ to: '/', label: 'Live dashboard' }, { to: '/uk-electricity-mix', label: 'UK electricity mix' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/methodology', label: 'Methodology' }],
+    liveFocus: 'interconnectors',
   },
   '/electricity-demand': {
     slug: '/electricity-demand',
@@ -168,6 +179,7 @@ const explainers: Record<string, Explainer> = {
       { question: 'Can shifting demand help?', answer: 'Yes. Moving flexible use to cleaner, lower-demand periods can reduce emissions and sometimes cost.' },
     ],
     related: [{ to: '/', label: 'Live dashboard' }, { to: '/cleanest-time-to-use-electricity', label: 'Cleanest time' }, { to: '/gas-generation', label: 'Gas generation' }, { to: '/carbon-intensity', label: 'Carbon intensity' }],
+    liveFocus: 'demand',
   },
   '/uk-electricity-generation-live': {
     slug: '/uk-electricity-generation-live',
@@ -189,6 +201,7 @@ const explainers: Record<string, Explainer> = {
       { question: 'Does this include Northern Ireland?', answer: 'Most live data here covers Great Britain, not Northern Ireland’s separate electricity market.' },
     ],
     related: [{ to: '/', label: 'Live dashboard' }, { to: '/uk-electricity-mix', label: 'UK electricity mix' }, { to: '/electricity-demand', label: 'Electricity demand' }, { to: '/methodology', label: 'Methodology' }],
+    liveFocus: 'generation',
   },
   '/cleanest-time-to-use-electricity': {
     slug: '/cleanest-time-to-use-electricity',
@@ -199,7 +212,7 @@ const explainers: Record<string, Explainer> = {
     intro: 'The cleanest time to use electricity is the period when the grid has lower carbon intensity. That usually happens when low-carbon generation is high and demand is not forcing more fossil generation onto the system.',
     shortAnswer: 'There is no fixed cleanest hour every day. Windy overnight periods, sunny middays and lower-demand windows are often cleaner, while still evening peaks with more gas generation are often more carbon intensive.',
     sections: [
-      { heading: 'Cleanest time today', body: ['Use EnergyMix.info’s live dashboard to compare current carbon intensity, renewables share, gas generation and demand. A future daily page can turn this into a simple cleanest-window recommendation once enough historical and forecast data is available.'] },
+      { heading: 'Cleanest time today', body: ['Use the live module above for the next low-carbon forecast window, then compare it with current renewables, gas generation and demand. The recommendation is emissions-focused: price and smart-tariff windows may differ.'] },
       { heading: 'What makes electricity cleaner?', body: ['Electricity is generally cleaner when more of the mix comes from wind, solar, nuclear, hydro and other low-carbon sources. It is generally more carbon intensive when gas or other fossil generation provides a larger share.'] },
       { heading: 'Best times for EV charging', body: ['If you can choose when to charge, overnight can be good when wind is strong and demand is lower. Solar-heavy midday periods can also be cleaner, especially in brighter months. Smart tariffs may add a price signal, but price and carbon are not identical.'] },
       { heading: 'Best times for appliances and batteries', body: ['Dishwashers, washing machines, immersion heaters and home batteries can often shift by a few hours. The practical rule is simple: avoid unnecessary use during high-demand, high-carbon peaks when a cleaner window is nearby and convenient.'] },
@@ -211,6 +224,7 @@ const explainers: Record<string, Explainer> = {
       { question: 'Is this the same as the cheapest time?', answer: 'No. Cheap periods and clean periods often overlap, especially with high renewables, but tariffs and market prices are separate signals.' },
     ],
     related: [{ to: '/', label: 'Live dashboard' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/renewables', label: 'Renewables' }, { to: '/newsletter', label: 'Weekly briefing' }],
+    liveFocus: 'cleanest',
   },
 };
 
@@ -243,6 +257,10 @@ const ExplainerPage = ({ page }: { page: Explainer }) => (
         <h2 className="text-2xl font-semibold text-primary mb-3">Short answer</h2>
         <p>{page.shortAnswer}</p>
       </section>
+
+      <LiveSeoModule focus={page.liveFocus} />
+
+      {page.showRegionalCarbon && <RegionalCarbonPanel />}
 
       {page.sections.map((section) => (
         <section key={section.heading}>

@@ -45,8 +45,9 @@ const Methodology = () => {
           <ul className="space-y-3 list-disc pl-5">
             <li><strong>Elexon BMRS / FUELINST:</strong> transmission-connected generation, balancing and related electricity market data.</li>
             <li><strong>NESO / National Grid ESO sources:</strong> grid demand, embedded generation context and system-level data where available.</li>
-            <li><strong>Carbon Intensity API:</strong> official carbon-intensity estimates and forecasts for electricity consumption.</li>
+            <li><strong>Carbon Intensity API:</strong> official national, regional and postcode carbon-intensity estimates and forecasts for electricity consumption.</li>
             <li><strong>ENTSO-E and BMRS fallbacks:</strong> interconnector flow context where the dashboard can retrieve reliable data.</li>
+            <li><strong>Sheffield Solar PV Live:</strong> embedded solar generation estimates used to avoid undercounting distributed solar.</li>
           </ul>
           <p className="mt-4 text-sm text-foreground/70">
             For source links and licensing notes, see the <Link to="/data" className="text-cosmic-cyan hover:underline">data sources page</Link>.
@@ -65,6 +66,8 @@ const Methodology = () => {
           <ul className="space-y-3 list-disc pl-5">
             <li>Live data can lag the physical grid and may be revised after publication.</li>
             <li>Fuel categories can differ between source systems, especially storage, biomass, embedded generation and interconnectors.</li>
+            <li>Storage and pumped storage need clear sign handling: generating and charging should be shown differently, so EnergyMix avoids overstating them until source conventions are unambiguous.</li>
+            <li>Wholesale price is not yet shown in the live dashboard. It is valuable for “cleanest vs cheapest” guidance, but needs a reliable licensed source before being promoted as a live metric.</li>
             <li>Interconnector imports and exports affect domestic generation mix and carbon intensity in different ways.</li>
             <li>Carbon intensity estimates are modelled and should be interpreted as best available public estimates, not exact metering.</li>
           </ul>
