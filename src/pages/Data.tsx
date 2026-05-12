@@ -213,11 +213,11 @@ const Data = () => {
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="border-l-2 border-amber-400/40 pl-4 py-2">
                     <h3 className="font-semibold text-foreground mb-1">Wholesale price</h3>
-                    <p className="text-sm text-foreground/70">Useful for “cleanest vs cheapest” guidance. Market Index Price data is available from Elexon/BMRS but may need authenticated access and careful licensing before showing it live.</p>
+                    <p className="text-sm text-foreground/70">Useful for “cleanest vs cheapest” guidance. EnergyMix now pulls Elexon Market Index Price as wholesale context; it is not a consumer tariff or smart-tariff recommendation.</p>
                   </div>
                   <div className="border-l-2 border-amber-400/40 pl-4 py-2">
                     <h3 className="font-semibold text-foreground mb-1">Storage and pumped storage</h3>
-                    <p className="text-sm text-foreground/70">Storage should be displayed as charging or generating, not hidden inside generation noise. EnergyMix currently treats it conservatively until the sign convention is clear enough for public UX.</p>
+                    <p className="text-sm text-foreground/70">Pumped storage is now shown by state: charging/pumping when PS is negative, generating when PS is positive. This avoids hiding storage inside generation noise.</p>
                   </div>
                   <div className="border-l-2 border-cosmic-cyan/40 pl-4 py-2">
                     <h3 className="font-semibold text-foreground mb-1">Regional carbon</h3>

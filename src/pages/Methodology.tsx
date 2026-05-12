@@ -48,6 +48,8 @@ const Methodology = () => {
             <li><strong>Carbon Intensity API:</strong> official national, regional and postcode carbon-intensity estimates and forecasts for electricity consumption.</li>
             <li><strong>ENTSO-E and BMRS fallbacks:</strong> interconnector flow context where the dashboard can retrieve reliable data.</li>
             <li><strong>Sheffield Solar PV Live:</strong> embedded solar generation estimates used to avoid undercounting distributed solar.</li>
+            <li><strong>Elexon Market Index Price:</strong> latest wholesale market index price, shown as grid-market context rather than a household tariff.</li>
+            <li><strong>Elexon FREQ:</strong> GB system frequency, used as a simple grid-health signal around the 50 Hz target.</li>
           </ul>
           <p className="mt-4 text-sm text-foreground/70">
             For source links and licensing notes, see the <Link to="/data" className="text-cosmic-cyan hover:underline">data sources page</Link>.
@@ -66,8 +68,8 @@ const Methodology = () => {
           <ul className="space-y-3 list-disc pl-5">
             <li>Live data can lag the physical grid and may be revised after publication.</li>
             <li>Fuel categories can differ between source systems, especially storage, biomass, embedded generation and interconnectors.</li>
-            <li>Storage and pumped storage need clear sign handling: generating and charging should be shown differently, so EnergyMix avoids overstating them until source conventions are unambiguous.</li>
-            <li>Wholesale price is not yet shown in the live dashboard. It is valuable for “cleanest vs cheapest” guidance, but needs a reliable licensed source before being promoted as a live metric.</li>
+            <li>Storage and pumped storage are sign-sensitive: positive PS is shown as generation, negative PS as charging/pumping. EnergyMix surfaces the state separately instead of folding it into renewable output.</li>
+            <li>Wholesale price is shown as market context only. It is not the same as a retail tariff, export tariff, Agile/Tracker price or final household cost.</li>
             <li>Interconnector imports and exports affect domestic generation mix and carbon intensity in different ways.</li>
             <li>Carbon intensity estimates are modelled and should be interpreted as best available public estimates, not exact metering.</li>
           </ul>

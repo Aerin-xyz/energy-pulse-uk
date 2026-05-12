@@ -1,4 +1,4 @@
-import { Activity, ArrowLeftRight, Clock, Factory, Gauge, Leaf } from 'lucide-react';
+import { Activity, ArrowLeftRight, BatteryCharging, Clock, Factory, Gauge, Leaf, PoundSterling, RadioTower } from 'lucide-react';
 import { formatGWfromMW } from '@/lib/utils';
 import { HelpTooltip } from '@/components/HelpTooltip';
 
@@ -11,6 +11,22 @@ interface TopMetricsStripProps {
     index: string;
   };
   lastLivePoint?: string | null;
+  marketIndexPrice?: {
+    priceGBPPerMWh: number;
+    startTime: string;
+    status: string;
+  } | null;
+  systemFrequency?: {
+    hz: number;
+    deviationHz: number;
+    status: string;
+  } | null;
+  storage?: {
+    netMW: number;
+    absMW: number;
+    mode: 'generating' | 'charging' | 'idle';
+    label: string;
+  } | null;
 }
 
 const formatTime = (iso?: string | null) => {
@@ -22,12 +38,21 @@ const formatTime = (iso?: string | null) => {
 
 const metricClass = 'glass-morphism rounded-xl border border-primary/20 px-3 py-3 md:px-4';
 
+const storageTone = (mode?: string) => {
+  if (mode === 'charging') return 'text-sky-300';
+  if (mode === 'generating') return 'text-emerald-300';
+  return 'text-muted-foreground';
+};
+
 export const TopMetricsStrip = ({
   totalDemandMW,
   totalGenerationMW,
   interconnectorFlowMW,
   carbonIntensity,
   lastLivePoint,
+  marketIndexPrice,
+  systemFrequency,
+  storage,
 }: TopMetricsStripProps) => {
   const transferLabel = interconnectorFlowMW >= 0 ? 'Net imports' : 'Net exports';
   const transferValue = Math.abs(interconnectorFlowMW);
@@ -62,6 +87,27 @@ export const TopMetricsStrip = ({
       help: `Carbon Intensity API value${carbonIntensity?.index ? ` — ${carbonIntensity.index}` : ''}.`,
     },
     {
+      label: 'Market price',
+      value: marketIndexPrice ? `£${marketIndexPrice.priceGBPPerMWh.toFixed(2)}/MWh` : 'Unknown',
+      icon: PoundSterling,
+      tone: 'text-amber-300',
+      help: 'Elexon Market Index Price, volume-weighted across available market index data providers for the latest settlement period. This is wholesale market context, not a consumer tariff.',
+    },
+    {
+      label: 'Frequency',
+      value: systemFrequency ? `${systemFrequency.hz.toFixed(3)} Hz` : 'Unknown',
+      icon: RadioTower,
+      tone: systemFrequency?.status === 'normal' ? 'text-emerald-300' : 'text-orange-300',
+      help: 'GB system frequency from Elexon FREQ data. The grid targets 50 Hz; small deviations are normal.',
+    },
+    {
+      label: storage?.mode === 'charging' ? 'Storage charging' : storage?.mode === 'generating' ? 'Storage output' : 'Storage',
+      value: storage ? `${formatGWfromMW(storage.absMW)} GW` : 'Unknown',
+      icon: BatteryCharging,
+      tone: storageTone(storage?.mode),
+      help: storage?.label || 'Pumped storage status from Elexon FUELINST/BMRS PS data. Negative values mean charging/pumping; positive values mean generating.',
+    },
+    {
       label: 'Last live point',
       value: formatTime(lastLivePoint),
       icon: Clock,
@@ -73,7 +119,7 @@ export const TopMetricsStrip = ({
   return (
     <section className="hidden md:block border-b border-primary/20 bg-background/40 relative">
       <div className="container mx-auto px-3 py-3 md:px-4 lg:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2.5 md:gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-2.5 md:gap-3">
           {metrics.map(({ label, value, icon: Icon, tone, help }) => (
             <div key={label} className={metricClass}>
               <div className="flex items-center justify-between gap-2 mb-1">

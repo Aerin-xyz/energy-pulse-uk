@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEnergyData } from '@/contexts/EnergyDataContext';
+import { useGridSignals } from '@/hooks/useGridSignals';
 
 type Focus =
   | 'mix'
@@ -29,6 +30,7 @@ const fmtTime = (iso?: string | null) => {
 };
 
 const pct = (part: number, total: number) => total > 0 ? `${((part / total) * 100).toFixed(1)}%` : '0.0%';
+const fmtPrice = (price?: number | null) => Number.isFinite(price) ? `£${Number(price).toFixed(2)}/MWh` : 'Checking…';
 
 function getMixValue(mix: GenerationItem[], names: string[]) {
   const wanted = new Set(names.map((n) => n.toLowerCase()));
@@ -98,6 +100,13 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
   const imports = (data?.interconnectors || []).reduce((sum, ic) => sum + (ic.flow > 0 ? ic.flow : 0), 0);
   const exports = (data?.interconnectors || []).reduce((sum, ic) => sum + (ic.flow < 0 ? Math.abs(ic.flow) : 0), 0);
   const cleanWindow = bestCleanWindow(data?.carbonIntensity?.forecastData);
+  const gridSignals = useGridSignals({
+    marketIndexPrice: data?.marketIndexPrice || null,
+    systemFrequency: data?.systemFrequency || null,
+    storage: data?.storage || null,
+  });
+  const marketIndexPrice = data?.marketIndexPrice || gridSignals.marketIndexPrice;
+  const storage = data?.storage || gridSignals.storage;
   const copy = focusCopy[focus];
 
   const cardsByFocus: Record<Focus, Array<{ label: string; value: string; note: string }>> = {
@@ -141,7 +150,7 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
       { label: 'Demand', value: fmtGW(data?.totalDemandMW), note: 'GB transmission demand' },
       { label: 'Generation', value: fmtGW(data?.totalGenerationMW), note: 'domestic generation' },
       { label: 'Net imports', value: fmtGW(Math.max(imports - exports, 0)), note: 'transfer contribution' },
-      { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
+      { label: storage?.mode === 'charging' ? 'Storage charging' : 'Storage output', value: fmtGW(storage?.absMW), note: storage?.label || 'pumped storage status' },
     ],
     generation: [
       { label: 'Generation', value: fmtGW(data?.totalGenerationMW), note: 'domestic generation' },
@@ -152,8 +161,8 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
     cleanest: [
       { label: 'Best upcoming', value: cleanWindow ? `${cleanWindow.value} gCO₂/kWh` : 'Checking…', note: cleanWindow ? `${fmtTime(cleanWindow.from)}–${fmtTime(cleanWindow.to)}` : 'forecast window' },
       { label: 'Now', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
-      { label: 'Renewables', value: pct(renewables, totalMix), note: 'current visible share' },
-      { label: 'Gas', value: fmtGW(gas), note: 'usually higher carbon' },
+      { label: 'Market price', value: fmtPrice(marketIndexPrice?.priceGBPPerMWh), note: 'wholesale context, not tariff' },
+      { label: storage?.mode === 'charging' ? 'Storage charging' : 'Storage output', value: fmtGW(storage?.absMW), note: storage?.label || 'pumped storage status' },
     ],
   };
 

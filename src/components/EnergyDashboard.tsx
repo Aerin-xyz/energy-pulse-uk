@@ -17,6 +17,7 @@ import { SystemStatusBanner } from '@/components/SystemStatusBanner';
 import { TopMetricsStrip } from '@/components/TopMetricsStrip';
 import { HelpTooltip } from '@/components/HelpTooltip';
 import { PowerFlowCard } from '@/components/PowerFlowCard';
+import { GridSignalsPanel } from '@/components/GridSignalsPanel';
 import { useState, useEffect, ReactNode } from 'react';
 
 interface EnergyDashboardProps {
@@ -211,6 +212,9 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
           interconnectorFlowMW={netInterconnectorFlowMW}
           carbonIntensity={data.carbonIntensity}
           lastLivePoint={lastLivePoint}
+          marketIndexPrice={data.marketIndexPrice}
+          systemFrequency={data.systemFrequency}
+          storage={data.storage}
         />
       )}
 
@@ -311,6 +315,12 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                 carbonIntensity={data.carbonIntensity}
                 settlementPeriod={data.asOf?.settlementPeriod}
                 sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp || data.asOf?.endISO}
+              />
+
+              <GridSignalsPanel
+                marketIndexPrice={data.marketIndexPrice}
+                systemFrequency={data.systemFrequency}
+                storage={data.storage}
               />
               
               {/* Generation Mix Chart - Hero Element */}
