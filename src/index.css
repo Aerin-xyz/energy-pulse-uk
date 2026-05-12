@@ -125,6 +125,13 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html,
+  body,
+  #root {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-background text-foreground;
     background: linear-gradient(135deg, hsl(220 30% 8%), hsl(220 30% 10%), hsl(240 30% 9%));
@@ -203,8 +210,9 @@ All colors MUST be HSL.
 
   .em-pfc-card {
     width: 100%;
-    max-width: 540px;
-    margin: 0 auto;
+    max-width: 500px;
+    margin-inline: auto;
+    aspect-ratio: 500 / 430;
     border-radius: 1.25rem;
     border: 1px solid hsl(187 89% 55% / 0.14);
     background:
@@ -213,242 +221,169 @@ All colors MUST be HSL.
     overflow: hidden;
   }
 
-  .em-pfc-card-content {
-    --em-pfc-size-circle-entity: 80px;
-    position: relative;
-    max-width: 520px;
-    min-height: 402px;
-    margin: 0 auto;
-    padding: var(--space-standard) var(--space-compact) var(--space-compact);
-  }
-
-  .em-pfc-row {
-    position: relative;
-    z-index: 2;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 520px;
-    margin: 0 auto;
-  }
-
-  .em-pfc-row-top {
-    height: 114px;
-    align-items: flex-start;
-  }
-
-  .em-pfc-row-middle {
-    height: 114px;
-  }
-
-  .em-pfc-row-bottom {
-    height: 114px;
-    align-items: flex-end;
-  }
-
-  .em-pfc-spacer {
-    width: var(--em-pfc-size-circle-entity);
-    height: var(--em-pfc-size-circle-entity);
-    flex: 0 0 var(--em-pfc-size-circle-entity);
-  }
-
-  .em-pfc-circle-container,
-  .em-pfc-home-container {
-    width: var(--em-pfc-size-circle-entity);
-    min-width: var(--em-pfc-size-circle-entity);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    color: var(--em-pfc-color);
-  }
-
-  .em-pfc-circle {
-    position: relative;
-    width: var(--em-pfc-size-circle-entity);
-    height: var(--em-pfc-size-circle-entity);
-    border-radius: 999px;
-    box-sizing: border-box;
-    border: 2px solid var(--em-pfc-color);
-    background: hsl(220 28% 10% / 0.86);
-    box-shadow: 0 0 14px hsl(187 89% 55% / 0.10);
-    backdrop-filter: blur(10px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    line-height: 1;
-    overflow: hidden;
-  }
-
-  .em-pfc-home-circle {
-    width: 90px;
-    height: 90px;
-    border: 0;
-    background: hsl(220 30% 7% / 0.94);
-    color: hsl(var(--primary));
-    box-shadow: 0 0 22px hsl(187 89% 55% / 0.22);
-  }
-
-  .em-pfc-home-ring {
-    position: absolute;
-    inset: 0;
+  .em-flow-stage {
+    display: block;
     width: 100%;
-    height: 100%;
-    transform: rotate(-90deg);
-    pointer-events: none;
-  }
-
-  .em-pfc-icon {
-    width: 20px;
-    height: 20px;
-    margin-bottom: 3px;
-    color: var(--em-pfc-color);
-    filter: drop-shadow(0 0 4px currentColor);
-  }
-
-  .em-pfc-value {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
-    font-size: 15px;
-    font-weight: 850;
-    color: var(--em-pfc-color);
-  }
-
-  .em-pfc-unit {
-    margin-top: 2px;
-    font-size: 10px;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .em-pfc-label {
-    max-width: 90px;
-    min-height: 18px;
+    height: auto;
+    aspect-ratio: 500 / 430;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    font-size: 12px;
-    color: hsl(var(--foreground) / 0.75);
   }
 
-  .em-pfc-lines {
-    position: absolute;
-    inset: 20px 14px 14px;
-    z-index: 1;
-    width: calc(100% - 28px);
-    height: calc(100% - 34px);
+  .flow-lines {
     pointer-events: none;
   }
 
-  .em-pfc-transfer-values {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
+  .flow-line-track,
+  .flow-line {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .flow-line-track {
+    stroke: hsl(215 20% 70% / 0.18);
+  }
+
+  .flow-line {
+    opacity: 0.76;
+  }
+
+  .flow-line-group.is-muted {
+    opacity: 0.18;
+  }
+
+  .flow-dot {
+    opacity: 0.72;
+    filter: drop-shadow(0 0 3px currentColor);
+  }
+
+  .flow-node-group {
+    color: var(--em-pfc-color, hsl(var(--primary)));
+  }
+
+  .flow-node-group.is-muted {
+    opacity: 0.34;
+  }
+
+  .flow-node-circle {
+    fill: hsl(220 28% 10% / 0.94);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    filter: drop-shadow(0 0 6px hsl(187 89% 55% / 0.12));
+  }
+
+  .flow-demand-ring {
+    fill: none;
+    stroke: hsl(var(--primary) / 0.48);
+    stroke-width: 4;
+    stroke-dasharray: 5 5;
+    vector-effect: non-scaling-stroke;
+    transform-origin: center;
+    animation: flow-demand-ring-spin 26s linear infinite;
+  }
+
+  .flow-node-icon {
+    color: currentColor;
+    opacity: 0.95;
+    filter: drop-shadow(0 0 3px currentColor);
+  }
+
+  .flow-node-value,
+  .flow-node-unit,
+  .flow-demand-caption,
+  .flow-label,
+  .flow-transfer-values text {
+    text-anchor: middle;
+    dominant-baseline: middle;
+    user-select: none;
+    paint-order: stroke;
+    stroke: hsl(220 30% 8% / 0.70);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+
+  .flow-node-value {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 17px;
+    font-weight: 850;
+    fill: currentColor;
+  }
+
+  .flow-demand-value {
+    font-size: 18px;
+    fill: hsl(var(--primary));
+  }
+
+  .flow-node-unit,
+  .flow-demand-caption {
+    font-size: 10px;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    fill: hsl(var(--muted-foreground));
+  }
+
+  .flow-demand-caption {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  .flow-label {
+    font-size: 13px;
+    font-weight: 650;
+    fill: hsl(var(--foreground) / 0.76);
+  }
+
+  .flow-transfer-values text {
     font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
     font-size: 12px;
     font-weight: 850;
-    line-height: 1;
   }
 
-  .em-pfc-transfer-line {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 3px;
+  .flow-transfer-import { fill: #67e8f9; }
+  .flow-transfer-export { fill: #fb7185; }
+
+  .flow-debug-overlay {
+    pointer-events: none;
   }
 
-  .em-pfc-import { color: #67e8f9; }
-  .em-pfc-export { color: #fb7185; }
-
-  .em-pfc-mini-arrow {
-    width: 12px;
-    height: 12px;
+  .flow-debug-overlay rect {
+    fill: none;
+    stroke: #facc15;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
   }
 
-  .em-pfc-dot {
-    opacity: 0.86;
-    filter: drop-shadow(0 0 4px currentColor);
+  .flow-debug-overlay line {
+    stroke: #facc15;
+    stroke-width: 0.7;
+    stroke-dasharray: 5 5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .flow-debug-overlay circle {
+    fill: #facc15;
   }
 
   @media (max-width: 430px) {
     .em-pfc-card {
       max-width: 100%;
-      border-radius: 1.25rem;
+      border-radius: 1.1rem;
     }
 
-    .em-pfc-card-content {
-      --em-pfc-size-circle-entity: clamp(66px, 18.5vw, 78px);
-      min-height: clamp(352px, 94vw, 392px);
-      padding: var(--space-compact) var(--space-tight) var(--space-tight);
+    .flow-node-value {
+      font-size: 16px;
     }
 
-    .em-pfc-row {
-      display: contents;
+    .flow-label {
+      font-size: 12.5px;
     }
+  }
 
-    .em-pfc-spacer {
-      display: none;
-    }
-
-    .em-pfc-node {
-      position: absolute;
-      z-index: 2;
-      transform: translate(-50%, -50%);
-    }
-
-    .em-pfc-node-wind { left: 17%; top: 24%; }
-    .em-pfc-node-solar { left: 50%; top: 14%; }
-    .em-pfc-node-nuclear { left: 83%; top: 24%; }
-    .em-pfc-node-transfers { left: 17%; top: 50%; }
-    .em-pfc-home-node { left: 50%; top: 50%; }
-    .em-pfc-node-hydro { left: 83%; top: 50%; }
-    .em-pfc-node-gas { left: 17%; top: 79%; }
-    .em-pfc-node-biomass { left: 50%; top: 84%; }
-    .em-pfc-node-other { left: 83%; top: 79%; }
-
-    .em-pfc-node-other.opacity-45 {
-      opacity: 0.36;
-    }
-
-    .em-pfc-lines {
-      inset: var(--space-compact) var(--space-tight) var(--space-tight);
-      width: calc(100% - 16px);
-      height: calc(100% - 20px);
-    }
-
-    .em-pfc-home-circle {
-      width: clamp(82px, 22vw, 92px);
-      height: clamp(82px, 22vw, 92px);
-    }
-
-    .em-pfc-icon {
-      width: 16px;
-      height: 16px;
-      margin-bottom: 2px;
-    }
-
-    .em-pfc-value {
-      font-size: 12px;
-    }
-
-    .em-pfc-transfer-values {
-      font-size: 10.5px;
-      gap: 2px;
-    }
-
-    .em-pfc-mini-arrow {
-      width: 10px;
-      height: 10px;
-    }
-
-    .em-pfc-unit {
-      font-size: 8.5px;
-    }
-
-    .em-pfc-label {
-      font-size: 10.5px;
-      max-width: 72px;
-      min-height: 15px;
+  @keyframes flow-demand-ring-spin {
+    to {
+      transform: rotate(360deg);
     }
   }
 

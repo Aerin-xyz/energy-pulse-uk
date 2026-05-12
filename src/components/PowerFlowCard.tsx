@@ -5,24 +5,20 @@ import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn, formatGWfromMW } from '@/lib/utils';
 import { ArrowLeft, ArrowRight, CircleHelp, Factory, Flame, Home, Info, Leaf, RadioTower, Sun, Waves, Wind } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 
 /*
-  EnergyMix Power Flow Card
+  EnergyMix deterministic Power Flow layout
 
-  Reference files inspected and used as the design authority:
-  - flixlix-cards/packages/flixlix-cards/power-flow-card-plus/src/power-flow-card-plus.ts
-    Defines the card render tree: ha-card > card-content, top/middle/bottom rows, circular entity components and flowElement.
-  - flixlix-cards/packages/shared/src/components/{solar,grid,battery,home,non-fossil}.ts
-    Defines entity circle markup, labels, icons, values and the segmented home/demand ring.
-  - flixlix-cards/packages/shared/src/components/flows/*.ts
-    Defines SVG flow paths plus animateMotion dots.
-  - flixlix-cards/packages/shared/src/style/index.ts and style/all.ts
-    Defines circle sizing, row layout, line positioning, colours and dynamic CSS variables.
-  - flixlix-cards/packages/shared/src/utils/{compute-power-distribution,compute-flow-rate,show-line,style-line}.ts
-    Defines source-to-home flow calculations, animation speed and zero-line behaviour.
+  Reference constants ported from Power Flow Card Plus:
+  - shared/src/style/index.ts: --size-circle-entity: 79.99px, .circle 80x80, stroke 2px,
+    .row max-width 500px, .card-content/.row max-width around 470-500px, line SVG behind nodes.
+  - power-flow-card-plus.ts render tree: top row, middle row with grid/spacer/home, bottom row, then flowElement.
+  - home.ts: home circle contains usage/ring; home label is hidden when surrounding entities crowd layout.
+  - grid.ts: grid/transfer circle can display two-way consumption + return values.
+  - flows/*.ts: animated dots follow the same SVG path as the visible line.
 
-  This is a production-safe React port, not a direct import: the original depends on Lit,
-  Home Assistant custom elements, Lovelace config, hass state objects and ha-icon/ha-ripple.
+  This React component keeps those layout rules but maps them to EnergyMix data.
 */
 
 interface GenerationData {
@@ -52,20 +48,61 @@ interface PowerFlowCardProps {
   sourceTimestamp?: string | null;
 }
 
+const POWER_FLOW_LAYOUT = {
+  viewBox: { width: 500, height: 430 },
+  node: {
+    diameter: 80,
+    radius: 40,
+    demandRadius: 46,
+    strokeWidth: 2,
+    iconSize: 22,
+    valueFontSize: 17,
+    unitFontSize: 10,
+    labelFontSize: 13,
+    labelGap: 14,
+  },
+  rows: {
+    top: 70,
+    middle: 215,
+    bottom: 355,
+  },
+  cols: {
+    left: 80,
+    centre: 250,
+    right: 420,
+  },
+  minLabelGap: 14,
+  minNodeGap: 28,
+} as const;
+
+type Point = { x: number; y: number };
+type Slot = 'wind' | 'solar' | 'nuclear' | 'transfers' | 'demand' | 'hydro' | 'gas' | 'biomass' | 'other';
+
 type FlowNode = {
-  id: string;
+  id: Slot;
   label: string;
   valueMW: number;
   color: string;
-  icon: typeof Wind;
-  row: 'top' | 'middle' | 'bottom';
-  slot: 'left' | 'centre' | 'right';
-  flowPath: string;
-  reverse?: boolean;
+  icon: LucideIcon;
+  point: Point;
   muted?: boolean;
   importMW?: number;
   exportMW?: number;
+  demand?: boolean;
 };
+
+type FlowLine = {
+  id: string;
+  from: Point;
+  to: Point;
+  valueMW: number;
+  color: string;
+  reverse?: boolean;
+  muted?: boolean;
+  curve?: number;
+};
+
+const isDebugFlowLayout = () => typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debugFlowLayout') === '1';
 
 const valueFor = (mix: GenerationData[], names: string[]) =>
   mix
@@ -86,57 +123,121 @@ const carbonClass = (index?: string) => {
   return 'bg-carbon-high text-white';
 };
 
-const flowDuration = (valueMW: number, maxMW: number) => {
-  const ratio = Math.min(1, valueMW / Math.max(maxMW, 1));
-  return Math.max(1.25, 5.5 - ratio * 3.5);
+const nodePoint = (col: keyof typeof POWER_FLOW_LAYOUT.cols, row: keyof typeof POWER_FLOW_LAYOUT.rows): Point => ({
+  x: POWER_FLOW_LAYOUT.cols[col],
+  y: POWER_FLOW_LAYOUT.rows[row],
+});
+
+const edgePoint = (from: Point, to: Point, radius = POWER_FLOW_LAYOUT.node.radius + 2): Point => {
+  const dx = to.x - from.x;
+  const dy = to.y - from.y;
+  const length = Math.hypot(dx, dy) || 1;
+  return {
+    x: from.x + (dx / length) * radius,
+    y: from.y + (dy / length) * radius,
+  };
 };
 
-const EnergyCircle = ({ node }: { node: FlowNode }) => {
-  const Icon = node.icon;
+const flowPath = (from: Point, to: Point, curve = 0) => {
+  const start = edgePoint(from, to);
+  const end = edgePoint(to, from, POWER_FLOW_LAYOUT.node.demandRadius + 2);
+  if (!curve) return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} L ${end.x.toFixed(1)} ${end.y.toFixed(1)}`;
+  const midX = (start.x + end.x) / 2;
+  const midY = (start.y + end.y) / 2;
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const len = Math.hypot(dx, dy) || 1;
+  const cx = midX + (-dy / len) * curve;
+  const cy = midY + (dx / len) * curve;
+  return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} Q ${cx.toFixed(1)} ${cy.toFixed(1)} ${end.x.toFixed(1)} ${end.y.toFixed(1)}`;
+};
+
+const flowDuration = (valueMW: number, maxMW: number) => {
+  const ratio = Math.min(1, valueMW / Math.max(maxMW, 1));
+  return Math.max(1.8, 6 - ratio * 3.2);
+};
+
+const iconPathClass = 'pointer-events-none';
+
+const SvgIcon = ({ icon: Icon, x, y, size, className }: { icon: LucideIcon; x: number; y: number; size: number; className?: string }) => (
+  <g transform={`translate(${x - size / 2} ${y - size / 2})`} className={className}>
+    <Icon width={size} height={size} strokeWidth={2.2} className={iconPathClass} />
+  </g>
+);
+
+const FlowNodeSvg = ({ node }: { node: FlowNode }) => {
+  const layout = POWER_FLOW_LAYOUT.node;
+  const radius = node.demand ? layout.demandRadius : layout.radius;
+  const value = formatGWfromMW(node.valueMW);
+  const labelY = node.point.y + radius + layout.labelGap + layout.labelFontSize * 0.72;
+
   return (
-    <div className={cn('em-pfc-node', `em-pfc-node-${node.id}`, 'em-pfc-circle-container', node.muted && 'opacity-45')} style={{ '--em-pfc-color': node.color } as React.CSSProperties}>
-      <div className="em-pfc-circle">
-        <Icon className="em-pfc-icon" />
-        {node.id === 'transfers' ? (
-          <span className="em-pfc-transfer-values">
-            <span className="em-pfc-transfer-line em-pfc-import"><ArrowRight className="em-pfc-mini-arrow" />{formatGWfromMW(node.importMW || 0)}</span>
-            <span className="em-pfc-transfer-line em-pfc-export"><ArrowLeft className="em-pfc-mini-arrow" />{formatGWfromMW(node.exportMW || 0)}</span>
-          </span>
-        ) : (
-          <>
-            <span className="em-pfc-value">{formatGWfromMW(node.valueMW)}</span>
-            <span className="em-pfc-unit">GW</span>
-          </>
-        )}
-      </div>
-      <span className="em-pfc-label">{node.label}</span>
-    </div>
+    <g className={cn('flow-node-group', `flow-node-group-${node.id}`, node.muted && 'is-muted')} transform={`translate(${node.point.x} ${node.point.y})`}>
+      <circle r={radius} className={cn('flow-node', `flow-node-${node.id}`, 'flow-node-circle')} data-node-id={node.id} style={{ stroke: node.color }} />
+      {node.demand && (
+        <circle r={layout.demandRadius - 4} className="flow-demand-ring" />
+      )}
+      <SvgIcon icon={node.icon} x={0} y={node.demand ? -18 : -20} size={node.demand ? 20 : layout.iconSize} className="flow-node-icon" />
+      {node.id === 'transfers' ? (
+        <g className="flow-transfer-values">
+          <text y="-2" className="flow-transfer-import"><tspan>→ </tspan>{formatGWfromMW(node.importMW || 0)}</text>
+          <text y="15" className="flow-transfer-export"><tspan>← </tspan>{formatGWfromMW(node.exportMW || 0)}</text>
+        </g>
+      ) : node.demand ? (
+        <>
+          <text y="3" className="flow-node-value flow-demand-value">{value}</text>
+          <text y="20" className="flow-node-unit">GW</text>
+          <text y="34" className="flow-demand-caption">Demand</text>
+        </>
+      ) : (
+        <>
+          <text y="7" className="flow-node-value">{value}</text>
+          <text y="23" className="flow-node-unit">GW</text>
+        </>
+      )}
+      {!node.demand && (
+        <text className="flow-label" x="0" y={labelY - node.point.y}>{node.label}</text>
+      )}
+    </g>
   );
 };
 
-const Spacer = () => <div className="em-pfc-spacer" aria-hidden="true" />;
-
-const FlowSvg = ({ nodes, maxMW }: { nodes: FlowNode[]; maxMW: number }) => (
-  <svg className="em-pfc-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-    {nodes.map((node) => {
-      const width = Math.max(1.1, Math.min(3.8, 1.1 + (node.valueMW / Math.max(maxMW, 1)) * 3));
-      const duration = flowDuration(node.valueMW, maxMW);
+const FlowLines = ({ lines, maxMW }: { lines: FlowLine[]; maxMW: number }) => (
+  <g className="flow-lines">
+    {lines.map((line) => {
+      const path = flowPath(line.from, line.to, line.curve || 0);
+      const width = Math.max(1.25, Math.min(4, 1.25 + (line.valueMW / Math.max(maxMW, 1)) * 2.7));
+      const duration = flowDuration(line.valueMW, maxMW);
       return (
-        <g key={node.id} opacity={node.muted ? 0.28 : 1}>
-          <path d={node.flowPath} stroke="rgba(148,163,184,0.28)" strokeWidth={width + 1.8} strokeLinecap="round" fill="none" vectorEffect="non-scaling-stroke" />
-          <path id={`em-pfc-flow-${node.id}`} d={node.flowPath} stroke={node.color} strokeWidth={width} strokeLinecap="round" fill="none" vectorEffect="non-scaling-stroke" />
-          {!node.muted && node.valueMW > 1 && (
-            <circle r="1.4" fill={node.color} className="em-pfc-dot" vectorEffect="non-scaling-stroke">
-              <animateMotion dur={`${duration}s`} repeatCount="indefinite" calcMode="paced" keyPoints={node.reverse ? '1;0' : undefined} keyTimes={node.reverse ? '0;1' : undefined}>
-                <mpath href={`#em-pfc-flow-${node.id}`} />
+        <g key={line.id} className={cn('flow-line-group', line.muted && 'is-muted')}>
+          <path d={path} className="flow-line-track" strokeWidth={width + 2.2} />
+          <path id={`flow-path-${line.id}`} d={path} className="flow-line" stroke={line.color} strokeWidth={width} />
+          {!line.muted && line.valueMW > 1 && (
+            <circle r="1.55" fill={line.color} className="flow-dot">
+              <animateMotion dur={`${duration}s`} repeatCount="indefinite" calcMode="paced" keyPoints={line.reverse ? '1;0' : undefined} keyTimes={line.reverse ? '0;1' : undefined}>
+                <mpath href={`#flow-path-${line.id}`} />
               </animateMotion>
             </circle>
           )}
         </g>
       );
     })}
-  </svg>
+  </g>
 );
+
+const DebugOverlay = () => {
+  const { width, height } = POWER_FLOW_LAYOUT.viewBox;
+  const { left, centre, right } = POWER_FLOW_LAYOUT.cols;
+  const { top, middle, bottom } = POWER_FLOW_LAYOUT.rows;
+  return (
+    <g className="flow-debug-overlay">
+      <rect x="0" y="0" width={width} height={height} />
+      {[left, centre, right].map((x) => <line key={`col-${x}`} x1={x} y1="0" x2={x} y2={height} />)}
+      {[top, middle, bottom].map((y) => <line key={`row-${y}`} x1="0" y1={y} x2={width} y2={y} />)}
+      {[left, centre, right].flatMap((x) => [top, middle, bottom].map((y) => <circle key={`${x}-${y}`} cx={x} cy={y} r="3" />))}
+    </g>
+  );
+};
 
 export const PowerFlowCard = ({
   generationMix,
@@ -148,6 +249,7 @@ export const PowerFlowCard = ({
   sourceTimestamp,
 }: PowerFlowCardProps) => {
   const [open, setOpen] = useState(false);
+  const debug = isDebugFlowLayout();
 
   const model = useMemo(() => {
     const wind = valueFor(generationMix, ['Wind']);
@@ -162,56 +264,63 @@ export const PowerFlowCard = ({
       interconnectors.filter((item) => (item.flow || 0) > 0).reduce((sum, item) => sum + (item.flow || 0), 0)
     );
     const exportMW = interconnectors.filter((item) => (item.flow || 0) < 0).reduce((sum, item) => sum + Math.abs(item.flow || 0), 0);
-    const netTransfer = importMW - exportMW;
-    const transferMW = Math.max(importMW, exportMW, Math.abs(netTransfer));
-    const exporting = exportMW > importMW;
+    const transferMW = Math.max(importMW, exportMW);
     const named = wind + solar + gas + nuclear + hydro + biomass + importsCategory;
     const other = Math.max(0, totalGenerationMW - named);
     const lowCarbon = wind + solar + nuclear + hydro + biomass;
-    const maxMW = Math.max(wind, solar, gas, nuclear, hydro, biomass, other, transferMW, totalDemandMW, 1);
 
-    const baseNodes: Omit<FlowNode, 'muted'>[] = [
-      { id: 'wind', label: 'Wind', valueMW: wind, color: '#5dd6c0', icon: Wind, row: 'top', slot: 'left', flowPath: 'M 17 25 C 30 25, 36 43, 50 50' },
-      { id: 'solar', label: 'Solar', valueMW: solar, color: '#f5bd41', icon: Sun, row: 'top', slot: 'centre', flowPath: 'M 50 16 C 50 30, 50 40, 50 50' },
-      { id: 'nuclear', label: 'Nuclear', valueMW: nuclear, color: '#aa86ff', icon: RadioTower, row: 'top', slot: 'right', flowPath: 'M 83 25 C 70 25, 64 43, 50 50' },
-      { id: 'transfers', label: 'Transfers', valueMW: transferMW, color: exporting ? '#fb7185' : '#67e8f9', icon: exporting ? ArrowLeft : ArrowRight, row: 'middle', slot: 'left', flowPath: 'M 17 50 H 50', reverse: exporting, importMW, exportMW },
-      { id: 'hydro', label: 'Hydro', valueMW: hydro, color: '#7ca7d8', icon: Waves, row: 'middle', slot: 'right', flowPath: 'M 83 50 H 50' },
-      { id: 'gas', label: 'Gas', valueMW: gas, color: '#f45b69', icon: Flame, row: 'bottom', slot: 'left', flowPath: 'M 17 80 C 30 80, 36 58, 50 50' },
-      { id: 'biomass', label: 'Biomass', valueMW: biomass, color: '#8fe3b0', icon: Leaf, row: 'bottom', slot: 'centre', flowPath: 'M 50 84 C 50 70, 50 60, 50 50' },
-      { id: 'other', label: 'Other', valueMW: other, color: '#c8d0dc', icon: Factory, row: 'bottom', slot: 'right', flowPath: 'M 83 78 C 70 78, 64 57, 50 50' },
+    const points = {
+      wind: nodePoint('left', 'top'),
+      solar: nodePoint('centre', 'top'),
+      nuclear: nodePoint('right', 'top'),
+      transfers: nodePoint('left', 'middle'),
+      demand: nodePoint('centre', 'middle'),
+      hydro: nodePoint('right', 'middle'),
+      gas: nodePoint('left', 'bottom'),
+      biomass: nodePoint('centre', 'bottom'),
+      other: nodePoint('right', 'bottom'),
+    } satisfies Record<Slot, Point>;
+
+    const baseNodes: FlowNode[] = [
+      { id: 'wind', label: 'Wind', valueMW: wind, color: '#5dd6c0', icon: Wind, point: points.wind },
+      { id: 'solar', label: 'Solar', valueMW: solar, color: '#f5bd41', icon: Sun, point: points.solar },
+      { id: 'nuclear', label: 'Nuclear', valueMW: nuclear, color: '#aa86ff', icon: RadioTower, point: points.nuclear },
+      { id: 'transfers', label: 'Transfers', valueMW: transferMW, color: transferMW === exportMW && exportMW > importMW ? '#fb7185' : '#67e8f9', icon: transferMW === exportMW && exportMW > importMW ? ArrowLeft : ArrowRight, point: points.transfers, importMW, exportMW },
+      { id: 'demand', label: 'Demand', valueMW: totalDemandMW, color: '#1cdee4', icon: Home, point: points.demand, demand: true },
+      { id: 'hydro', label: 'Hydro', valueMW: hydro, color: '#7ca7d8', icon: Waves, point: points.hydro },
+      { id: 'gas', label: 'Gas', valueMW: gas, color: '#f45b69', icon: Flame, point: points.gas },
+      { id: 'biomass', label: 'Biomass', valueMW: biomass, color: '#8fe3b0', icon: Leaf, point: points.biomass },
+      { id: 'other', label: 'Other', valueMW: other, color: '#c8d0dc', icon: Factory, point: points.other },
     ];
-    const nodes: FlowNode[] = baseNodes.map((node) => ({ ...node, muted: node.valueMW <= 1 }));
-    const flowNodes: FlowNode[] = [
-      ...nodes.filter((node) => node.id !== 'transfers'),
-      { ...nodes.find((node) => node.id === 'transfers')!, id: 'imports-flow', label: 'Imports', valueMW: importMW, color: '#67e8f9', flowPath: 'M 17 47.5 H 50', reverse: false, muted: importMW <= 1 },
-      { ...nodes.find((node) => node.id === 'transfers')!, id: 'exports-flow', label: 'Exports', valueMW: exportMW, color: '#fb7185', flowPath: 'M 17 52.8 H 50', reverse: true, muted: exportMW <= 1 },
-    ];
+    const nodes: FlowNode[] = baseNodes.map((node) => ({ ...node, muted: !node.demand && node.valueMW <= 1 }));
+
+    const maxMW = Math.max(wind, solar, gas, nuclear, hydro, biomass, other, transferMW, totalDemandMW, 1);
+    const demand = points.demand;
+    const lines: FlowLine[] = [
+      { id: 'wind-demand', from: points.wind, to: demand, valueMW: wind, color: '#5dd6c0', curve: -10 },
+      { id: 'solar-demand', from: points.solar, to: demand, valueMW: solar, color: '#f5bd41' },
+      { id: 'nuclear-demand', from: points.nuclear, to: demand, valueMW: nuclear, color: '#aa86ff', curve: 10 },
+      { id: 'imports-demand', from: points.transfers, to: demand, valueMW: importMW, color: '#67e8f9', curve: -6 },
+      { id: 'exports-demand', from: points.transfers, to: demand, valueMW: exportMW, color: '#fb7185', reverse: true, curve: 6 },
+      { id: 'hydro-demand', from: points.hydro, to: demand, valueMW: hydro, color: '#7ca7d8' },
+      { id: 'gas-demand', from: points.gas, to: demand, valueMW: gas, color: '#f45b69', curve: 10 },
+      { id: 'biomass-demand', from: points.biomass, to: demand, valueMW: biomass, color: '#8fe3b0' },
+      { id: 'other-demand', from: points.other, to: demand, valueMW: other, color: '#c8d0dc', curve: -10 },
+    ].map((line) => ({ ...line, muted: line.valueMW <= 1 }));
 
     return {
       nodes,
-      flowNodes,
+      lines,
       maxMW,
       transferMW,
       importMW,
       exportMW,
-      exporting,
       lowCarbonShare: totalGenerationMW ? (lowCarbon / totalGenerationMW) * 100 : 0,
-      ring: [
-        { id: 'wind', value: wind, color: '#5dd6c0' },
-        { id: 'solar', value: solar, color: '#f5bd41' },
-        { id: 'nuclear', value: nuclear, color: '#aa86ff' },
-        { id: 'gas', value: gas, color: '#f45b69' },
-        { id: 'other', value: hydro + biomass + other + importsCategory, color: '#c8d0dc' },
-      ],
     };
   }, [generationMix, interconnectors, totalDemandMW, totalGenerationMW]);
 
-  const top = model.nodes.filter((node) => node.row === 'top');
-  const middle = model.nodes.filter((node) => node.row === 'middle');
-  const bottom = model.nodes.filter((node) => node.row === 'bottom');
   const sourceTime = formatTime(sourceTimestamp);
-  const circumference = 238.76;
-  let offset = 0;
+  const { width, height } = POWER_FLOW_LAYOUT.viewBox;
 
   return (
     <Card id="power-flow" className="relative scroll-mt-28 overflow-hidden rounded-2xl border-primary/20 bg-card/65 shadow-xl shadow-primary/5">
@@ -234,43 +343,13 @@ export const PowerFlowCard = ({
       <CardContent className="relative z-10 px-3 pb-4 pt-0 sm:px-6 sm:pb-6">
         <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-5">
           <div className="em-pfc-card" data-reference="power-flow-card-plus">
-            <div className="em-pfc-card-content">
-              <FlowSvg nodes={model.flowNodes} maxMW={model.maxMW} />
-
-              <div className="em-pfc-row em-pfc-row-top">
-                {top.map((node) => <EnergyCircle key={node.id} node={node} />)}
-              </div>
-
-              <div className="em-pfc-row em-pfc-row-middle">
-                <EnergyCircle node={middle[0]} />
-                <Spacer />
-                <div className="em-pfc-node em-pfc-home-node em-pfc-home-container" style={{ '--em-pfc-color': 'hsl(var(--primary))' } as React.CSSProperties}>
-                  <div className="em-pfc-circle em-pfc-home-circle">
-                    <svg className="em-pfc-home-ring" viewBox="0 0 84 84">
-                      {model.ring.map((slice) => {
-                        const length = totalGenerationMW ? Math.max(0, (slice.value / totalGenerationMW) * circumference) : 0;
-                        const dashOffset = -offset;
-                        offset += length;
-                        return (
-                          <circle key={slice.id} cx="42" cy="42" r="38" stroke={slice.color} strokeWidth="4" fill="none" strokeDasharray={`${length} ${circumference - length}`} strokeDashoffset={dashOffset} />
-                        );
-                      })}
-                    </svg>
-                    <Home className="em-pfc-icon" />
-                    <span className="em-pfc-value">{formatGWfromMW(totalDemandMW)}</span>
-                    <span className="em-pfc-unit">GW</span>
-                  </div>
-                  <span className="em-pfc-label">GB demand</span>
-                </div>
-                <EnergyCircle node={middle[1]} />
-              </div>
-
-              <div className="em-pfc-row em-pfc-row-bottom">
-                <EnergyCircle node={bottom[0]} />
-                <EnergyCircle node={bottom[1]} />
-                <EnergyCircle node={bottom[2]} />
-              </div>
-            </div>
+            <svg className={cn('em-flow-stage', debug && 'is-debug')} viewBox={`0 0 ${width} ${height}`} role="img" aria-label="Live GB electricity power flow diagram">
+              {debug && <DebugOverlay />}
+              <FlowLines lines={model.lines} maxMW={model.maxMW} />
+              <g className="flow-nodes">
+                {model.nodes.map((node) => <FlowNodeSvg key={node.id} node={node} />)}
+              </g>
+            </svg>
           </div>
 
           <aside className="em-pfc-snapshot space-y-3 rounded-2xl border border-primary/15 bg-background/35 p-4">
@@ -292,6 +371,7 @@ export const PowerFlowCard = ({
             </div>
             <div className="space-y-2">
               {model.nodes
+                .filter((node) => node.id !== 'demand')
                 .slice()
                 .sort((a, b) => b.valueMW - a.valueMW)
                 .slice(0, 7)
@@ -318,13 +398,12 @@ export const PowerFlowCard = ({
           <DialogHeader>
             <DialogTitle>Reference implementation used</DialogTitle>
             <DialogDescription className="text-left leading-relaxed text-foreground/75">
-              The original card cannot be reused directly because it is a Lit Home Assistant custom card tied to Lovelace, hass state objects, ha-card, ha-icon, ha-ripple, templates and Home Assistant action handlers. This component ports the visual model and behaviour into a production-safe React component.
+              The visual spacing is based on Power Flow Card Plus: fixed 80px circular nodes, 470–500px row width, lines behind nodes, and hidden centre/home labels when surrounding entities make the layout crowded.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm text-foreground/80">
-            <p>Design authority: <code>power-flow-card-plus.ts</code>, shared entity components, shared flow components, shared CSS and flow-rate/distribution utilities from <code>flixlix/flixlix-cards</code>.</p>
-            <p>EnergyMix mapping: Home = GB demand, Grid = net imports/exports, Solar = solar, plus wind, nuclear, gas, hydro, biomass and other source circles.</p>
-            <p>Supported by National Energy SO Open Data. Contains BMRS data © Elexon Limited copyright and database right 2026. Visual pattern inspired by flixlix/power-flow-card-plus.</p>
+            <p>EnergyMix maps Home to GB demand, Grid to imports/exports, and surrounding nodes to wind, solar, nuclear, hydro, gas, biomass and other generation.</p>
+            <p>Supported by National Energy SO Open Data. Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
           </div>
         </DialogContent>
       </Dialog>
