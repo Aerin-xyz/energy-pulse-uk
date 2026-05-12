@@ -216,7 +216,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
 
       {/* Energy Mix Summary Section */}
       {data && (
-        <div className="border-t border-primary/20 glass-morphism shadow-lg relative overflow-hidden">
+        <div className="hidden md:block border-t border-primary/20 glass-morphism shadow-lg relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-glow opacity-50"></div>
           <div className="container mx-auto px-3 py-2.5 md:px-4 md:py-3 lg:px-6 lg:py-4 relative z-10">
             <div className="flex items-center justify-center gap-3 md:gap-6 lg:gap-8">
@@ -289,8 +289,8 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
       )}
 
       {/* Main Content */}
-      <main className="container mx-auto px-2 md:px-4 pt-0 pb-8">
-        <div className="space-y-8">
+      <main className="container mx-auto px-2 pt-3 pb-8 md:px-4 md:pt-0">
+        <div className="space-y-5 md:space-y-8">
           {/* Generation Mix Chart - Progressive Loading */}
           {!data && loading ? (
             <ChartSkeleton />

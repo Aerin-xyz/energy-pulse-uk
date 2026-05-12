@@ -71,7 +71,7 @@ export const TopMetricsStrip = ({
   ];
 
   return (
-    <section className="border-b border-primary/20 bg-background/40 relative">
+    <section className="hidden md:block border-b border-primary/20 bg-background/40 relative">
       <div className="container mx-auto px-3 py-3 md:px-4 lg:px-6">
         <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-2.5 md:gap-3">
           {metrics.map(({ label, value, icon: Icon, tone, help }) => (

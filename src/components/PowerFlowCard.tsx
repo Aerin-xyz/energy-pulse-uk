@@ -216,18 +216,17 @@ export const PowerFlowCard = ({
   return (
     <Card id="power-flow" className="relative scroll-mt-28 overflow-hidden border-primary/30 bg-card/70 shadow-2xl shadow-primary/10">
       <div className="absolute inset-0 bg-gradient-glow opacity-50" />
-      <CardHeader className="relative z-10 pb-3">
-        <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-          <div>
-            <div className="mb-2 flex items-center gap-2">
-              <Badge variant="outline" className="border-primary/30 text-primary">Power Flow Card Plus port</Badge>
-              {carbonIntensity && <Badge className={cn('border-0', carbonClass(carbonIntensity.index))}>{carbonIntensity.index}</Badge>}
+      <CardHeader className="relative z-10 px-3 pb-2 pt-3 sm:px-6 sm:pb-3 sm:pt-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="mb-1.5 flex items-center gap-2">
+              <Badge variant="outline" className="border-primary/30 px-2 py-0.5 text-[10px] uppercase tracking-[0.16em] text-primary">Live</Badge>
+              {carbonIntensity && <Badge className={cn('border-0 px-2 py-0.5 text-[10px]', carbonClass(carbonIntensity.index))}>{carbonIntensity.index}</Badge>}
             </div>
-            <CardTitle className="text-2xl md:text-3xl text-glow">GB Power Flow</CardTitle>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">Circular nodes, connecting flow paths and animated directional dots, ported from the Power Flow Card Plus visual model.</p>
+            <CardTitle className="text-xl text-glow sm:text-2xl md:text-3xl">Live power flow</CardTitle>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => setOpen(true)} className="self-start text-cosmic-cyan hover:text-primary">
-            <Info className="mr-2 h-4 w-4" /> Reference notes
+          <Button variant="ghost" size="sm" onClick={() => setOpen(true)} className="h-9 shrink-0 px-2 text-xs text-muted-foreground hover:text-primary sm:px-3">
+            <Info className="mr-1.5 h-3.5 w-3.5" /> Notes
           </Button>
         </div>
       </CardHeader>

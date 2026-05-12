@@ -157,8 +157,45 @@ All colors MUST be HSL.
     animation-iteration-count: infinite;
   }
 
+
+  .site-logo-compact {
+    gap: 0.65rem;
+  }
+
+  .site-logo-compact .logo-svg {
+    width: 72px;
+    height: 72px;
+  }
+
+  .site-logo-compact .logo-wordmark {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .site-logo-compact .logo-subtitle {
+    margin-top: 0.1rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.22em;
+  }
+
+  @media (max-width: 360px) {
+    .site-logo-compact .logo-svg {
+      width: 64px;
+      height: 64px;
+    }
+
+    .site-logo-compact .logo-wordmark {
+      font-size: 1.55rem;
+    }
+
+    .site-logo-compact .logo-subtitle {
+      font-size: 0.56rem;
+      letter-spacing: 0.18em;
+    }
+  }
+
   .em-pfc-card {
-    max-width: 470px;
+    max-width: 520px;
     margin: 0 auto;
     border-radius: 1.5rem;
     border: 1px solid hsl(187 89% 55% / 0.16);
@@ -169,10 +206,10 @@ All colors MUST be HSL.
   }
 
   .em-pfc-card-content {
-    --em-pfc-size-circle-entity: 78px;
+    --em-pfc-size-circle-entity: 80px;
     position: relative;
-    max-width: 470px;
-    min-height: 384px;
+    max-width: 500px;
+    min-height: 392px;
     margin: 0 auto;
     padding: 18px 12px 12px;
   }
@@ -183,21 +220,21 @@ All colors MUST be HSL.
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: 470px;
+    max-width: 500px;
     margin: 0 auto;
   }
 
   .em-pfc-row-top {
-    height: 112px;
+    height: 114px;
     align-items: flex-start;
   }
 
   .em-pfc-row-middle {
-    height: 112px;
+    height: 114px;
   }
 
   .em-pfc-row-bottom {
-    height: 112px;
+    height: 114px;
     align-items: flex-end;
   }
 
@@ -326,20 +363,20 @@ All colors MUST be HSL.
 
   @media (max-width: 430px) {
     .em-pfc-card {
-      max-width: min(100%, 370px);
+      max-width: min(100%, 390px);
       border-radius: 1.25rem;
     }
 
     .em-pfc-card-content {
-      --em-pfc-size-circle-entity: 62px;
-      min-height: 330px;
-      padding: 14px 6px 8px;
+      --em-pfc-size-circle-entity: 66px;
+      min-height: 346px;
+      padding: 14px 5px 8px;
     }
 
     .em-pfc-row-top,
     .em-pfc-row-middle,
     .em-pfc-row-bottom {
-      height: 96px;
+      height: 101px;
     }
 
     .em-pfc-row-bottom {
@@ -354,8 +391,8 @@ All colors MUST be HSL.
     }
 
     .em-pfc-home-circle {
-      width: 76px;
-      height: 76px;
+      width: 80px;
+      height: 80px;
     }
 
     .em-pfc-icon {
@@ -384,7 +421,7 @@ All colors MUST be HSL.
 
     .em-pfc-label {
       font-size: 10.5px;
-      max-width: 68px;
+      max-width: 72px;
       min-height: 15px;
     }
   }

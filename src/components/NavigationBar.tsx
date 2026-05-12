@@ -205,21 +205,20 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
 
       {/* Mobile Layout (<768px) */}
       <header className="md:hidden">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-1 -ml-2">
-              <AnimatedLogo />
-              <p className="text-xs text-muted-foreground -mt-1">Real-time UK electricity generation and flows</p>
+        <div className="container mx-auto px-3 py-2">
+          <div className="flex justify-between items-center gap-3">
+            <div className="-ml-1 min-w-0">
+              <AnimatedLogo className="site-logo-compact" />
             </div>
 
             {/* Hamburger Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-foreground/90 hover:text-primary transition-colors rounded-md hover:bg-primary/10"
+              className="flex h-11 w-11 shrink-0 items-center justify-center text-foreground/90 hover:text-primary transition-colors rounded-xl hover:bg-primary/10 border border-primary/10"
               aria-label="Toggle navigation menu"
               aria-expanded={isMobileMenuOpen}
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5" />
             </button>
           </div>
 
@@ -248,7 +247,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
 
           {/* Mobile Actions - Below hamburger menu */}
           {mobileActions && (
-            <div className={cn("mt-3 transition-opacity duration-300", isMobileMenuOpen && "opacity-0 invisible")}>
+            <div className={cn("mt-2 transition-opacity duration-300", isMobileMenuOpen && "opacity-0 invisible")}>
               {mobileActions}
             </div>
           )}

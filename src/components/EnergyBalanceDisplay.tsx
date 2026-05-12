@@ -19,46 +19,35 @@ export const EnergyBalanceDisplay = ({
 }: EnergyBalanceDisplayProps) => {
   return (
     <>
-      {/* Mobile: Compact Energy Balance */}
-      <div className="flex md:hidden items-center gap-2.5 px-3 py-2 glass-morphism rounded-lg border-primary/20 text-xs w-full justify-around">
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-0.5 text-[10px] text-muted-foreground">
-            D
-            <HelpTooltip content="Total electricity demand across Great Britain in the last settlement period (30 minutes). Note: The balance equation may show a small variance (1-2%) due to transmission losses, station loads, and pumped storage." className="w-2.5 h-2.5" />
-          </div>
-          <div className="font-bold">{formatGWfromMW(totalDemandMW)}</div>
+      {/* Mobile: clear metric pills, replacing the old equation shorthand */}
+      <div className="grid md:hidden grid-cols-2 gap-2 text-xs w-full">
+        <div className="rounded-xl border border-primary/15 bg-background/45 px-3 py-2.5">
+          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Demand</div>
+          <div className="mt-0.5 font-mono text-base font-bold text-foreground">{formatGWfromMW(totalDemandMW)} <span className="text-[10px] font-medium text-muted-foreground">GW</span></div>
         </div>
-        <span className="text-muted-foreground">=</span>
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-0.5 text-[10px] text-muted-foreground">
-            G
-            <HelpTooltip content="Total electricity generated from all sources within Great Britain" className="w-2.5 h-2.5" />
-          </div>
-          <div className="font-bold text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)}</div>
+        <div className="rounded-xl border border-primary/20 bg-primary/5 px-3 py-2.5 shadow-[0_0_18px_rgba(28,222,228,0.10)]">
+          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Generation</div>
+          <div className="mt-0.5 font-mono text-base font-bold text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)} <span className="text-[10px] font-medium text-muted-foreground">GW</span></div>
         </div>
-        <span className="text-muted-foreground">+</span>
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-0.5 text-[10px] text-muted-foreground">
-            T
-            <HelpTooltip content="Net electricity flow through interconnectors. Positive = importing, Negative = exporting" className="w-2.5 h-2.5" />
-          </div>
-          <div className="font-bold">{formatGWfromMW(interconnectorFlowMW)}</div>
+        <div className="rounded-xl border border-primary/15 bg-background/45 px-3 py-2.5">
+          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Transfers</div>
+          <div className="mt-0.5 font-mono text-base font-bold text-foreground">{formatGWfromMW(Math.abs(interconnectorFlowMW))} <span className="text-[10px] font-medium text-muted-foreground">GW</span></div>
+          <div className="text-[10px] text-muted-foreground">net {interconnectorFlowMW >= 0 ? 'imports' : 'exports'}</div>
         </div>
         {carbonIntensity && (
-          <>
-            <span className="text-muted-foreground">|</span>
-            <div className="flex items-center gap-1">
-              <div className={`w-2 h-2 rounded-full ${
+          <div className="rounded-xl border border-primary/15 bg-background/45 px-3 py-2.5">
+            <div className="flex items-center justify-between gap-2">
+              <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Carbon</div>
+              <div className={`h-2 w-2 rounded-full ${
                 carbonIntensity.index.toLowerCase() === 'very low' || carbonIntensity.index.toLowerCase() === 'low' 
-                  ? 'bg-carbon-low animate-pulse' 
+                  ? 'bg-carbon-low' 
                   : carbonIntensity.index.toLowerCase() === 'moderate'
-                  ? 'bg-carbon-moderate animate-pulse'
-                  : 'bg-carbon-high animate-pulse'
+                  ? 'bg-carbon-moderate'
+                  : 'bg-carbon-high'
               }`} />
-              <div className="font-bold font-mono">{carbonIntensity.actual}</div>
-              <HelpTooltip content="Average carbon intensity of electricity generation, measured in grams of CO₂ per kilowatt-hour" className="w-2.5 h-2.5" />
             </div>
-          </>
+            <div className="mt-0.5 font-mono text-base font-bold text-foreground">{carbonIntensity.actual} <span className="text-[10px] font-medium text-muted-foreground">gCO₂/kWh</span></div>
+          </div>
         )}
       </div>
 

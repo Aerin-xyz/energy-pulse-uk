@@ -221,9 +221,9 @@ export const AnimatedLogo = ({
         </g>
       </svg>
       
-      <div>
+      <div className="logo-wordmark-wrap">
         <div 
-          className="text-3xl font-semibold tracking-tight leading-none" 
+          className="logo-wordmark text-3xl font-semibold tracking-tight leading-none" 
           style={{ 
             color: activeText,
             transition: `color ${speedMs}ms ease-in-out`
@@ -231,7 +231,7 @@ export const AnimatedLogo = ({
         >
           energy mix
         </div>
-        <div className="text-xs uppercase tracking-widest mt-0.5" style={{ color: '#C8CBCD' }}>
+        <div className="logo-subtitle text-xs uppercase tracking-widest mt-0.5" style={{ color: '#C8CBCD' }}>
           UK ELECTRICITY DASHBOARD
         </div>
       </div>
