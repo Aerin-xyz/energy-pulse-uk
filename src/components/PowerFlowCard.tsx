@@ -4,7 +4,26 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn, formatGWfromMW } from '@/lib/utils';
-import { ArrowLeftRight, CircleHelp, Factory, Flame, Info, Leaf, RadioTower, Sun, Waves, Wind, Zap } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BatteryCharging, CircleHelp, Factory, Flame, Home, Info, Leaf, RadioTower, Sun, Waves, Wind, Zap } from 'lucide-react';
+
+/*
+  EnergyMix Power Flow Card
+
+  Reference files inspected and used as the design authority:
+  - flixlix-cards/packages/flixlix-cards/power-flow-card-plus/src/power-flow-card-plus.ts
+    Defines the card render tree: ha-card > card-content, top/middle/bottom rows, circular entity components and flowElement.
+  - flixlix-cards/packages/shared/src/components/{solar,grid,battery,home,non-fossil}.ts
+    Defines entity circle markup, labels, icons, values and the segmented home/demand ring.
+  - flixlix-cards/packages/shared/src/components/flows/*.ts
+    Defines SVG flow paths plus animateMotion dots.
+  - flixlix-cards/packages/shared/src/style/index.ts and style/all.ts
+    Defines circle sizing, row layout, line positioning, colours and dynamic CSS variables.
+  - flixlix-cards/packages/shared/src/utils/{compute-power-distribution,compute-flow-rate,show-line,style-line}.ts
+    Defines source-to-home flow calculations, animation speed and zero-line behaviour.
+
+  This is a production-safe React port, not a direct import: the original depends on Lit,
+  Home Assistant custom elements, Lovelace config, hass state objects and ha-icon/ha-ripple.
+*/
 
 interface GenerationData {
   name: string;
@@ -33,19 +52,20 @@ interface PowerFlowCardProps {
   sourceTimestamp?: string | null;
 }
 
-type SourceNode = {
-  key: string;
+type FlowNode = {
+  id: string;
   label: string;
   valueMW: number;
   color: string;
   icon: typeof Wind;
-  className: string;
-  path: string;
-  pathId: string;
-  direction?: 'forward' | 'reverse';
+  row: 'top' | 'middle' | 'bottom';
+  slot: 'left' | 'centre' | 'right';
+  flowPath: string;
+  reverse?: boolean;
+  muted?: boolean;
 };
 
-const getGenerationValue = (mix: GenerationData[], names: string[]) =>
+const valueFor = (mix: GenerationData[], names: string[]) =>
   mix
     .filter((item) => names.some((name) => item.name.toLowerCase().includes(name.toLowerCase())))
     .reduce((sum, item) => sum + Math.max(0, item.value || 0), 0);
@@ -66,41 +86,46 @@ const carbonClass = (index?: string) => {
 
 const flowDuration = (valueMW: number, maxMW: number) => {
   const ratio = Math.min(1, valueMW / Math.max(maxMW, 1));
-  return Math.max(1.2, 5.8 - ratio * 3.9);
+  return Math.max(1.25, 5.5 - ratio * 3.5);
 };
 
-const FlowPath = ({ node, maxMW }: { node: SourceNode; maxMW: number }) => {
-  const width = Math.max(1.4, Math.min(4.2, 1.4 + (node.valueMW / Math.max(maxMW, 1)) * 3.2));
-  const duration = flowDuration(node.valueMW, maxMW);
-
-  return (
-    <g className={node.valueMW <= 1 ? 'opacity-20' : undefined}>
-      <path d={node.path} stroke="rgba(148,163,184,0.22)" strokeWidth={width + 2.6} strokeLinecap="round" fill="none" />
-      <path id={node.pathId} d={node.path} stroke={node.color} strokeWidth={width} strokeLinecap="round" fill="none" opacity="0.82" />
-      {node.valueMW > 1 && (
-        <circle r="3.2" fill={node.color} className="power-flow-dot">
-          <animateMotion dur={`${duration}s`} repeatCount="indefinite" calcMode="paced" keyPoints={node.direction === 'reverse' ? '1;0' : undefined} keyTimes={node.direction === 'reverse' ? '0;1' : undefined}>
-            <mpath href={`#${node.pathId}`} />
-          </animateMotion>
-        </circle>
-      )}
-    </g>
-  );
-};
-
-const NodeCircle = ({ node }: { node: SourceNode }) => {
+const EnergyCircle = ({ node }: { node: FlowNode }) => {
   const Icon = node.icon;
   return (
-    <div className={cn('pf-node', node.className)} style={{ '--node-color': node.color } as React.CSSProperties}>
-      <div className="pf-circle">
-        <Icon className="pf-icon" />
-        <span className="pf-value">{formatGWfromMW(node.valueMW)}</span>
-        <span className="pf-unit">GW</span>
+    <div className={cn('em-pfc-circle-container', node.muted && 'opacity-45')} style={{ '--em-pfc-color': node.color } as React.CSSProperties}>
+      <div className="em-pfc-circle">
+        <Icon className="em-pfc-icon" />
+        <span className="em-pfc-value">{formatGWfromMW(node.valueMW)}</span>
+        <span className="em-pfc-unit">GW</span>
       </div>
-      <span className="pf-label">{node.label}</span>
+      <span className="em-pfc-label">{node.label}</span>
     </div>
   );
 };
+
+const Spacer = () => <div className="em-pfc-spacer" aria-hidden="true" />;
+
+const FlowSvg = ({ nodes, maxMW }: { nodes: FlowNode[]; maxMW: number }) => (
+  <svg className="em-pfc-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+    {nodes.map((node) => {
+      const width = Math.max(1.1, Math.min(3.8, 1.1 + (node.valueMW / Math.max(maxMW, 1)) * 3));
+      const duration = flowDuration(node.valueMW, maxMW);
+      return (
+        <g key={node.id} opacity={node.muted ? 0.28 : 1}>
+          <path d={node.flowPath} stroke="rgba(148,163,184,0.28)" strokeWidth={width + 1.8} strokeLinecap="round" fill="none" vectorEffect="non-scaling-stroke" />
+          <path id={`em-pfc-flow-${node.id}`} d={node.flowPath} stroke={node.color} strokeWidth={width} strokeLinecap="round" fill="none" vectorEffect="non-scaling-stroke" />
+          {!node.muted && node.valueMW > 1 && (
+            <circle r="1.4" fill={node.color} className="em-pfc-dot" vectorEffect="non-scaling-stroke">
+              <animateMotion dur={`${duration}s`} repeatCount="indefinite" calcMode="paced" keyPoints={node.reverse ? '1;0' : undefined} keyTimes={node.reverse ? '0;1' : undefined}>
+                <mpath href={`#em-pfc-flow-${node.id}`} />
+              </animateMotion>
+            </circle>
+          )}
+        </g>
+      );
+    })}
+  </svg>
+);
 
 export const PowerFlowCard = ({
   generationMix,
@@ -113,125 +138,56 @@ export const PowerFlowCard = ({
 }: PowerFlowCardProps) => {
   const [open, setOpen] = useState(false);
 
-  const { nodes, lowCarbonShare, transferMW, transferLabel, maxMW, demandSources } = useMemo(() => {
-    const wind = getGenerationValue(generationMix, ['Wind']);
-    const solar = getGenerationValue(generationMix, ['Solar']);
-    const gas = getGenerationValue(generationMix, ['Gas']);
-    const nuclear = getGenerationValue(generationMix, ['Nuclear']);
-    const hydro = getGenerationValue(generationMix, ['Hydro', 'PSH', 'Pumped Storage']);
-    const biomass = getGenerationValue(generationMix, ['Biomass']);
-    const named = wind + solar + gas + nuclear + hydro + biomass;
-    const other = Math.max(0, totalGenerationMW - named);
+  const model = useMemo(() => {
+    const wind = valueFor(generationMix, ['Wind']);
+    const solar = valueFor(generationMix, ['Solar']);
+    const gas = valueFor(generationMix, ['Gas']);
+    const nuclear = valueFor(generationMix, ['Nuclear']);
+    const hydro = valueFor(generationMix, ['Hydro', 'PSH', 'Pumped Storage']);
+    const biomass = valueFor(generationMix, ['Biomass']);
+    const importsCategory = valueFor(generationMix, ['Imports']);
     const netTransfer = interconnectors.reduce((sum, item) => sum + (item.flow || 0), 0);
-    const importing = netTransfer >= 0;
-    const transfer = Math.abs(netTransfer);
+    const transferMW = Math.max(Math.abs(netTransfer), importsCategory);
+    const exporting = netTransfer < 0;
+    const named = wind + solar + gas + nuclear + hydro + biomass + importsCategory;
+    const other = Math.max(0, totalGenerationMW - named);
     const lowCarbon = wind + solar + nuclear + hydro + biomass;
-    const max = Math.max(wind, solar, gas, nuclear, hydro, biomass, other, transfer, totalDemandMW, 1);
+    const maxMW = Math.max(wind, solar, gas, nuclear, hydro, biomass, other, transferMW, totalDemandMW, 1);
 
-    const sourceNodes: SourceNode[] = [
-      {
-        key: 'wind',
-        label: 'Wind',
-        valueMW: wind,
-        color: '#5dd6c0',
-        icon: Wind,
-        className: 'pf-wind',
-        pathId: 'pf-wind-flow',
-        path: 'M 78 116 C 134 116, 150 148, 202 190',
-      },
-      {
-        key: 'solar',
-        label: 'Solar',
-        valueMW: solar,
-        color: '#f5bd41',
-        icon: Sun,
-        className: 'pf-solar',
-        pathId: 'pf-solar-flow',
-        path: 'M 235 76 C 235 124, 220 154, 202 190',
-      },
-      {
-        key: 'transfer',
-        label: importing ? 'Imports' : 'Exports',
-        valueMW: transfer,
-        color: importing ? '#67e8f9' : '#fb7185',
-        icon: ArrowLeftRight,
-        className: 'pf-grid',
-        pathId: 'pf-grid-flow',
-        path: 'M 70 225 H 178',
-        direction: importing ? 'forward' as const : 'reverse' as const,
-      },
-      {
-        key: 'nuclear',
-        label: 'Nuclear',
-        valueMW: nuclear,
-        color: '#aa86ff',
-        icon: RadioTower,
-        className: 'pf-nuclear',
-        pathId: 'pf-nuclear-flow',
-        path: 'M 392 116 C 334 116, 312 150, 266 190',
-      },
-      {
-        key: 'hydro',
-        label: 'Hydro',
-        valueMW: hydro,
-        color: '#7ca7d8',
-        icon: Waves,
-        className: 'pf-hydro',
-        pathId: 'pf-hydro-flow',
-        path: 'M 395 252 C 340 252, 312 236, 286 225',
-      },
-      {
-        key: 'gas',
-        label: 'Gas',
-        valueMW: gas,
-        color: '#f45b69',
-        icon: Flame,
-        className: 'pf-gas',
-        pathId: 'pf-gas-flow',
-        path: 'M 235 371 C 235 316, 220 286, 202 260',
-      },
-      {
-        key: 'biomass',
-        label: 'Biomass',
-        valueMW: biomass,
-        color: '#8fe3b0',
-        icon: Leaf,
-        className: 'pf-biomass',
-        pathId: 'pf-biomass-flow',
-        path: 'M 78 342 C 132 332, 154 294, 184 260',
-      },
-      {
-        key: 'other',
-        label: 'Other',
-        valueMW: other,
-        color: '#c8d0dc',
-        icon: Factory,
-        className: 'pf-other',
-        pathId: 'pf-other-flow',
-        path: 'M 392 342 C 338 332, 316 294, 286 260',
-      },
-    ].filter((node) => node.valueMW > 1);
+    const baseNodes: Omit<FlowNode, 'muted'>[] = [
+      { id: 'wind', label: 'Wind', valueMW: wind, color: '#5dd6c0', icon: Wind, row: 'top', slot: 'left', flowPath: 'M 17 25 C 30 25, 36 43, 50 50' },
+      { id: 'solar', label: 'Solar', valueMW: solar, color: '#f5bd41', icon: Sun, row: 'top', slot: 'centre', flowPath: 'M 50 16 C 50 30, 50 40, 50 50' },
+      { id: 'nuclear', label: 'Nuclear', valueMW: nuclear, color: '#aa86ff', icon: RadioTower, row: 'top', slot: 'right', flowPath: 'M 83 25 C 70 25, 64 43, 50 50' },
+      { id: 'imports', label: exporting ? 'Exports' : 'Imports', valueMW: transferMW, color: exporting ? '#fb7185' : '#67e8f9', icon: exporting ? ArrowLeft : ArrowRight, row: 'middle', slot: 'left', flowPath: 'M 17 50 H 50', reverse: exporting },
+      { id: 'hydro', label: 'Hydro', valueMW: hydro, color: '#7ca7d8', icon: Waves, row: 'middle', slot: 'right', flowPath: 'M 83 50 H 50' },
+      { id: 'gas', label: 'Gas', valueMW: gas, color: '#f45b69', icon: Flame, row: 'bottom', slot: 'centre', flowPath: 'M 50 84 C 50 70, 50 60, 50 50' },
+      { id: 'biomass', label: 'Biomass', valueMW: biomass, color: '#8fe3b0', icon: Leaf, row: 'bottom', slot: 'left', flowPath: 'M 17 78 C 30 78, 36 57, 50 50' },
+      { id: 'other', label: 'Other', valueMW: other, color: '#c8d0dc', icon: Factory, row: 'bottom', slot: 'right', flowPath: 'M 83 78 C 70 78, 64 57, 50 50' },
+    ];
+    const nodes: FlowNode[] = baseNodes.map((node) => ({ ...node, muted: node.valueMW <= 1 }));
 
     return {
-      nodes: sourceNodes,
+      nodes,
+      maxMW,
+      transferMW,
+      exporting,
       lowCarbonShare: totalGenerationMW ? (lowCarbon / totalGenerationMW) * 100 : 0,
-      transferMW: transfer,
-      transferLabel: importing ? 'importing' : 'exporting',
-      maxMW: max,
-      demandSources: { wind, solar, gas, nuclear, hydro, biomass, other },
+      ring: [
+        { id: 'wind', value: wind, color: '#5dd6c0' },
+        { id: 'solar', value: solar, color: '#f5bd41' },
+        { id: 'nuclear', value: nuclear, color: '#aa86ff' },
+        { id: 'gas', value: gas, color: '#f45b69' },
+        { id: 'other', value: hydro + biomass + other + importsCategory, color: '#c8d0dc' },
+      ],
     };
   }, [generationMix, interconnectors, totalDemandMW, totalGenerationMW]);
 
+  const top = model.nodes.filter((node) => node.row === 'top');
+  const middle = model.nodes.filter((node) => node.row === 'middle');
+  const bottom = model.nodes.filter((node) => node.row === 'bottom');
   const sourceTime = formatTime(sourceTimestamp);
   const circumference = 238.76;
-  const slices = [
-    { key: 'wind', value: demandSources.wind, color: '#5dd6c0' },
-    { key: 'solar', value: demandSources.solar, color: '#f5bd41' },
-    { key: 'nuclear', value: demandSources.nuclear, color: '#aa86ff' },
-    { key: 'gas', value: demandSources.gas, color: '#f45b69' },
-    { key: 'other', value: demandSources.hydro + demandSources.biomass + demandSources.other, color: '#c8d0dc' },
-  ];
-  let ringOffset = 0;
+  let offset = 0;
 
   return (
     <Card id="power-flow" className="relative scroll-mt-28 overflow-hidden border-primary/30 bg-card/70 shadow-2xl shadow-primary/10">
@@ -240,58 +196,57 @@ export const PowerFlowCard = ({
         <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
           <div>
             <div className="mb-2 flex items-center gap-2">
-              <Badge variant="outline" className="border-primary/30 text-primary">Live power flow</Badge>
+              <Badge variant="outline" className="border-primary/30 text-primary">Power Flow Card Plus port</Badge>
               {carbonIntensity && <Badge className={cn('border-0', carbonClass(carbonIntensity.index))}>{carbonIntensity.index}</Badge>}
             </div>
             <CardTitle className="text-2xl md:text-3xl text-glow">GB Power Flow</CardTitle>
-            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-              A Home Assistant-style flow card rebuilt for Great Britain’s live electricity mix.
-            </p>
+            <p className="mt-2 max-w-2xl text-sm text-muted-foreground">Circular nodes, connecting flow paths and animated directional dots, ported from the Power Flow Card Plus visual model.</p>
           </div>
           <Button variant="ghost" size="sm" onClick={() => setOpen(true)} className="self-start text-cosmic-cyan hover:text-primary">
-            <Info className="mr-2 h-4 w-4" /> How it works
+            <Info className="mr-2 h-4 w-4" /> Reference notes
           </Button>
         </div>
       </CardHeader>
 
       <CardContent className="relative z-10">
         <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_260px]">
-          <div className="pf-shell">
-            <svg className="pf-lines" viewBox="0 0 470 410" role="img" aria-label="Live GB power flow lines">
-              {nodes.map((node) => <FlowPath key={node.key} node={node} maxMW={maxMW} />)}
-            </svg>
+          <div className="em-pfc-card" data-reference="power-flow-card-plus">
+            <div className="em-pfc-card-content">
+              <FlowSvg nodes={model.nodes} maxMW={model.maxMW} />
 
-            {nodes.map((node) => <NodeCircle key={node.key} node={node} />)}
-
-            <div className="pf-home">
-              <div className="pf-home-circle">
-                <svg className="pf-home-ring" viewBox="0 0 84 84">
-                  {slices.map((slice) => {
-                    const len = totalGenerationMW ? Math.max(0, (slice.value / totalGenerationMW) * circumference) : 0;
-                    const dashOffset = -ringOffset;
-                    ringOffset += len;
-                    return (
-                      <circle
-                        key={slice.key}
-                        cx="42"
-                        cy="42"
-                        r="38"
-                        stroke={slice.color}
-                        strokeWidth="4"
-                        fill="none"
-                        strokeDasharray={`${len} ${circumference - len}`}
-                        strokeDashoffset={dashOffset}
-                        opacity="0.9"
-                      />
-                    );
-                  })}
-                </svg>
-                <Zap className="pf-home-icon" />
-                <span className="pf-home-value">{formatGWfromMW(totalDemandMW)}</span>
-                <span className="pf-home-unit">GW</span>
+              <div className="em-pfc-row em-pfc-row-top">
+                {top.map((node) => <EnergyCircle key={node.id} node={node} />)}
               </div>
-              <span className="pf-home-label">GB demand</span>
-              <span className="pf-home-sub">generation {formatGWfromMW(totalGenerationMW)} GW</span>
+
+              <div className="em-pfc-row em-pfc-row-middle">
+                <EnergyCircle node={middle[0]} />
+                <Spacer />
+                <div className="em-pfc-home-container" style={{ '--em-pfc-color': 'hsl(var(--primary))' } as React.CSSProperties}>
+                  <div className="em-pfc-circle em-pfc-home-circle">
+                    <svg className="em-pfc-home-ring" viewBox="0 0 84 84">
+                      {model.ring.map((slice) => {
+                        const length = totalGenerationMW ? Math.max(0, (slice.value / totalGenerationMW) * circumference) : 0;
+                        const dashOffset = -offset;
+                        offset += length;
+                        return (
+                          <circle key={slice.id} cx="42" cy="42" r="38" stroke={slice.color} strokeWidth="4" fill="none" strokeDasharray={`${length} ${circumference - length}`} strokeDashoffset={dashOffset} />
+                        );
+                      })}
+                    </svg>
+                    <Home className="em-pfc-icon" />
+                    <span className="em-pfc-value">{formatGWfromMW(totalDemandMW)}</span>
+                    <span className="em-pfc-unit">GW</span>
+                  </div>
+                  <span className="em-pfc-label">GB demand</span>
+                </div>
+                <EnergyCircle node={middle[1]} />
+              </div>
+
+              <div className="em-pfc-row em-pfc-row-bottom">
+                <EnergyCircle node={bottom[0]} />
+                <EnergyCircle node={bottom[1]} />
+                <EnergyCircle node={bottom[2]} />
+              </div>
             </div>
           </div>
 
@@ -304,21 +259,21 @@ export const PowerFlowCard = ({
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
                 <p className="text-xs text-muted-foreground">Low-carbon</p>
-                <p className="font-mono text-xl font-bold text-green-300">{lowCarbonShare.toFixed(1)}%</p>
+                <p className="font-mono text-xl font-bold text-green-300">{model.lowCarbonShare.toFixed(1)}%</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
                 <p className="text-xs text-muted-foreground">Transfers</p>
-                <p className="font-mono text-xl font-bold text-cosmic-cyan">{formatGWfromMW(transferMW)} GW</p>
-                <p className="text-[11px] text-muted-foreground">net {transferLabel}</p>
+                <p className="font-mono text-xl font-bold text-cosmic-cyan">{formatGWfromMW(model.transferMW)} GW</p>
+                <p className="text-[11px] text-muted-foreground">net {model.exporting ? 'exporting' : 'importing'}</p>
               </div>
             </div>
             <div className="space-y-2">
-              {nodes
+              {model.nodes
                 .slice()
                 .sort((a, b) => b.valueMW - a.valueMW)
                 .slice(0, 7)
                 .map((node) => (
-                  <div key={node.key} className="flex items-center justify-between gap-3 rounded-lg bg-white/[0.03] px-3 py-2">
+                  <div key={node.id} className="flex items-center justify-between gap-3 rounded-lg bg-white/[0.03] px-3 py-2">
                     <div className="flex items-center gap-2">
                       <span className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: node.color }} />
                       <span className="text-sm">{node.label}</span>
@@ -329,7 +284,7 @@ export const PowerFlowCard = ({
             </div>
             <p className="flex gap-2 text-xs leading-relaxed text-muted-foreground">
               <CircleHelp className="mt-0.5 h-3.5 w-3.5 shrink-0" />
-              Dots follow the same pattern as Power Flow Card Plus: active lines animate towards demand; export flow reverses direction.
+              Uses normal React data, not Home Assistant state objects. A local test fixture is available in <code>src/components/powerFlowDemoData.ts</code>.
             </p>
           </aside>
         </div>
@@ -338,18 +293,15 @@ export const PowerFlowCard = ({
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="border-primary/20 bg-card text-card-foreground sm:max-w-xl">
           <DialogHeader>
-            <DialogTitle>How this Power Flow card works</DialogTitle>
+            <DialogTitle>Reference implementation used</DialogTitle>
             <DialogDescription className="text-left leading-relaxed text-foreground/75">
-              This version follows the structure of flixlix’s public Power Flow Card Plus: circular entities, labelled values, animated dots on SVG flow paths and a segmented demand circle. It is rebuilt natively in React for EnergyMix.info and mapped to GB grid categories rather than Home Assistant entities.
+              The original card cannot be reused directly because it is a Lit Home Assistant custom card tied to Lovelace, hass state objects, ha-card, ha-icon, ha-ripple, templates and Home Assistant action handlers. This component ports the visual model and behaviour into a production-safe React component.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 text-sm text-foreground/80">
-            <p>
-              Mapped data: home = GB demand, grid = net interconnector imports/exports, solar = GB solar, and additional source circles represent wind, gas, nuclear, hydro, biomass and other generation.
-            </p>
-            <p>
-              Supported by National Energy SO Open Data. Contains BMRS data © Elexon Limited copyright and database right 2026. Visual pattern inspired by flixlix/power-flow-card-plus.
-            </p>
+          <div className="space-y-3 text-sm text-foreground/80">
+            <p>Design authority: <code>power-flow-card-plus.ts</code>, shared entity components, shared flow components, shared CSS and flow-rate/distribution utilities from <code>flixlix/flixlix-cards</code>.</p>
+            <p>EnergyMix mapping: Home = GB demand, Grid = net imports/exports, Solar = solar, plus wind, nuclear, gas, hydro, biomass and other source circles.</p>
+            <p>Supported by National Energy SO Open Data. Contains BMRS data © Elexon Limited copyright and database right 2026. Visual pattern inspired by flixlix/power-flow-card-plus.</p>
           </div>
         </DialogContent>
       </Dialog>
