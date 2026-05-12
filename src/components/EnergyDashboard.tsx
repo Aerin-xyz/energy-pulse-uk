@@ -17,7 +17,6 @@ import { SystemStatusBanner } from '@/components/SystemStatusBanner';
 import { TopMetricsStrip } from '@/components/TopMetricsStrip';
 import { HelpTooltip } from '@/components/HelpTooltip';
 import { PowerFlowCard } from '@/components/PowerFlowCard';
-import { GridSignalsPanel } from '@/components/GridSignalsPanel';
 import { DemandReconciliationPanel } from '@/components/DemandReconciliationPanel';
 import { useGridSignals } from '@/hooks/useGridSignals';
 import { useState, useEffect, ReactNode } from 'react';
@@ -186,6 +185,9 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
             totalGenerationMW={data.totalGenerationMW || 0}
             interconnectorFlowMW={data.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0}
             carbonIntensity={data.carbonIntensity}
+            marketIndexPrice={marketIndexPriceSignal}
+            systemFrequency={systemFrequencySignal}
+            storage={storageSignal}
           />
         )}
       />
@@ -214,9 +216,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
 
       {data && (
         <TopMetricsStrip
-          totalDemandMW={displayDemandMW}
           totalGenerationMW={data.totalGenerationMW || 0}
-          interconnectorFlowMW={netInterconnectorFlowMW}
           carbonIntensity={data.carbonIntensity}
           marketIndexPrice={marketIndexPriceSignal}
           systemFrequency={systemFrequencySignal}
@@ -312,12 +312,6 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                   <p className="text-muted-foreground">Awaiting live data (stub/LKG)</p>
                 </div>
               )}
-
-              <GridSignalsPanel
-                marketIndexPrice={marketIndexPriceSignal}
-                systemFrequency={systemFrequencySignal}
-                storage={storageSignal}
-              />
 
               <PowerFlowCard
                 generationMix={data.generationMix}

@@ -1,11 +1,9 @@
-import { Activity, ArrowLeftRight, BatteryCharging, Factory, Gauge, Leaf, PoundSterling, RadioTower } from 'lucide-react';
+import { Activity, BatteryCharging, Factory, Leaf, PoundSterling, RadioTower } from 'lucide-react';
 import { formatGWfromMW } from '@/lib/utils';
 import { HelpTooltip } from '@/components/HelpTooltip';
 
 interface TopMetricsStripProps {
-  totalDemandMW: number;
   totalGenerationMW: number;
-  interconnectorFlowMW: number;
   carbonIntensity?: {
     actual: number;
     index: string;
@@ -37,52 +35,33 @@ const storageTone = (mode?: string) => {
 };
 
 export const TopMetricsStrip = ({
-  totalDemandMW,
   totalGenerationMW,
-  interconnectorFlowMW,
   carbonIntensity,
   marketIndexPrice,
   systemFrequency,
   storage,
 }: TopMetricsStripProps) => {
-  const transferLabel = interconnectorFlowMW >= 0 ? 'Net imports' : 'Net exports';
-  const transferValue = Math.abs(interconnectorFlowMW);
-
   const metrics = [
-    {
-      label: 'Displayed demand',
-      value: `${formatGWfromMW(totalDemandMW)} GW`,
-      icon: Gauge,
-      tone: 'text-foreground',
-      help: 'Consumer-facing GB demand derived from live power balance: GB production + net imports/exports + pumped-storage transfer. This is intentionally different from raw BMRS transmission demand.',
-    },
     {
       label: 'GB production',
       value: `${formatGWfromMW(totalGenerationMW)} GW`,
       icon: Factory,
       tone: 'text-cosmic-cyan',
-      help: 'Domestic Great Britain electricity production, including embedded wind/solar estimates where available and excluding imports.',
-    },
-    {
-      label: transferLabel,
-      value: `${formatGWfromMW(transferValue)} GW`,
-      icon: ArrowLeftRight,
-      tone: interconnectorFlowMW >= 0 ? 'text-primary' : 'text-orange-300',
-      help: 'Net interconnector transfer. Positive values mean electricity is importing into GB; negative values mean exporting from GB.',
+      help: 'Domestic Great Britain electricity production, including embedded wind/solar estimates where available. Sources include Elexon FUELINST plus BMRS/NESO fallbacks.',
     },
     {
       label: 'Carbon',
       value: carbonIntensity ? `${carbonIntensity.actual} gCO₂/kWh` : 'Unknown',
       icon: Leaf,
       tone: carbonIntensity?.index?.toLowerCase().includes('low') ? 'text-carbon-low' : 'text-carbon-moderate',
-      help: `Carbon Intensity API value${carbonIntensity?.index ? ` — ${carbonIntensity.index}` : ''}.`,
+      help: `GB carbon intensity from the NESO Carbon Intensity API${carbonIntensity?.index ? ` — ${carbonIntensity.index}` : ''}.`,
     },
     ...(marketIndexPrice ? [{
-      label: 'Market price',
+      label: 'Wholesale price',
       value: `£${marketIndexPrice.priceGBPPerMWh.toFixed(2)}/MWh`,
       icon: PoundSterling,
       tone: 'text-amber-300',
-      help: 'Elexon Market Index Price, volume-weighted across available market index data providers for the latest settlement period. This is wholesale market context, not a consumer tariff.',
+      help: 'Elexon Market Index Price for the latest available period. Wholesale market context only, not a household tariff.',
     }] : []),
     ...(systemFrequency ? [{
       label: 'Frequency',
@@ -103,7 +82,13 @@ export const TopMetricsStrip = ({
   return (
     <section className="hidden md:block border-b border-primary/20 bg-background/40 relative">
       <div className="container mx-auto px-3 py-3 md:px-4 lg:px-6">
-        <div className="grid gap-2.5 md:gap-3 [grid-template-columns:repeat(auto-fit,minmax(132px,1fr))]">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs uppercase tracking-[0.24em] text-cosmic-cyan/80">Live grid signals</p>
+            <h2 className="text-lg font-semibold text-foreground">Production, carbon, price, frequency and storage</h2>
+          </div>
+        </div>
+        <div className="grid gap-2.5 md:gap-3 [grid-template-columns:repeat(auto-fit,minmax(150px,1fr))]">
           {metrics.map(({ label, value, icon: Icon, tone, help }) => (
             <div key={label} className={metricClass}>
               <div className="flex items-center justify-between gap-2 mb-1">

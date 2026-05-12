@@ -1,3 +1,4 @@
+import { BatteryCharging, Factory, Leaf, PoundSterling, RadioTower } from 'lucide-react';
 import { formatGWfromMW } from '@/lib/utils';
 import { HelpTooltip } from '@/components/HelpTooltip';
 
@@ -9,6 +10,22 @@ interface EnergyBalanceDisplayProps {
     actual: number;
     index: string;
   };
+  marketIndexPrice?: {
+    priceGBPPerMWh: number;
+    startTime: string;
+    status: string;
+  } | null;
+  systemFrequency?: {
+    hz: number;
+    deviationHz: number;
+    status: string;
+  } | null;
+  storage?: {
+    netMW: number;
+    absMW: number;
+    mode: 'generating' | 'charging' | 'idle';
+    label: string;
+  } | null;
 }
 
 export const EnergyBalanceDisplay = ({
@@ -16,39 +33,78 @@ export const EnergyBalanceDisplay = ({
   totalGenerationMW,
   interconnectorFlowMW,
   carbonIntensity,
+  marketIndexPrice,
+  systemFrequency,
+  storage,
 }: EnergyBalanceDisplayProps) => {
+  const carbonTone = carbonIntensity?.index.toLowerCase() === 'very low' || carbonIntensity?.index.toLowerCase() === 'low'
+    ? 'text-carbon-low border-carbon-low/25 bg-carbon-low/5'
+    : carbonIntensity?.index.toLowerCase() === 'moderate'
+      ? 'text-carbon-moderate border-carbon-moderate/25 bg-carbon-moderate/5'
+      : 'text-carbon-high border-carbon-high/25 bg-carbon-high/5';
+  const storageTone = storage?.mode === 'charging' ? 'text-sky-300 border-sky-300/25 bg-sky-300/5' : storage?.mode === 'generating' ? 'text-emerald-300 border-emerald-300/25 bg-emerald-300/5' : 'text-muted-foreground border-primary/15 bg-background/45';
+
   return (
     <>
-      {/* Mobile: clear metric pills, replacing the old equation shorthand */}
-      <div className="grid md:hidden grid-cols-2 gap-2 text-xs w-full">
-        <div className="rounded-xl border border-primary/15 bg-background/45 px-3 py-2.5">
-          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Displayed demand</div>
-          <div className="mt-0.5 font-mono text-base font-bold text-foreground">{formatGWfromMW(totalDemandMW)} <span className="text-[10px] font-medium text-muted-foreground">GW</span></div>
-        </div>
-        <div className="rounded-xl border border-primary/20 bg-primary/5 px-3 py-2.5 shadow-[0_0_18px_rgba(28,222,228,0.10)]">
-          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">GB production</div>
-          <div className="mt-0.5 font-mono text-base font-bold text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)} <span className="text-[10px] font-medium text-muted-foreground">GW</span></div>
-        </div>
-        <div className="rounded-xl border border-primary/15 bg-background/45 px-3 py-2.5">
-          <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Transfers</div>
-          <div className="mt-0.5 font-mono text-base font-bold text-foreground">{formatGWfromMW(Math.abs(interconnectorFlowMW))} <span className="text-[10px] font-medium text-muted-foreground">GW</span></div>
-          <div className="text-[10px] text-muted-foreground">net {interconnectorFlowMW >= 0 ? 'imports' : 'exports'}</div>
-        </div>
-        {carbonIntensity && (
-          <div className="rounded-xl border border-primary/15 bg-background/45 px-3 py-2.5">
-            <div className="flex items-center justify-between gap-2">
-              <div className="text-[10px] uppercase tracking-[0.16em] text-muted-foreground">Carbon</div>
-              <div className={`h-2 w-2 rounded-full ${
-                carbonIntensity.index.toLowerCase() === 'very low' || carbonIntensity.index.toLowerCase() === 'low' 
-                  ? 'bg-carbon-low' 
-                  : carbonIntensity.index.toLowerCase() === 'moderate'
-                  ? 'bg-carbon-moderate'
-                  : 'bg-carbon-high'
-              }`} />
-            </div>
-            <div className="mt-0.5 font-mono text-base font-bold text-foreground">{carbonIntensity.actual} <span className="text-[10px] font-medium text-muted-foreground">gCO₂/kWh</span></div>
+      {/* Mobile: live grid signals summary */}
+      <div className="md:hidden w-full rounded-2xl border border-primary/20 bg-background/35 p-3 shadow-[0_0_24px_rgba(28,222,228,0.08)]">
+        <div className="mb-3 flex items-start justify-between gap-3">
+          <div>
+            <p className="text-[10px] uppercase tracking-[0.24em] text-cosmic-cyan/80">Live grid signals</p>
+            <h2 className="mt-0.5 text-base font-semibold text-foreground">Production, carbon, price, frequency and storage</h2>
           </div>
-        )}
+          <HelpTooltip content="Headline GB grid signals: domestic production, carbon intensity, wholesale market index price, system frequency and pumped-storage status." className="mt-1 h-4 w-4 shrink-0" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <div className="rounded-xl border border-primary/20 bg-primary/5 px-3 py-2.5 shadow-[0_0_18px_rgba(28,222,228,0.10)]">
+            <div className="mb-1 flex items-center justify-between gap-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+              <span className="flex items-center gap-1.5"><Factory className="h-3.5 w-3.5 text-cosmic-cyan" />GB production</span>
+              <HelpTooltip content="Domestic Great Britain electricity production, including embedded wind/solar estimates where available. Sources include Elexon FUELINST plus BMRS/NESO fallbacks." className="h-3.5 w-3.5" />
+            </div>
+            <div className="font-mono text-lg font-bold text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)} <span className="text-[10px] font-medium text-muted-foreground">GW</span></div>
+          </div>
+
+          {carbonIntensity && (
+            <div className={`rounded-xl border px-3 py-2.5 ${carbonTone}`}>
+              <div className="mb-1 flex items-center justify-between gap-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                <span className="flex items-center gap-1.5"><Leaf className="h-3.5 w-3.5" />Carbon</span>
+                <HelpTooltip content="GB carbon intensity from the NESO Carbon Intensity API, measured in grams of CO₂ per kilowatt-hour." className="h-3.5 w-3.5" />
+              </div>
+              <div className="font-mono text-lg font-bold text-glow">{carbonIntensity.actual} <span className="text-[10px] font-medium text-muted-foreground">gCO₂/kWh</span></div>
+            </div>
+          )}
+
+          {marketIndexPrice && (
+            <div className="rounded-xl border border-amber-300/25 bg-amber-300/5 px-3 py-2.5">
+              <div className="mb-1 flex items-center justify-between gap-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                <span className="flex items-center gap-1.5"><PoundSterling className="h-3.5 w-3.5 text-amber-300" />Wholesale price</span>
+                <HelpTooltip content="Elexon Market Index Price for the latest available period. Wholesale market context only, not a household tariff." className="h-3.5 w-3.5" />
+              </div>
+              <div className="font-mono text-lg font-bold text-amber-300 text-glow">£{marketIndexPrice.priceGBPPerMWh.toFixed(2)} <span className="text-[10px] font-medium text-muted-foreground">/MWh</span></div>
+            </div>
+          )}
+
+          {systemFrequency && (
+            <div className="rounded-xl border border-emerald-300/25 bg-emerald-300/5 px-3 py-2.5">
+              <div className="mb-1 flex items-center justify-between gap-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                <span className="flex items-center gap-1.5"><RadioTower className="h-3.5 w-3.5 text-emerald-300" />Frequency</span>
+                <HelpTooltip content="GB system frequency from Elexon FREQ data. The grid targets 50.000 Hz; small movements around target are normal." className="h-3.5 w-3.5" />
+              </div>
+              <div className="font-mono text-lg font-bold text-emerald-300 text-glow">{systemFrequency.hz.toFixed(3)} <span className="text-[10px] font-medium text-muted-foreground">Hz</span></div>
+            </div>
+          )}
+
+          {storage && (
+            <div className={`rounded-xl border px-3 py-2.5 ${storageTone}`}>
+              <div className="mb-1 flex items-center justify-between gap-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
+                <span className="flex items-center gap-1.5"><BatteryCharging className="h-3.5 w-3.5" />Pumped storage</span>
+                <HelpTooltip content="Pumped-storage status from Elexon/BMRS PS data. Negative values mean charging/pumping; positive values mean generating." className="h-3.5 w-3.5" />
+              </div>
+              <div className="font-mono text-lg font-bold text-glow">{formatGWfromMW(storage.absMW)} <span className="text-[10px] font-medium text-muted-foreground">GW</span></div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Tablet: Medium Energy Balance */}
