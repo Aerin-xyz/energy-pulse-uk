@@ -5,22 +5,22 @@ const Index = () => {
   return (
     <>
       <Helmet>
-        <title>UK Electricity Mix Live | GB Grid Demand, Carbon Intensity & Renewables</title>
+        <title>EnergyMix.info | UK Electricity Dashboard</title>
         <meta name="description" content="Live Great Britain electricity mix: demand, generation, renewables, gas, nuclear, imports and carbon intensity, updated from public grid data." />
         <link rel="canonical" href="https://energymix.info/" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="UK Electricity Mix Live" />
+        <meta property="og:title" content="EnergyMix.info | UK Electricity Dashboard" />
         <meta property="og:description" content="Live Great Britain electricity mix, demand, renewables, gas, nuclear, imports and carbon intensity." />
         <meta property="og:url" content="https://energymix.info/" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://energymix.info/og-default.jpg" />
-        <meta property="og:site_name" content="Energy Mix" />
+        <meta property="og:site_name" content="EnergyMix.info" />
         <meta property="og:locale" content="en_GB" />
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="UK Electricity Mix Live" />
+        <meta name="twitter:title" content="EnergyMix.info | UK Electricity Dashboard" />
         <meta name="twitter:description" content="Live Great Britain electricity mix, demand, renewables, gas, nuclear, imports and carbon intensity." />
         <meta name="twitter:image" content="https://energymix.info/og-default.jpg" />
         
