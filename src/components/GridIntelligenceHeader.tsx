@@ -163,18 +163,18 @@ export const GridIntelligenceHeader = ({
 
   const signalCards = [
     {
-      label: 'Cleanliness',
-      value: `${lowCarbonShare.toFixed(0)}%`,
-      caption: 'low-carbon domestic generation',
-      tone: carbon.tone,
-      help: 'Low-carbon share includes wind, solar, hydro, pumped storage, nuclear and biomass in the domestic generation mix.',
-    },
-    {
-      label: 'Renewables',
+      label: 'Renewable',
       value: `${renewableShare.toFixed(0)}%`,
       caption: 'wind, solar, hydro and PSH',
       tone: renewableShare >= 45 ? 'calm' as const : renewableShare >= 25 ? 'cyan' as const : 'muted' as const,
-      help: 'Renewables are calculated from the live generation mix and exclude imports.',
+      help: 'Renewable share includes wind, solar, hydro and pumped storage hydro in the domestic generation mix, excluding imports.',
+    },
+    {
+      label: 'Low-carbon',
+      value: `${lowCarbonShare.toFixed(0)}%`,
+      caption: 'renewables, nuclear and biomass',
+      tone: carbon.tone,
+      help: 'Low-carbon share includes renewables, nuclear and biomass in the domestic generation mix.',
     },
     {
       label: 'Gas reliance',
@@ -220,7 +220,7 @@ export const GridIntelligenceHeader = ({
               <Sparkles className="h-4 w-4" />
               Now
             </div>
-            <p className="text-xl font-semibold leading-snug text-foreground md:text-2xl">{summary}</p>
+            <p className="text-lg font-semibold leading-snug text-foreground md:text-xl">{summary}</p>
             <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
               The live view below shows how generation, imports, storage and demand are balancing in near real time. Values refresh from public grid sources at their native cadence.
             </p>
