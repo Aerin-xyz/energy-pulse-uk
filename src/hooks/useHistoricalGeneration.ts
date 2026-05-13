@@ -67,11 +67,20 @@ interface HistoricalGenerationData {
   forecast?: ForecastData;
 }
 
+type HistoricalMeta = NonNullable<HistoricalGenerationData['meta']>;
+
+type WeeklyMeta = {
+  periods: number;
+  solarMatchedDays: number;
+  totalDays: number;
+  pvSource: string;
+};
+
 interface HistoricalCachedData {
   data: HistoricalDataPoint[];
   timestamp: number;
   lastUpdated: string;
-  meta: any;
+  meta?: HistoricalMeta;
   forecast?: ForecastData;
 }
 
@@ -79,8 +88,18 @@ interface WeeklyCachedData {
   data: DailyDataPoint[];
   timestamp: number;
   lastUpdated: string;
-  meta: any;
+  meta?: WeeklyMeta;
 }
+
+const toWeeklyMeta = (meta?: HistoricalMeta): WeeklyMeta | undefined => {
+  if (!meta) return undefined;
+  return {
+    periods: meta.periods,
+    solarMatchedDays: meta.solarMatchedDays || 0,
+    totalDays: meta.totalDays || 0,
+    pvSource: meta.pvSource,
+  };
+};
 
 // Load historical data from localStorage
 function loadHistoricalFromCache(): HistoricalCachedData | null {
@@ -106,7 +125,7 @@ function loadHistoricalFromCache(): HistoricalCachedData | null {
 }
 
 // Save historical data to localStorage
-function saveHistoricalToCache(data: HistoricalDataPoint[], lastUpdated: string, meta: any): void {
+function saveHistoricalToCache(data: HistoricalDataPoint[], lastUpdated: string, meta?: HistoricalMeta): void {
   try {
     const cacheData: HistoricalCachedData = {
       data,
@@ -145,7 +164,7 @@ function loadWeeklyFromCache(): WeeklyCachedData | null {
 }
 
 // Save weekly data to localStorage
-function saveWeeklyToCache(data: DailyDataPoint[], lastUpdated: string, meta: any): void {
+function saveWeeklyToCache(data: DailyDataPoint[], lastUpdated: string, meta?: WeeklyMeta): void {
   try {
     const cacheData: WeeklyCachedData = {
       data,
@@ -177,7 +196,7 @@ export const useHistoricalGeneration = () => {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(
     cachedHistorical ? new Date(cachedHistorical.lastUpdated) : null
   );
-  const [meta, setMeta] = useState<{periods: number; solarMatchedCount: number; pvSource: string} | null>(cachedHistorical?.meta || null);
+  const [meta, setMeta] = useState<HistoricalMeta | null>(cachedHistorical?.meta || null);
   
   // Forecast data state
   const [forecastData, setForecastData] = useState<ForecastDataPoint[]>(
@@ -200,7 +219,7 @@ export const useHistoricalGeneration = () => {
   const [weeklyLastUpdated, setWeeklyLastUpdated] = useState<Date | null>(
     cachedWeekly ? new Date(cachedWeekly.lastUpdated) : null
   );
-  const [weeklyMeta, setWeeklyMeta] = useState<{periods: number; solarMatchedDays: number; totalDays: number; pvSource: string} | null>(cachedWeekly?.meta || null);
+  const [weeklyMeta, setWeeklyMeta] = useState<WeeklyMeta | null>(cachedWeekly?.meta || null);
   
   const { toast } = useToast();
 
@@ -285,10 +304,11 @@ export const useHistoricalGeneration = () => {
 
       setWeeklyData(processedData);
       setWeeklyLastUpdated(new Date(weeklyHistoricalData.lastUpdated));
-      setWeeklyMeta(weeklyHistoricalData.meta as any || null);
+      const weeklyMetaResult = toWeeklyMeta(weeklyHistoricalData.meta);
+      setWeeklyMeta(weeklyMetaResult || null);
 
       // Save to localStorage for instant loading on next visit
-      saveWeeklyToCache(processedData, weeklyHistoricalData.lastUpdated, weeklyHistoricalData.meta as any);
+      saveWeeklyToCache(processedData, weeklyHistoricalData.lastUpdated, weeklyMetaResult);
 
       if (showToast) {
         const solarInfo = weeklyHistoricalData.meta 
@@ -316,11 +336,10 @@ export const useHistoricalGeneration = () => {
     }
   }, [toast]);
 
-  // Fetch historical data in parallel with energy data for faster initial load
+  // Fetch historical data in parallel with energy data for faster initial load.
+  // Keep this silent: historical refresh is normal background work, not a user-facing event.
   useEffect(() => {
-    // Only show toast if fetching fresh data (no cache)
-    const hasCache = loadHistoricalFromCache() !== null;
-    fetchHistoricalData(!hasCache);
+    fetchHistoricalData(false);
   }, [fetchHistoricalData]);
 
   // Auto-refresh every 30 minutes

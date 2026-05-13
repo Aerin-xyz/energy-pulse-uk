@@ -1,0 +1,101 @@
+{
+  "generatedAt": "2026-05-11T21:02:58.447Z",
+  "reports": [
+    {
+      "slug": "/reports/weekly/2026-05-11",
+      "date": "2026-05-11",
+      "title": "UK Electricity Mix Weekly Report: Monday 11 May",
+      "period": "Tuesday 5 May to Monday 11 May",
+      "intro": "A measured weekly report for EnergyMix.info using the available 7-day historical generation feed for Tuesday 5 May to Monday 11 May.",
+      "summary": "The week from Tuesday 5 May to Monday 11 May shifted from gas-heavy weekdays into a cleaner, wind-led weekend. The strongest renewable day in the available data was Sunday 10 May, when wind, solar and hydro together averaged 53.2% of measured generation across settlement periods. Gas was highest on Thursday 7 May and lowest on Sunday 10 May.",
+      "takeaway": "For flexible electricity use, the cleanest opportunities are likely to appear when wind is strong, gas is low and demand is not at a peak. This is the foundation for future EV-charging guidance, clean-electricity alerts and weekly newsletter summaries.",
+      "metrics": [
+        [
+          "Average measured generation",
+          "~12.2 GW across available settlement-period aggregates"
+        ],
+        [
+          "Highest renewable share",
+          "53.2% on Sunday 10 May"
+        ],
+        [
+          "Highest average wind output",
+          "~4.0 GW on Sunday 10 May"
+        ],
+        [
+          "Highest average solar output",
+          "~1.9 GW on Saturday 9 May"
+        ],
+        [
+          "Highest average gas output",
+          "~5.7 GW on Thursday 7 May"
+        ]
+      ]
+    }
+  ],
+  "latestReportSlug": "/reports/weekly/2026-05-11",
+  "yesterday": {
+    "slug": "/yesterday",
+    "date": "2026-05-10",
+    "title": "UK Electricity Mix Yesterday: Sunday 10 May",
+    "summary": "Yesterday, Sunday 10 May, measured average generation was about 10.6 GW. Renewables averaged 53.2% of measured generation, gas averaged 1.9 GW, wind averaged 4.0 GW and solar averaged 1.6 GW.",
+    "metrics": [
+      [
+        "Average measured generation",
+        "~10.6 GW"
+      ],
+      [
+        "Average renewable share",
+        "53.2%"
+      ],
+      [
+        "Average wind output",
+        "~4.0 GW"
+      ],
+      [
+        "Average solar output",
+        "~1.6 GW"
+      ],
+      [
+        "Average gas output",
+        "~1.9 GW"
+      ]
+    ]
+  },
+  "records": {
+    "highestRenewableShare": {
+      "value": "53.2%",
+      "date": "Sunday 10 May",
+      "text": "Current measured 7-day high: 53.2% average renewable share on Sunday 10 May, based on the available historical generation feed."
+    },
+    "highestWindGeneration": {
+      "value": "4.0 GW",
+      "date": "Sunday 10 May",
+      "text": "Current measured 7-day high: about 4.0 GW average wind output on Sunday 10 May, based on the available historical generation feed."
+    },
+    "highestSolarGeneration": {
+      "value": "1.9 GW",
+      "date": "Saturday 9 May",
+      "text": "Current measured 7-day high: about 1.9 GW average solar output on Saturday 9 May, based on the available historical generation feed."
+    },
+    "highestGasGeneration": {
+      "value": "5.7 GW",
+      "date": "Thursday 7 May",
+      "text": "Current measured 7-day high: about 5.7 GW average gas output on Thursday 7 May, based on the available historical generation feed."
+    }
+  },
+  "socialPosts": [
+    {
+      "title": "Monday weekly grid brief",
+      "body": "Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: 53.2% on Sunday 10 May\n• Highest average wind output: ~4.0 GW on Sunday 10 May\n• Highest average solar output: ~1.9 GW on Saturday 9 May\n• Highest average gas output: ~5.7 GW on Thursday 7 May\n\nThe shift was clear: gas-heavy weekdays gave way to a cleaner, wind-led weekend.\n\nFull report: https://energymix.info/reports/weekly/2026-05-11"
+    },
+    {
+      "title": "Wednesday explainer",
+      "body": "What does “UK electricity mix” actually mean?\n\nFor live grid dashboards, it usually means Great Britain’s electricity system: England, Scotland and Wales. Northern Ireland is part of the UK, but operates in a separate electricity market.\n\nExplainer: https://energymix.info/uk-electricity-mix"
+    },
+    {
+      "title": "Friday practical clean-electricity post",
+      "body": "The cleanest time to use electricity is not a fixed hour.\n\nIt changes with wind, solar, demand, imports and gas generation. Windy overnight periods and sunny middays can be much cleaner than still early-evening peaks.\n\nGuide: https://energymix.info/cleanest-time-to-use-electricity"
+    }
+  ]
+}

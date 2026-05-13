@@ -76,6 +76,114 @@ async function fetchBMRSGeneration(): Promise<StrictResult> {
   return { ok: false, url: variants[0].url, status: 502, reason: "all-variants-failed", variant: "exhausted" };
 }
 
+async function fetchMarketIndexPrice(debug = false): Promise<{
+  priceGBPPerMWh: number;
+  volumeMWh: number;
+  settlementDate: string;
+  settlementPeriod: number;
+  startTime: string;
+  providers: string[];
+  source: string;
+  status: string;
+} | null> {
+  const now = new Date();
+  const from = new Date(now.getTime() - 14 * 60 * 60 * 1000);
+  const url = `https://${DATA_HOST}/bmrs/api/v1/balancing/pricing/market-index?from=${encodeURIComponent(from.toISOString())}&to=${encodeURIComponent(now.toISOString())}&format=json`;
+
+  try {
+    const res = await fetch(url, { headers: HEADERS, cache: "no-store" });
+    const ct = res.headers.get("content-type") || "";
+    if (!res.ok || !ct.toLowerCase().includes("json")) {
+      if (debug) console.log("[energy-data] Market index price fetch failed", { status: res.status, contentType: ct });
+      return null;
+    }
+
+    const json = await res.json();
+    const rows = asArray(json?.data ?? json)
+      .map((r: any) => ({
+        startTime: String(r.startTime ?? r.START_TIME ?? ""),
+        settlementDate: String(r.settlementDate ?? r.SETTLEMENT_DATE ?? ""),
+        settlementPeriod: Number(r.settlementPeriod ?? r.SETTLEMENT_PERIOD ?? 0),
+        provider: String(r.dataProvider ?? r.provider ?? r.DATA_PROVIDER ?? "MIDP"),
+        price: Number(r.price ?? r.marketIndexPrice ?? r.MARKET_INDEX_PRICE),
+        volume: Number(r.volume ?? r.marketIndexVolume ?? r.MARKET_INDEX_VOLUME ?? 0),
+      }))
+      .filter((r: any) => r.startTime && Number.isFinite(Date.parse(r.startTime)) && Number.isFinite(r.price));
+
+    if (!rows.length) return null;
+
+    const latestTime = Math.max(...rows.map((r: any) => Date.parse(r.startTime)));
+    const latestRows = rows.filter((r: any) => Date.parse(r.startTime) === latestTime);
+    const positiveVolumeRows = latestRows.filter((r: any) => Number.isFinite(r.volume) && r.volume > 0);
+    const pricedRows = positiveVolumeRows.length ? positiveVolumeRows : latestRows.filter((r: any) => r.price > 0);
+    if (!pricedRows.length) return null;
+
+    const totalVolume = pricedRows.reduce((sum: number, r: any) => sum + (Number.isFinite(r.volume) && r.volume > 0 ? r.volume : 0), 0);
+    const averagePrice = totalVolume > 0
+      ? pricedRows.reduce((sum: number, r: any) => sum + r.price * r.volume, 0) / totalVolume
+      : pricedRows.reduce((sum: number, r: any) => sum + r.price, 0) / pricedRows.length;
+    const first = pricedRows[0];
+
+    return {
+      priceGBPPerMWh: Math.round(averagePrice * 100) / 100,
+      volumeMWh: Math.round(totalVolume * 1000) / 1000,
+      settlementDate: first.settlementDate,
+      settlementPeriod: first.settlementPeriod,
+      startTime: new Date(latestTime).toISOString(),
+      providers: pricedRows.map((r: any) => r.provider),
+      source: "Elexon Market Index Price",
+      status: "live",
+    };
+  } catch (e) {
+    if (debug) console.log("[energy-data] Market index price error", (e as Error).message);
+    return null;
+  }
+}
+
+async function fetchSystemFrequency(debug = false): Promise<{
+  hz: number;
+  measurementTime: string;
+  deviationHz: number;
+  status: string;
+  source: string;
+} | null> {
+  const now = new Date();
+  const from = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+  const query = `from=${encodeURIComponent(from.toISOString())}&to=${encodeURIComponent(now.toISOString())}&format=json`;
+  const candidates = [
+    `https://${DATA_HOST}/bmrs/api/v1/system/frequency?${query}`,
+    `https://${DATA_HOST}/bmrs/api/v1/system/frequency/stream?format=json`,
+  ];
+
+  for (const url of candidates) {
+    try {
+      const res = await fetch(url, { headers: HEADERS, cache: "no-store" });
+      const ct = res.headers.get("content-type") || "";
+      if (!res.ok || !ct.toLowerCase().includes("json")) continue;
+      const json = await res.json();
+      const rows = asArray(json?.data ?? json)
+        .map((r: any) => ({
+          measurementTime: String(r.measurementTime ?? r.MEASUREMENT_TIME ?? r.time ?? ""),
+          frequency: Number(r.frequency ?? r.FREQUENCY),
+        }))
+        .filter((r: any) => r.measurementTime && Number.isFinite(Date.parse(r.measurementTime)) && Number.isFinite(r.frequency));
+      if (!rows.length) continue;
+      const latest = rows.reduce((best: any, row: any) => Date.parse(row.measurementTime) > Date.parse(best.measurementTime) ? row : best, rows[0]);
+      return {
+        hz: Math.round(latest.frequency * 1000) / 1000,
+        measurementTime: new Date(latest.measurementTime).toISOString(),
+        deviationHz: Math.round((latest.frequency - 50) * 1000) / 1000,
+        status: Math.abs(latest.frequency - 50) <= 0.2 ? "normal" : "alert",
+        source: "Elexon system frequency",
+      };
+    } catch (e) {
+      if (debug) console.log("[energy-data] System frequency attempt failed", { url, error: (e as Error).message });
+    }
+  }
+
+  return null;
+}
+
 // Embedded wind (ESO CKAN) with tolerant filters
 async function fetchEmbeddedWindESO(anchorDate: string, anchorSP: number): Promise<{ mw: number; matched: boolean; reason: string; row?: any; }> {
   const filters = encodeURIComponent(JSON.stringify({
@@ -1413,6 +1521,55 @@ function anchorEndISOFromSP(anchorDate: string, anchorSP: number): string | null
   return dt.toISOString();
 }
 
+function safeSourceTimestamp(iso: string | null | undefined, responseNow = new Date()): string | null {
+  if (!iso) return null;
+  const parsed = Date.parse(iso);
+  if (!Number.isFinite(parsed)) return null;
+  // Settlement-period fields can be expressed as local clock labels but marked Z;
+  // never expose a future timestamp as upstream source freshness.
+  if (parsed > responseNow.getTime() + 2 * 60 * 1000) return null;
+  return new Date(parsed).toISOString();
+}
+
+function parsePumpedStorage(rows: any[], variant: "insights" | "dataset", sourceTime?: string | null) {
+  const latest = pickLatestSP(rows).length ? pickLatestSP(rows) : rows;
+  let netMW = 0;
+  let settlementDate = "";
+  let settlementPeriod = 0;
+
+  for (const r of latest) {
+    const fuelRaw = String(r.FUEL_TYPE ?? r.FUELTYPE ?? r.fuel ?? r.fuelType ?? r.name ?? "").toUpperCase();
+    if (!(fuelRaw === "PS" || fuelRaw.includes("PUMP"))) continue;
+
+    let mw = Number(r.generation ?? r.generationMW ?? r.GENERATION_MW ?? r.value ?? r.actual);
+    if (!Number.isFinite(mw) && variant === "dataset") {
+      const mwh = Number(r.MWH ?? r.ENERGY_MWH ?? r.energy ?? r.VALUE);
+      mw = Number.isFinite(mwh) ? mwh * 2 : NaN;
+    }
+    if (!Number.isFinite(mw)) continue;
+    netMW += mw;
+
+    if (!settlementPeriod) {
+      settlementPeriod = parseSettlementPeriod(r);
+      settlementDate = parseSettlementDate(r);
+    }
+  }
+
+  const absMW = Math.round(Math.abs(netMW));
+  const mode = netMW > 25 ? "generating" : netMW < -25 ? "charging" : "idle";
+  const timestamp = sourceTime || anchorEndISOFromSP(settlementDate, settlementPeriod);
+  return {
+    netMW: Math.round(netMW),
+    absMW,
+    mode,
+    label: mode === "generating" ? "Pumped storage generating" : mode === "charging" ? "Pumped storage charging" : "Pumped storage idle",
+    settlementDate,
+    settlementPeriod,
+    timestamp,
+    source: "Elexon FUELINST/BMRS pumped storage",
+  };
+}
+
 function parseFUELHHtoMW(rows: any[]) {
   const latest = pickLatestSP(rows);
   const hvByFuelMW: Record<string, number> = {};
@@ -1515,7 +1672,7 @@ Deno.serve(async (req) => {
 
   // Response caching based on update type with versioned key strategy
   // CACHE_VERSION: bump this to invalidate all cached responses after logic changes
-  const CACHE_VERSION = 'v3-fuelinst-fast';
+  const CACHE_VERSION = 'v4-source-freshness';
   const cacheTTL = UPDATE_TYPE === 'high' ? 75 : UPDATE_TYPE === 'mid' ? 240 : 300; // 75s, 4min, 5min
   const globalCacheKey = `energy-data:${CACHE_VERSION}:${UPDATE_TYPE}:global`;
 
@@ -1686,7 +1843,7 @@ Deno.serve(async (req) => {
 
   try {
     // OPTIMIZATION: Parallelize ALL independent data sources with timeout for EU
-    const [fuelinstR, bmrsR, demandR, carbonIntensity, euGenerationMix] = await Promise.all([
+    const [fuelinstR, bmrsR, demandR, carbonIntensity, euGenerationMix, marketIndexPrice, systemFrequency] = await Promise.all([
       fetchFUELINSTRecent(),
       fetchBMRSGeneration(),
       fetchDemand(),
@@ -1696,6 +1853,12 @@ Deno.serve(async (req) => {
         : Promise.resolve(null),
       // EU generation with 3s timeout (optional, non-critical)
       fetchEUGenerationMix(DEBUG, EU_FOCUS, 3000),
+      (UPDATE_TYPE === 'full' || UPDATE_TYPE === 'mid')
+        ? fetchMarketIndexPrice(DEBUG)
+        : Promise.resolve(null),
+      (UPDATE_TYPE === 'full' || UPDATE_TYPE === 'mid')
+        ? fetchSystemFrequency(DEBUG)
+        : Promise.resolve(null),
     ]);
 
     console.log('[energy-data] Parallel fetch complete:', {
@@ -1703,7 +1866,9 @@ Deno.serve(async (req) => {
       bmrs: bmrsR.ok,
       demand: demandR.ok,
       carbon: !!carbonIntensity,
-      eu: euGenerationMix.length
+      eu: euGenerationMix.length,
+      price: !!marketIndexPrice,
+      frequency: !!systemFrequency
     });
 
     if (DEBUG) dlog(true, "Data fetch results:", {
@@ -1722,6 +1887,7 @@ let bmrsRows: any[] = [];
 let outturnVariant: "insights" | "dataset" = "insights";
 let latestOutturnRows: any[] = [];
 let generationSourceTime: string | null = null;
+let storage = parsePumpedStorage([], "dataset", null);
 
     if (fuelinstR.ok) {
       const rows = asArray(fuelinstR.data);
@@ -1736,6 +1902,7 @@ let generationSourceTime: string | null = null;
         latestOutturnRows = parsed.latestRows;
         outturnVariant = "dataset";
         generationSourceTime = parsed.latestStartTime;
+        storage = parsePumpedStorage(parsed.latestRows, "dataset", generationSourceTime);
         if (DEBUG) dlog(true, "FUELINST parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, latestStartTime: parsed.latestStartTime });
       }
     }
@@ -1755,6 +1922,7 @@ let generationSourceTime: string | null = null;
           latestOutturnRows = pickLatestSP(rows);
           outturnVariant = "dataset";
           generationSourceTime = parsed.latestStartTime;
+          storage = parsePumpedStorage(latestOutturnRows, "dataset", generationSourceTime);
         } else {
           const lkgResponse = await serveLKG("BMRS unavailable; served LKG");
           if (lkgResponse) return lkgResponse;
@@ -1771,6 +1939,7 @@ let generationSourceTime: string | null = null;
         anchorDate = parsed.anchorDate;
         latestOutturnRows = pickLatestSP(bmrsRows);
         outturnVariant = "insights";
+        storage = parsePumpedStorage(latestOutturnRows, "insights", generationSourceTime);
         if (DEBUG) dlog(true, "BMRS HV parsed:", { fuels: Object.keys(hvByFuelMW).length, anchorSP, anchorDate, sample: Object.entries(hvByFuelMW).slice(0, 3) });
 
         const hvTotalNow = Object.values(hvByFuelMW).reduce((s, v) => s + v, 0);
@@ -1790,6 +1959,7 @@ let generationSourceTime: string | null = null;
               latestOutturnRows = pickLatestSP(rows);
               outturnVariant = "dataset";
               generationSourceTime = p2.latestStartTime;
+              storage = parsePumpedStorage(latestOutturnRows, "dataset", generationSourceTime);
             } else {
               if (DEBUG) dlog(true, "Dataset fallback also implausible", { hvTotal2 });
               const lkgResponse = await serveLKG("HV baseline implausible; served LKG");
@@ -1890,49 +2060,71 @@ try {
 
     const demandLatestRow = demandR.ok ? latestDemandRow(demandR.data) : null;
     const totalDemand = demandR.ok ? parseDemand(demandR.data) : 0;
+    const responseNow = new Date();
 
     const sourceFreshness = {
       generation: {
         label: variant?.includes('fuelinst') ? 'Live generation' : 'Generation fallback',
         source: variant?.includes('fuelinst') ? 'Elexon FUELINST' : 'BMRS/FUELHH',
-        timestamp: generationSourceTime || anchorEndISO,
+        timestamp: safeSourceTimestamp(generationSourceTime || anchorEndISO, responseNow),
         cadenceMinutes: variant?.includes('fuelinst') ? 5 : 30,
         status: Object.keys(hvByFuelMW).length ? 'live' : 'unavailable',
       },
       wind: {
         label: 'Embedded wind',
         source: 'NESO embedded wind',
-        timestamp: windEmb.matched ? anchorEndISO : null,
+        timestamp: windEmb.matched ? safeSourceTimestamp(anchorEndISO, responseNow) : null,
         cadenceMinutes: 30,
         status: windEmb.matched ? 'live' : 'fallback',
       },
       solar: {
         label: 'Solar',
         source: 'PV Live',
-        timestamp: (solarEmb as any).debug?.picked?.t || null,
+        timestamp: safeSourceTimestamp((solarEmb as any).debug?.picked?.t || null, responseNow),
         cadenceMinutes: 30,
         status: solarEmb.matched ? 'live' : 'fallback',
       },
       interconnectors: {
         label: 'Transfers',
         source: interconnectorStatus === 'live' ? 'ENTSO-E/BMRS' : 'Last known/BMRS fallback',
-        timestamp: icDiag.tries?.find((t: any) => t?.timestamp)?.timestamp || anchorEndISO,
+        timestamp: safeSourceTimestamp(icDiag.tries?.find((t: any) => t?.timestamp)?.timestamp || anchorEndISO, responseNow),
         cadenceMinutes: 30,
         status: interconnectorStatus,
       },
       demand: {
         label: 'Demand',
         source: 'BMRS ITSDO',
-        timestamp: demandLatestRow ? demandRowEndISO(demandLatestRow) : null,
+        timestamp: safeSourceTimestamp(demandLatestRow ? demandRowEndISO(demandLatestRow) : null, responseNow),
         cadenceMinutes: 30,
         status: demandR.ok ? 'live' : 'unavailable',
       },
       carbon: {
         label: 'Carbon',
         source: 'Carbon Intensity API',
-        timestamp: carbonIntensity?.timestamp || null,
+        timestamp: safeSourceTimestamp(carbonIntensity?.timestamp || null, responseNow),
         cadenceMinutes: 30,
         status: carbonIntensity ? 'live' : 'cached',
+      },
+      price: {
+        label: 'Market price',
+        source: 'Elexon Market Index Price',
+        timestamp: safeSourceTimestamp(marketIndexPrice?.startTime || null, responseNow),
+        cadenceMinutes: 30,
+        status: marketIndexPrice ? 'live' : 'unavailable',
+      },
+      frequency: {
+        label: 'Grid frequency',
+        source: 'Elexon FREQ',
+        timestamp: safeSourceTimestamp(systemFrequency?.measurementTime || null, responseNow),
+        cadenceMinutes: 2,
+        status: systemFrequency ? systemFrequency.status : 'unavailable',
+      },
+      storage: {
+        label: 'Pumped storage',
+        source: 'Elexon FUELINST/BMRS',
+        timestamp: safeSourceTimestamp(storage.timestamp || null, responseNow),
+        cadenceMinutes: variant?.includes('fuelinst') ? 5 : 30,
+        status: storage.mode,
       },
     };
 
@@ -1972,6 +2164,9 @@ try {
         // Trim forecast to next 12 hours (24 half-hourly periods) to reduce payload size
         forecastData: carbonIntensity.forecastData?.slice(0, 24)
       } : null,
+      marketIndexPrice,
+      systemFrequency,
+      storage,
 dataFreshness: {
   source: "Elexon FUELINST/BMRS + ESO + PV Live",
   isRealtime: true,

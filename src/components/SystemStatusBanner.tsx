@@ -32,7 +32,7 @@ export const SystemStatusBanner = ({
     : 'bg-yellow-500';
 
   return (
-    <div className="border-b border-primary/20 glass-morphism sticky top-[136px] z-40 shadow-lg">
+    <div className="hidden md:block border-b border-primary/20 glass-morphism sticky top-[136px] z-40 shadow-lg">
       <div className="container mx-auto px-4 py-2">
         <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 text-xs md:text-sm">
           {/* Settlement Period */}

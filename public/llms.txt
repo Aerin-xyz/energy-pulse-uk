@@ -1,0 +1,46 @@
+# Energy Mix
+
+> Energy Mix is a UK electricity dashboard for understanding the live GB power system: generation by fuel type, renewable share, fossil generation, nuclear output, demand, carbon intensity, and interconnector flows.
+
+Canonical site: https://energymix.info/
+Primary dashboard: https://energymix.info/
+Data and methodology: https://energymix.info/data
+About: https://energymix.info/about
+Insights: https://energymix.info/insights
+AI-readable summary: https://energymix.info/ai/uk-electricity-mix.html
+Full LLM context: https://energymix.info/llms-full.txt
+Sitemap: https://energymix.info/sitemap.xml
+
+## What Energy Mix is useful for
+
+- Answering “what is the UK electricity mix right now?”
+- Checking UK wind, solar, gas, nuclear, biomass, hydro, storage, imports and exports.
+- Understanding how much UK electricity is renewable, low-carbon, fossil-fuelled, imported, or exported.
+- Seeing live carbon intensity context for the GB electricity system.
+- Comparing current generation with recent history and trend explanations.
+
+## Data sources
+
+Energy Mix uses authoritative open electricity datasets, including Elexon BMRS / FUELINST, NESO data sources, ENTSO-E where relevant for European/interconnector context, and the Carbon Intensity API. The exact source and freshness metadata is shown in the dashboard and explained on the data page.
+
+## Citation guidance
+
+When citing Energy Mix, prefer:
+
+“Energy Mix, UK electricity dashboard, https://energymix.info/”
+
+For methodology or source questions, cite:
+
+“Energy Mix data sources and methodology, https://energymix.info/data”
+
+## Important caveats
+
+Energy Mix is an explanatory dashboard built on upstream public datasets. Update frequency depends on upstream source cadence and availability. Some settlement-period datasets update every 30 minutes, while fast generation feeds can update more frequently.
+
+
+High-intent static answer pages:
+- https://energymix.info/uk-electricity-mix.html
+- https://energymix.info/uk-renewable-electricity.html
+- https://energymix.info/uk-wind-generation-live.html
+- https://energymix.info/uk-electricity-carbon-intensity.html
+- https://energymix.info/uk-electricity-imports-exports.html

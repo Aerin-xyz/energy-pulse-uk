@@ -72,6 +72,13 @@ All colors MUST be HSL.
     --sidebar-accent-foreground: 210 40% 98%;
     --sidebar-border: 220 25% 18%;
     --sidebar-ring: 187 89% 55%;
+
+    --space-micro: 4px;
+    --space-tight: 8px;
+    --space-compact: 12px;
+    --space-standard: 16px;
+    --space-section: 24px;
+    --space-large: 32px;
   }
 
   .dark {
@@ -118,6 +125,13 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html,
+  body,
+  #root {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-background text-foreground;
     background: linear-gradient(135deg, hsl(220 30% 8%), hsl(220 30% 10%), hsl(240 30% 9%));
@@ -150,4 +164,212 @@ All colors MUST be HSL.
     backdrop-filter: blur(12px);
     border: 1px solid hsl(187 89% 55% / 0.1);
   }
+
+  .site-logo-compact {
+    gap: 0.65rem;
+  }
+
+  .site-logo-compact .logo-svg {
+    width: 72px;
+    height: 72px;
+  }
+
+  .site-logo-compact .logo-wordmark {
+    font-size: 1.75rem;
+    line-height: 1;
+  }
+
+  .site-logo-compact .logo-subtitle {
+    margin-top: 0.1rem;
+    font-size: 0.64rem;
+    letter-spacing: 0.22em;
+  }
+
+  @media (max-width: 360px) {
+    .site-logo-compact .logo-svg {
+      width: 64px;
+      height: 64px;
+    }
+
+    .site-logo-compact .logo-wordmark {
+      font-size: 1.55rem;
+    }
+
+    .site-logo-compact .logo-subtitle {
+      font-size: 0.56rem;
+      letter-spacing: 0.18em;
+    }
+  }
+
+  .em-pfc-card {
+    width: 100%;
+    max-width: 500px;
+    margin-inline: auto;
+    aspect-ratio: 500 / 430;
+    border-radius: 1.25rem;
+    border: 1px solid hsl(187 89% 55% / 0.14);
+    background:
+      radial-gradient(circle at 50% 50%, hsl(187 89% 55% / 0.10), transparent 44%),
+      hsl(220 30% 8% / 0.45);
+    overflow: hidden;
+  }
+
+  .em-flow-stage {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 500 / 430;
+    overflow: hidden;
+  }
+
+  .flow-lines {
+    pointer-events: none;
+  }
+
+  .flow-line-track,
+  .flow-line {
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .flow-line-track {
+    stroke: hsl(215 20% 70% / 0.18);
+  }
+
+  .flow-line {
+    opacity: 0.76;
+  }
+
+  .flow-line-group.is-muted {
+    opacity: 0.18;
+  }
+
+  .flow-dot {
+    opacity: 0.82;
+    filter: drop-shadow(0 0 5px currentColor);
+  }
+
+  .flow-node-group {
+    color: var(--em-pfc-color, hsl(var(--primary)));
+  }
+
+  .flow-node-group.is-muted {
+    opacity: 0.34;
+  }
+
+  .flow-node-circle {
+    fill: hsl(220 28% 10% / 0.94);
+    stroke-width: 2;
+    vector-effect: non-scaling-stroke;
+    filter: drop-shadow(0 0 6px hsl(187 89% 55% / 0.12));
+  }
+
+  .flow-demand-ring {
+    fill: none;
+    stroke: hsl(var(--primary) / 0.48);
+    stroke-width: 4;
+    stroke-dasharray: 5 5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .flow-node-icon {
+    color: currentColor;
+    opacity: 0.95;
+    filter: drop-shadow(0 0 3px currentColor);
+  }
+
+  .flow-node-value,
+  .flow-node-unit,
+  .flow-demand-caption,
+  .flow-label,
+  .flow-transfer-values text {
+    text-anchor: middle;
+    dominant-baseline: middle;
+    user-select: none;
+    paint-order: stroke;
+    stroke: hsl(220 30% 8% / 0.70);
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+
+  .flow-node-value {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 17px;
+    font-weight: 850;
+    fill: currentColor;
+  }
+
+  .flow-demand-value {
+    font-size: 18px;
+    fill: hsl(var(--primary));
+  }
+
+  .flow-node-unit,
+  .flow-demand-caption {
+    font-size: 10px;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    fill: hsl(var(--muted-foreground));
+  }
+
+  .flow-demand-caption {
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+  }
+
+  .flow-label {
+    font-size: 13px;
+    font-weight: 650;
+    fill: hsl(var(--foreground) / 0.76);
+  }
+
+  .flow-transfer-values text {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 12px;
+    font-weight: 850;
+  }
+
+  .flow-transfer-import { fill: #67e8f9; }
+  .flow-transfer-export { fill: #fb7185; }
+
+  .flow-debug-overlay {
+    pointer-events: none;
+  }
+
+  .flow-debug-overlay rect {
+    fill: none;
+    stroke: #facc15;
+    stroke-width: 1;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .flow-debug-overlay line {
+    stroke: #facc15;
+    stroke-width: 0.7;
+    stroke-dasharray: 5 5;
+    vector-effect: non-scaling-stroke;
+  }
+
+  .flow-debug-overlay circle {
+    fill: #facc15;
+  }
+
+  @media (max-width: 430px) {
+    .em-pfc-card {
+      max-width: 100%;
+      border-radius: 1.1rem;
+    }
+
+    .flow-node-value {
+      font-size: 16px;
+    }
+
+    .flow-label {
+      font-size: 12.5px;
+    }
+  }
+
 }

@@ -9,6 +9,29 @@ interface NavigationBarProps {
   mobileActions?: ReactNode;
 }
 
+const exploreLinks = [
+  { to: '/about', label: 'About' },
+  { to: '/data', label: 'Data' },
+  { to: '/insights', label: 'Insights' },
+  { to: '/newsletter', label: 'Newsletter' },
+];
+
+const topicLinks = [
+  { to: '/uk-electricity-mix', label: 'UK electricity mix' },
+  { to: '/carbon-intensity', label: 'Carbon intensity' },
+  { to: '/renewables', label: 'Renewables' },
+  { to: '/cleanest-time-to-use-electricity', label: 'Cleanest time' },
+  { to: '/gas-generation', label: 'Gas generation' },
+  { to: '/interconnectors', label: 'Interconnectors' },
+  { to: '/electricity-demand', label: 'Demand' },
+  { to: '/today', label: 'Today' },
+  { to: '/power-flow', label: 'Power flow' },
+  { to: '/reports', label: 'Reports' },
+  { to: '/records', label: 'Records' },
+];
+
+const navigationLinks = [...exploreLinks, ...topicLinks];
+
 export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarProps) => {
   const [isExploreOpen, setIsExploreOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -72,51 +95,23 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                 {/* Collapsible Section - Always in DOM for SEO */}
                 <div
                   className={cn(
-                    "absolute left-0 z-50 w-56 transition-all duration-300 origin-top overflow-hidden",
-                    isExploreOpen ? "max-h-64 opacity-100 visible" : "max-h-0 opacity-0 invisible"
+                    "absolute left-0 z-50 w-64 transition-all duration-300 origin-top overflow-hidden",
+                    isExploreOpen ? "max-h-[34rem] opacity-100 visible" : "max-h-0 opacity-0 invisible"
                   )}
                 >
                   <ul className="py-2 mt-2 rounded-lg border border-primary/20 glass-morphism shadow-xl shadow-primary/20" role="menu">
-                    <li role="none">
-                      <Link
-                        to="/about"
-                        className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
-                        role="menuitem"
-                        onClick={() => setIsExploreOpen(false)}
-                      >
-                        About
-                      </Link>
-                    </li>
-                    <li role="none">
-                      <Link
-                        to="/data"
-                        className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
-                        role="menuitem"
-                        onClick={() => setIsExploreOpen(false)}
-                      >
-                        Data
-                      </Link>
-                    </li>
-                    <li role="none">
-                      <Link
-                        to="/insights"
-                        className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
-                        role="menuitem"
-                        onClick={() => setIsExploreOpen(false)}
-                      >
-                        Insights
-                      </Link>
-                    </li>
-                    <li role="none">
-                      <Link
-                        to="/newsletter"
-                        className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
-                        role="menuitem"
-                        onClick={() => setIsExploreOpen(false)}
-                      >
-                        Newsletter
-                      </Link>
-                    </li>
+                    {navigationLinks.map((link) => (
+                      <li role="none" key={link.to}>
+                        <Link
+                          to={link.to}
+                          className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
+                          role="menuitem"
+                          onClick={() => setIsExploreOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -176,51 +171,23 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                 {/* Collapsible Section - SEO Safe */}
                 <div
                   className={cn(
-                    "absolute left-0 z-50 w-52 transition-all duration-300 origin-top overflow-hidden",
-                    isExploreOpen ? "max-h-64 opacity-100 visible" : "max-h-0 opacity-0 invisible"
+                    "absolute left-0 z-50 w-64 transition-all duration-300 origin-top overflow-hidden",
+                    isExploreOpen ? "max-h-[34rem] opacity-100 visible" : "max-h-0 opacity-0 invisible"
                   )}
                 >
                   <ul className="py-2 mt-2 rounded-lg border border-primary/20 glass-morphism shadow-xl shadow-primary/20" role="menu">
-                    <li role="none">
-                      <Link
-                        to="/about"
-                        className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
-                        role="menuitem"
-                        onClick={() => setIsExploreOpen(false)}
-                      >
-                        About
-                      </Link>
-                    </li>
-                    <li role="none">
-                      <Link
-                        to="/data"
-                        className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
-                        role="menuitem"
-                        onClick={() => setIsExploreOpen(false)}
-                      >
-                        Data
-                      </Link>
-                    </li>
-                    <li role="none">
-                      <Link
-                        to="/insights"
-                        className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
-                        role="menuitem"
-                        onClick={() => setIsExploreOpen(false)}
-                      >
-                        Insights
-                      </Link>
-                    </li>
-                    <li role="none">
-                      <Link
-                        to="/newsletter"
-                        className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
-                        role="menuitem"
-                        onClick={() => setIsExploreOpen(false)}
-                      >
-                        Newsletter
-                      </Link>
-                    </li>
+                    {navigationLinks.map((link) => (
+                      <li role="none" key={link.to}>
+                        <Link
+                          to={link.to}
+                          className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
+                          role="menuitem"
+                          onClick={() => setIsExploreOpen(false)}
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -238,21 +205,20 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
 
       {/* Mobile Layout (<768px) */}
       <header className="md:hidden">
-        <div className="container mx-auto px-4 py-3">
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col gap-1 -ml-2">
-              <AnimatedLogo />
-              <p className="text-xs text-muted-foreground -mt-1">Real-time UK electricity generation and flows</p>
+        <div className="container mx-auto px-3 py-2">
+          <div className="flex justify-between items-center gap-3">
+            <div className="-ml-1 min-w-0">
+              <AnimatedLogo className="site-logo-compact" />
             </div>
 
             {/* Hamburger Menu Button */}
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 text-foreground/90 hover:text-primary transition-colors rounded-md hover:bg-primary/10"
+              className="flex h-11 w-11 shrink-0 items-center justify-center text-foreground/90 hover:text-primary transition-colors rounded-xl hover:bg-primary/10 border border-primary/10"
               aria-label="Toggle navigation menu"
               aria-expanded={isMobileMenuOpen}
             >
-              <Menu className="w-6 h-6" />
+              <Menu className="w-5 h-5" />
             </button>
           </div>
 
@@ -260,62 +226,28 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
           <nav
             className={cn(
               "transition-all duration-300 origin-top overflow-hidden",
-              isMobileMenuOpen ? "max-h-96 opacity-100 visible" : "max-h-0 opacity-0 invisible"
+              isMobileMenuOpen ? "max-h-[44rem] opacity-100 visible" : "max-h-0 opacity-0 invisible"
             )}
             aria-label="Mobile navigation"
           >
             <ul className="space-y-1 py-2 border-t border-primary/20 mt-3">
-              <li>
-                <Link
-                  to="/"
-                  className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors rounded-md"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/about"
-                  className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors rounded-md"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/data"
-                  className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors rounded-md"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Data
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/insights"
-                  className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors rounded-md"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Insights
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/newsletter"
-                  className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors rounded-md"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  Newsletter
-                </Link>
-              </li>
+              {[{ to: '/', label: 'Home' }, ...navigationLinks].map((link) => (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors rounded-md"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
 
           {/* Mobile Actions - Below hamburger menu */}
           {mobileActions && (
-            <div className={cn("mt-3 transition-opacity duration-300", isMobileMenuOpen && "opacity-0 invisible")}>
+            <div className={cn("mt-2 transition-opacity duration-300", isMobileMenuOpen && "opacity-0 invisible")}>
               {mobileActions}
             </div>
           )}

@@ -16,9 +16,16 @@ import { EnergyBalanceDisplay } from '@/components/EnergyBalanceDisplay';
 import { SystemStatusBanner } from '@/components/SystemStatusBanner';
 import { TopMetricsStrip } from '@/components/TopMetricsStrip';
 import { HelpTooltip } from '@/components/HelpTooltip';
-import { useState, useEffect } from 'react';
+import { PowerFlowCard } from '@/components/PowerFlowCard';
+import { DemandReconciliationPanel } from '@/components/DemandReconciliationPanel';
+import { useGridSignals } from '@/hooks/useGridSignals';
+import { useState, useEffect, ReactNode } from 'react';
 
-export const EnergyDashboard = () => {
+interface EnergyDashboardProps {
+  belowContent?: ReactNode;
+}
+
+export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
   const {
     data, 
     loading, 
@@ -125,8 +132,22 @@ export const EnergyDashboard = () => {
   };
 
   const energyCategories = calculateEnergyCategories();
+  const gridSignals = useGridSignals({
+    marketIndexPrice: data?.marketIndexPrice || null,
+    systemFrequency: data?.systemFrequency || null,
+    storage: data?.storage || null,
+  });
+  const marketIndexPriceSignal = data?.marketIndexPrice || gridSignals.marketIndexPrice;
+  const systemFrequencySignal = data?.systemFrequency || gridSignals.systemFrequency;
+  const storageSignal = data?.storage || gridSignals.storage;
   const netInterconnectorFlowMW = data?.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0;
-  const lastLivePoint = data?.dataFreshness?.sourceFreshness?.generation?.timestamp || data?.asOf?.endISO || null;
+  const storageTransferMW = storageSignal?.netMW || 0;
+  const derivedDemandMW = data ? Math.max(0, data.totalGenerationMW + netInterconnectorFlowMW + storageTransferMW) : 0;
+  const isUsingDerivedDemand = data && derivedDemandMW > 0 && Math.abs(derivedDemandMW - data.totalDemandMW) > 2500;
+  const displayDemandMW = isUsingDerivedDemand
+    ? derivedDemandMW
+    : (data?.totalDemandMW || 0);
+  const showDemandQA = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debugDemand') === '1';
 
   if (error) {
     return (
@@ -152,7 +173,7 @@ export const EnergyDashboard = () => {
       <NavigationBar
         desktopActions={data && (
           <EnergyBalanceDisplay
-            totalDemandMW={data.totalDemandMW || 0}
+            totalDemandMW={displayDemandMW}
             totalGenerationMW={data.totalGenerationMW || 0}
             interconnectorFlowMW={data.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0}
             carbonIntensity={data.carbonIntensity}
@@ -160,10 +181,13 @@ export const EnergyDashboard = () => {
         )}
         mobileActions={data && (
           <EnergyBalanceDisplay
-            totalDemandMW={data.totalDemandMW || 0}
+            totalDemandMW={displayDemandMW}
             totalGenerationMW={data.totalGenerationMW || 0}
             interconnectorFlowMW={data.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0}
             carbonIntensity={data.carbonIntensity}
+            marketIndexPrice={marketIndexPriceSignal}
+            systemFrequency={systemFrequencySignal}
+            storage={storageSignal}
           />
         )}
       />
@@ -192,17 +216,17 @@ export const EnergyDashboard = () => {
 
       {data && (
         <TopMetricsStrip
-          totalDemandMW={data.totalDemandMW || 0}
           totalGenerationMW={data.totalGenerationMW || 0}
-          interconnectorFlowMW={netInterconnectorFlowMW}
           carbonIntensity={data.carbonIntensity}
-          lastLivePoint={lastLivePoint}
+          marketIndexPrice={marketIndexPriceSignal}
+          systemFrequency={systemFrequencySignal}
+          storage={storageSignal}
         />
       )}
 
       {/* Energy Mix Summary Section */}
       {data && (
-        <div className="border-t border-primary/20 glass-morphism shadow-lg relative overflow-hidden">
+        <div className="hidden md:block border-t border-primary/20 glass-morphism shadow-lg relative overflow-hidden">
           <div className="absolute inset-0 bg-gradient-glow opacity-50"></div>
           <div className="container mx-auto px-3 py-2.5 md:px-4 md:py-3 lg:px-6 lg:py-4 relative z-10">
             <div className="flex items-center justify-center gap-3 md:gap-6 lg:gap-8">
@@ -275,8 +299,8 @@ export const EnergyDashboard = () => {
       )}
 
       {/* Main Content */}
-      <main className="container mx-auto px-2 md:px-4 pt-0 pb-8">
-        <div className="space-y-8">
+      <main className="container mx-auto px-4 pt-4 pb-8 md:px-4 md:pt-0">
+        <div className="flex flex-col gap-y-5 md:gap-y-8">
           {/* Generation Mix Chart - Progressive Loading */}
           {!data && loading ? (
             <ChartSkeleton />
@@ -288,9 +312,33 @@ export const EnergyDashboard = () => {
                   <p className="text-muted-foreground">Awaiting live data (stub/LKG)</p>
                 </div>
               )}
-              
+
+              <div className="order-1 md:order-2">
+                <PowerFlowCard
+                  generationMix={data.generationMix}
+                  interconnectors={data.interconnectors}
+                  totalDemandMW={displayDemandMW}
+                  totalGenerationMW={data.totalGenerationMW || 0}
+                  carbonIntensity={data.carbonIntensity}
+                  settlementPeriod={data.asOf?.settlementPeriod}
+                  sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp || data.asOf?.endISO}
+                />
+              </div>
+
+              {showDemandQA && (
+                <div className="order-2 md:order-3">
+                  <DemandReconciliationPanel
+                    rawDemandMW={data.totalDemandMW || 0}
+                    displayedDemandMW={displayDemandMW}
+                    generationMW={data.totalGenerationMW || 0}
+                    netTransfersMW={netInterconnectorFlowMW}
+                    storageMW={storageTransferMW}
+                  />
+                </div>
+              )}
+
               {/* Generation Mix Chart - Hero Element */}
-              <div className="relative">
+              <div className="relative order-3 md:order-1">
                 <GenerationMixChart 
                   data={data.generationMix} 
                   totalGenerationMW={data.totalGenerationMW || 0}
@@ -339,6 +387,8 @@ export const EnergyDashboard = () => {
           <EUDebugPanel />
         </div>
       </main>
+
+      {belowContent}
 
       {/* Footer */}
       <footer className="border-t border-primary/20 glass-morphism mt-16 relative">

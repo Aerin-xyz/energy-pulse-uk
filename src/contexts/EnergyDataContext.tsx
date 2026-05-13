@@ -85,6 +85,36 @@ interface CarbonIntensityData {
   }>;
 }
 
+interface MarketIndexPriceData {
+  priceGBPPerMWh: number;
+  volumeMWh: number;
+  settlementDate: string;
+  settlementPeriod: number;
+  startTime: string;
+  providers: string[];
+  source: string;
+  status: string;
+}
+
+interface SystemFrequencyData {
+  hz: number;
+  measurementTime: string;
+  deviationHz: number;
+  status: string;
+  source: string;
+}
+
+interface StorageData {
+  netMW: number;
+  absMW: number;
+  mode: 'generating' | 'charging' | 'idle';
+  label: string;
+  settlementDate?: string;
+  settlementPeriod?: number;
+  timestamp?: string | null;
+  source: string;
+}
+
 interface EnergyData {
   generationMix: GenerationData[];
   interconnectors: InterconnectorData[];
@@ -95,6 +125,9 @@ interface EnergyData {
   totalDemandMW: number;
   lastUpdated: Date;
   carbonIntensity?: CarbonIntensityData;
+  marketIndexPrice?: MarketIndexPriceData | null;
+  systemFrequency?: SystemFrequencyData | null;
+  storage?: StorageData | null;
   dataFreshness?: {
     source?: string;
     isRealtime?: boolean;
@@ -243,6 +276,9 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
           totalDemandMW: energyData.totalDemandMW || (energyData.totalDemand || 0) * 1000,
           lastUpdated: new Date(energyData.lastUpdated),
           carbonIntensity: energyData.carbonIntensity || cachedData?.carbonIntensity,
+          marketIndexPrice: energyData.marketIndexPrice || cachedData?.marketIndexPrice || null,
+          systemFrequency: energyData.systemFrequency || cachedData?.systemFrequency || null,
+          storage: energyData.storage || cachedData?.storage || null,
           dataFreshness: energyData.dataFreshness,
           asOf: energyData.asOf,
         };
@@ -252,6 +288,15 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
         // enrichments only when a fast response omits them.
         if (cachedData && !energyData.carbonIntensity) {
           newData.carbonIntensity = cachedData.carbonIntensity;
+        }
+        if (cachedData && !energyData.marketIndexPrice) {
+          newData.marketIndexPrice = cachedData.marketIndexPrice;
+        }
+        if (cachedData && !energyData.systemFrequency) {
+          newData.systemFrequency = cachedData.systemFrequency;
+        }
+        if (cachedData && !energyData.storage) {
+          newData.storage = cachedData.storage;
         }
 
         setData(newData);

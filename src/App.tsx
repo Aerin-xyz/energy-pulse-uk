@@ -11,6 +11,18 @@ import About from "./pages/About";
 import Data from "./pages/Data";
 import Insights from "./pages/Insights";
 import Newsletter from "./pages/Newsletter";
+import Methodology from "./pages/Methodology";
+import Contact from "./pages/Contact";
+import Privacy from "./pages/Privacy";
+import Citation from "./pages/Citation";
+import { UkElectricityMix, CarbonIntensity, Renewables, GasGeneration, NuclearPower, Interconnectors, ElectricityDemand, UkElectricityGenerationLive, CleanestTimeToUseElectricity } from "./pages/CoreExplainers";
+import Today from "./pages/Today";
+import Yesterday from "./pages/Yesterday";
+import PowerFlow from "./pages/PowerFlow";
+import { ReportsIndex, WeeklyReportPage } from "./pages/Reports";
+import { RecordsIndex, HighestRenewableShare, HighestWindGeneration, HighestSolarGeneration, HighestGasGeneration } from "./pages/Records";
+import Social from "./pages/Social";
+import Measurement from "./pages/Measurement";
 import DigestPreview from "./pages/DigestPreview";
 import AdminSocialPosts from "./pages/AdminSocialPosts";
 import ShareDailySummary from "./pages/ShareDailySummary";
@@ -32,6 +44,31 @@ const App = () => (
             <Route path="/data" element={<Data />} />
             <Route path="/insights" element={<Insights />} />
             <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/methodology" element={<Methodology />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy" element={<Privacy />} />
+            <Route path="/citation" element={<Citation />} />
+            <Route path="/uk-electricity-mix" element={<UkElectricityMix />} />
+            <Route path="/carbon-intensity" element={<CarbonIntensity />} />
+            <Route path="/renewables" element={<Renewables />} />
+            <Route path="/gas-generation" element={<GasGeneration />} />
+            <Route path="/nuclear-power" element={<NuclearPower />} />
+            <Route path="/interconnectors" element={<Interconnectors />} />
+            <Route path="/electricity-demand" element={<ElectricityDemand />} />
+            <Route path="/uk-electricity-generation-live" element={<UkElectricityGenerationLive />} />
+            <Route path="/cleanest-time-to-use-electricity" element={<CleanestTimeToUseElectricity />} />
+            <Route path="/today" element={<Today />} />
+            <Route path="/yesterday" element={<Yesterday />} />
+            <Route path="/power-flow" element={<PowerFlow />} />
+            <Route path="/reports" element={<ReportsIndex />} />
+            <Route path="/reports/weekly/:date" element={<WeeklyReportPage />} />
+            <Route path="/records" element={<RecordsIndex />} />
+            <Route path="/records/highest-renewable-share" element={<HighestRenewableShare />} />
+            <Route path="/records/highest-wind-generation" element={<HighestWindGeneration />} />
+            <Route path="/records/highest-solar-generation" element={<HighestSolarGeneration />} />
+            <Route path="/records/highest-gas-generation" element={<HighestGasGeneration />} />
+            <Route path="/social" element={<Social />} />
+            <Route path="/measurement" element={<Measurement />} />
             <Route path="/share/daily-summary" element={<ShareDailySummary />} />
             <Route path="/admin/digest-preview" element={<DigestPreview />} />
             <Route path="/admin/social-posts" element={<AdminSocialPosts />} />

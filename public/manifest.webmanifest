@@ -1,0 +1,20 @@
+{
+  "name": "EnergyMix.info | UK Electricity Dashboard",
+  "short_name": "EnergyMix.info",
+  "description": "Live UK electricity generation, demand, transfers and carbon intensity dashboard.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#07111f",
+  "theme_color": "#07111f",
+  "categories": ["utilities", "news", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

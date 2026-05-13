@@ -18,16 +18,26 @@ const Data = () => {
     },
     {
       name: "Carbon Intensity",
-      description: "Official hourly CO₂ estimates",
+      description: "Official national and regional CO₂ estimates and forecasts",
       url: "https://carbonintensity.org.uk"
+    },
+    {
+      name: "Sheffield Solar PV Live",
+      description: "Embedded solar generation estimates for Great Britain",
+      url: "https://www.solar.sheffield.ac.uk/pvlive/"
+    },
+    {
+      name: "ENTSO-E Transparency Platform",
+      description: "Cross-border interconnector flow context, with BMRS fallbacks where needed",
+      url: "https://transparency.entsoe.eu/"
     }
   ];
 
   return (
     <>
       <Helmet>
-        <title>UK Energy Mix Data Sources | Elexon BMRS · National Grid ESO</title>
-        <meta name="description" content="Energy Mix draws live electricity data from Elexon BMRS, National Grid ESO and other verified open datasets to show the UK's real-time generation mix." />
+        <title>Energy Mix Data Sources & Methodology | Elexon, NESO, Carbon Intensity</title>
+        <meta name="description" content="How EnergyMix.info collects, cleans and displays UK/GB electricity data from public grid, balancing and carbon-intensity sources." />
         <link rel="canonical" href="https://energymix.info/data" />
         <meta property="og:title" content="UK Energy Mix Data Sources" />
         <meta property="og:description" content="Live datasets powering the UK Energy Mix dashboard — Elexon BMRS and National Grid ESO." />
@@ -194,6 +204,50 @@ const Data = () => {
               </div>
             </div>
 
+            <div className="glass-morphism rounded-lg p-8 mb-8">
+              <h2 className="text-2xl font-semibold mb-4 text-primary">Data roadmap and known gaps</h2>
+              <div className="space-y-4 text-foreground/80 leading-relaxed">
+                <p>
+                  The live dashboard now covers the core electricity mix well. The next data improvements are about practical usefulness: price, storage, regional carbon and reusable access.
+                </p>
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="border-l-2 border-amber-400/40 pl-4 py-2">
+                    <h3 className="font-semibold text-foreground mb-1">Wholesale price</h3>
+                    <p className="text-sm text-foreground/70">Useful for “cleanest vs cheapest” guidance. EnergyMix now pulls Elexon Market Index Price as wholesale context; it is not a consumer tariff or smart-tariff recommendation.</p>
+                  </div>
+                  <div className="border-l-2 border-amber-400/40 pl-4 py-2">
+                    <h3 className="font-semibold text-foreground mb-1">Storage and pumped storage</h3>
+                    <p className="text-sm text-foreground/70">Pumped storage is now shown by state: charging/pumping when PS is negative, generating when PS is positive. This avoids hiding storage inside generation noise.</p>
+                  </div>
+                  <div className="border-l-2 border-cosmic-cyan/40 pl-4 py-2">
+                    <h3 className="font-semibold text-foreground mb-1">Regional carbon</h3>
+                    <p className="text-sm text-foreground/70">Regional and postcode carbon forecasts are now exposed on the carbon-intensity page using NESO’s Carbon Intensity API.</p>
+                  </div>
+                  <div className="border-l-2 border-cosmic-cyan/40 pl-4 py-2">
+                    <h3 className="font-semibold text-foreground mb-1">API and embeds</h3>
+                    <p className="text-sm text-foreground/70">A public widget/API surface is the next packaging opportunity: embeddable Power Flow, daily summary cards and lightweight JSON endpoints for partners.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="glass-morphism rounded-lg p-8 mb-8">
+              <h2 className="text-2xl font-semibold mb-4 text-primary">API, widget and embed interest</h2>
+              <p className="text-foreground/80 leading-relaxed mb-4">
+                EnergyMix.info is being shaped so the clearest parts can be reused elsewhere: a small Power Flow widget, clean-electricity timing cards, daily summary images and selected machine-readable data.
+              </p>
+              <div className="flex flex-wrap gap-3">
+                <Link to="/power-flow">
+                  <Button variant="outline" size="sm">View Power Flow</Button>
+                </Link>
+                <Link to="/newsletter">
+                  <Button variant="outline" size="sm">Register interest</Button>
+                </Link>
+                <Link to="/contact">
+                  <Button variant="outline" size="sm">Contact about data access</Button>
+                </Link>
+              </div>
+            </div>
 
             <div className="glass-morphism rounded-lg p-8">
               <h2 className="text-2xl font-semibold mb-4 text-primary">Licenses & Attribution</h2>
