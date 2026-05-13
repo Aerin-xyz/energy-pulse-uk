@@ -300,7 +300,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 pt-4 pb-8 md:px-4 md:pt-0">
-        <div className="space-y-5 md:space-y-8">
+        <div className="flex flex-col gap-y-5 md:gap-y-8">
           {/* Generation Mix Chart - Progressive Loading */}
           {!data && loading ? (
             <ChartSkeleton />
@@ -313,28 +313,32 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                 </div>
               )}
 
-              <PowerFlowCard
-                generationMix={data.generationMix}
-                interconnectors={data.interconnectors}
-                totalDemandMW={displayDemandMW}
-                totalGenerationMW={data.totalGenerationMW || 0}
-                carbonIntensity={data.carbonIntensity}
-                settlementPeriod={data.asOf?.settlementPeriod}
-                sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp || data.asOf?.endISO}
-              />
+              <div className="order-1 md:order-2">
+                <PowerFlowCard
+                  generationMix={data.generationMix}
+                  interconnectors={data.interconnectors}
+                  totalDemandMW={displayDemandMW}
+                  totalGenerationMW={data.totalGenerationMW || 0}
+                  carbonIntensity={data.carbonIntensity}
+                  settlementPeriod={data.asOf?.settlementPeriod}
+                  sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp || data.asOf?.endISO}
+                />
+              </div>
 
               {showDemandQA && (
-                <DemandReconciliationPanel
-                  rawDemandMW={data.totalDemandMW || 0}
-                  displayedDemandMW={displayDemandMW}
-                  generationMW={data.totalGenerationMW || 0}
-                  netTransfersMW={netInterconnectorFlowMW}
-                  storageMW={storageTransferMW}
-                />
+                <div className="order-2 md:order-3">
+                  <DemandReconciliationPanel
+                    rawDemandMW={data.totalDemandMW || 0}
+                    displayedDemandMW={displayDemandMW}
+                    generationMW={data.totalGenerationMW || 0}
+                    netTransfersMW={netInterconnectorFlowMW}
+                    storageMW={storageTransferMW}
+                  />
+                </div>
               )}
 
               {/* Generation Mix Chart - Hero Element */}
-              <div className="relative">
+              <div className="relative order-3 md:order-1">
                 <GenerationMixChart 
                   data={data.generationMix} 
                   totalGenerationMW={data.totalGenerationMW || 0}
