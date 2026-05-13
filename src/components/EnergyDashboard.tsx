@@ -1,4 +1,4 @@
-import { RefreshCw, Leaf, Flame, Zap } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NavigationBar } from '@/components/NavigationBar';
 import { Link } from 'react-router-dom';
@@ -14,8 +14,7 @@ import { StatusIndicator } from '@/components/StatusIndicator';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
 import { EnergyBalanceDisplay } from '@/components/EnergyBalanceDisplay';
 import { SystemStatusBanner } from '@/components/SystemStatusBanner';
-import { TopMetricsStrip } from '@/components/TopMetricsStrip';
-import { HelpTooltip } from '@/components/HelpTooltip';
+import { GridIntelligenceHeader } from '@/components/GridIntelligenceHeader';
 import { PowerFlowCard } from '@/components/PowerFlowCard';
 import { DemandReconciliationPanel } from '@/components/DemandReconciliationPanel';
 import { useGridSignals } from '@/hooks/useGridSignals';
@@ -105,33 +104,6 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
     nextMidFreqAt
   });
 
-  // Calculate energy mix categories
-  const calculateEnergyCategories = () => {
-    if (!data?.generationMix || !data.totalGenerationMW || data.totalGenerationMW === 0) {
-      return { renewables: '0.0', fossilFuels: '0.0', other: '0.0' };
-    }
-
-    const renewables = ['Wind', 'Solar', 'Hydro', 'PSH'];
-    const fossilFuels = ['Gas', 'Oil']; // Coal removed - UK coal generation ended Sept 2024
-    
-    const renewablesMW = data.generationMix
-      .filter(item => renewables.includes(item.name))
-      .reduce((sum, item) => sum + item.value, 0);
-      
-    const fossilMW = data.generationMix
-      .filter(item => fossilFuels.includes(item.name))
-      .reduce((sum, item) => sum + item.value, 0);
-      
-    const otherMW = data.totalGenerationMW - renewablesMW - fossilMW;
-    
-    return {
-      renewables: (renewablesMW / data.totalGenerationMW * 100).toFixed(1),
-      fossilFuels: (fossilMW / data.totalGenerationMW * 100).toFixed(1),
-      other: (otherMW / data.totalGenerationMW * 100).toFixed(1),
-    };
-  };
-
-  const energyCategories = calculateEnergyCategories();
   const gridSignals = useGridSignals({
     marketIndexPrice: data?.marketIndexPrice || null,
     systemFrequency: data?.systemFrequency || null,
@@ -179,17 +151,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
             carbonIntensity={data.carbonIntensity}
           />
         )}
-        mobileActions={data && (
-          <EnergyBalanceDisplay
-            totalDemandMW={displayDemandMW}
-            totalGenerationMW={data.totalGenerationMW || 0}
-            interconnectorFlowMW={data.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0}
-            carbonIntensity={data.carbonIntensity}
-            marketIndexPrice={marketIndexPriceSignal}
-            systemFrequency={systemFrequencySignal}
-            storage={storageSignal}
-          />
-        )}
+
       />
 
       {/* Loading Progress Bar */}
@@ -215,87 +177,17 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
       )}
 
       {data && (
-        <TopMetricsStrip
+        <GridIntelligenceHeader
+          generationMix={data.generationMix}
+          interconnectors={data.interconnectors}
           totalGenerationMW={data.totalGenerationMW || 0}
+          totalDemandMW={displayDemandMW}
           carbonIntensity={data.carbonIntensity}
           marketIndexPrice={marketIndexPriceSignal}
           systemFrequency={systemFrequencySignal}
           storage={storageSignal}
+          dataAge={dataAge}
         />
-      )}
-
-      {/* Energy Mix Summary Section */}
-      {data && (
-        <div className="hidden md:block border-t border-primary/20 glass-morphism shadow-lg relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-glow opacity-50"></div>
-          <div className="container mx-auto px-3 py-2.5 md:px-4 md:py-3 lg:px-6 lg:py-4 relative z-10">
-            <div className="flex items-center justify-center gap-3 md:gap-6 lg:gap-8">
-              {/* Renewables */}
-              <div className="flex items-center gap-1.5 md:gap-2">
-                <Leaf className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-green-400" />
-                <div>
-                  <div className="flex items-center gap-1 text-xs md:text-sm text-muted-foreground">
-                    <span>Renewables</span>
-                    <HelpTooltip 
-                      content={
-                        <div className="space-y-1">
-                          <p className="font-medium">Includes:</p>
-                          <p>Wind, Solar, Hydro, and Pumped Storage Hydro (PSH)</p>
-                          <p className="text-xs text-muted-foreground mt-2">Based on UK domestic generation only (excludes imports)</p>
-                        </div>
-                      }
-                      className="w-3 h-3 md:w-4 md:h-4"
-                    />
-                  </div>
-                  <div className="font-bold text-lg md:text-xl lg:text-2xl text-green-400 text-glow">{energyCategories.renewables}%</div>
-                </div>
-              </div>
-              
-              {/* Fossil Fuels */}
-              <div className="flex items-center gap-1.5 md:gap-2">
-                <Flame className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-energy-gas" />
-                <div>
-                  <div className="flex items-center gap-1 text-xs md:text-sm text-muted-foreground">
-                    <span>Fossil Fuels</span>
-                    <HelpTooltip 
-                      content={
-                        <div className="space-y-1">
-                          <p className="font-medium">Includes:</p>
-                          <p>Gas and Oil</p>
-                          <p className="text-xs text-muted-foreground mt-1">(UK coal generation ended September 2024)</p>
-                          <p className="text-xs text-muted-foreground mt-2">Based on UK domestic generation only (excludes imports)</p>
-                        </div>
-                      }
-                      className="w-3 h-3 md:w-4 md:h-4"
-                    />
-                  </div>
-                  <div className="font-bold text-lg md:text-xl lg:text-2xl text-energy-gas text-glow">{energyCategories.fossilFuels}%</div>
-                </div>
-              </div>
-              
-              {/* Other */}
-              <div className="flex items-center gap-1.5 md:gap-2">
-                <Zap className="w-4 h-4 md:w-5 md:h-5 lg:w-6 lg:h-6 text-cosmic-cyan" />
-                <div>
-                  <div className="flex items-center gap-1 text-xs md:text-sm text-muted-foreground">
-                    <span>Other</span>
-                    <HelpTooltip 
-                      content={
-                        <div className="space-y-1">
-                          <p className="font-medium">Includes:</p>
-                          <p>Biomass, Nuclear, and other generation types</p>
-                          <p className="text-xs text-muted-foreground mt-2">Based on UK domestic generation only (excludes imports)</p>
-                        </div>
-                      }
-                      className="w-3 h-3 md:w-4 md:h-4"
-                    />
-                  </div>
-                  <div className="font-bold text-lg md:text-xl lg:text-2xl text-cosmic-cyan text-glow">{energyCategories.other}%</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
       )}
 
       {/* Main Content */}
