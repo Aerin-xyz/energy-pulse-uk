@@ -300,12 +300,12 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 pt-4 pb-8 md:px-4 md:pt-0">
-        <div className="flex flex-col gap-y-5 md:gap-y-8">
+        <div className="space-y-5 md:space-y-8">
           {/* Generation Mix Chart - Progressive Loading */}
           {!data && loading ? (
             <ChartSkeleton />
           ) : data ? (
-            <>
+            <div className="flex flex-col gap-y-5 md:gap-y-8">
               {/* Show stub/LKG notice if no generation data */}
               {data.generationMix.length === 0 && (
                 <div className="bg-muted/50 border border-border rounded-lg p-4 text-center">
@@ -346,7 +346,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                   asOf={data.asOf}
                 />
               </div>
-            </>
+            </div>
           ) : null}
 
           {/* Historical Generation Chart - Progressive Loading */}
