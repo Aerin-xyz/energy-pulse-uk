@@ -313,7 +313,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                 </div>
               )}
 
-              <div className="order-1 md:order-2">
+              <div className="order-1">
                 <PowerFlowCard
                   generationMix={data.generationMix}
                   interconnectors={data.interconnectors}
@@ -326,7 +326,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
               </div>
 
               {showDemandQA && (
-                <div className="order-2 md:order-3">
+                <div className="order-2">
                   <DemandReconciliationPanel
                     rawDemandMW={data.totalDemandMW || 0}
                     displayedDemandMW={displayDemandMW}
@@ -338,7 +338,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
               )}
 
               {/* Generation Mix Chart - Hero Element */}
-              <div className="relative order-3 md:order-1">
+              <div className="relative order-3">
                 <GenerationMixChart 
                   data={data.generationMix} 
                   totalGenerationMW={data.totalGenerationMW || 0}
