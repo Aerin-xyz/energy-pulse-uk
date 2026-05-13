@@ -216,14 +216,17 @@ export const GridIntelligenceHeader = ({
 
         <div className="grid gap-3 lg:grid-cols-[1.45fr_1fr]">
           <div className="rounded-3xl border border-primary/20 bg-card/55 p-4 shadow-xl shadow-primary/5 md:p-5">
-            <div className="mb-3 flex items-center gap-2 text-xs uppercase tracking-[0.22em] text-primary/80">
-              <Sparkles className="h-4 w-4" />
-              Now
+            <div className="mb-3 flex items-center justify-between gap-3 text-xs uppercase tracking-[0.22em] text-primary/80">
+              <span className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4" />
+                Now
+              </span>
+              <HelpTooltip
+                content="The live view below shows how generation, imports, storage and demand are balancing in near real time. Values refresh from public grid sources at their native cadence."
+                className="h-4 w-4"
+              />
             </div>
             <p className="text-lg font-semibold leading-snug text-foreground md:text-xl">{summary}</p>
-            <p className="mt-3 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-              The live view below shows how generation, imports, storage and demand are balancing in near real time. Values refresh from public grid sources at their native cadence.
-            </p>
           </div>
 
           <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:px-0 lg:grid-cols-1">
