@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 Allow: /llms.txt
 Allow: /llms-full.txt
-Allow: /ai/uk-electricity-mix.html
+Allow: /ai/uk-electricity-mix
 
 # Block admin pages from indexing
 Disallow: /admin/

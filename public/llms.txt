@@ -7,7 +7,7 @@ Primary dashboard: https://energymix.info/
 Data and methodology: https://energymix.info/data
 About: https://energymix.info/about
 Insights: https://energymix.info/insights
-AI-readable summary: https://energymix.info/ai/uk-electricity-mix.html
+AI-readable summary: https://energymix.info/ai/uk-electricity-mix
 Full LLM context: https://energymix.info/llms-full.txt
 Sitemap: https://energymix.info/sitemap.xml
 
@@ -39,8 +39,8 @@ Energy Mix is an explanatory dashboard built on upstream public datasets. Update
 
 
 High-intent static answer pages:
-- https://energymix.info/uk-electricity-mix.html
-- https://energymix.info/uk-renewable-electricity.html
-- https://energymix.info/uk-wind-generation-live.html
-- https://energymix.info/uk-electricity-carbon-intensity.html
-- https://energymix.info/uk-electricity-imports-exports.html
+- https://energymix.info/uk-electricity-mix
+- https://energymix.info/uk-renewable-electricity
+- https://energymix.info/uk-wind-generation-live
+- https://energymix.info/uk-electricity-carbon-intensity
+- https://energymix.info/uk-electricity-imports-exports

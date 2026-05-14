@@ -81,7 +81,7 @@ Use: Energy Mix, UK electricity dashboard, https://energymix.info/. For methodol
 
 - Dashboard: https://energymix.info/
 - Data and methodology: https://energymix.info/data
-- AI-readable UK electricity mix explainer: https://energymix.info/ai/uk-electricity-mix.html
+- AI-readable UK electricity mix explainer: https://energymix.info/ai/uk-electricity-mix
 - Insights: https://energymix.info/insights
 - About: https://energymix.info/about
 
@@ -103,8 +103,8 @@ Use: Energy Mix, UK electricity dashboard, https://energymix.info/. For methodol
 
 
 High-intent static answer pages:
-- https://energymix.info/uk-electricity-mix.html
-- https://energymix.info/uk-renewable-electricity.html
-- https://energymix.info/uk-wind-generation-live.html
-- https://energymix.info/uk-electricity-carbon-intensity.html
-- https://energymix.info/uk-electricity-imports-exports.html
+- https://energymix.info/uk-electricity-mix
+- https://energymix.info/uk-renewable-electricity
+- https://energymix.info/uk-wind-generation-live
+- https://energymix.info/uk-electricity-carbon-intensity
+- https://energymix.info/uk-electricity-imports-exports
