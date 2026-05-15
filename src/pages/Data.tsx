@@ -38,10 +38,10 @@ const Data = () => {
       <Helmet>
         <title>Energy Mix Data Sources & Methodology | Elexon, NESO, Carbon Intensity</title>
         <meta name="description" content="How EnergyMix.info collects, cleans and displays UK/GB electricity data from public grid, balancing and carbon-intensity sources." />
-        <link rel="canonical" href="https://energymix.info/data" />
+        <link rel="canonical" href="https://energymix.info/data/" />
         <meta property="og:title" content="UK Energy Mix Data Sources" />
         <meta property="og:description" content="Live datasets powering the UK Energy Mix dashboard — Elexon BMRS and National Grid ESO." />
-        <meta property="og:url" content="https://energymix.info/data" />
+        <meta property="og:url" content="https://energymix.info/data/" />
         <meta property="og:image" content="https://energymix.info/og-data.jpg" />
         <meta property="og:site_name" content="Energy Mix" />
         <meta property="og:locale" content="en_GB" />
@@ -67,7 +67,7 @@ const Data = () => {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Data Sources",
-                "item": "https://energymix.info/data"
+                "item": "https://energymix.info/data/"
               }
             ]
           })}

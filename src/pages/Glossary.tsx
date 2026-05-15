@@ -55,10 +55,10 @@ const Glossary = () => (
     <Helmet>
       <title>UK Electricity Glossary | Energy Mix Terms Explained</title>
       <meta name="description" content="Plain-English glossary for UK electricity mix terms: carbon intensity, FUELINST, interconnectors, renewable share, settlement periods and demand." />
-      <link rel="canonical" href="https://energymix.info/glossary" />
+      <link rel="canonical" href="https://energymix.info/glossary/" />
       <meta property="og:title" content="UK Electricity Glossary" />
       <meta property="og:description" content="Plain-English definitions for the key terms used in Energy Mix." />
-      <meta property="og:url" content="https://energymix.info/glossary" />
+      <meta property="og:url" content="https://energymix.info/glossary/" />
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
       <meta name="robots" content="index, follow" />
       <script type="application/ld+json">
@@ -66,7 +66,7 @@ const Glossary = () => (
           '@context': 'https://schema.org',
           '@type': 'DefinedTermSet',
           name: 'UK electricity glossary',
-          url: 'https://energymix.info/glossary',
+          url: 'https://energymix.info/glossary/',
           hasDefinedTerm: terms.map((item) => ({
             '@type': 'DefinedTerm',
             name: item.term,

@@ -8,10 +8,10 @@ const Citation = () => {
       <Helmet>
         <title>How to Cite EnergyMix.info | UK Electricity Mix Source Notes</title>
         <meta name="description" content="Suggested citation wording for EnergyMix.info live electricity mix pages, reports and data-source references." />
-        <link rel="canonical" href="https://energymix.info/citation" />
+        <link rel="canonical" href="https://energymix.info/citation/" />
         <meta property="og:title" content="How to Cite EnergyMix.info" />
         <meta property="og:description" content="Citation guidance for live and historical electricity mix summaries." />
-        <meta property="og:url" content="https://energymix.info/citation" />
+        <meta property="og:url" content="https://energymix.info/citation/" />
         <meta property="og:image" content="https://energymix.info/og-default.jpg" />
         <meta name="robots" content="index, follow" />
       </Helmet>

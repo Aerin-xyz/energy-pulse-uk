@@ -75,7 +75,7 @@ const generated = {
     highestGasGeneration: { value: gw(highestGas.value), date: fmtDate(highestGas.row.settlementDate), text: `Current measured 7-day high: about ${gw(highestGas.value)} average gas output on ${fmtDate(highestGas.row.settlementDate)}, based on the available historical generation feed.` },
   },
   socialPosts: [
-    { title: 'Monday weekly grid brief', body: `Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: ${pct(highestRenewable.value)} on ${fmtDate(highestRenewable.row.settlementDate)}\n• Highest average wind output: ~${gw(highestWind.value)} on ${fmtDate(highestWind.row.settlementDate)}\n• Highest average solar output: ~${gw(highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}\n• Highest average gas output: ~${gw(highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}\n\nThe shift was clear: gas-heavy weekdays gave way to a cleaner, wind-led weekend.\n\nFull report: https://energymix.info${slug}` },
+    { title: 'Monday weekly grid brief', body: `Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: ${pct(highestRenewable.value)} on ${fmtDate(highestRenewable.row.settlementDate)}\n• Highest average wind output: ~${gw(highestWind.value)} on ${fmtDate(highestWind.row.settlementDate)}\n• Highest average solar output: ~${gw(highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}\n• Highest average gas output: ~${gw(highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}\n\nThe shift was clear: gas-heavy weekdays gave way to a cleaner, wind-led weekend.\n\nFull report: https://energymix.info${slug}/` },
     { title: 'Wednesday explainer', body: 'What does “UK electricity mix” actually mean?\n\nFor live grid dashboards, it usually means Great Britain’s electricity system: England, Scotland and Wales. Northern Ireland is part of the UK, but operates in a separate electricity market.\n\nExplainer: https://energymix.info/uk-electricity-mix' },
     { title: 'Friday practical clean-electricity post', body: 'The cleanest time to use electricity is not a fixed hour.\n\nIt changes with wind, solar, demand, imports and gas generation. Windy overnight periods and sunny middays can be much cleaner than still early-evening peaks.\n\nGuide: https://energymix.info/cleanest-time-to-use-electricity' },
   ],
@@ -85,7 +85,7 @@ mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, JSON.stringify(generated, null, 2) + '\n');
 
 let sitemap = readFileSync(SITEMAP, 'utf8');
-for (const url of [`https://energymix.info${slug}`, 'https://energymix.info/yesterday']) {
+for (const url of [`https://energymix.info${slug}/`, 'https://energymix.info/yesterday/']) {
   if (!sitemap.includes(`<loc>${url}</loc>`)) {
     sitemap = sitemap.replace('</urlset>', `  <url>\n    <loc>${url}</loc>\n    <lastmod>${reportDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.75</priority>\n  </url>\n</urlset>`);
   }

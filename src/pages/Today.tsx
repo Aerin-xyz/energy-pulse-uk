@@ -21,10 +21,10 @@ const Today = () => {
       <Helmet>
         <title>UK Electricity Mix Today | Live Generation, Demand & Carbon Intensity</title>
         <meta name="description" content="Today’s Great Britain electricity mix: live generation, demand, renewable share, gas output, carbon intensity and source freshness from public grid data." />
-        <link rel="canonical" href="https://energymix.info/today" />
+        <link rel="canonical" href="https://energymix.info/today/" />
         <meta property="og:title" content="UK Electricity Mix Today" />
         <meta property="og:description" content="Live daily summary of Britain’s electricity mix, demand, renewables and carbon intensity." />
-        <meta property="og:url" content="https://energymix.info/today" />
+        <meta property="og:url" content="https://energymix.info/today/" />
         <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
         <meta name="robots" content="index, follow" />
       </Helmet>

@@ -44,7 +44,7 @@ const pages = [
 const nav = '<p><a href="/">Live dashboard</a> · <a href="/uk-electricity-mix">UK electricity mix</a> · <a href="/carbon-intensity">Carbon intensity</a> · <a href="/renewables">Renewables</a> · <a href="/cleanest-time-to-use-electricity">Cleanest time</a> · <a href="/gas-generation">Gas</a> · <a href="/interconnectors">Interconnectors</a> · <a href="/electricity-demand">Demand</a> · <a href="/uk-electricity-generation-live">Generation live</a> · <a href="/today">Today</a> · <a href="/power-flow">Power flow</a> · <a href="/reports">Reports</a> · <a href="/records">Records</a> · <a href="/glossary">Glossary</a> · <a href="/partners">Widgets and data</a></p>';
 
 for (const [route, title, description, h1, paragraphs] of pages) {
-  const canonical = `https://energymix.info${route === '/' ? '/' : route}`;
+  const canonical = `https://energymix.info${route === '/' ? '/' : `${route}/`}`;
   const content = `<main id="seo-prerender"><h1>${h1}</h1>${paragraphs.map((p) => `<p>${p}</p>`).join('')}${nav}</main>`;
   let html = shell
     .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
@@ -54,7 +54,7 @@ for (const [route, title, description, h1, paragraphs] of pages) {
   if (route === '/social' || route === '/measurement') {
     html = html.replace('</head>', '    <meta name="robots" content="noindex, follow" />\n  </head>');
   }
-  const out = route === '/' ? join(distDir, 'index.html') : join(distDir, `${route.slice(1)}.html`);
+  const out = route === '/' ? join(distDir, 'index.html') : join(distDir, route.slice(1), 'index.html');
   mkdirSync(dirname(out), { recursive: true });
   writeFileSync(out, html);
 }

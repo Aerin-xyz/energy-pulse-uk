@@ -8,10 +8,10 @@ const Contact = () => {
       <Helmet>
         <title>Contact EnergyMix.info | Corrections, Press, Partnerships & Data</title>
         <meta name="description" content="Contact EnergyMix.info about data corrections, press enquiries, sponsorship, partnerships, API/widget interest and feedback." />
-        <link rel="canonical" href="https://energymix.info/contact" />
+        <link rel="canonical" href="https://energymix.info/contact/" />
         <meta property="og:title" content="Contact EnergyMix.info" />
         <meta property="og:description" content="Corrections, press, partnerships and data enquiries for EnergyMix.info." />
-        <meta property="og:url" content="https://energymix.info/contact" />
+        <meta property="og:url" content="https://energymix.info/contact/" />
         <meta property="og:image" content="https://energymix.info/og-default.jpg" />
         <meta name="robots" content="index, follow" />
       </Helmet>

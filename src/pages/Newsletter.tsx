@@ -26,10 +26,10 @@ const Newsletter = () => {
       <Helmet>
         <title>Energy Mix Newsletter | Weekly UK Electricity & Carbon Insights</title>
         <meta name="description" content="Get a weekly summary of Britain’s electricity mix, renewables, gas, carbon intensity, records and grid trends." />
-        <link rel="canonical" href="https://energymix.info/newsletter" />
+        <link rel="canonical" href="https://energymix.info/newsletter/" />
         <meta property="og:title" content="Energy Mix Newsletter" />
         <meta property="og:description" content="Weekly data snapshots from the UK Energy Mix dashboard." />
-        <meta property="og:url" content="https://energymix.info/newsletter" />
+        <meta property="og:url" content="https://energymix.info/newsletter/" />
         <meta property="og:image" content="https://energymix.info/og-newsletter.jpg" />
         <meta property="og:site_name" content="Energy Mix" />
         <meta property="og:locale" content="en_GB" />
@@ -55,7 +55,7 @@ const Newsletter = () => {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Newsletter",
-                "item": "https://energymix.info/newsletter"
+                "item": "https://energymix.info/newsletter/"
               }
             ]
           })}

@@ -8,10 +8,10 @@ const Privacy = () => {
       <Helmet>
         <title>EnergyMix.info Privacy Policy | Analytics, Cookies & Newsletter</title>
         <meta name="description" content="Privacy information for EnergyMix.info, including Google Analytics, Google Tag Manager, Search Console and newsletter processing." />
-        <link rel="canonical" href="https://energymix.info/privacy" />
+        <link rel="canonical" href="https://energymix.info/privacy/" />
         <meta property="og:title" content="EnergyMix.info Privacy Policy" />
         <meta property="og:description" content="How EnergyMix.info uses analytics, cookies and newsletter services." />
-        <meta property="og:url" content="https://energymix.info/privacy" />
+        <meta property="og:url" content="https://energymix.info/privacy/" />
         <meta property="og:image" content="https://energymix.info/og-default.jpg" />
         <meta name="robots" content="index, follow" />
       </Helmet>

@@ -10,10 +10,10 @@ export const ReportsIndex = () => (
     <Helmet>
       <title>Energy Mix Reports | Weekly UK Electricity Mix Briefings</title>
       <meta name="description" content="Weekly and daily EnergyMix.info reports on Britain’s electricity mix, renewables, gas, demand, carbon intensity and clean electricity windows." />
-      <link rel="canonical" href="https://energymix.info/reports" />
+      <link rel="canonical" href="https://energymix.info/reports/" />
       <meta property="og:title" content="Energy Mix Reports" />
       <meta property="og:description" content="Weekly UK electricity mix briefings and grid intelligence from EnergyMix.info." />
-      <meta property="og:url" content="https://energymix.info/reports" />
+      <meta property="og:url" content="https://energymix.info/reports/" />
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
       <meta name="robots" content="index, follow" />
     </Helmet>
@@ -60,10 +60,10 @@ export const WeeklyReportPage = () => {
       <Helmet>
         <title>{report.title} | EnergyMix.info</title>
         <meta name="description" content="Weekly EnergyMix.info report for Britain’s electricity mix, renewable share, gas generation, carbon intensity and practical clean-electricity takeaways." />
-        <link rel="canonical" href={`https://energymix.info${report.slug}`} />
+        <link rel="canonical" href={`https://energymix.info${report.slug}/`} />
         <meta property="og:title" content={report.title} />
         <meta property="og:description" content="A weekly grid intelligence report for Britain’s electricity mix." />
-        <meta property="og:url" content={`https://energymix.info${report.slug}`} />
+        <meta property="og:url" content={`https://energymix.info${report.slug}/`} />
         <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
         <meta name="robots" content="index, follow" />
         <script type="application/ld+json">
@@ -75,7 +75,7 @@ export const WeeklyReportPage = () => {
             dateModified: report.date,
             author: { '@type': 'Organization', name: 'EnergyMix.info' },
             publisher: { '@type': 'Organization', name: 'EnergyMix.info', url: 'https://energymix.info/' },
-            mainEntityOfPage: `https://energymix.info${report.slug}`,
+            mainEntityOfPage: `https://energymix.info${report.slug}/`,
             description: 'Weekly report for Britain’s electricity mix, renewables, gas, demand and carbon intensity.',
           })}
         </script>

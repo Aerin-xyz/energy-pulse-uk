@@ -10,10 +10,10 @@ const Social = () => (
     <Helmet>
       <title>Energy Mix LinkedIn Post Templates | Weekly Grid Briefs</title>
       <meta name="description" content="Ready-to-use LinkedIn post templates for EnergyMix.info weekly grid briefs, electricity explainers and clean-electricity updates." />
-      <link rel="canonical" href="https://energymix.info/social" />
+      <link rel="canonical" href="https://energymix.info/social/" />
       <meta property="og:title" content="Energy Mix LinkedIn Post Templates" />
       <meta property="og:description" content="Weekly LinkedIn distribution copy for EnergyMix.info reports and explainers." />
-      <meta property="og:url" content="https://energymix.info/social" />
+      <meta property="og:url" content="https://energymix.info/social/" />
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
       <meta name="robots" content="noindex, follow" />
     </Helmet>

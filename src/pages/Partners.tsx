@@ -23,10 +23,10 @@ const Partners = () => (
     <Helmet>
       <title>Energy Mix for Publishers, Widgets and Data Access</title>
       <meta name="description" content="Register interest in Energy Mix widgets, live GB electricity summaries, publisher explainers and future data access pilots." />
-      <link rel="canonical" href="https://energymix.info/partners" />
+      <link rel="canonical" href="https://energymix.info/partners/" />
       <meta property="og:title" content="Energy Mix widgets and data access" />
       <meta property="og:description" content="Future embeddable widgets, live summaries and data-access pilots from Energy Mix." />
-      <meta property="og:url" content="https://energymix.info/partners" />
+      <meta property="og:url" content="https://energymix.info/partners/" />
       <meta property="og:image" content="https://energymix.info/og-data.jpg" />
       <meta name="robots" content="index, follow" />
       <script type="application/ld+json">
@@ -37,7 +37,7 @@ const Partners = () => (
           provider: { '@type': 'Organization', name: 'Energy Mix', url: 'https://energymix.info/' },
           areaServed: 'GB',
           serviceType: 'Electricity data visualisation and briefing',
-          url: 'https://energymix.info/partners',
+          url: 'https://energymix.info/partners/',
         })}
       </script>
     </Helmet>

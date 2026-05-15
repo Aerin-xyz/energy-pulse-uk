@@ -8,10 +8,10 @@ const Methodology = () => {
       <Helmet>
         <title>Energy Mix Methodology | GB Electricity Data Sources & Limits</title>
         <meta name="description" content="How EnergyMix.info collects, refreshes and explains Great Britain electricity mix, demand, carbon intensity and interconnector data." />
-        <link rel="canonical" href="https://energymix.info/methodology" />
+        <link rel="canonical" href="https://energymix.info/methodology/" />
         <meta property="og:title" content="Energy Mix Methodology" />
         <meta property="og:description" content="Data sources, update cadence, geographic coverage and known limitations for EnergyMix.info." />
-        <meta property="og:url" content="https://energymix.info/methodology" />
+        <meta property="og:url" content="https://energymix.info/methodology/" />
         <meta property="og:image" content="https://energymix.info/og-data.jpg" />
         <meta name="robots" content="index, follow" />
         <script type="application/ld+json">
@@ -20,7 +20,7 @@ const Methodology = () => {
             '@type': 'Dataset',
             name: 'EnergyMix.info UK Electricity Mix Data',
             description: 'Live and recent electricity mix, demand and carbon intensity summaries for Great Britain based on public electricity data sources.',
-            url: 'https://energymix.info/methodology',
+            url: 'https://energymix.info/methodology/',
             creator: { '@type': 'Organization', name: 'EnergyMix.info', url: 'https://energymix.info/' },
             spatialCoverage: { '@type': 'Place', name: 'Great Britain' },
             isAccessibleForFree: true,

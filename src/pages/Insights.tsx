@@ -26,10 +26,10 @@ const Insights = () => {
       <Helmet>
         <title>Energy Mix Insights | UK Grid Trends & Renewable Generation Analysis</title>
         <meta name="description" content="Brief explainers and weekly insights from the Energy Mix dashboard — highlighting shifts in UK power generation and renewable share." />
-        <link rel="canonical" href="https://energymix.info/insights" />
+        <link rel="canonical" href="https://energymix.info/insights/" />
         <meta property="og:title" content="Energy Mix Insights" />
         <meta property="og:description" content="Short, data-driven explainers on the UK's changing energy mix." />
-        <meta property="og:url" content="https://energymix.info/insights" />
+        <meta property="og:url" content="https://energymix.info/insights/" />
         <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
         <meta property="og:site_name" content="Energy Mix" />
         <meta property="og:locale" content="en_GB" />
@@ -55,7 +55,7 @@ const Insights = () => {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Insights",
-                "item": "https://energymix.info/insights"
+                "item": "https://energymix.info/insights/"
               }
             ]
           })}

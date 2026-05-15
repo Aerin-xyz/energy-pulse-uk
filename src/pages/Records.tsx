@@ -62,10 +62,10 @@ export const RecordsIndex = () => (
     <Helmet>
       <title>UK Electricity Mix Records | Wind, Solar, Renewables and Gas</title>
       <meta name="description" content="EnergyMix.info records hub for Britain’s electricity mix: renewable share, wind generation, solar generation, gas generation and future carbon-intensity records." />
-      <link rel="canonical" href="https://energymix.info/records" />
+      <link rel="canonical" href="https://energymix.info/records/" />
       <meta property="og:title" content="UK Electricity Mix Records" />
       <meta property="og:description" content="Track notable electricity mix records for renewables, wind, solar and gas." />
-      <meta property="og:url" content="https://energymix.info/records" />
+      <meta property="og:url" content="https://energymix.info/records/" />
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
     </Helmet>
     <StaticPageLayout eyebrow="Records" title="UK Electricity Mix Records" intro="A records hub for notable British electricity mix moments: renewable share highs, wind and solar peaks, gas-heavy periods and future carbon-intensity records.">
@@ -93,10 +93,10 @@ const RecordDetail = ({ page }: { page: RecordPage }) => (
     <Helmet>
       <title>{page.metaTitle}</title>
       <meta name="description" content={page.description} />
-      <link rel="canonical" href={`https://energymix.info${page.slug}`} />
+      <link rel="canonical" href={`https://energymix.info${page.slug}/`} />
       <meta property="og:title" content={page.metaTitle} />
       <meta property="og:description" content={page.description} />
-      <meta property="og:url" content={`https://energymix.info${page.slug}`} />
+      <meta property="og:url" content={`https://energymix.info${page.slug}/`} />
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
     </Helmet>
     <StaticPageLayout eyebrow="Electricity record" title={page.title} intro={page.description}>

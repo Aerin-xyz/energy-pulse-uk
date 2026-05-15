@@ -228,15 +228,17 @@ const explainers: Record<string, Explainer> = {
   },
 };
 
+const canonicalPath = (slug: string) => slug === '/uk-electricity-mix' ? slug : `${slug}/`;
+
 const ExplainerPage = ({ page }: { page: Explainer }) => (
   <>
     <Helmet>
       <title>{page.metaTitle}</title>
       <meta name="description" content={page.description} />
-      <link rel="canonical" href={`https://energymix.info${page.slug}`} />
+      <link rel="canonical" href={`https://energymix.info${canonicalPath(page.slug)}`} />
       <meta property="og:title" content={page.metaTitle} />
       <meta property="og:description" content={page.description} />
-      <meta property="og:url" content={`https://energymix.info${page.slug}`} />
+      <meta property="og:url" content={`https://energymix.info${canonicalPath(page.slug)}`} />
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
       <meta name="robots" content="index, follow" />
       <script type="application/ld+json">

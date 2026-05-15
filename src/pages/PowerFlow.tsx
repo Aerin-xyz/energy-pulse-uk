@@ -13,10 +13,10 @@ const PowerFlow = () => {
       <Helmet>
         <title>GB Power Flow Live | UK Electricity Generation and Demand Visualisation</title>
         <meta name="description" content="Live GB power flow visualisation showing UK electricity generation sources, demand, imports, exports, low-carbon share and carbon intensity." />
-        <link rel="canonical" href="https://energymix.info/power-flow" />
+        <link rel="canonical" href="https://energymix.info/power-flow/" />
         <meta property="og:title" content="GB Power Flow Live" />
         <meta property="og:description" content="A live visualisation of Great Britain electricity generation, demand and interconnector flows." />
-        <meta property="og:url" content="https://energymix.info/power-flow" />
+        <meta property="og:url" content="https://energymix.info/power-flow/" />
         <meta property="og:image" content="https://energymix.info/og-default.jpg" />
         <meta name="robots" content="index, follow" />
       </Helmet>

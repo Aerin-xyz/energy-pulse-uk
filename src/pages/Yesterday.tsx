@@ -10,10 +10,10 @@ const Yesterday = () => {
       <Helmet>
         <title>{yesterday.title} | EnergyMix.info</title>
         <meta name="description" content="Yesterday’s Great Britain electricity mix summary: average generation, renewable share, wind, solar and gas output from available historical data." />
-        <link rel="canonical" href="https://energymix.info/yesterday" />
+        <link rel="canonical" href="https://energymix.info/yesterday/" />
         <meta property="og:title" content={yesterday.title} />
         <meta property="og:description" content={yesterday.summary} />
-        <meta property="og:url" content="https://energymix.info/yesterday" />
+        <meta property="og:url" content="https://energymix.info/yesterday/" />
         <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
         <meta name="robots" content="index, follow" />
       </Helmet>

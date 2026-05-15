@@ -7,10 +7,10 @@ const Measurement = () => (
     <Helmet>
       <title>Energy Mix Measurement Plan | GA4, Search Console and SEO Tracking</title>
       <meta name="description" content="Operational measurement plan for EnergyMix.info: Search Console, GA4, LinkedIn referrals, newsletter conversions and weekly reporting checks." />
-      <link rel="canonical" href="https://energymix.info/measurement" />
+      <link rel="canonical" href="https://energymix.info/measurement/" />
       <meta property="og:title" content="Energy Mix Measurement Plan" />
       <meta property="og:description" content="GA4, Search Console and SEO tracking plan for EnergyMix.info." />
-      <meta property="og:url" content="https://energymix.info/measurement" />
+      <meta property="og:url" content="https://energymix.info/measurement/" />
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
       <meta name="robots" content="noindex, follow" />
     </Helmet>
