@@ -1,4 +1,5 @@
 import { EnergyDashboard } from '@/components/EnergyDashboard';
+import { StaticGridSnapshot } from '@/components/StaticGridSnapshot';
 import { Helmet } from 'react-helmet-async';
 
 const Index = () => {
@@ -49,7 +50,10 @@ const Index = () => {
       <h1 className="sr-only">UK Electricity Mix Live - Great Britain Generation, Demand and Carbon Intensity</h1>
       <EnergyDashboard
         belowContent={(
-          <section className="container mx-auto px-4 py-12 md:py-16" aria-labelledby="about-uk-electricity-mix">
+          <section className="container mx-auto px-4 py-12 md:py-16 space-y-6" aria-labelledby="about-uk-electricity-mix">
+            <div className="max-w-5xl">
+              <StaticGridSnapshot />
+            </div>
             <div className="max-w-4xl rounded-2xl border border-primary/20 bg-card/50 p-5 md:p-8 shadow-lg shadow-primary/5">
               <p className="mb-3 text-sm uppercase tracking-[0.24em] text-primary/80">Live GB electricity intelligence</p>
               <h2 id="about-uk-electricity-mix" className="mb-4 text-2xl md:text-3xl font-bold text-glow">About the UK electricity mix</h2>

@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { StaticPageLayout } from '@/components/StaticPageLayout';
+import { StaticGridSnapshot } from '@/components/StaticGridSnapshot';
 import { LiveSeoModule } from '@/components/LiveSeoModule';
 import { RegionalCarbonPanel } from '@/components/RegionalCarbonPanel';
 
@@ -259,6 +260,8 @@ const ExplainerPage = ({ page }: { page: Explainer }) => (
         <h2 className="text-2xl font-semibold text-primary mb-3">Short answer</h2>
         <p>{page.shortAnswer}</p>
       </section>
+
+      <StaticGridSnapshot compact />
 
       <LiveSeoModule focus={page.liveFocus} />
 

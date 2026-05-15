@@ -75,6 +75,19 @@ const Data = () => {
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
+            "@type": "Dataset",
+            "name": "EnergyMix.info UK Electricity Mix Data",
+            "description": "Live and recent electricity mix, demand, interconnector and carbon-intensity summaries for Great Britain, based on public electricity data sources.",
+            "url": "https://energymix.info/data/",
+            "creator": { "@type": "Organization", "name": "EnergyMix.info", "url": "https://energymix.info/" },
+            "spatialCoverage": { "@type": "Place", "name": "Great Britain" },
+            "isAccessibleForFree": true,
+            "keywords": ["Great Britain electricity mix", "Elexon BMRS", "FUELINST", "NESO", "Carbon Intensity API"]
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
             "@type": "FAQPage",
             "mainEntity": [
               {

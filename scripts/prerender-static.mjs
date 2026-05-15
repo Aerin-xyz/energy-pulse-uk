@@ -17,6 +17,7 @@ const pages = [
   ['/contact', 'Contact EnergyMix.info | Corrections, Press, Widgets and Data', 'Contact EnergyMix.info about corrections, press, partnerships, sponsorship, widgets, data access or newsletter enquiries.', 'Contact EnergyMix.info', ['Use the contact page for data corrections, press questions, sponsorship, widget/API interest, partnerships and general Energy Mix enquiries.', 'For methodology questions, include the page URL, timestamp and data source if relevant so the issue can be checked properly.']],
   ['/privacy', 'Privacy Policy | EnergyMix.info', 'Privacy policy for EnergyMix.info, covering analytics, cookies, newsletter data and contact enquiries.', 'Privacy Policy', ['EnergyMix.info may use analytics and measurement tools to understand site usage, improve pages and measure newsletter or partner-interest actions.', 'Newsletter data, if submitted, is used for the newsletter context described at signup and can be unsubscribed from using the provider’s unsubscribe route.', 'The privacy page explains analytics, cookies, contact data and user choices in more detail.']],
   ['/citation', 'How to Cite EnergyMix.info | UK Electricity Mix Data', 'Citation guidance for EnergyMix.info live dashboard, reports, methodology and public electricity data sources.', 'How to cite EnergyMix.info', ['Suggested citation: Energy Mix, UK electricity dashboard, https://energymix.info/, accessed on the relevant date.', 'For specific reports or historical summaries, cite the individual page URL and access date.', 'Please also cite original public data sources such as Elexon, NESO or the Carbon Intensity API where required by their licence terms.']],
+  ['/insights', 'Energy Mix Insights | UK Grid Trends & Renewable Generation Analysis', 'Brief explainers and weekly insights from the Energy Mix dashboard — highlighting shifts in UK power generation and renewable share.', 'Energy Insights', ['Energy Mix insights turn live grid data into short, plain-English explainers and weekly context.', 'Use this section to follow changes in renewables, gas, carbon intensity, demand, interconnectors and practical clean-electricity windows.']],
   ['/uk-electricity-mix', 'UK Electricity Mix | Live GB Generation by Source', 'Plain-English guide to the UK electricity mix, covering Great Britain generation by source, demand, renewables, gas, nuclear, imports and carbon intensity.', 'UK Electricity Mix', ['The UK electricity mix is the blend of sources generating power at a given moment.', 'Main sources include wind, solar, gas, nuclear, biomass, hydro, storage, imports and other generation.']],
   ['/carbon-intensity', 'UK Carbon Intensity Live | Grid CO₂ and Clean Electricity Windows', 'Understand UK electricity carbon intensity, why it changes and how to use cleaner grid periods for EV charging, appliances, batteries and business load shifting.', 'UK Carbon Intensity', ['Carbon intensity estimates how much carbon dioxide is associated with each unit of electricity used.', 'It is usually lower when wind, solar, nuclear and other low-carbon sources supply more of the grid.', 'EnergyMix.info now includes regional and postcode carbon-intensity checks using NESO’s Carbon Intensity API.']],
   ['/renewables', 'UK Renewable Electricity Live | Wind, Solar, Hydro and Biomass', 'Live and plain-English guide to renewable electricity in Great Britain, including wind, solar, hydro, biomass, records, variability and carbon impact.', 'UK Renewable Electricity', ['Renewable electricity is a major part of Britain’s grid, especially when wind output is strong or solar is producing through the middle of the day.', 'Renewable share rises when wind, solar, hydro and biomass make up more of generation.']],
@@ -44,6 +45,22 @@ const pages = [
 
 const nav = '<p><a href="/">Live dashboard</a> · <a href="/uk-electricity-mix">UK electricity mix</a> · <a href="/carbon-intensity">Carbon intensity</a> · <a href="/renewables">Renewables</a> · <a href="/cleanest-time-to-use-electricity">Cleanest time</a> · <a href="/gas-generation">Gas</a> · <a href="/interconnectors">Interconnectors</a> · <a href="/electricity-demand">Demand</a> · <a href="/uk-electricity-generation-live">Generation live</a> · <a href="/today">Today</a> · <a href="/power-flow">Power flow</a> · <a href="/reports">Reports</a> · <a href="/records">Records</a> · <a href="/glossary">Glossary</a> · <a href="/partners">Widgets and data</a></p>';
 
+const schemaTag = (schema) => `<script type="application/ld+json">${JSON.stringify(schema)}</script>`;
+
+const schemasFor = (route, title, description, canonical) => {
+  const organization = { '@context': 'https://schema.org', '@type': 'Organization', name: 'EnergyMix.info', url: 'https://energymix.info/' };
+  if (route === '/') {
+    return schemaTag({ '@context': 'https://schema.org', '@type': 'WebSite', name: 'EnergyMix.info', url: 'https://energymix.info/', description }) + schemaTag(organization);
+  }
+  if (route === '/data' || route === '/methodology') {
+    return schemaTag({ '@context': 'https://schema.org', '@type': 'Dataset', name: 'EnergyMix.info UK Electricity Mix Data', description: 'Live and recent electricity mix, demand, interconnector and carbon-intensity summaries for Great Britain, based on public electricity data sources.', url: canonical, creator: { '@type': 'Organization', name: 'EnergyMix.info', url: 'https://energymix.info/' }, spatialCoverage: { '@type': 'Place', name: 'Great Britain' }, isAccessibleForFree: true, keywords: ['Great Britain electricity mix', 'Elexon BMRS', 'FUELINST', 'NESO', 'Carbon Intensity API'] });
+  }
+  if (route.startsWith('/reports/weekly/')) {
+    return schemaTag({ '@context': 'https://schema.org', '@type': 'Article', headline: title.replace(' | EnergyMix.info', ''), datePublished: latestReport.date, dateModified: latestReport.date, author: { '@type': 'Organization', name: 'EnergyMix.info' }, publisher: { '@type': 'Organization', name: 'EnergyMix.info', url: 'https://energymix.info/' }, mainEntityOfPage: canonical, description });
+  }
+  return schemaTag({ '@context': 'https://schema.org', '@type': 'WebPage', name: title, description, url: canonical, isPartOf: { '@type': 'WebSite', name: 'EnergyMix.info', url: 'https://energymix.info/' } });
+};
+
 const snapshotHtml = (() => {
   const d = snapshot.display || {};
   const asOf = snapshot.timestamp ? new Date(snapshot.timestamp).toISOString().replace('T', ' ').replace('.000Z', ' UTC') : 'latest available build-time snapshot';
@@ -58,6 +75,7 @@ for (const [route, title, description, h1, paragraphs] of pages) {
     .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
     .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${description}" />`)
     .replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${canonical}" />`)
+    .replace('</head>', `    ${schemasFor(route, title, description, canonical)}\n  </head>`)
     .replace(/<div id="root">[\s\S]*?<\/div>\s*<\/body>/, `<div id="root">${content}</div>\n  </body>`);
   if (route === '/social' || route === '/measurement') {
     html = html.replace('</head>', '    <meta name="robots" content="noindex, follow" />\n  </head>');
