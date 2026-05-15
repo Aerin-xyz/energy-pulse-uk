@@ -54,7 +54,7 @@ for (const [route, title, description, h1, paragraphs] of pages) {
   if (route === '/social' || route === '/measurement') {
     html = html.replace('</head>', '    <meta name="robots" content="noindex, follow" />\n  </head>');
   }
-  const out = route === '/' ? join(distDir, 'index.html') : join(distDir, route.slice(1), 'index.html');
+  const out = route === '/' ? join(distDir, 'index.html') : join(distDir, `${route.slice(1)}.html`);
   mkdirSync(dirname(out), { recursive: true });
   writeFileSync(out, html);
 }
