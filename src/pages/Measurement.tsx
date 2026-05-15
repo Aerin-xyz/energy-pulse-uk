@@ -22,7 +22,7 @@ const Measurement = () => (
           <li>GA4: active users, page views, returning users, top landing pages and SPA route views via the <code>virtual_page_view</code> dataLayer event.</li>
           <li>LinkedIn: referral sessions and post clicks to report/explainer pages.</li>
           <li>Newsletter: signup clicks, form submits and unsubscribe rate once campaigns begin.</li>
-          <li>Technical: sitemap coverage, crawl errors and Core Web Vitals warnings.</li>
+          <li>Technical: sitemap coverage, crawl errors, Core Web Vitals warnings and whether new glossary/partner pages are discovered without being prominent in the main nav.</li>
         </ul>
       </section>
       <section>
@@ -32,7 +32,7 @@ const Measurement = () => (
           <li>Outbound source clicks to Elexon, NESO and Carbon Intensity API.</li>
           <li>Report views and scroll depth.</li>
           <li>Virtual page views on client-side route changes, with <code>page_path</code>, <code>page_location</code> and <code>page_title</code>.</li>
-          <li>API/widget waitlist interest.</li>
+          <li>API/widget waitlist interest from <code>/partners</code> and static-page CTAs.</li>
           <li>Sponsorship/contact CTA clicks.</li>
         </ul>
       </section>
@@ -43,6 +43,8 @@ const Measurement = () => (
           <Link to="/social" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">LinkedIn templates</Link>
           <Link to="/records" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Records</Link>
           <Link to="/newsletter" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Newsletter</Link>
+          <Link to="/glossary" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Glossary</Link>
+          <Link to="/partners" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Widgets & data</Link>
         </div>
       </section>
     </StaticPageLayout>

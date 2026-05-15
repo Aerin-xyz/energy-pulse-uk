@@ -25,6 +25,8 @@ const footerLinks = [
   { to: '/yesterday', label: 'Yesterday' },
   { to: '/reports', label: 'Reports' },
   { to: '/records', label: 'Records' },
+  { to: '/glossary', label: 'Glossary' },
+  { to: '/partners', label: 'Widgets & data' },
   { to: '/citation', label: 'Citation' },
   { to: '/contact', label: 'Contact' },
   { to: '/privacy', label: 'Privacy' },
@@ -49,7 +51,7 @@ export const StaticPageLayout = ({ eyebrow, title, intro, children }: StaticPage
               <p>Weekly electricity mix reports, records and practical clean-electricity windows, sent when there is something useful to say.</p>
               <div className="mt-4 flex flex-wrap gap-3">
                 <TrackedLink to="/newsletter" eventName="newsletter_cta_click" eventLabel="static_page_cta" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Join the newsletter</TrackedLink>
-                <TrackedLink to="/contact" eventName="api_widget_waitlist_click" eventLabel="static_page_cta" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">API/widget interest</TrackedLink>
+                <TrackedLink to="/partners" eventName="api_widget_waitlist_click" eventLabel="static_page_cta" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">API/widget interest</TrackedLink>
               </div>
             </section>
           </div>

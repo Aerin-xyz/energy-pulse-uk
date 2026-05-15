@@ -243,8 +243,8 @@ const Data = () => {
                 <Link to="/newsletter">
                   <Button variant="outline" size="sm">Register interest</Button>
                 </Link>
-                <Link to="/contact">
-                  <Button variant="outline" size="sm">Contact about data access</Button>
+                <Link to="/partners">
+                  <Button variant="outline" size="sm">Widgets and data access</Button>
                 </Link>
               </div>
             </div>
@@ -301,6 +301,12 @@ const Data = () => {
                 </Link>
                 <Link to="/newsletter">
                   <Button variant="outline" size="sm">Subscribe to Newsletter</Button>
+                </Link>
+                <Link to="/glossary">
+                  <Button variant="outline" size="sm">Glossary</Button>
+                </Link>
+                <Link to="/partners">
+                  <Button variant="outline" size="sm">Widgets & Data</Button>
                 </Link>
               </div>
             </div>

@@ -23,6 +23,8 @@ import { ReportsIndex, WeeklyReportPage } from "./pages/Reports";
 import { RecordsIndex, HighestRenewableShare, HighestWindGeneration, HighestSolarGeneration, HighestGasGeneration } from "./pages/Records";
 import Social from "./pages/Social";
 import Measurement from "./pages/Measurement";
+import Glossary from "./pages/Glossary";
+import Partners from "./pages/Partners";
 import DigestPreview from "./pages/DigestPreview";
 import AdminSocialPosts from "./pages/AdminSocialPosts";
 import ShareDailySummary from "./pages/ShareDailySummary";
@@ -71,6 +73,8 @@ const App = () => (
             <Route path="/records/highest-gas-generation" element={<HighestGasGeneration />} />
             <Route path="/social" element={<Social />} />
             <Route path="/measurement" element={<Measurement />} />
+            <Route path="/glossary" element={<Glossary />} />
+            <Route path="/partners" element={<Partners />} />
             <Route path="/share/daily-summary" element={<ShareDailySummary />} />
             <Route path="/admin/digest-preview" element={<DigestPreview />} />
             <Route path="/admin/social-posts" element={<AdminSocialPosts />} />

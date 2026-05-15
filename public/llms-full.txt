@@ -82,6 +82,8 @@ Use: Energy Mix, UK electricity dashboard, https://energymix.info/. For methodol
 - Dashboard: https://energymix.info/
 - Data and methodology: https://energymix.info/data
 - AI-readable UK electricity mix explainer: https://energymix.info/ai/uk-electricity-mix
+- Glossary: https://energymix.info/glossary
+- Widgets and data access: https://energymix.info/partners
 - Insights: https://energymix.info/insights
 - About: https://energymix.info/about
 
@@ -98,6 +100,9 @@ Use: Energy Mix, UK electricity dashboard, https://energymix.info/. For methodol
 - UK electricity carbon intensity
 - UK interconnector flows
 - UK electricity imports exports
+- UK electricity glossary
+- carbon intensity definition
+- electricity settlement period meaning
 - Elexon FUELINST dashboard
 - BMRS energy dashboard
 
@@ -108,3 +113,5 @@ High-intent static answer pages:
 - https://energymix.info/uk-wind-generation-live
 - https://energymix.info/uk-electricity-carbon-intensity
 - https://energymix.info/uk-electricity-imports-exports
+- https://energymix.info/glossary
+- https://energymix.info/partners
