@@ -27,6 +27,7 @@ import DigestPreview from "./pages/DigestPreview";
 import AdminSocialPosts from "./pages/AdminSocialPosts";
 import ShareDailySummary from "./pages/ShareDailySummary";
 import AdminDailySummary from "./pages/AdminDailySummary";
+import { RouteAnalytics } from "./components/RouteAnalytics";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <RouteAnalytics />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/about" element={<About />} />

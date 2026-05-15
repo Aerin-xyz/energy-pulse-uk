@@ -19,7 +19,7 @@ const Measurement = () => (
         <h2 className="text-2xl font-semibold text-primary mb-3">Weekly checks</h2>
         <ul className="space-y-2 list-disc pl-5">
           <li>Search Console: organic clicks, impressions, indexed pages and new query terms.</li>
-          <li>GA4: active users, page views, returning users and top landing pages.</li>
+          <li>GA4: active users, page views, returning users, top landing pages and SPA route views via the <code>virtual_page_view</code> dataLayer event.</li>
           <li>LinkedIn: referral sessions and post clicks to report/explainer pages.</li>
           <li>Newsletter: signup clicks, form submits and unsubscribe rate once campaigns begin.</li>
           <li>Technical: sitemap coverage, crawl errors and Core Web Vitals warnings.</li>
@@ -31,6 +31,7 @@ const Measurement = () => (
           <li>Newsletter signup click and successful subscribe.</li>
           <li>Outbound source clicks to Elexon, NESO and Carbon Intensity API.</li>
           <li>Report views and scroll depth.</li>
+          <li>Virtual page views on client-side route changes, with <code>page_path</code>, <code>page_location</code> and <code>page_title</code>.</li>
           <li>API/widget waitlist interest.</li>
           <li>Sponsorship/contact CTA clicks.</li>
         </ul>
