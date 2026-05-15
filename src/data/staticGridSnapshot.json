@@ -1,0 +1,34 @@
+{
+  "generatedAt": "2026-05-15T20:18:02.859Z",
+  "timestamp": "2026-05-15T20:30:00.000Z",
+  "source": "BMRS HV + ESO + PV Live",
+  "status": "live-partial",
+  "freshnessNote": "dataset-fuelhh-stream",
+  "metrics": {
+    "demandMW": 31625,
+    "generationMW": 26914,
+    "carbonIntensity": 177,
+    "carbonIndex": "high",
+    "renewableShare": 39.36241361373263,
+    "gasShare": 42.227093705877984,
+    "windMW": 8336,
+    "solarMW": 29,
+    "gasMW": 11365,
+    "nuclearMW": 3199,
+    "importsMW": 5937,
+    "exportsMW": 1653
+  },
+  "display": {
+    "demand": "31.6 GW",
+    "generation": "26.9 GW",
+    "carbonIntensity": "177 gCO₂/kWh",
+    "carbonIndex": "high",
+    "renewableShare": "39%",
+    "gasShare": "42%",
+    "wind": "8.3 GW",
+    "solar": "0.0 GW",
+    "gas": "11.4 GW",
+    "nuclear": "3.2 GW",
+    "importsExports": "5.9 GW net imports"
+  }
+}

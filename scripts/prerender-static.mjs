@@ -5,6 +5,7 @@ const rootDir = new URL('..', import.meta.url).pathname;
 const distDir = join(rootDir, 'dist');
 const shell = readFileSync(join(distDir, 'index.html'), 'utf8');
 const generated = JSON.parse(readFileSync(join(rootDir, 'src/data/energyMixGenerated.json'), 'utf8'));
+const snapshot = JSON.parse(readFileSync(join(rootDir, 'src/data/staticGridSnapshot.json'), 'utf8'));
 const latestReport = generated.reports[0];
 
 const pages = [
@@ -43,9 +44,16 @@ const pages = [
 
 const nav = '<p><a href="/">Live dashboard</a> · <a href="/uk-electricity-mix">UK electricity mix</a> · <a href="/carbon-intensity">Carbon intensity</a> · <a href="/renewables">Renewables</a> · <a href="/cleanest-time-to-use-electricity">Cleanest time</a> · <a href="/gas-generation">Gas</a> · <a href="/interconnectors">Interconnectors</a> · <a href="/electricity-demand">Demand</a> · <a href="/uk-electricity-generation-live">Generation live</a> · <a href="/today">Today</a> · <a href="/power-flow">Power flow</a> · <a href="/reports">Reports</a> · <a href="/records">Records</a> · <a href="/glossary">Glossary</a> · <a href="/partners">Widgets and data</a></p>';
 
+const snapshotHtml = (() => {
+  const d = snapshot.display || {};
+  const asOf = snapshot.timestamp ? new Date(snapshot.timestamp).toISOString().replace('T', ' ').replace('.000Z', ' UTC') : 'latest available build-time snapshot';
+  return `<section id="static-grid-snapshot"><h2>Latest GB electricity snapshot</h2><p>Snapshot timestamp: ${asOf}. Source freshness: ${snapshot.source || 'public grid data'} (${snapshot.status || 'latest available'}).</p><ul><li>Demand: ${d.demand || 'unavailable'}</li><li>Visible generation: ${d.generation || 'unavailable'}</li><li>Carbon intensity: ${d.carbonIntensity || 'unavailable'} (${d.carbonIndex || 'latest estimate'})</li><li>Renewable share: ${d.renewableShare || 'unavailable'}</li><li>Gas share: ${d.gasShare || 'unavailable'}</li><li>Wind: ${d.wind || 'unavailable'}</li><li>Solar: ${d.solar || 'unavailable'}</li><li>Nuclear: ${d.nuclear || 'unavailable'}</li><li>Imports/exports: ${d.importsExports || 'unavailable'}</li></ul><p>These values are a cached build-time snapshot for crawlers and non-JavaScript readers. The live dashboard refreshes in the browser from public grid and carbon-intensity sources.</p></section>`;
+})();
+
 for (const [route, title, description, h1, paragraphs] of pages) {
   const canonical = `https://energymix.info${route === '/' ? '/' : `${route}/`}`;
-  const content = `<main id="seo-prerender"><h1>${h1}</h1>${paragraphs.map((p) => `<p>${p}</p>`).join('')}${nav}</main>`;
+  const includeSnapshot = ['/', '/uk-electricity-mix', '/carbon-intensity', '/renewables', '/gas-generation', '/nuclear-power', '/interconnectors', '/electricity-demand', '/uk-electricity-generation-live', '/cleanest-time-to-use-electricity', '/today', '/power-flow'].includes(route);
+  const content = `<main id="seo-prerender"><h1>${h1}</h1>${includeSnapshot ? snapshotHtml : ''}${paragraphs.map((p) => `<p>${p}</p>`).join('')}${nav}</main>`;
   let html = shell
     .replace(/<title>[^<]*<\/title>/, `<title>${title}</title>`)
     .replace(/<meta name="description" content="[^"]*" \/>/, `<meta name="description" content="${description}" />`)
