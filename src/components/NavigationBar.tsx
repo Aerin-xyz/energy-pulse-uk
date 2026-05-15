@@ -24,6 +24,7 @@ const topicLinks = [
   { to: '/gas-generation', label: 'Gas generation' },
   { to: '/interconnectors', label: 'Interconnectors' },
   { to: '/electricity-demand', label: 'Demand' },
+  { to: '/uk-electricity-generation-live', label: 'Generation live' },
   { to: '/today', label: 'Today' },
   { to: '/power-flow', label: 'Power flow' },
   { to: '/reports', label: 'Reports' },
