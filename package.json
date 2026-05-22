@@ -7,6 +7,7 @@
     "dev": "vite",
     "generate:weekly": "node scripts/generate-weekly-report.mjs",
     "validate:data": "node scripts/external-data-validation.mjs",
+    "refresh:daily": "bash scripts/daily-validated-refresh.sh",
     "build": "npm run generate:weekly && node scripts/generate-static-snapshot.mjs && vite build && node scripts/prerender-static.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
