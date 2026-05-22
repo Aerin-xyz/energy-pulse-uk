@@ -42,3 +42,16 @@ Live HTTP checks showed the slash URLs return 200. The issue is discovery/indexi
 ## Deployment follow-up
 
 After deployment, submit or reinspect the canonical slash URLs above in Search Console. The API can inspect URL state, but normal URL inspection indexing requests still need the Search Console UI.
+
+## Deployment status
+
+- Commit pushed: `83cc22d` (`Strengthen Energy Mix search landing pages`)
+- Cloudflare Pages production deployment detected: `fef7a63e-f9e0-4732-b33f-91591545ccb3`
+- Live verification confirmed the updated titles, 2026-05-22 sitemap dates, and 2026-05-22 crawlable snapshots are now on `https://energymix.info/`.
+- Sitemap API submission failed with `ACCESS_TOKEN_SCOPE_INSUFFICIENT`; the current Google token can inspect Search Console data but cannot submit sitemaps.
+
+Post-deploy URL inspection capture:
+
+- `/home/aerins/.openclaw/workspace/out/energy-postdeploy-url-inspection-2026-05-22.json`
+
+Post-deploy inspection still shows the newly strengthened URLs as unknown to Google. That is expected immediately after deployment; use the Search Console UI to request indexing for the priority slash URLs.
