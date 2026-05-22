@@ -8,8 +8,8 @@ const latestReport = generated.reports[0];
 export const ReportsIndex = () => (
   <>
     <Helmet>
-      <title>Energy Mix Reports | Weekly UK Electricity Mix Briefings</title>
-      <meta name="description" content="Weekly and daily EnergyMix.info reports on Britain’s electricity mix, renewables, gas, demand, carbon intensity and clean electricity windows." />
+      <title>UK Electricity Mix Reports | Weekly Grid Data Briefings</title>
+      <meta name="description" content="Weekly and daily UK electricity mix reports from EnergyMix.info: renewables, gas, wind, solar, demand, carbon intensity and clean electricity windows." />
       <link rel="canonical" href="https://energymix.info/reports/" />
       <meta property="og:title" content="Energy Mix Reports" />
       <meta property="og:description" content="Weekly UK electricity mix briefings and grid intelligence from EnergyMix.info." />
@@ -18,9 +18,12 @@ export const ReportsIndex = () => (
       <meta name="robots" content="index, follow" />
     </Helmet>
 
-    <StaticPageLayout eyebrow="Reports" title="Energy Mix Reports" intro="A growing archive of plain-English reports on Britain’s electricity mix, carbon intensity, renewables, gas, demand and practical clean-electricity windows.">
+    <StaticPageLayout eyebrow="Reports" title="UK Electricity Mix Reports" intro="A growing archive of plain-English reports on Britain’s electricity mix, carbon intensity, renewables, gas, demand and practical clean-electricity windows.">
       <section>
         <h2 className="text-2xl font-semibold text-primary mb-3">Latest reports</h2>
+        <p className="mb-4 text-foreground/75">
+          These reports are generated from the available historical generation feed, then linked back to the live dashboard and source notes so the public numbers can be checked rather than treated as a black box.
+        </p>
         <div className="grid gap-4">
           {generated.reports.map((report) => (
             <Link key={report.slug} to={report.slug} className="block rounded-lg border border-primary/20 bg-background/40 p-5 hover:bg-primary/10 transition-colors">

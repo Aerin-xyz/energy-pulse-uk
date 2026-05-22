@@ -1,10 +1,16 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { StaticPageLayout } from '@/components/StaticPageLayout';
+import { StaticGridSnapshot } from '@/components/StaticGridSnapshot';
 import { useEnergyData } from '@/contexts/EnergyDataContext';
+import generated from '@/data/energyMixGenerated.json';
+import snapshot from '@/data/staticGridSnapshot.json';
 
 const formatMw = (value?: number) => typeof value === 'number' && Number.isFinite(value) ? `${Math.round(value).toLocaleString('en-GB')} MW` : 'Awaiting live data';
 const formatPercent = (value?: number) => typeof value === 'number' && Number.isFinite(value) ? `${value.toFixed(1)}%` : 'Awaiting live data';
+const formatSnapshotTime = (timestamp?: string | null) => timestamp
+  ? new Intl.DateTimeFormat('en-GB', { dateStyle: 'medium', timeStyle: 'short', timeZone: 'Europe/London' }).format(new Date(timestamp))
+  : 'latest available build-time snapshot';
 
 const Today = () => {
   const { data, loading } = useEnergyData();
@@ -19,11 +25,11 @@ const Today = () => {
   return (
     <>
       <Helmet>
-        <title>UK Electricity Mix Today | Live Generation, Demand & Carbon Intensity</title>
-        <meta name="description" content="Today’s Great Britain electricity mix: live generation, demand, renewable share, gas output, carbon intensity and source freshness from public grid data." />
+        <title>UK Electricity Mix Today | Live GB Generation & Carbon Intensity</title>
+        <meta name="description" content="UK electricity mix today: live Great Britain generation, demand, renewable share, gas output, wind, solar, carbon intensity and source freshness." />
         <link rel="canonical" href="https://energymix.info/today/" />
         <meta property="og:title" content="UK Electricity Mix Today" />
-        <meta property="og:description" content="Live daily summary of Britain’s electricity mix, demand, renewables and carbon intensity." />
+        <meta property="og:description" content="Live daily summary of Britain’s electricity mix, demand, renewables, gas, wind, solar and carbon intensity." />
         <meta property="og:url" content="https://energymix.info/today/" />
         <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
         <meta name="robots" content="index, follow" />
@@ -34,6 +40,8 @@ const Today = () => {
         title="UK Electricity Mix Today"
         intro="A live daily landing page for Britain’s electricity mix, showing the latest available demand, generation, renewables, gas and carbon-intensity context."
       >
+        <StaticGridSnapshot compact />
+
         <section className="rounded-lg border border-primary/20 bg-background/40 p-5">
           <h2 className="text-2xl font-semibold text-primary mb-3">Current summary</h2>
           {loading && !data ? (
@@ -44,6 +52,16 @@ const Today = () => {
             </p>
           )}
           <p className="mt-3 text-sm text-foreground/65">Latest dashboard refresh: {lastUpdated || 'awaiting live data'}</p>
+        </section>
+
+        <section className="rounded-lg border border-primary/20 bg-background/40 p-5">
+          <h2 className="text-2xl font-semibold text-primary mb-3">Validated daily context</h2>
+          <p>
+            The latest generated daily summary covers <strong>{generated.yesterday.title.replace('UK Electricity Mix Yesterday: ', '')}</strong>: {generated.yesterday.summary}
+          </p>
+          <p className="mt-3 text-sm text-foreground/65">
+            The crawlable snapshot was generated at {formatSnapshotTime(snapshot.timestamp)} from {snapshot.source || 'public grid data'}. Live values can move before settled daily reports are available.
+          </p>
         </section>
 
         <section>
@@ -58,7 +76,7 @@ const Today = () => {
 
         <section>
           <h2 className="text-2xl font-semibold text-primary mb-3">How to read today’s page</h2>
-          <p>This page is intentionally useful before it becomes fully automated. The live values provide the current grid picture; future iterations should add highest renewable share today, lowest carbon intensity today, peak demand, gas-share trend, wind/solar highlights and a link to yesterday’s settled summary.</p>
+          <p>This page combines live browser-refreshed data with generated daily context. Use the live values for the current grid picture, and use the settled summary for a more stable check against recent historical generation data.</p>
         </section>
 
         <section>
@@ -66,6 +84,7 @@ const Today = () => {
           <div className="grid md:grid-cols-2 gap-3">
             <Link to="/" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Live dashboard</Link>
             <Link to="/reports" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Reports archive</Link>
+            <Link to="/yesterday" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Yesterday’s settled summary</Link>
             <Link to="/carbon-intensity" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Carbon intensity</Link>
             <Link to="/cleanest-time-to-use-electricity" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Cleanest time to use electricity</Link>
           </div>

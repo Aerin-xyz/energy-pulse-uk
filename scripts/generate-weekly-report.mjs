@@ -85,10 +85,26 @@ mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, JSON.stringify(generated, null, 2) + '\n');
 
 let sitemap = readFileSync(SITEMAP, 'utf8');
-for (const url of [`https://energymix.info${slug}/`, 'https://energymix.info/yesterday/']) {
-  if (!sitemap.includes(`<loc>${url}</loc>`)) {
-    sitemap = sitemap.replace('</urlset>', `  <url>\n    <loc>${url}</loc>\n    <lastmod>${reportDate}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.75</priority>\n  </url>\n</urlset>`);
+const upsertSitemapUrl = (url, lastmod, changefreq = 'weekly', priority = '0.75') => {
+  const escapedUrl = url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const block = new RegExp(`  <url>\\n    <loc>${escapedUrl}<\\/loc>\\n    <lastmod>[^<]+<\\/lastmod>\\n    <changefreq>[^<]+<\\/changefreq>\\n    <priority>[^<]+<\\/priority>\\n  <\\/url>`);
+  const next = `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
+  if (block.test(sitemap)) {
+    sitemap = sitemap.replace(block, next);
+    return;
   }
+  sitemap = sitemap.replace('</urlset>', `${next}\n</urlset>`);
+};
+
+for (const [url, changefreq, priority] of [
+  [`https://energymix.info${slug}/`, 'weekly', '0.75'],
+  ['https://energymix.info/yesterday/', 'weekly', '0.75'],
+  ['https://energymix.info/today/', 'hourly', '0.9'],
+  ['https://energymix.info/reports/', 'weekly', '0.8'],
+  ['https://energymix.info/carbon-intensity/', 'weekly', '0.9'],
+  ['https://energymix.info/uk-electricity-generation-live/', 'weekly', '0.9'],
+]) {
+  upsertSitemapUrl(url, reportDate, changefreq, priority);
 }
 writeFileSync(SITEMAP, sitemap);
 console.log(`Generated weekly report data for ${slug}`);
