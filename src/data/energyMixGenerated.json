@@ -1,18 +1,18 @@
 {
-  "generatedAt": "2026-05-22T11:36:04.809Z",
+  "generatedAt": "2026-05-22T15:05:11.440Z",
   "reports": [
     {
       "slug": "/reports/weekly/2026-05-22",
       "date": "2026-05-22",
       "title": "UK Electricity Mix Weekly Report: Friday 22 May",
-      "period": "Saturday 16 May to Friday 22 May",
-      "intro": "A measured weekly report for EnergyMix.info using the available 7-day historical generation feed for Saturday 16 May to Friday 22 May.",
-      "summary": "The week from Saturday 16 May to Friday 22 May shifted from gas-heavy weekdays into a cleaner, wind-led weekend. The strongest renewable day in the available data was Tuesday 19 May, when wind, solar and hydro together averaged 64.6% of measured generation across settlement periods. Gas was highest on Monday 18 May and lowest on Friday 22 May.",
+      "period": "Saturday 16 May to Thursday 21 May",
+      "intro": "A measured weekly report for EnergyMix.info using the available 7-day historical generation feed for Saturday 16 May to Thursday 21 May.",
+      "summary": "The week from Saturday 16 May to Thursday 21 May shifted from gas-heavy weekdays into a cleaner, wind-led weekend. The strongest renewable day in the available data was Tuesday 19 May, when wind, solar and hydro together averaged 64.6% of measured generation across settlement periods. Gas was highest on Monday 18 May and lowest on Tuesday 19 May.",
       "takeaway": "For flexible electricity use, the cleanest opportunities are likely to appear when wind is strong, gas is low and demand is not at a peak. This is the foundation for future EV-charging guidance, clean-electricity alerts and weekly newsletter summaries.",
       "metrics": [
         [
           "Average measured generation",
-          "~10.6 GW across available settlement-period aggregates"
+          "~22.9 GW across available settlement-period aggregates"
         ],
         [
           "Highest renewable share",
@@ -20,15 +20,15 @@
         ],
         [
           "Highest average wind output",
-          "~7.2 GW on Tuesday 19 May"
+          "~14.4 GW on Tuesday 19 May"
         ],
         [
           "Highest average solar output",
-          "~1.8 GW on Sunday 17 May"
+          "~3.5 GW on Sunday 17 May"
         ],
         [
           "Highest average gas output",
-          "~5.7 GW on Monday 18 May"
+          "~11.4 GW on Monday 18 May"
         ]
       ]
     }
@@ -38,11 +38,11 @@
     "slug": "/yesterday",
     "date": "2026-05-21",
     "title": "UK Electricity Mix Yesterday: Thursday 21 May",
-    "summary": "Yesterday, Thursday 21 May, measured average generation was about 11.8 GW. Renewables averaged 48.1% of measured generation, gas averaged 3.3 GW, wind averaged 3.7 GW and solar averaged 1.7 GW.",
+    "summary": "Yesterday, Thursday 21 May, measured average generation was about 23.6 GW. Renewables averaged 48.1% of measured generation, gas averaged 6.6 GW, wind averaged 7.5 GW and solar averaged 3.3 GW.",
     "metrics": [
       [
         "Average measured generation",
-        "~11.8 GW"
+        "~23.6 GW"
       ],
       [
         "Average renewable share",
@@ -50,15 +50,15 @@
       ],
       [
         "Average wind output",
-        "~3.7 GW"
+        "~7.5 GW"
       ],
       [
         "Average solar output",
-        "~1.7 GW"
+        "~3.3 GW"
       ],
       [
         "Average gas output",
-        "~3.3 GW"
+        "~6.6 GW"
       ]
     ]
   },
@@ -69,25 +69,25 @@
       "text": "Current measured 7-day high: 64.6% average renewable share on Tuesday 19 May, based on the available historical generation feed."
     },
     "highestWindGeneration": {
-      "value": "7.2 GW",
+      "value": "14.4 GW",
       "date": "Tuesday 19 May",
-      "text": "Current measured 7-day high: about 7.2 GW average wind output on Tuesday 19 May, based on the available historical generation feed."
+      "text": "Current measured 7-day high: about 14.4 GW average wind output on Tuesday 19 May, based on the available historical generation feed."
     },
     "highestSolarGeneration": {
-      "value": "1.8 GW",
+      "value": "3.5 GW",
       "date": "Sunday 17 May",
-      "text": "Current measured 7-day high: about 1.8 GW average solar output on Sunday 17 May, based on the available historical generation feed."
+      "text": "Current measured 7-day high: about 3.5 GW average solar output on Sunday 17 May, based on the available historical generation feed."
     },
     "highestGasGeneration": {
-      "value": "5.7 GW",
+      "value": "11.4 GW",
       "date": "Monday 18 May",
-      "text": "Current measured 7-day high: about 5.7 GW average gas output on Monday 18 May, based on the available historical generation feed."
+      "text": "Current measured 7-day high: about 11.4 GW average gas output on Monday 18 May, based on the available historical generation feed."
     }
   },
   "socialPosts": [
     {
       "title": "Monday weekly grid brief",
-      "body": "Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: 64.6% on Tuesday 19 May\n• Highest average wind output: ~7.2 GW on Tuesday 19 May\n• Highest average solar output: ~1.8 GW on Sunday 17 May\n• Highest average gas output: ~5.7 GW on Monday 18 May\n\nThe shift was clear: gas-heavy weekdays gave way to a cleaner, wind-led weekend.\n\nFull report: https://energymix.info/reports/weekly/2026-05-22/"
+      "body": "Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: 64.6% on Tuesday 19 May\n• Highest average wind output: ~14.4 GW on Tuesday 19 May\n• Highest average solar output: ~3.5 GW on Sunday 17 May\n• Highest average gas output: ~11.4 GW on Monday 18 May\n\nThe shift was clear: gas-heavy weekdays gave way to a cleaner, wind-led weekend.\n\nFull report: https://energymix.info/reports/weekly/2026-05-22/"
     },
     {
       "title": "Wednesday explainer",
