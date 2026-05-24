@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { cn, formatGWfromMW } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, BatteryCharging, CircleHelp, Factory, Flame, Home, Info, Leaf, RadioTower, Sun, Wind } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BatteryCharging, CircleHelp, Droplets, Flame, Home, Info, Leaf, RadioTower, Sun, Wind } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 /*
@@ -103,7 +103,7 @@ const POWER_FLOW_LAYOUT = {
 } as const;
 
 type Point = { x: number; y: number };
-type Slot = 'wind' | 'solar' | 'nuclear' | 'transfers' | 'demand' | 'storage' | 'gas' | 'biomass' | 'other';
+type Slot = 'wind' | 'solar' | 'nuclear' | 'transfers' | 'demand' | 'storage' | 'gas' | 'biomass' | 'hydro';
 
 type FlowNode = {
   id: Slot;
@@ -292,7 +292,7 @@ export const PowerFlowCard = ({
     const solar = valueFor(generationMix, ['Solar']);
     const gas = valueFor(generationMix, ['Gas']);
     const nuclear = valueFor(generationMix, ['Nuclear']);
-    const hydro = valueFor(generationMix, ['Hydro', 'PSH', 'Pumped Storage']);
+    const hydro = valueFor(generationMix, ['Hydro']);
     const biomass = valueFor(generationMix, ['Biomass']);
     const storageMW = storage?.absMW || 0;
     const storageIsCharging = storage?.mode === 'charging';
@@ -305,7 +305,7 @@ export const PowerFlowCard = ({
     );
     const exportMW = interconnectors.filter((item) => (item.flow || 0) < 0).reduce((sum, item) => sum + Math.abs(item.flow || 0), 0);
     const transferMW = Math.max(importMW, exportMW);
-    const named = wind + solar + gas + nuclear + biomass + importsCategory;
+    const named = wind + solar + gas + nuclear + hydro + biomass + importsCategory;
     const other = Math.max(0, totalGenerationMW - named);
     const lowCarbon = wind + solar + nuclear + hydro + biomass;
 
@@ -318,7 +318,7 @@ export const PowerFlowCard = ({
       storage: nodePoint('right', 'middle'),
       gas: nodePoint('left', 'bottom'),
       biomass: nodePoint('centre', 'bottom'),
-      other: nodePoint('right', 'bottom'),
+      hydro: nodePoint('right', 'bottom'),
     } satisfies Record<Slot, Point>;
 
     const baseNodes: FlowNode[] = [
@@ -330,11 +330,11 @@ export const PowerFlowCard = ({
       { id: 'storage', label: storageIsCharging ? 'Storage charging' : storageIsGenerating ? 'Storage' : 'Storage idle', valueMW: storageMW, color: storageIsCharging ? '#38bdf8' : '#7dd3fc', icon: BatteryCharging, point: points.storage },
       { id: 'gas', label: 'Gas', valueMW: gas, color: '#f45b69', icon: Flame, point: points.gas },
       { id: 'biomass', label: 'Biomass', valueMW: biomass, color: '#8fe3b0', icon: Leaf, point: points.biomass },
-      { id: 'other', label: 'Other', valueMW: other, color: '#c8d0dc', icon: Factory, point: points.other },
+      { id: 'hydro', label: 'Hydro', valueMW: hydro, color: '#7dd3fc', icon: Droplets, point: points.hydro },
     ];
     const nodes: FlowNode[] = baseNodes.map((node) => ({ ...node, muted: !node.demand && node.valueMW <= 1 }));
 
-    const maxMW = Math.max(wind, solar, gas, nuclear, storageMW, biomass, other, transferMW, totalDemandMW, 1);
+    const maxMW = Math.max(wind, solar, gas, nuclear, storageMW, biomass, hydro, other, transferMW, totalDemandMW, 1);
     const demand = points.demand;
     const lines: FlowLine[] = [
       { id: 'wind-demand', from: points.wind, to: demand, valueMW: wind, color: '#5dd6c0', curve: -10 },
@@ -345,7 +345,7 @@ export const PowerFlowCard = ({
       { id: 'storage-demand', from: points.storage, to: demand, valueMW: storageMW, color: storageIsCharging ? '#38bdf8' : '#7dd3fc', reverse: storageIsCharging },
       { id: 'gas-demand', from: points.gas, to: demand, valueMW: gas, color: '#f45b69', curve: 10 },
       { id: 'biomass-demand', from: points.biomass, to: demand, valueMW: biomass, color: '#8fe3b0' },
-      { id: 'other-demand', from: points.other, to: demand, valueMW: other, color: '#c8d0dc', curve: -10 },
+      { id: 'hydro-demand', from: points.hydro, to: demand, valueMW: hydro, color: '#7dd3fc', curve: -10 },
     ].map((line) => ({ ...line, muted: line.valueMW <= 1 }));
 
     return {
@@ -455,7 +455,7 @@ export const PowerFlowCard = ({
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-3 text-sm text-foreground/80">
-            <p>EnergyMix maps Home to displayed GB demand, Grid to imports/exports, and surrounding nodes to GB production sources: wind, solar, nuclear, hydro, gas, biomass and other generation.</p>
+            <p>EnergyMix maps Home to displayed GB demand, Grid to imports/exports, and surrounding nodes to GB production sources: wind, solar, nuclear, storage, gas, biomass and hydro.</p>
             <p>Supported by National Energy SO Open Data. Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
           </div>
         </DialogContent>

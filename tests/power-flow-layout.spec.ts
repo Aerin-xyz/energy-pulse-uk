@@ -28,6 +28,8 @@ test.describe('power-flow deterministic layout', () => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.goto('/?debugFlowLayout=1', { waitUntil: 'networkidle' });
       await expect(page.locator('#power-flow')).toBeVisible({ timeout: 20_000 });
+      await expect(page.locator('#power-flow')).toContainText('Storage');
+      await expect(page.locator('#power-flow')).toContainText('Hydro');
 
       const result = await page.evaluate(() => {
         const toBox = (el: Element, index: number): Box => {
