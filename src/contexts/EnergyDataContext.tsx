@@ -115,6 +115,20 @@ interface StorageData {
   source: string;
 }
 
+interface DemandBreakdownData {
+  netDemandMW: number;
+  transmissionSystemDemandMW: number;
+  pumpedStoragePumpingMW: number;
+  interconnectorExportsMW: number;
+  stationLoadMW: number;
+  stationLoadSource: string;
+  settlementDate?: string;
+  settlementPeriod?: number;
+  timestamp?: string | null;
+  status: 'aligned' | 'latest-actual' | string;
+  source: string;
+}
+
 interface EnergyData {
   generationMix: GenerationData[];
   interconnectors: InterconnectorData[];
@@ -128,6 +142,7 @@ interface EnergyData {
   marketIndexPrice?: MarketIndexPriceData | null;
   systemFrequency?: SystemFrequencyData | null;
   storage?: StorageData | null;
+  demandBreakdown?: DemandBreakdownData | null;
   dataFreshness?: {
     source?: string;
     isRealtime?: boolean;
@@ -279,6 +294,7 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
           marketIndexPrice: energyData.marketIndexPrice || cachedData?.marketIndexPrice || null,
           systemFrequency: energyData.systemFrequency || cachedData?.systemFrequency || null,
           storage: energyData.storage || cachedData?.storage || null,
+          demandBreakdown: energyData.demandBreakdown || cachedData?.demandBreakdown || null,
           dataFreshness: energyData.dataFreshness,
           asOf: energyData.asOf,
         };
@@ -297,6 +313,9 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
         }
         if (cachedData && !energyData.storage) {
           newData.storage = cachedData.storage;
+        }
+        if (cachedData && !energyData.demandBreakdown) {
+          newData.demandBreakdown = cachedData.demandBreakdown;
         }
 
         setData(newData);

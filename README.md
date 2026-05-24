@@ -62,7 +62,13 @@ This project is built with:
 
 ## How can I deploy this project?
 
-Simply open [Lovable](https://lovable.dev/projects/f5a075f5-53a2-4f84-85cc-93414ae2e81c) and click on Share -> Publish.
+Push to the GitHub `main` branch. Cloudflare builds and publishes the site from GitHub.
+
+Supabase Edge Functions are deployed separately with the Supabase CLI, for example:
+
+```sh
+supabase functions deploy energy-data --project-ref cxvjgpuytezomdlsayif
+```
 
 ## Can I connect a custom domain to my Lovable project?
 

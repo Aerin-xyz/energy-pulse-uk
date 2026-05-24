@@ -1570,6 +1570,80 @@ function parsePumpedStorage(rows: any[], variant: "insights" | "dataset", source
   };
 }
 
+async function fetchNESODemandBreakdown(anchorDate: string, anchorSP: number, debug = false) {
+  const resourceId = "177f6fa4-ae49-4182-81ea-0c6b35f26ca6";
+  const flowKeys = [
+    "IFA_FLOW",
+    "IFA2_FLOW",
+    "BRITNED_FLOW",
+    "MOYLE_FLOW",
+    "EAST_WEST_FLOW",
+    "NEMO_FLOW",
+    "NSL_FLOW",
+    "ELECLINK_FLOW",
+    "VIKING_FLOW",
+    "GREENLINK_FLOW",
+  ];
+
+  const seasonalStationLoadMW = () => {
+    const month = new Date().getUTCMonth() + 1;
+    return month >= 4 && month <= 10 ? 500 : 600;
+  };
+
+  const fetchSql = async (sql: string) => {
+    const url = `https://api.neso.energy/api/3/action/datastore_search_sql?sql=${encodeURIComponent(sql)}`;
+    const res = await fetch(url, { headers: HEADERS, cache: "no-store" });
+    const ct = res.headers.get("content-type") || "";
+    if (!res.ok || !ct.toLowerCase().includes("json")) return null;
+    const json = await res.json();
+    return Array.isArray(json?.result?.records) ? json.result.records[0] : null;
+  };
+
+  try {
+    const exactSql = `SELECT * from "${resourceId}" WHERE "FORECAST_ACTUAL_INDICATOR" = 'A' AND "SETTLEMENT_DATE" = '${anchorDate}' AND "SETTLEMENT_PERIOD" = ${anchorSP} LIMIT 1`;
+    const latestSql = `SELECT * from "${resourceId}" WHERE "FORECAST_ACTUAL_INDICATOR" = 'A' ORDER BY "SETTLEMENT_DATE" DESC, "SETTLEMENT_PERIOD" DESC LIMIT 1`;
+    const row = await fetchSql(exactSql) || await fetchSql(latestSql);
+    if (!row) return null;
+
+    const ndMW = Number(row.ND);
+    const tsdMW = Number(row.TSD);
+    const pumpedStoragePumpingMW = Math.max(0, Number(row.PUMP_STORAGE_PUMPING) || 0);
+    const interconnectorExportsMW = flowKeys
+      .map((key) => Number(row[key]) || 0)
+      .filter((flow) => flow < 0)
+      .reduce((sum, flow) => sum + Math.abs(flow), 0);
+
+    let stationLoadMW = tsdMW - ndMW - pumpedStoragePumpingMW - interconnectorExportsMW;
+    let stationLoadSource = "derived";
+    if (!Number.isFinite(stationLoadMW) || stationLoadMW < 0 || stationLoadMW > 1500) {
+      stationLoadMW = seasonalStationLoadMW();
+      stationLoadSource = "seasonal-estimate";
+    }
+
+    const rowDate = String(row.SETTLEMENT_DATE || "").slice(0, 10);
+    const rowSP = Number(row.SETTLEMENT_PERIOD || 0);
+    const matched = rowDate === anchorDate && rowSP === anchorSP;
+    const timestamp = anchorEndISOFromSP(rowDate, rowSP);
+
+    return {
+      netDemandMW: Math.round(ndMW),
+      transmissionSystemDemandMW: Math.round(tsdMW),
+      pumpedStoragePumpingMW: Math.round(pumpedStoragePumpingMW),
+      interconnectorExportsMW: Math.round(interconnectorExportsMW),
+      stationLoadMW: Math.round(stationLoadMW),
+      stationLoadSource,
+      settlementDate: rowDate,
+      settlementPeriod: rowSP,
+      timestamp,
+      status: matched ? "aligned" : "latest-actual",
+      source: "NESO Demand Data Update",
+    };
+  } catch (e) {
+    if (debug) dlog(true, "NESO demand breakdown error", { error: (e as Error).message });
+    return null;
+  }
+}
+
 function parseFUELHHtoMW(rows: any[]) {
   const latest = pickLatestSP(rows);
   const hvByFuelMW: Record<string, number> = {};
@@ -1988,6 +2062,7 @@ let storage = parsePumpedStorage([], "dataset", null);
 
     const embeddedWindMW = windEmb.matched ? windEmb.mw : 0;
     const embeddedSolarMW = solarEmb.matched ? solarEmb.mw : 0;
+    const demandBreakdown = await fetchNESODemandBreakdown(anchorDate, anchorSP, DEBUG);
 
     // Totals (MW discipline)
     const hvTotalMW = Object.values(hvByFuelMW).reduce((sum, mw) => sum + mw, 0);
@@ -2126,6 +2201,13 @@ try {
         cadenceMinutes: variant?.includes('fuelinst') ? 5 : 30,
         status: storage.mode,
       },
+      stationLoad: {
+        label: 'Station load',
+        source: 'NESO Demand Data Update',
+        timestamp: safeSourceTimestamp(demandBreakdown?.timestamp || null, responseNow),
+        cadenceMinutes: 30,
+        status: demandBreakdown ? demandBreakdown.status : 'unavailable',
+      },
     };
 
     const fullLive = Boolean(generationSourceTime) && windEmb.matched && solarEmb.matched;
@@ -2167,6 +2249,7 @@ try {
       marketIndexPrice,
       systemFrequency,
       storage,
+      demandBreakdown,
 dataFreshness: {
   source: "Elexon FUELINST/BMRS + ESO + PV Live",
   isRealtime: true,

@@ -4,9 +4,12 @@ import { StaticPageLayout } from '@/components/StaticPageLayout';
 import { PowerFlowCard } from '@/components/PowerFlowCard';
 import { ChartSkeleton } from '@/components/LoadingSkeleton';
 import { useEnergyData } from '@/contexts/EnergyDataContext';
+import { useGridSignals } from '@/hooks/useGridSignals';
 
 const PowerFlow = () => {
   const { data, loading } = useEnergyData();
+  const gridSignals = useGridSignals({ storage: data?.storage || null });
+  const storageSignal = data?.storage || gridSignals.storage;
 
   return (
     <>
@@ -35,6 +38,8 @@ const PowerFlow = () => {
             totalDemandMW={data.totalDemandMW || 0}
             totalGenerationMW={data.totalGenerationMW || 0}
             carbonIntensity={data.carbonIntensity}
+            storage={storageSignal}
+            demandBreakdown={data.demandBreakdown}
             settlementPeriod={data.asOf?.settlementPeriod}
             sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp || data.asOf?.endISO}
           />

@@ -212,6 +212,8 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                   totalDemandMW={displayDemandMW}
                   totalGenerationMW={data.totalGenerationMW || 0}
                   carbonIntensity={data.carbonIntensity}
+                  storage={storageSignal}
+                  demandBreakdown={data.demandBreakdown}
                   settlementPeriod={data.asOf?.settlementPeriod}
                   sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp || data.asOf?.endISO}
                 />
