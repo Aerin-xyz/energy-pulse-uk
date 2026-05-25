@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Menu, ChevronDown, Home } from 'lucide-react';
+import { Menu, ChevronDown, Home, X, Zap } from 'lucide-react';
 import { AnimatedLogo } from '@/components/AnimatedLogo';
 import { useState, ReactNode, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
@@ -9,15 +9,22 @@ interface NavigationBarProps {
   mobileActions?: ReactNode;
 }
 
-const exploreLinks = [
-  { to: '/about', label: 'About' },
-  { to: '/data', label: 'Data' },
-  { to: '/insights', label: 'Insights' },
-  { to: '/newsletter', label: 'Newsletter' },
+type NavigationLink = {
+  to: string;
+  label: string;
+  description?: string;
+};
+
+const coreLinks: NavigationLink[] = [
+  { to: '/', label: 'Live dashboard', description: 'Current UK grid mix and live intelligence' },
+  { to: '/power-flow', label: 'Power flow', description: 'Generation, demand, transfers and storage' },
+  { to: '/today', label: 'Today', description: 'The latest daily grid picture' },
+  { to: '/reports', label: 'Reports', description: 'Weekly summaries and longer reads' },
+  { to: '/records', label: 'Records', description: 'Historic highs, lows and notable moments' },
 ];
 
-const topicLinks = [
-  { to: '/uk-electricity-mix', label: 'UK electricity mix' },
+const topicLinks: NavigationLink[] = [
+  { to: '/uk-electricity-mix', label: 'Electricity mix' },
   { to: '/carbon-intensity', label: 'Carbon intensity' },
   { to: '/renewables', label: 'Renewables' },
   { to: '/cleanest-time-to-use-electricity', label: 'Cleanest time' },
@@ -25,25 +32,131 @@ const topicLinks = [
   { to: '/interconnectors', label: 'Interconnectors' },
   { to: '/electricity-demand', label: 'Demand' },
   { to: '/uk-electricity-generation-live', label: 'Generation live' },
-  { to: '/today', label: 'Today' },
-  { to: '/power-flow', label: 'Power flow' },
-  { to: '/reports', label: 'Reports' },
-  { to: '/records', label: 'Records' },
 ];
 
-const navigationLinks = [...exploreLinks, ...topicLinks];
+const resourceLinks: NavigationLink[] = [
+  { to: '/insights', label: 'Insights' },
+  { to: '/data', label: 'Data' },
+  { to: '/about', label: 'About' },
+  { to: '/newsletter', label: 'Newsletter' },
+];
+
+const navigationGroups = [
+  { label: 'Core dashboard', links: coreLinks },
+  { label: 'Learn & data', links: topicLinks },
+  { label: 'Resources', links: resourceLinks },
+];
+
+const NavLinkItem = ({
+  link,
+  onClick,
+  compact = false,
+}: {
+  link: NavigationLink;
+  onClick?: () => void;
+  compact?: boolean;
+}) => (
+  <Link
+    to={link.to}
+    className={cn(
+      "group block rounded-md border border-transparent transition-all duration-200 hover:border-primary/20 hover:bg-primary/10 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
+      compact ? "px-3 py-2.5" : "px-3.5 py-3"
+    )}
+    role="menuitem"
+    onClick={onClick}
+  >
+    <span className="block text-sm font-medium text-foreground/95 group-hover:text-primary">
+      {link.label}
+    </span>
+    {link.description && (
+      <span className="mt-1 block text-xs leading-snug text-muted-foreground">
+        {link.description}
+      </span>
+    )}
+  </Link>
+);
+
+const ExploreMegaMenu = ({
+  isOpen,
+  onClose,
+  align = 'right',
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  align?: 'left' | 'right';
+}) => (
+  <div
+    className={cn(
+      "absolute top-full z-50 mt-2 w-[min(42rem,calc(100vw-2rem))] transition-all duration-200 origin-top",
+      align === 'right' ? "right-0" : "left-0",
+      isOpen
+        ? "translate-y-0 opacity-100 visible pointer-events-auto"
+        : "-translate-y-1 opacity-0 invisible pointer-events-none"
+    )}
+  >
+    <div className="rounded-lg border border-primary/20 glass-morphism shadow-2xl shadow-primary/20 overflow-hidden">
+      <div className="grid gap-3 p-3 md:grid-cols-[1fr_1fr]">
+        <section className="rounded-md border border-primary/10 bg-background/35 p-2">
+          <p className="px-3 pb-1.5 pt-1 text-xs font-semibold uppercase tracking-[0.12em] text-primary/80">
+            {navigationGroups[0].label}
+          </p>
+          <ul className="space-y-1" role="menu">
+            {navigationGroups[0].links.map((link) => (
+              <li role="none" key={link.to}>
+                <NavLinkItem link={link} onClick={onClose} />
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <div className="space-y-3">
+          <section className="rounded-md border border-primary/10 bg-background/35 p-2">
+            <p className="px-3 pb-1.5 pt-1 text-xs font-semibold uppercase tracking-[0.12em] text-primary/80">
+              {navigationGroups[1].label}
+            </p>
+            <ul className="grid grid-cols-2 gap-1" role="menu">
+              {navigationGroups[1].links.map((link) => (
+                <li role="none" key={link.to}>
+                  <NavLinkItem link={link} onClick={onClose} compact />
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="rounded-md border border-primary/10 bg-background/35 p-2">
+            <p className="px-3 pb-1.5 pt-1 text-xs font-semibold uppercase tracking-[0.12em] text-primary/80">
+              {navigationGroups[2].label}
+            </p>
+            <ul className="grid grid-cols-2 gap-1" role="menu">
+              {navigationGroups[2].links.map((link) => (
+                <li role="none" key={link.to}>
+                  <NavLinkItem link={link} onClick={onClose} compact />
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+);
 
 export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarProps) => {
   const [isExploreOpen, setIsExploreOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const exploreRef = useRef<HTMLDivElement>(null);
+  const tabletExploreRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
   // Close explore section when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (exploreRef.current && !exploreRef.current.contains(event.target as Node)) {
+      const target = event.target as Node;
+      const isInsideDesktopMenu = exploreRef.current?.contains(target) ?? false;
+      const isInsideTabletMenu = tabletExploreRef.current?.contains(target) ?? false;
+
+      if (!isInsideDesktopMenu && !isInsideTabletMenu) {
         setIsExploreOpen(false);
       }
     };
@@ -53,6 +166,36 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
       return () => document.removeEventListener('mousedown', handleClickOutside);
     }
   }, [isExploreOpen]);
+
+  useEffect(() => {
+    setIsExploreOpen(false);
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsExploreOpen(false);
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) {
+      return;
+    }
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [isMobileMenuOpen]);
 
   return (
     <nav aria-label="Main navigation" className="w-full border-b border-primary/20 glass-morphism sticky top-0 z-50 shadow-lg shadow-primary/10">
@@ -78,7 +221,14 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                 </Link>
               )}
 
-              {/* Explore Collapsible Section */}
+              <Link
+                to="/power-flow"
+                className="px-6 py-3 text-base font-medium text-foreground/90 hover:text-primary transition-all duration-200 rounded-md hover:bg-primary/10 hover:shadow-[0_0_15px_rgba(28,222,228,0.3)]"
+              >
+                Power flow
+              </Link>
+
+              {/* Explore Mega Menu */}
               <div className="flex flex-col relative" ref={exploreRef}>
                 <button
                   onClick={() => setIsExploreOpen(!isExploreOpen)}
@@ -93,28 +243,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                   <ChevronDown className={cn("w-5 h-5 transition-transform duration-200", isExploreOpen && "rotate-180")} />
                 </button>
 
-                {/* Collapsible Section - Always in DOM for SEO */}
-                <div
-                  className={cn(
-                    "absolute left-0 z-50 w-64 transition-all duration-300 origin-top overflow-hidden",
-                    isExploreOpen ? "max-h-[34rem] opacity-100 visible" : "max-h-0 opacity-0 invisible"
-                  )}
-                >
-                  <ul className="py-2 mt-2 rounded-lg border border-primary/20 glass-morphism shadow-xl shadow-primary/20" role="menu">
-                    {navigationLinks.map((link) => (
-                      <li role="none" key={link.to}>
-                        <Link
-                          to={link.to}
-                          className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
-                          role="menuitem"
-                          onClick={() => setIsExploreOpen(false)}
-                        >
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <ExploreMegaMenu isOpen={isExploreOpen} onClose={() => setIsExploreOpen(false)} />
               </div>
             </div>
 
@@ -152,8 +281,8 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                 </Link>
               )}
 
-              {/* Explore Collapsible Section with Icon */}
-              <div className="flex flex-col relative">
+              {/* Explore Mega Menu with Icon */}
+              <div className="flex flex-col relative" ref={tabletExploreRef}>
                 <button
                   onClick={() => setIsExploreOpen(!isExploreOpen)}
                   className={cn(
@@ -169,28 +298,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
                   <ChevronDown className={cn("w-5 h-5 transition-transform duration-200", isExploreOpen && "rotate-180")} />
                 </button>
 
-                {/* Collapsible Section - SEO Safe */}
-                <div
-                  className={cn(
-                    "absolute left-0 z-50 w-64 transition-all duration-300 origin-top overflow-hidden",
-                    isExploreOpen ? "max-h-[34rem] opacity-100 visible" : "max-h-0 opacity-0 invisible"
-                  )}
-                >
-                  <ul className="py-2 mt-2 rounded-lg border border-primary/20 glass-morphism shadow-xl shadow-primary/20" role="menu">
-                    {navigationLinks.map((link) => (
-                      <li role="none" key={link.to}>
-                        <Link
-                          to={link.to}
-                          className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors"
-                          role="menuitem"
-                          onClick={() => setIsExploreOpen(false)}
-                        >
-                          {link.label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <ExploreMegaMenu isOpen={isExploreOpen} onClose={() => setIsExploreOpen(false)} />
               </div>
             </div>
           </div>
@@ -219,32 +327,73 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
               aria-label="Toggle navigation menu"
               aria-expanded={isMobileMenuOpen}
             >
-              <Menu className="w-5 h-5" />
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 
           {/* Mobile Menu - Always in DOM for SEO */}
-          <nav
+          <div
             className={cn(
-              "transition-all duration-300 origin-top overflow-hidden",
-              isMobileMenuOpen ? "max-h-[44rem] opacity-100 visible" : "max-h-0 opacity-0 invisible"
+              "fixed inset-x-0 bottom-0 top-[61px] z-50 h-[calc(100dvh-61px)] bg-background/95 backdrop-blur-xl transition-all duration-300",
+              isMobileMenuOpen ? "opacity-100 visible pointer-events-auto" : "opacity-0 invisible pointer-events-none"
             )}
-            aria-label="Mobile navigation"
           >
-            <ul className="space-y-1 py-2 border-t border-primary/20 mt-3">
-              {[{ to: '/', label: 'Home' }, ...navigationLinks].map((link) => (
-                <li key={link.to}>
-                  <Link
-                    to={link.to}
-                    className="block px-4 py-2.5 text-sm text-foreground/90 hover:text-primary hover:bg-primary/10 transition-colors rounded-md"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+            <button
+              type="button"
+              className="absolute inset-0 cursor-default"
+              aria-label="Close navigation menu"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <nav
+              className={cn(
+                "absolute right-0 top-0 h-full w-full max-w-md overflow-y-auto border-l border-primary/20 bg-background px-4 pb-8 pt-4 shadow-2xl shadow-primary/20 transition-transform duration-300",
+                isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+              )}
+              aria-label="Mobile navigation"
+            >
+              <Link
+                to="/"
+                className="mb-4 flex items-center justify-between rounded-lg border border-primary/25 bg-primary/10 px-4 py-3 text-sm font-semibold text-primary shadow-[0_0_20px_rgba(28,222,228,0.16)]"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                <span className="flex items-center gap-2">
+                  <Zap className="h-4 w-4" />
+                  Live dashboard
+                </span>
+                <span aria-hidden="true">Go</span>
+              </Link>
+
+              <div className="space-y-5">
+                {navigationGroups.map((group) => (
+                  <section key={group.label}>
+                    <p className="px-1 pb-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary/80">
+                      {group.label}
+                    </p>
+                    <ul className="space-y-1">
+                      {group.links
+                        .filter((link) => !(group.label === 'Core dashboard' && link.to === '/'))
+                        .map((link) => (
+                          <li key={link.to}>
+                            <Link
+                              to={link.to}
+                              className="block rounded-md border border-primary/10 bg-background/35 px-4 py-3 text-sm font-medium text-foreground/95 transition-colors hover:border-primary/25 hover:bg-primary/10 hover:text-primary"
+                              onClick={() => setIsMobileMenuOpen(false)}
+                            >
+                              {link.label}
+                              {link.description && (
+                                <span className="mt-1 block text-xs font-normal leading-snug text-muted-foreground">
+                                  {link.description}
+                                </span>
+                              )}
+                            </Link>
+                          </li>
+                        ))}
+                    </ul>
+                  </section>
+                ))}
+              </div>
+            </nav>
+          </div>
 
           {/* Mobile Actions - Below hamburger menu */}
           {mobileActions && (
