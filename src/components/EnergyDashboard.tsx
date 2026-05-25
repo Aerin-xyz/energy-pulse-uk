@@ -6,14 +6,10 @@ import { GenerationMixChart } from '@/components/GenerationMixChart';
 import { InterconnectorFlows } from '@/components/InterconnectorFlows';
 import { HistoricalGenerationChart } from '@/components/HistoricalGenerationChart';
 import { EUDebugPanel } from '@/components/EUDebugPanel';
-import { SettlementPeriodCountdown } from '@/components/SettlementPeriodCountdown';
 import { useEnergyData } from '@/contexts/EnergyDataContext';
 import { useHistoricalGeneration } from '@/hooks/useHistoricalGeneration';
-import { ChartSkeleton, InterconnectorSkeleton, EUCardSkeleton } from '@/components/LoadingSkeleton';
-import { StatusIndicator } from '@/components/StatusIndicator';
+import { ChartSkeleton, InterconnectorSkeleton } from '@/components/LoadingSkeleton';
 import { OfflineOverlay } from '@/components/OfflineOverlay';
-import { EnergyBalanceDisplay } from '@/components/EnergyBalanceDisplay';
-import { SystemStatusBanner } from '@/components/SystemStatusBanner';
 import { GridIntelligenceHeader } from '@/components/GridIntelligenceHeader';
 import { PowerFlowCard } from '@/components/PowerFlowCard';
 import { DemandReconciliationPanel } from '@/components/DemandReconciliationPanel';
@@ -53,8 +49,6 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
     fetchForecastData
   } = useHistoricalGeneration();
 
-  // Calculate time until next settlement period
-  const [timeUntilNextSP, setTimeUntilNextSP] = useState<string>('');
   const [dataAge, setDataAge] = useState<string>('');
   const [loadingProgress, setLoadingProgress] = useState(0);
 
@@ -68,12 +62,6 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
       // Calculate data age
       const ageMinutes = Math.floor((now.getTime() - lastUpdate.getTime()) / 60000);
       setDataAge(ageMinutes.toString());
-
-      // Calculate next settlement period
-      const currentMinute = now.getMinutes();
-      const minutesUntilNext = currentMinute < 30 ? 30 - currentMinute : 60 - currentMinute;
-      const secondsUntilNext = 60 - now.getSeconds();
-      setTimeUntilNextSP(`${minutesUntilNext - 1}:${secondsUntilNext.toString().padStart(2, '0')}`);
     };
 
     updateTimers();
@@ -144,17 +132,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
       <OfflineOverlay />
       
       {/* Navigation Bar */}
-      <NavigationBar
-        desktopActions={data && (
-          <EnergyBalanceDisplay
-            totalDemandMW={displayDemandMW}
-            totalGenerationMW={data.totalGenerationMW || 0}
-            interconnectorFlowMW={data.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0}
-            carbonIntensity={data.carbonIntensity}
-          />
-        )}
-
-      />
+      <NavigationBar />
 
       {/* Loading Progress Bar */}
       {loadingProgress > 0 && loadingProgress < 100 && (
@@ -164,18 +142,6 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
             style={{ width: `${loadingProgress}%` }}
           />
         </div>
-      )}
-
-      {/* System Status Banner */}
-      {data && (
-        <SystemStatusBanner
-          settlementPeriod={data.asOf?.settlementPeriod}
-          timeUntilNextSP={timeUntilNextSP}
-          dataAge={dataAge}
-          isRealtime={data.dataFreshness?.isRealtime}
-          nextUpdate={nextUpdateAt ? new Date(nextUpdateAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : undefined}
-          sourceFreshness={data.dataFreshness?.sourceFreshness}
-        />
       )}
 
       {data && (
