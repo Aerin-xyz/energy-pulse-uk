@@ -94,7 +94,7 @@ const ExploreMegaMenu = ({
         : "-translate-y-1 opacity-0 invisible pointer-events-none"
     )}
   >
-    <div className="rounded-lg border border-primary/20 glass-morphism shadow-2xl shadow-primary/20 overflow-hidden">
+    <div className="overflow-hidden rounded-lg border border-primary/20 bg-[hsl(220_28%_12%)] shadow-2xl shadow-primary/20">
       <div className="grid gap-3 p-3 md:grid-cols-[1fr_1fr]">
         <section className="rounded-md border border-primary/10 bg-background/35 p-2">
           <p className="px-3 pb-1.5 pt-1 text-xs font-semibold uppercase tracking-[0.12em] text-primary/80">
@@ -334,7 +334,7 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
           {/* Mobile Menu - Always in DOM for SEO */}
           <div
             className={cn(
-              "fixed inset-x-0 bottom-0 top-[61px] z-50 h-[calc(100dvh-61px)] bg-background/95 backdrop-blur-xl transition-all duration-300",
+              "fixed inset-0 z-[60] bg-[hsl(220_30%_8%)] transition-all duration-300",
               isMobileMenuOpen ? "opacity-100 visible pointer-events-auto" : "opacity-0 invisible pointer-events-none"
             )}
           >
@@ -346,51 +346,67 @@ export const NavigationBar = ({ desktopActions, mobileActions }: NavigationBarPr
             />
             <nav
               className={cn(
-                "absolute right-0 top-0 h-full w-full max-w-md overflow-y-auto border-l border-primary/20 bg-background px-4 pb-8 pt-4 shadow-2xl shadow-primary/20 transition-transform duration-300",
+                "absolute right-0 top-0 flex h-[100svh] max-h-[100svh] w-full max-w-md flex-col overflow-hidden border-l border-primary/20 bg-[hsl(220_30%_8%)] shadow-2xl shadow-primary/20 transition-transform duration-300",
                 isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
               )}
               aria-label="Mobile navigation"
             >
-              <Link
-                to="/"
-                className="mb-4 flex items-center justify-between rounded-lg border border-primary/25 bg-primary/10 px-4 py-3 text-sm font-semibold text-primary shadow-[0_0_20px_rgba(28,222,228,0.16)]"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <span className="flex items-center gap-2">
-                  <Zap className="h-4 w-4" />
-                  Live dashboard
-                </span>
-                <span aria-hidden="true">Go</span>
-              </Link>
+              <div className="flex shrink-0 items-center justify-between border-b border-primary/20 px-4 py-3">
+                <div className="min-w-0">
+                  <AnimatedLogo className="site-logo-compact" />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-primary/15 text-foreground/90 transition-colors hover:bg-primary/10 hover:text-primary"
+                  aria-label="Close navigation menu"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
 
-              <div className="space-y-5">
-                {navigationGroups.map((group) => (
-                  <section key={group.label}>
-                    <p className="px-1 pb-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary/80">
-                      {group.label}
-                    </p>
-                    <ul className="space-y-1">
-                      {group.links
-                        .filter((link) => !(group.label === 'Core dashboard' && link.to === '/'))
-                        .map((link) => (
-                          <li key={link.to}>
-                            <Link
-                              to={link.to}
-                              className="block rounded-md border border-primary/10 bg-background/35 px-4 py-3 text-sm font-medium text-foreground/95 transition-colors hover:border-primary/25 hover:bg-primary/10 hover:text-primary"
-                              onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                              {link.label}
-                              {link.description && (
-                                <span className="mt-1 block text-xs font-normal leading-snug text-muted-foreground">
-                                  {link.description}
-                                </span>
-                              )}
-                            </Link>
-                          </li>
-                        ))}
-                    </ul>
-                  </section>
-                ))}
+              <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain px-4 pb-[calc(2rem+env(safe-area-inset-bottom))] pt-4 [-webkit-overflow-scrolling:touch]">
+                <Link
+                  to="/"
+                  className="mb-5 flex items-center justify-between rounded-lg border border-primary/25 bg-primary/10 px-4 py-3 text-sm font-semibold text-primary shadow-[0_0_20px_rgba(28,222,228,0.16)]"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="flex items-center gap-2">
+                    <Zap className="h-4 w-4" />
+                    Live dashboard
+                  </span>
+                  <span aria-hidden="true">Go</span>
+                </Link>
+
+                <div className="space-y-6">
+                  {navigationGroups.map((group) => (
+                    <section key={group.label}>
+                      <p className="px-1 pb-2 text-xs font-semibold uppercase tracking-[0.14em] text-primary/80">
+                        {group.label}
+                      </p>
+                      <ul className="space-y-1.5">
+                        {group.links
+                          .filter((link) => !(group.label === 'Core dashboard' && link.to === '/'))
+                          .map((link) => (
+                            <li key={link.to}>
+                              <Link
+                                to={link.to}
+                                className="block rounded-md border border-primary/10 bg-[hsl(220_28%_12%)] px-4 py-3 text-sm font-medium text-foreground/95 transition-colors hover:border-primary/25 hover:bg-primary/10 hover:text-primary"
+                                onClick={() => setIsMobileMenuOpen(false)}
+                              >
+                                {link.label}
+                                {link.description && (
+                                  <span className="mt-1 block text-xs font-normal leading-snug text-muted-foreground">
+                                    {link.description}
+                                  </span>
+                                )}
+                              </Link>
+                            </li>
+                          ))}
+                      </ul>
+                    </section>
+                  ))}
+                </div>
               </div>
             </nav>
           </div>
