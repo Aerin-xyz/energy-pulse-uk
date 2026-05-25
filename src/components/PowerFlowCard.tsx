@@ -456,6 +456,7 @@ export const PowerFlowCard = ({
           </DialogHeader>
           <div className="space-y-3 text-sm text-foreground/80">
             <p>EnergyMix maps Home to displayed GB demand, Grid to imports/exports, and surrounding nodes to GB production sources: wind, solar, nuclear, storage, gas, biomass and hydro.</p>
+            <p>Displayed demand is balanced from domestic generation, net interconnector transfers and pumped-storage transfer, so the visual stays consistent when source demand definitions differ.</p>
             <p>Supported by National Energy SO Open Data. Contains BMRS data © Elexon Limited copyright and database right 2026.</p>
           </div>
         </DialogContent>

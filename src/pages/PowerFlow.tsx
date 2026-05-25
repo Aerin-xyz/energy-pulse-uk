@@ -5,11 +5,18 @@ import { PowerFlowCard } from '@/components/PowerFlowCard';
 import { ChartSkeleton } from '@/components/LoadingSkeleton';
 import { useEnergyData } from '@/contexts/EnergyDataContext';
 import { useGridSignals } from '@/hooks/useGridSignals';
+import { calculateDisplayedDemandMW } from '@/lib/powerFlowDemand';
 
 const PowerFlow = () => {
   const { data, loading } = useEnergyData();
   const gridSignals = useGridSignals({ storage: data?.storage || null });
   const storageSignal = data?.storage || gridSignals.storage;
+  const displayDemandMW = data ? calculateDisplayedDemandMW({
+    totalGenerationMW: data.totalGenerationMW,
+    totalDemandMW: data.totalDemandMW,
+    interconnectors: data.interconnectors,
+    storage: storageSignal,
+  }) : 0;
 
   return (
     <>
@@ -35,7 +42,7 @@ const PowerFlow = () => {
           <PowerFlowCard
             generationMix={data.generationMix}
             interconnectors={data.interconnectors}
-            totalDemandMW={data.totalDemandMW || 0}
+            totalDemandMW={displayDemandMW}
             totalGenerationMW={data.totalGenerationMW || 0}
             carbonIntensity={data.carbonIntensity}
             storage={storageSignal}
@@ -50,7 +57,7 @@ const PowerFlow = () => {
         <section className="rounded-lg border border-primary/20 bg-background/40 p-5">
           <h2 className="mb-3 text-2xl font-semibold text-primary">How to read it</h2>
           <p className="text-foreground/80">
-            Each animated line represents a major live electricity source or transfer category. Thicker and faster lines mean more power. The centre shows current GB demand, while the surrounding nodes show generation categories and net interconnector flow.
+            Each animated line represents a major live electricity source or transfer category. Thicker and faster lines mean more power. The centre shows displayed GB demand, balanced from generation, net interconnector flow and storage transfer.
           </p>
           <p className="mt-3 text-sm text-foreground/65">
             Inspired by flixlix’s Power Flow Card Plus for Home Assistant, rebuilt natively for EnergyMix.info using public GB electricity data.

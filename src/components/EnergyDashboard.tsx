@@ -18,6 +18,7 @@ import { GridIntelligenceHeader } from '@/components/GridIntelligenceHeader';
 import { PowerFlowCard } from '@/components/PowerFlowCard';
 import { DemandReconciliationPanel } from '@/components/DemandReconciliationPanel';
 import { useGridSignals } from '@/hooks/useGridSignals';
+import { calculateDisplayedDemandMW } from '@/lib/powerFlowDemand';
 import { useState, useEffect, ReactNode } from 'react';
 
 interface EnergyDashboardProps {
@@ -114,11 +115,12 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
   const storageSignal = data?.storage || gridSignals.storage;
   const netInterconnectorFlowMW = data?.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0;
   const storageTransferMW = storageSignal?.netMW || 0;
-  const derivedDemandMW = data ? Math.max(0, data.totalGenerationMW + netInterconnectorFlowMW + storageTransferMW) : 0;
-  const isUsingDerivedDemand = data && derivedDemandMW > 0 && Math.abs(derivedDemandMW - data.totalDemandMW) > 2500;
-  const displayDemandMW = isUsingDerivedDemand
-    ? derivedDemandMW
-    : (data?.totalDemandMW || 0);
+  const displayDemandMW = data ? calculateDisplayedDemandMW({
+    totalGenerationMW: data.totalGenerationMW,
+    totalDemandMW: data.totalDemandMW,
+    interconnectors: data.interconnectors,
+    storage: storageSignal,
+  }) : 0;
   const showDemandQA = typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('debugDemand') === '1';
 
   if (error) {
