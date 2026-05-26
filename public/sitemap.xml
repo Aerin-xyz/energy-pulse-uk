@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://energymix.info/</loc>
-    <lastmod>2026-05-13</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>hourly</changefreq>
     <priority>1.0</priority>
   </url>
@@ -68,7 +68,7 @@
   </url>
   <url>
     <loc>https://energymix.info/uk-electricity-mix</loc>
-    <lastmod>2026-05-13</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
@@ -80,19 +80,19 @@
   </url>
   <url>
     <loc>https://energymix.info/renewables/</loc>
-    <lastmod>2026-05-15</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://energymix.info/cleanest-time-to-use-electricity/</loc>
-    <lastmod>2026-05-13</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://energymix.info/gas-generation/</loc>
-    <lastmod>2026-05-13</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -104,13 +104,13 @@
   </url>
   <url>
     <loc>https://energymix.info/interconnectors/</loc>
-    <lastmod>2026-05-13</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://energymix.info/electricity-demand/</loc>
-    <lastmod>2026-05-13</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -176,25 +176,25 @@
   </url>
   <url>
     <loc>https://energymix.info/uk-renewable-electricity</loc>
-    <lastmod>2026-05-08</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://energymix.info/uk-wind-generation-live</loc>
-    <lastmod>2026-05-08</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://energymix.info/uk-electricity-carbon-intensity</loc>
-    <lastmod>2026-05-08</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://energymix.info/uk-electricity-imports-exports</loc>
-    <lastmod>2026-05-08</lastmod>
+    <lastmod>2026-05-26</lastmod>
     <changefreq>hourly</changefreq>
     <priority>0.85</priority>
   </url>

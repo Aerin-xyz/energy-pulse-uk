@@ -116,12 +116,23 @@ const upsertSitemapUrl = (url, lastmod, changefreq = 'weekly', priority = '0.75'
 };
 
 for (const [url, changefreq, priority] of [
+  ['https://energymix.info/', 'hourly', '1.0'],
+  ['https://energymix.info/uk-electricity-mix', 'weekly', '0.95'],
   [`https://energymix.info${slug}/`, 'weekly', '0.75'],
   ['https://energymix.info/yesterday/', 'weekly', '0.75'],
   ['https://energymix.info/today/', 'hourly', '0.9'],
   ['https://energymix.info/reports/', 'weekly', '0.8'],
   ['https://energymix.info/carbon-intensity/', 'weekly', '0.9'],
+  ['https://energymix.info/renewables/', 'weekly', '0.9'],
+  ['https://energymix.info/cleanest-time-to-use-electricity/', 'weekly', '0.9'],
+  ['https://energymix.info/gas-generation/', 'weekly', '0.85'],
+  ['https://energymix.info/interconnectors/', 'weekly', '0.85'],
+  ['https://energymix.info/electricity-demand/', 'weekly', '0.85'],
   ['https://energymix.info/uk-electricity-generation-live/', 'weekly', '0.9'],
+  ['https://energymix.info/uk-renewable-electricity', 'hourly', '0.9'],
+  ['https://energymix.info/uk-wind-generation-live', 'hourly', '0.85'],
+  ['https://energymix.info/uk-electricity-carbon-intensity', 'hourly', '0.85'],
+  ['https://energymix.info/uk-electricity-imports-exports', 'hourly', '0.85'],
 ]) {
   upsertSitemapUrl(url, reportDate, changefreq, priority);
 }
