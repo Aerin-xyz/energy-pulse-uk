@@ -1,6 +1,9 @@
 name: Daily validated Energy Mix refresh
 
 on:
+  push:
+    branches:
+      - main
   schedule:
     # 06:45 UTC is 07:45 in the UK during BST. During GMT this runs at 06:45 UK time,
     # still safely after yesterday's Elexon/NESO settlement data should be available.
