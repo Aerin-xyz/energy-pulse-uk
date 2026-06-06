@@ -7,6 +7,8 @@ const ROOT = new URL('..', import.meta.url).pathname;
 const OUT = join(ROOT, 'src/data/energyMixGenerated.json');
 const SITEMAP = join(ROOT, 'public/sitemap.xml');
 const VALIDATION_OUT = join(ROOT, 'public/data/validation/latest.json');
+const NESO_DEMAND_RESOURCE_ID = '177f6fa4-ae49-4182-81ea-0c6b35f26ca6';
+const NESO_SQL_URL = 'https://api.neso.energy/api/3/action/datastore_search_sql';
 
 const fmtDate = (iso) => new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(`${iso}T12:00:00Z`));
 const periodsFor = (row) => {
@@ -19,10 +21,54 @@ const pct = (n) => `${n.toFixed(1)}%`;
 const fuel = (row, name) => row.fuelMix.find((x) => x.fuelType.toLowerCase() === name.toLowerCase()) || { mw: 0, percentage: 0 };
 const renewableMw = (row) => fuel(row, 'Wind').mw + fuel(row, 'Solar').mw + fuel(row, 'Hydro').mw;
 const renewableShare = (row) => (renewableMw(row) / row.totalMW) * 100;
+const averageField = (rows, key) => rows.reduce((sum, row) => sum + Number(row[key] || 0), 0) / rows.length;
+const fetchEmbeddedSolarAverageMw = async (date) => {
+  const sql = `SELECT * from "${NESO_DEMAND_RESOURCE_ID}" WHERE "SETTLEMENT_DATE" = '${date}'`;
+  const response = await fetch(`${NESO_SQL_URL}?sql=${encodeURIComponent(sql)}`);
+  if (!response.ok) throw new Error(`NESO Demand Data Update failed ${response.status}: ${await response.text()}`);
+
+  const json = await response.json();
+  const actualRows = (json.result?.records || []).filter((row) => row.FORECAST_ACTUAL_INDICATOR === 'A');
+  if (actualRows.length < 46) throw new Error(`NESO Demand Data Update returned ${actualRows.length} actual periods for ${date}`);
+
+  return averageField(actualRows, 'EMBEDDED_SOLAR_GENERATION');
+};
+const withSolarBackfill = async (row) => {
+  if (averageMw(row, fuel(row, 'Solar').mw) > 0) return row;
+
+  const solarAverageMw = await fetchEmbeddedSolarAverageMw(row.settlementDate);
+  if (!Number.isFinite(solarAverageMw) || solarAverageMw <= 0) return row;
+
+  const solarHalfHourlyMwhTotal = (solarAverageMw * periodsFor(row)) / 2;
+  const fuelMix = row.fuelMix.filter((item) => item.fuelType.toLowerCase() !== 'solar');
+  const totalMW = row.totalMW + solarHalfHourlyMwhTotal;
+  const next = {
+    ...row,
+    totalMW,
+    fuelMix: [
+      ...fuelMix,
+      {
+        fuelType: 'Solar',
+        mw: solarHalfHourlyMwhTotal,
+        percentage: 0,
+        color: '#F7B633',
+      },
+    ],
+    solarMatched: true,
+    solarMatchedPeriods: periodsFor(row),
+  };
+
+  next.fuelMix = next.fuelMix.map((item) => ({
+    ...item,
+    percentage: totalMW > 0 ? Math.round((item.mw / totalMW) * 100) : 0,
+  }));
+
+  return next;
+};
 
 const feed = await fetchHistoricalGeneration('7d');
 const feedRows = feed.data || [];
-const rows = feedRows.filter((row) => periodsFor(row) >= 46);
+const rows = await Promise.all(feedRows.filter((row) => periodsFor(row) >= 46).map(withSolarBackfill));
 if (rows.length < 2) throw new Error('Need at least 2 complete days of historical data');
 
 const start = rows[0].settlementDate;
