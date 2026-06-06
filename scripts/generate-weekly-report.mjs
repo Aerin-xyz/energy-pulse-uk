@@ -80,7 +80,11 @@ const highestRenewable = rows.map((row) => ({ row, value: renewableShare(row) })
 const highestWind = rows.map((row) => ({ row, value: fuel(row, 'Wind').mw })).sort((a, b) => b.value - a.value)[0];
 const highestSolar = rows.map((row) => ({ row, value: fuel(row, 'Solar').mw })).sort((a, b) => b.value - a.value)[0];
 const highestGas = rows.map((row) => ({ row, value: fuel(row, 'Gas').mw })).sort((a, b) => b.value - a.value)[0];
+const lowestGas = rows.map((row) => ({ row, value: fuel(row, 'Gas').mw })).sort((a, b) => a.value - b.value)[0];
+const highestGeneration = rows.map((row) => ({ row, value: row.totalMW })).sort((a, b) => b.value - a.value)[0];
 const avgGenerationMw = rows.reduce((sum, row) => sum + averageMw(row, row.totalMW), 0) / rows.length;
+const avgRenewableShare = rows.reduce((sum, row) => sum + renewableShare(row), 0) / rows.length;
+const avgGasMw = rows.reduce((sum, row) => sum + averageMw(row, fuel(row, 'Gas').mw), 0) / rows.length;
 const yesterday = rows[rows.length - 1];
 const yRenew = renewableShare(yesterday);
 const yesterdayAverageMw = averageMw(yesterday, yesterday.totalMW);
@@ -105,15 +109,45 @@ const report = {
   title: `UK Electricity Mix Weekly Report: ${fmtDate(reportDate)}`,
   period: `${fmtDate(start)} to ${fmtDate(end)}`,
   intro: `A measured weekly report for EnergyMix.info using the available 7-day historical generation feed for ${fmtDate(start)} to ${fmtDate(end)}.`,
-  summary: `The week from ${fmtDate(start)} to ${fmtDate(end)} shifted from gas-heavy weekdays into a cleaner, wind-led weekend. The strongest renewable day in the available data was ${fmtDate(highestRenewable.row.settlementDate)}, when wind, solar and hydro together averaged ${pct(highestRenewable.value)} of measured generation across settlement periods. Gas was highest on ${fmtDate(highestGas.row.settlementDate)} and lowest on ${fmtDate(rows.map((row) => ({ row, value: fuel(row, 'Gas').mw })).sort((a, b) => a.value - b.value)[0].row.settlementDate)}.`,
+  summary: `The week from ${fmtDate(start)} to ${fmtDate(end)} averaged about ${(avgGenerationMw / 1000).toFixed(1)} GW of measured generation, with renewables averaging ${pct(avgRenewableShare)} of measured output. The strongest renewable day in the available data was ${fmtDate(highestRenewable.row.settlementDate)}, when wind, solar and hydro together averaged ${pct(highestRenewable.value)} of measured generation. Gas was highest on ${fmtDate(highestGas.row.settlementDate)} and lowest on ${fmtDate(lowestGas.row.settlementDate)}.`,
   takeaway: 'For flexible electricity use, the cleanest opportunities are likely to appear when wind is strong, gas is low and demand is not at a peak. This is the foundation for future EV-charging guidance, clean-electricity alerts and weekly newsletter summaries.',
   metrics: [
     ['Average measured generation', `~${(avgGenerationMw / 1000).toFixed(1)} GW across available settlement-period aggregates`],
+    ['Average renewable share', pct(avgRenewableShare)],
     ['Highest renewable share', `${pct(highestRenewable.value)} on ${fmtDate(highestRenewable.row.settlementDate)}`],
     ['Highest average wind output', `~${averageGw(highestWind.row, highestWind.value)} on ${fmtDate(highestWind.row.settlementDate)}`],
     ['Highest average solar output', `~${averageGw(highestSolar.row, highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}`],
     ['Highest average gas output', `~${averageGw(highestGas.row, highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}`],
   ],
+  drivers: [
+    `Renewables were strongest on ${fmtDate(highestRenewable.row.settlementDate)}, when wind, solar and hydro averaged ${pct(highestRenewable.value)} of measured generation.`,
+    `Wind was the largest swing factor in the available feed, peaking at about ${averageGw(highestWind.row, highestWind.value)} average output on ${fmtDate(highestWind.row.settlementDate)}.`,
+    `Solar was strongest on ${fmtDate(highestSolar.row.settlementDate)}, averaging about ${averageGw(highestSolar.row, highestSolar.value)} across settlement periods after embedded-solar backfill where needed.`,
+    `Gas averaged about ${(avgGasMw / 1000).toFixed(1)} GW across the period, rising highest on ${fmtDate(highestGas.row.settlementDate)} and falling lowest on ${fmtDate(lowestGas.row.settlementDate)}.`,
+    `Measured generation was highest on ${fmtDate(highestGeneration.row.settlementDate)}, at roughly ${averageGw(highestGeneration.row, highestGeneration.value)} average output.`,
+  ],
+  cleanestPeriods: [
+    {
+      title: `Best low-carbon proxy: ${fmtDate(highestRenewable.row.settlementDate)}`,
+      body: `Historical carbon-intensity aggregates are not yet part of this weekly report feed, so EnergyMix.info uses renewable share and gas output as cautious proxies. ${fmtDate(highestRenewable.row.settlementDate)} had the strongest renewable share at ${pct(highestRenewable.value)}.`,
+    },
+    {
+      title: `Lowest gas proxy: ${fmtDate(lowestGas.row.settlementDate)}`,
+      body: `Gas generation averaged about ${averageGw(lowestGas.row, lowestGas.value)} on ${fmtDate(lowestGas.row.settlementDate)}. Lower gas periods are often cleaner, but the report does not yet claim this was the lowest-carbon period without historical carbon-intensity validation.`,
+    },
+  ],
+  higherCarbonPeriods: [
+    {
+      title: `Highest gas proxy: ${fmtDate(highestGas.row.settlementDate)}`,
+      body: `Gas averaged about ${averageGw(highestGas.row, highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}. Gas-heavy periods are usually higher-carbon, but this is labelled as a proxy until historical carbon-intensity highs/lows are added to the report feed.`,
+    },
+  ],
+  highlights: [
+    { label: 'Wind', value: `Highest average wind output was about ${averageGw(highestWind.row, highestWind.value)} on ${fmtDate(highestWind.row.settlementDate)}.` },
+    { label: 'Solar', value: `Highest average solar output was about ${averageGw(highestSolar.row, highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}.` },
+    { label: 'Gas', value: `Highest average gas output was about ${averageGw(highestGas.row, highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}; lowest was about ${averageGw(lowestGas.row, lowestGas.value)} on ${fmtDate(lowestGas.row.settlementDate)}.` },
+  ],
+  methodologyNote: 'This report is generated from the available 7-day historical generation feed and validated against external public data. Carbon-intensity highs/lows and interconnector summaries should be treated as future additions unless they are present as validated historical aggregates.',
 };
 
 const generated = {
