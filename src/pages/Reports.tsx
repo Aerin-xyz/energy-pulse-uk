@@ -8,11 +8,11 @@ const latestReport = generated.reports[0];
 export const ReportsIndex = () => (
   <>
     <Helmet>
-      <title>UK Electricity Mix Reports | Weekly Grid Data Briefings</title>
-      <meta name="description" content="Weekly and daily UK electricity mix reports from EnergyMix.info: renewables, gas, wind, solar, demand, carbon intensity and clean electricity windows." />
+      <title>UK Electricity Mix Reports: Daily and Weekly Grid Summaries</title>
+      <meta name="description" content="Read daily and weekly summaries of Britain’s electricity mix, renewable share, gas generation, demand and carbon intensity." />
       <link rel="canonical" href="https://energymix.info/reports/" />
-      <meta property="og:title" content="Energy Mix Reports" />
-      <meta property="og:description" content="Weekly UK electricity mix briefings and grid intelligence from EnergyMix.info." />
+      <meta property="og:title" content="UK Electricity Mix Reports" />
+      <meta property="og:description" content="Read daily and weekly summaries of Britain’s electricity mix, renewable share, gas generation, demand and carbon intensity." />
       <meta property="og:url" content="https://energymix.info/reports/" />
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
       <meta name="robots" content="index, follow" />

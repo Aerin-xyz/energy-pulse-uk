@@ -25,11 +25,11 @@ const Today = () => {
   return (
     <>
       <Helmet>
-        <title>UK Electricity Mix Today | Live GB Generation & Carbon Intensity</title>
-        <meta name="description" content="UK electricity mix today: live Great Britain generation, demand, renewable share, gas output, wind, solar, carbon intensity and source freshness." />
+        <title>UK Electricity Mix Today | Live Generation and Carbon Intensity</title>
+        <meta name="description" content="Today’s live GB electricity mix, renewable share, gas, demand and carbon intensity, explained in plain English." />
         <link rel="canonical" href="https://energymix.info/today/" />
         <meta property="og:title" content="UK Electricity Mix Today" />
-        <meta property="og:description" content="Live daily summary of Britain’s electricity mix, demand, renewables, gas, wind, solar and carbon intensity." />
+        <meta property="og:description" content="Today’s live GB electricity mix, renewable share, gas, demand and carbon intensity, explained in plain English." />
         <meta property="og:url" content="https://energymix.info/today/" />
         <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
         <meta name="robots" content="index, follow" />
@@ -83,9 +83,11 @@ const Today = () => {
           <h2 className="text-2xl font-semibold text-primary mb-3">Related pages</h2>
           <div className="grid md:grid-cols-2 gap-3">
             <Link to="/" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Live dashboard</Link>
+            <Link to="/uk-electricity-mix" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">UK electricity mix explained</Link>
             <Link to="/reports" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Reports archive</Link>
             <Link to="/yesterday" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Yesterday’s settled summary</Link>
             <Link to="/carbon-intensity" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Carbon intensity</Link>
+            <Link to="/data" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Electricity data sources</Link>
             <Link to="/cleanest-time-to-use-electricity" className="rounded-md border border-primary/20 p-3 text-cosmic-cyan hover:bg-primary/10">Cleanest time to use electricity</Link>
           </div>
         </section>

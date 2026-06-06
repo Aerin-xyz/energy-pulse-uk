@@ -5,12 +5,22 @@ import { Button } from '@/components/ui/button';
 import { Helmet } from 'react-helmet-async';
 import { useEffect } from 'react';
 import '../styles/mailerlite-overrides.css';
+import generated from '@/data/energyMixGenerated.json';
+
+const latestReport = generated.reports[0];
+type MailerLiteQuery = (selector: string) => { show: () => void; hide: () => void };
+type MailerLiteWindow = Window & {
+  ml_webform_success_32802782?: () => void;
+  ml_jQuery?: MailerLiteQuery;
+  jQuery?: MailerLiteQuery;
+};
 
 const Newsletter = () => {
   useEffect(() => {
+    const mailerLiteWindow = window as MailerLiteWindow;
     // MailerLite success handler
-    (window as any).ml_webform_success_32802782 = function() {
-      const $ = (window as any).ml_jQuery || (window as any).jQuery;
+    mailerLiteWindow.ml_webform_success_32802782 = function() {
+      const $ = mailerLiteWindow.ml_jQuery || mailerLiteWindow.jQuery;
       if ($) {
         $('.ml-subscribe-form-32802782 .row-success').show();
         $('.ml-subscribe-form-32802782 .row-form').hide();
@@ -24,19 +34,19 @@ const Newsletter = () => {
   return (
     <>
       <Helmet>
-        <title>Energy Mix Newsletter | Weekly UK Electricity & Carbon Insights</title>
-        <meta name="description" content="Get a weekly summary of Britain’s electricity mix, renewables, gas, carbon intensity, records and grid trends." />
+        <title>Weekly UK Electricity Mix Newsletter | EnergyMix.info</title>
+        <meta name="description" content="A short weekly brief on Britain’s electricity mix: renewables, gas, carbon intensity, records and the cleanest times to use power." />
         <link rel="canonical" href="https://energymix.info/newsletter/" />
-        <meta property="og:title" content="Energy Mix Newsletter" />
-        <meta property="og:description" content="Weekly data snapshots from the UK Energy Mix dashboard." />
+        <meta property="og:title" content="Weekly UK Electricity Mix Newsletter | EnergyMix.info" />
+        <meta property="og:description" content="A short weekly brief on Britain’s electricity mix: renewables, gas, carbon intensity, records and the cleanest times to use power." />
         <meta property="og:url" content="https://energymix.info/newsletter/" />
         <meta property="og:image" content="https://energymix.info/og-newsletter.jpg" />
         <meta property="og:site_name" content="Energy Mix" />
         <meta property="og:locale" content="en_GB" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Energy Mix Newsletter" />
-        <meta name="twitter:description" content="Weekly data snapshots from the UK Energy Mix dashboard." />
+        <meta name="twitter:title" content="Weekly UK Electricity Mix Newsletter | EnergyMix.info" />
+        <meta name="twitter:description" content="A short weekly brief on Britain’s electricity mix: renewables, gas, carbon intensity, records and the cleanest times to use power." />
         <meta name="twitter:image" content="https://energymix.info/og-newsletter.jpg" />
         <meta name="author" content="Energy Mix" />
         <meta name="robots" content="index, follow" />
@@ -84,35 +94,39 @@ const Newsletter = () => {
 
         {/* Main Content */}
         <main className="container mx-auto px-4 py-16 relative z-10">
-          <div className="max-w-2xl mx-auto">
+          <div className="max-w-4xl mx-auto">
             <div className="text-center mb-12">
               <Mail className="w-16 h-16 mx-auto mb-6 text-primary" />
-              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-glow">Get Weekly Energy Mix Updates</h1>
-              <p className="text-lg text-foreground/80 leading-relaxed">
-                Stay informed with a short, data-driven summary every week — tracking how the UK's energy mix changes over time. Each newsletter is drawn directly from <Link to="/" className="text-cosmic-cyan hover:underline">our live dashboard</Link> and includes <Link to="/insights" className="text-cosmic-cyan hover:underline">detailed insights</Link>.
+              <h1 className="text-4xl md:text-5xl font-bold mb-6 text-glow">Weekly UK Electricity Mix Newsletter</h1>
+              <p className="text-lg text-foreground/80 leading-relaxed max-w-3xl mx-auto">
+                A short weekly brief on Britain’s electricity mix: renewables, gas, wind, solar, carbon intensity, demand, records and the cleanest periods to use power. It is drawn from the <Link to="/" className="text-cosmic-cyan hover:underline">live dashboard</Link>, <Link to="/reports" className="text-cosmic-cyan hover:underline">weekly reports</Link> and transparent <Link to="/data" className="text-cosmic-cyan hover:underline">data sources</Link>.
               </p>
             </div>
 
             <div className="glass-morphism rounded-lg p-8 mb-8">
-              <h2 className="text-xl font-semibold mb-4 text-primary">What You'll Receive</h2>
+              <h2 className="text-xl font-semibold mb-4 text-primary">What you’ll get each week</h2>
               <ul className="space-y-3 text-foreground/80">
                 <li className="flex items-start gap-3">
                   <span className="text-primary font-bold">•</span>
-                  <span>Top three movements in generation and demand</span>
+                  <span>Renewable share, low-carbon context and the biggest changes in the electricity mix</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-primary font-bold">•</span>
-                  <span>Snapshot of carbon intensity and renewables</span>
+                  <span>Gas generation, demand, wind and solar highlights</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="text-primary font-bold">•</span>
-                  <span>Insight links back to the live dashboard</span>
+                  <span>Carbon-intensity highs and lows, plus cleaner electricity windows where the data supports them</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <span className="text-primary font-bold">•</span>
+                  <span>Links to the live UK electricity mix, methodology notes and the latest weekly report</span>
                 </li>
               </ul>
             </div>
 
             <div className="glass-morphism rounded-lg p-8">
-              <h2 className="text-xl font-semibold mb-4 text-primary">Join the List</h2>
+              <h2 className="text-xl font-semibold mb-4 text-primary">Get the weekly UK electricity mix brief</h2>
               
               {/* MailerLite Form */}
               <div id="mlb2-32802782" className="ml-form-embedContainer ml-subscribe-form ml-subscribe-form-32802782">
@@ -173,8 +187,34 @@ const Newsletter = () => {
               </div>
 
               <p className="text-sm text-muted-foreground mt-6 text-center">
-                We respect your privacy. No spam — just clear, actionable energy data.
+                Weekly when there is something useful to say. Unsubscribe any time. No spam — just clear, source-backed electricity data.
               </p>
+            </div>
+
+            <div className="glass-morphism rounded-lg p-8 mt-8">
+              <h2 className="text-xl font-semibold mb-4 text-primary">Sample issue</h2>
+              <div className="space-y-4 text-foreground/80 leading-relaxed">
+                <p className="text-sm uppercase tracking-[0.18em] text-primary/70">From the latest weekly report</p>
+                <h3 className="text-2xl font-semibold text-cosmic-cyan">{latestReport.title}</h3>
+                <p>{latestReport.summary}</p>
+                <ul className="space-y-2 list-disc pl-5">
+                  {latestReport.metrics.slice(0, 4).map(([label, value]) => (
+                    <li key={label}><strong>{label}:</strong> {value}</li>
+                  ))}
+                </ul>
+                <p>{latestReport.takeaway}</p>
+                <Link to={latestReport.slug} className="inline-flex rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Read the latest weekly report first</Link>
+              </div>
+            </div>
+
+            <div className="glass-morphism rounded-lg p-8 mt-8">
+              <h2 className="text-xl font-semibold mb-4 text-primary">Who it’s for</h2>
+              <div className="grid md:grid-cols-2 gap-3 text-foreground/80">
+                <p className="rounded-md border border-primary/20 p-3">Energy-curious readers who want the grid explained plainly.</p>
+                <p className="rounded-md border border-primary/20 p-3">EV, home-energy and battery users watching cleaner periods.</p>
+                <p className="rounded-md border border-primary/20 p-3">Sustainability teams who need readable grid context.</p>
+                <p className="rounded-md border border-primary/20 p-3">Journalists, educators and analysts looking for source-backed summaries.</p>
+              </div>
             </div>
             
           </div>

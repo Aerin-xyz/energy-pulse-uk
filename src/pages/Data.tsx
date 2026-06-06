@@ -33,22 +33,55 @@ const Data = () => {
     }
   ];
 
+  const dataAreas = [
+    {
+      area: 'Generation by fuel',
+      source: 'Elexon BMRS/FUELINST and related public GB electricity feeds',
+      usedFor: 'Live electricity mix, wind, gas, nuclear, hydro, biomass and other visible generation categories',
+      limitation: 'Transmission and settlement feeds can lag, revise and treat embedded generation differently from other dashboards',
+    },
+    {
+      area: 'Demand',
+      source: 'NESO/Elexon public demand data where available',
+      usedFor: 'Current GB demand context and daily/weekly summaries',
+      limitation: 'Demand definitions can differ from total generation because imports, exports, storage and embedded sources are handled differently',
+    },
+    {
+      area: 'Carbon intensity',
+      source: 'Carbon Intensity API',
+      usedFor: 'National, regional and postcode carbon-intensity estimates and forecasts',
+      limitation: 'Carbon intensity is an estimate and forecast, not a physical meter reading for each unit of electricity',
+    },
+    {
+      area: 'Solar',
+      source: 'Embedded solar estimates including Sheffield Solar PV Live and NESO demand data where needed',
+      usedFor: 'Solar generation context, daily summaries and validation backfill',
+      limitation: 'Much UK solar is embedded/distribution-connected, so it is often estimated rather than directly visible in transmission generation feeds',
+    },
+    {
+      area: 'Interconnectors',
+      source: 'ENTSO-E, BMRS-derived and related public flow data',
+      usedFor: 'Import/export context and neighbouring-system signals',
+      limitation: 'Flow conventions, sign direction and carbon impact can vary by source and market context',
+    },
+  ];
+
   return (
     <>
       <Helmet>
-        <title>Energy Mix Data Sources & Methodology | Elexon, NESO, Carbon Intensity</title>
-        <meta name="description" content="How EnergyMix.info collects, cleans and displays UK/GB electricity data from public grid, balancing and carbon-intensity sources." />
+        <title>UK Electricity Data Sources: Elexon, NESO, Carbon Intensity & PV Live</title>
+        <meta name="description" content="How EnergyMix.info combines public electricity data sources to explain Britain’s live power mix, carbon intensity, solar estimates and grid trends." />
         <link rel="canonical" href="https://energymix.info/data/" />
-        <meta property="og:title" content="UK Energy Mix Data Sources" />
-        <meta property="og:description" content="Live datasets powering the UK Energy Mix dashboard — Elexon BMRS and National Grid ESO." />
+        <meta property="og:title" content="UK Electricity Data Sources" />
+        <meta property="og:description" content="How EnergyMix.info combines public electricity data sources to explain Britain’s live power mix, carbon intensity, solar estimates and grid trends." />
         <meta property="og:url" content="https://energymix.info/data/" />
         <meta property="og:image" content="https://energymix.info/og-data.jpg" />
         <meta property="og:site_name" content="Energy Mix" />
         <meta property="og:locale" content="en_GB" />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="UK Energy Mix Data Sources" />
-        <meta name="twitter:description" content="Live datasets powering the UK Energy Mix dashboard — Elexon BMRS and National Grid ESO." />
+        <meta name="twitter:title" content="UK Electricity Data Sources" />
+        <meta name="twitter:description" content="How EnergyMix.info combines public electricity data sources to explain Britain’s live power mix, carbon intensity, solar estimates and grid trends." />
         <meta name="twitter:image" content="https://energymix.info/og-data.jpg" />
         <meta name="author" content="Energy Mix" />
         <meta name="robots" content="index, follow" />
@@ -103,7 +136,7 @@ const Data = () => {
                 "name": "How often is Energy Mix data updated?",
                 "acceptedAnswer": {
                   "@type": "Answer",
-                  "text": "Energy Mix uses a multi-tier refresh system: high-frequency dashboard refreshes every 2 minutes using Elexon FUELINST's 5-minute generation feed, mid-frequency refreshes every 5 minutes for interconnectors and European generation mix, and full refreshes every 10 minutes for complete data including demand, embedded sources and carbon intensity forecasts."
+                  "text": "Energy Mix uses a multi-tier refresh system. Fast-changing generation is refreshed more often, while settlement-period, demand, interconnector and carbon-intensity sources update on their own upstream cadence."
                 }
               },
               {
@@ -140,12 +173,46 @@ const Data = () => {
         {/* Main Content */}
         <main className="container mx-auto px-4 py-16 relative z-10">
           <article className="max-w-4xl mx-auto">
-            <h1 className="text-4xl md:text-5xl font-bold mb-8 text-glow">Data Sources & Methodology</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-8 text-glow">UK Electricity Data Sources</h1>
             
             <div className="glass-morphism rounded-lg p-8 mb-8 leading-relaxed">
               <p className="text-lg text-foreground/90">
-                Energy Mix connects directly to open national datasets that track the UK's power system in real time. Learn more <Link to="/about" className="text-cosmic-cyan hover:underline">about our mission</Link> or <Link to="/insights" className="text-cosmic-cyan hover:underline">read weekly insights</Link> drawn from this data.
+                EnergyMix.info combines public electricity and carbon-intensity data sources to explain Britain’s live power mix in plain English. This page sets out what each source is used for, why figures can differ between dashboards, and where the important limitations are.
               </p>
+              <div className="mt-5 flex flex-wrap gap-3">
+                <Link to="/" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Live UK electricity mix</Link>
+                <Link to="/uk-electricity-mix" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">How the mix is calculated</Link>
+                <Link to="/reports" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Weekly electricity reports</Link>
+              </div>
+            </div>
+
+            <div className="glass-morphism rounded-lg p-8 mb-8">
+              <h2 className="text-2xl font-semibold mb-4 text-primary">At a glance</h2>
+              <p className="text-foreground/80 leading-relaxed mb-5">
+                The dashboard blends fast live feeds with slower settlement-period and forecast sources. The goal is useful public grid context, not billing-grade metering or an official system-operator publication.
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-primary/20">
+                      <th className="py-3 pr-4 text-foreground">Data area</th>
+                      <th className="py-3 pr-4 text-foreground">Source</th>
+                      <th className="py-3 pr-4 text-foreground">Used for</th>
+                      <th className="py-3 text-foreground">Limitation</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-primary/15">
+                    {dataAreas.map((item) => (
+                      <tr key={item.area}>
+                        <th className="py-3 pr-4 align-top font-semibold">{item.area}</th>
+                        <td className="py-3 pr-4 align-top text-foreground/75">{item.source}</td>
+                        <td className="py-3 pr-4 align-top text-foreground/75">{item.usedFor}</td>
+                        <td className="py-3 align-top text-foreground/75">{item.limitation}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <div className="glass-morphism rounded-lg p-8 mb-8">
@@ -167,6 +234,34 @@ const Data = () => {
                     <p className="text-foreground/70">{source.description}</p>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            <div className="glass-morphism rounded-lg p-8 mb-8">
+              <h2 className="text-2xl font-semibold mb-4 text-primary">Why numbers differ between dashboards</h2>
+              <div className="space-y-4 text-foreground/80 leading-relaxed">
+                <p>
+                  Electricity dashboards can be correct while showing different numbers. The usual reasons are coverage, timing and category treatment rather than one site being “right” and another being “wrong”.
+                </p>
+                <ul className="space-y-2 list-disc pl-5">
+                  <li><strong>GB vs UK coverage:</strong> many live feeds cover Great Britain, while Northern Ireland uses a separate electricity market.</li>
+                  <li><strong>Embedded generation:</strong> solar and some wind can sit outside transmission-connected generation feeds and may need estimates.</li>
+                  <li><strong>Settlement timing:</strong> some values update around 30-minute settlement periods while others refresh more frequently.</li>
+                  <li><strong>Imports, exports and storage:</strong> dashboards may show these separately, net them out, or include them in different totals.</li>
+                  <li><strong>Rounding and revisions:</strong> public data can lag or be revised after the first live publication.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div className="glass-morphism rounded-lg p-8 mb-8">
+              <h2 className="text-2xl font-semibold mb-4 text-primary">Renewables and low-carbon definitions</h2>
+              <div className="space-y-4 text-foreground/80 leading-relaxed">
+                <p>
+                  Renewable electricity usually means wind, solar, hydro and sometimes biomass depending on the accounting convention. Low-carbon electricity is broader because it normally includes nuclear as well.
+                </p>
+                <p>
+                  EnergyMix.info keeps these ideas separate where possible. Renewable share helps explain weather-led generation, while low-carbon share and carbon intensity help explain the emissions context.
+                </p>
               </div>
             </div>
 
@@ -306,17 +401,23 @@ const Data = () => {
             <div className="glass-morphism rounded-lg p-6 mt-8">
               <h2 className="text-lg font-semibold mb-4 text-primary">Related Pages</h2>
               <div className="flex flex-wrap gap-4">
-                <Link to="/about">
-                  <Button variant="outline" size="sm">About Energy Mix</Button>
+                <Link to="/">
+                  <Button variant="outline" size="sm">Live Dashboard</Button>
                 </Link>
-                <Link to="/insights">
-                  <Button variant="outline" size="sm">View Insights</Button>
+                <Link to="/uk-electricity-mix">
+                  <Button variant="outline" size="sm">UK Electricity Mix</Button>
+                </Link>
+                <Link to="/carbon-intensity">
+                  <Button variant="outline" size="sm">Carbon Intensity</Button>
+                </Link>
+                <Link to="/today">
+                  <Button variant="outline" size="sm">Today’s Mix</Button>
+                </Link>
+                <Link to="/reports">
+                  <Button variant="outline" size="sm">Reports</Button>
                 </Link>
                 <Link to="/newsletter">
-                  <Button variant="outline" size="sm">Subscribe to Newsletter</Button>
-                </Link>
-                <Link to="/glossary">
-                  <Button variant="outline" size="sm">Glossary</Button>
+                  <Button variant="outline" size="sm">Weekly Newsletter</Button>
                 </Link>
                 <Link to="/partners">
                   <Button variant="outline" size="sm">Widgets & Data</Button>

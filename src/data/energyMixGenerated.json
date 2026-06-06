@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-06T16:01:47.801Z",
+  "generatedAt": "2026-06-06T20:43:37.935Z",
   "reports": [
     {
       "slug": "/reports/weekly/2026-06-06",
@@ -38,15 +38,15 @@
     "slug": "/yesterday",
     "date": "2026-06-05",
     "title": "UK Electricity Mix Yesterday: Friday 5 June",
-    "summary": "Yesterday, Friday 5 June, measured average generation was about 23.2 GW. Renewables averaged 52.9% of measured generation, gas averaged 5.7 GW, wind averaged 7.8 GW and solar averaged 3.7 GW.",
+    "summary": "Yesterday, Friday 5 June, measured average generation was about 23.1 GW. Renewables averaged 52.7% of measured generation, gas averaged 5.7 GW, wind averaged 7.8 GW and solar averaged 3.7 GW.",
     "metrics": [
       [
         "Average measured generation",
-        "~23.2 GW"
+        "~23.1 GW"
       ],
       [
         "Average renewable share",
-        "52.9%"
+        "52.7%"
       ],
       [
         "Average wind output",

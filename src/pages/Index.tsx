@@ -1,18 +1,19 @@
 import { EnergyDashboard } from '@/components/EnergyDashboard';
 import { StaticGridSnapshot } from '@/components/StaticGridSnapshot';
 import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 
 const Index = () => {
   return (
     <>
       <Helmet>
-        <title>EnergyMix.info | UK Electricity Dashboard</title>
-        <meta name="description" content="Live Great Britain electricity mix: demand, generation, renewables, gas, nuclear, imports and carbon intensity, updated from public grid data." />
+        <title>UK Electricity Mix Live | EnergyMix.info</title>
+        <meta name="description" content="See Britain’s live electricity mix, demand, renewables, gas, imports, storage and carbon intensity in one plain-English dashboard." />
         <link rel="canonical" href="https://energymix.info/" />
         
         {/* Open Graph */}
-        <meta property="og:title" content="EnergyMix.info | UK Electricity Dashboard" />
-        <meta property="og:description" content="Live Great Britain electricity mix, demand, renewables, gas, nuclear, imports and carbon intensity." />
+        <meta property="og:title" content="UK Electricity Mix Live | EnergyMix.info" />
+        <meta property="og:description" content="See Britain’s live electricity mix, demand, renewables, gas, imports, storage and carbon intensity in one plain-English dashboard." />
         <meta property="og:url" content="https://energymix.info/" />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="https://energymix.info/og-default.jpg" />
@@ -21,8 +22,8 @@ const Index = () => {
         
         {/* Twitter Card */}
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="EnergyMix.info | UK Electricity Dashboard" />
-        <meta name="twitter:description" content="Live Great Britain electricity mix, demand, renewables, gas, nuclear, imports and carbon intensity." />
+        <meta name="twitter:title" content="UK Electricity Mix Live | EnergyMix.info" />
+        <meta name="twitter:description" content="See Britain’s live electricity mix, demand, renewables, gas, imports, storage and carbon intensity in one plain-English dashboard." />
         <meta name="twitter:image" content="https://energymix.info/og-default.jpg" />
         
         {/* Additional SEO */}
@@ -67,6 +68,13 @@ const Index = () => {
                 <p>
                   The dashboard updates from public electricity and carbon-intensity data sources and explains how clean the grid is now, what changed today, and what it means for homes, EV charging and businesses.
                 </p>
+              </div>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link to="/today" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Today’s electricity mix</Link>
+                <Link to="/uk-electricity-mix" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">What the mix means</Link>
+                <Link to="/carbon-intensity" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">UK carbon intensity</Link>
+                <Link to="/reports" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Weekly reports</Link>
+                <Link to="/newsletter" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Newsletter</Link>
               </div>
             </div>
           </section>
