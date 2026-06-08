@@ -1,6 +1,6 @@
 {
   "status": "passed",
-  "generatedAt": "2026-06-08T10:59:58.654Z",
+  "generatedAt": "2026-06-08T11:30:36.304Z",
   "date": "2026-06-07",
   "generated": {
     "date": "2026-06-07",
@@ -45,17 +45,17 @@
       },
       "periodCount": 48,
       "averagesMw": {
-        "generationWithImports": 28571.75,
+        "generationWithImports": 28838.479166666668,
         "gas": 4072,
         "wind": 10524.104166666666,
         "embeddedWind": 2946.75,
-        "solar": 2785.0625,
+        "solar": 3051.7916666666665,
         "hydro": 184.9375,
         "nuclear": 2850.9583333333335,
         "biomass": 978.9375,
         "imports": 3563.25,
-        "renewableIncludingEmbeddedWind": 16509.729166666668,
-        "carbonIntensity": 114.1875
+        "renewableIncludingEmbeddedWind": 16776.458333333332,
+        "carbonIntensity": 113.45833333333333
       }
     },
     "nesoDemandUpdate": {
@@ -200,10 +200,10 @@
       "status": "pass",
       "source": "NESO Historic GB Generation Mix",
       "actual": 3052.12,
-      "expected": 2785.06,
+      "expected": 3051.79,
       "unit": "MW",
-      "delta": 267.06,
-      "deltaPercent": 9.59,
+      "delta": 0.33,
+      "deltaPercent": 0.01,
       "tolerance": {
         "maxAbsDelta": 500,
         "maxPctDelta": 15
