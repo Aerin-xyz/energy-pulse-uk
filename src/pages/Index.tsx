@@ -1,5 +1,6 @@
 import { EnergyDashboard } from '@/components/EnergyDashboard';
 import { StaticGridSnapshot } from '@/components/StaticGridSnapshot';
+import { NewsletterCta } from '@/components/NewsletterCta';
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 
@@ -76,6 +77,12 @@ const Index = () => {
                 <Link to="/reports" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Weekly reports</Link>
                 <Link to="/newsletter" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Newsletter</Link>
               </div>
+            </div>
+            <div className="max-w-4xl">
+              <NewsletterCta
+                label="homepage_below_dashboard"
+                body="Get the useful weekly version of this dashboard: what changed, what drove it, and when the grid was cleaner."
+              />
             </div>
           </section>
         )}

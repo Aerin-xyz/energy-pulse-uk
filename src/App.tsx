@@ -16,6 +16,7 @@ import Contact from "./pages/Contact";
 import Privacy from "./pages/Privacy";
 import Citation from "./pages/Citation";
 import { UkElectricityMix, CarbonIntensity, Renewables, GasGeneration, NuclearPower, Interconnectors, ElectricityDemand, UkElectricityGenerationLive, CleanestTimeToUseElectricity } from "./pages/CoreExplainers";
+import { UkWindPowerToday, UkSolarPowerToday, GasShareOfElectricity, RenewablesShareToday, CarbonIntensityToday } from "./pages/GridInsightPages";
 import Today from "./pages/Today";
 import Yesterday from "./pages/Yesterday";
 import PowerFlow from "./pages/PowerFlow";
@@ -61,6 +62,11 @@ const App = () => (
             <Route path="/electricity-demand" element={<ElectricityDemand />} />
             <Route path="/uk-electricity-generation-live" element={<UkElectricityGenerationLive />} />
             <Route path="/cleanest-time-to-use-electricity" element={<CleanestTimeToUseElectricity />} />
+            <Route path="/uk-wind-power-today" element={<UkWindPowerToday />} />
+            <Route path="/uk-solar-power-today" element={<UkSolarPowerToday />} />
+            <Route path="/gas-share-of-electricity" element={<GasShareOfElectricity />} />
+            <Route path="/renewables-share-today" element={<RenewablesShareToday />} />
+            <Route path="/carbon-intensity-today" element={<CarbonIntensityToday />} />
             <Route path="/today" element={<Today />} />
             <Route path="/yesterday" element={<Yesterday />} />
             <Route path="/power-flow" element={<PowerFlow />} />

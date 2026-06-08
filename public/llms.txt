@@ -48,3 +48,18 @@ High-intent static answer pages:
 - https://energymix.info/uk-electricity-imports-exports
 - https://energymix.info/glossary/
 - https://energymix.info/partners/
+
+Public routed explainers:
+- https://energymix.info/carbon-intensity/
+- https://energymix.info/renewables/
+- https://energymix.info/cleanest-time-to-use-electricity/
+- https://energymix.info/gas-generation/
+- https://energymix.info/nuclear-power/
+- https://energymix.info/interconnectors/
+- https://energymix.info/electricity-demand/
+- https://energymix.info/uk-electricity-generation-live/
+- https://energymix.info/uk-wind-power-today/
+- https://energymix.info/uk-solar-power-today/
+- https://energymix.info/gas-share-of-electricity/
+- https://energymix.info/renewables-share-today/
+- https://energymix.info/carbon-intensity-today/

@@ -13,6 +13,7 @@ type MailerLiteWindow = Window & {
   ml_webform_success_32802782?: () => void;
   ml_jQuery?: MailerLiteQuery;
   jQuery?: MailerLiteQuery;
+  dataLayer?: unknown[];
 };
 
 const Newsletter = () => {
@@ -20,6 +21,8 @@ const Newsletter = () => {
     const mailerLiteWindow = window as MailerLiteWindow;
     // MailerLite success handler
     mailerLiteWindow.ml_webform_success_32802782 = function() {
+      mailerLiteWindow.dataLayer = mailerLiteWindow.dataLayer || [];
+      mailerLiteWindow.dataLayer.push({ event: 'newsletter_signup_success', event_label: 'mailerlite_newsletter_page' });
       const $ = mailerLiteWindow.ml_jQuery || mailerLiteWindow.jQuery;
       if ($) {
         $('.ml-subscribe-form-32802782 .row-success').show();
@@ -138,7 +141,17 @@ const Newsletter = () => {
                         <p>Signup for news and special offers!</p>
                       </div>
 
-                      <form className="ml-block-form" action="https://assets.mailerlite.com/jsonp/343200/forms/169882898276550620/subscribe" data-code="" method="post" target="_blank">
+                      <form
+                        className="ml-block-form"
+                        action="https://assets.mailerlite.com/jsonp/343200/forms/169882898276550620/subscribe"
+                        data-code=""
+                        method="post"
+                        target="_blank"
+                        onSubmit={() => {
+                          window.dataLayer = window.dataLayer || [];
+                          window.dataLayer.push({ event: 'newsletter_signup_submit', event_label: 'mailerlite_newsletter_page' });
+                        }}
+                      >
                         <div className="ml-form-formContent horozintalForm">
                           <div className="ml-form-horizontalRow">
                             <div className="ml-input-horizontal">

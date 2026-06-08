@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import { Link, useParams } from 'react-router-dom';
 import { StaticPageLayout } from '@/components/StaticPageLayout';
+import { NewsletterCta } from '@/components/NewsletterCta';
 import generated from '@/data/energyMixGenerated.json';
 
 const latestReport = generated.reports[0];
@@ -24,6 +25,13 @@ export const ReportsIndex = () => (
       <meta property="og:description" content="Read daily and weekly summaries of Britain’s electricity mix, renewable share, gas generation, demand and carbon intensity." />
       <meta property="og:url" content="https://energymix.info/reports/" />
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
+      <meta property="og:type" content="website" />
+      <meta property="og:site_name" content="EnergyMix.info" />
+      <meta property="og:locale" content="en_GB" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content="UK Electricity Mix Reports" />
+      <meta name="twitter:description" content="Read daily and weekly summaries of Britain’s electricity mix, renewable share, gas generation, demand and carbon intensity." />
+      <meta name="twitter:image" content="https://energymix.info/og-insights.jpg" />
       <meta name="robots" content="index, follow" />
     </Helmet>
 
@@ -43,6 +51,11 @@ export const ReportsIndex = () => (
           <Link to="/data" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Check the data sources</Link>
         </div>
       </section>
+
+      <NewsletterCta
+        label="reports_index_feature"
+        body="Get the weekly report in your inbox, with the cleanest windows, gas and renewables context, and links back to the source data."
+      />
 
       <section>
         <h2 className="text-2xl font-semibold text-primary mb-3">Latest reports</h2>
@@ -93,17 +106,31 @@ export const WeeklyReportPage = () => {
   const cleanestPeriods = report.cleanestPeriods || [];
   const higherCarbonPeriods = report.higherCarbonPeriods || [];
   const highlights = report.highlights || [];
+  const reportUrl = `https://energymix.info${report.slug}/`;
+  const reportDescription = `${report.summary} ${report.takeaway}`.slice(0, 280);
+  const shareText = `${report.title} - ${report.summary}`;
+  const encodedUrl = encodeURIComponent(reportUrl);
+  const encodedText = encodeURIComponent(shareText);
 
   return (
     <>
       <Helmet>
         <title>{report.title} | EnergyMix.info</title>
-        <meta name="description" content="Weekly EnergyMix.info report for Britain’s electricity mix, renewable share, gas generation, carbon intensity and practical clean-electricity takeaways." />
-        <link rel="canonical" href={`https://energymix.info${report.slug}/`} />
+        <meta name="description" content={reportDescription} />
+        <link rel="canonical" href={reportUrl} />
         <meta property="og:title" content={report.title} />
-        <meta property="og:description" content="A weekly grid intelligence report for Britain’s electricity mix." />
-        <meta property="og:url" content={`https://energymix.info${report.slug}/`} />
+        <meta property="og:description" content={reportDescription} />
+        <meta property="og:url" content={reportUrl} />
         <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
+        <meta property="og:type" content="article" />
+        <meta property="article:published_time" content={report.date} />
+        <meta property="article:modified_time" content={report.date} />
+        <meta property="og:site_name" content="EnergyMix.info" />
+        <meta property="og:locale" content="en_GB" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={report.title} />
+        <meta name="twitter:description" content={reportDescription} />
+        <meta name="twitter:image" content="https://energymix.info/og-insights.jpg" />
         <meta name="robots" content="index, follow" />
         <script type="application/ld+json">
           {JSON.stringify({
@@ -114,8 +141,9 @@ export const WeeklyReportPage = () => {
             dateModified: report.date,
             author: { '@type': 'Organization', name: 'EnergyMix.info' },
             publisher: { '@type': 'Organization', name: 'EnergyMix.info', url: 'https://energymix.info/' },
-            mainEntityOfPage: `https://energymix.info${report.slug}/`,
-            description: 'Weekly report for Britain’s electricity mix, renewables, gas, demand and carbon intensity.',
+            image: 'https://energymix.info/og-insights.jpg',
+            mainEntityOfPage: reportUrl,
+            description: reportDescription,
           })}
         </script>
       </Helmet>
@@ -125,6 +153,10 @@ export const WeeklyReportPage = () => {
           <h2 className="text-2xl font-semibold text-primary mb-3">Summary</h2>
           <p>{report.summary}</p>
           <p className="mt-3">{report.takeaway}</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`} target="_blank" rel="noopener noreferrer" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Share on LinkedIn</a>
+            <a href={`https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`} target="_blank" rel="noopener noreferrer" className="rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Share on X</a>
+          </div>
         </section>
 
         <section>
@@ -191,11 +223,11 @@ export const WeeklyReportPage = () => {
           </section>
         )}
 
-        <section className="rounded-lg border border-primary/20 bg-background/40 p-5">
-          <h2 className="text-2xl font-semibold text-primary mb-3">Get this as a weekly brief</h2>
-          <p>The newsletter turns these reports into a short weekly summary of renewables, gas, carbon intensity, records and cleaner electricity windows.</p>
-          <Link to="/newsletter" className="mt-4 inline-flex rounded-md border border-primary/30 px-4 py-2 text-cosmic-cyan hover:bg-primary/10">Subscribe to the weekly UK electricity mix brief</Link>
-        </section>
+        <NewsletterCta
+          label="weekly_report_body"
+          title="Get this as a weekly brief"
+          body="The newsletter turns reports like this into a short weekly summary of renewables, gas, carbon intensity, records and cleaner electricity windows."
+        />
 
         <section>
           <h2 className="text-2xl font-semibold text-primary mb-3">Data notes</h2>
