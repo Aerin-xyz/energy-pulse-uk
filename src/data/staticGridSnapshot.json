@@ -1,34 +1,34 @@
 {
-  "generatedAt": "2026-06-08T15:39:03.012Z",
+  "generatedAt": "2026-06-08T16:07:34.564Z",
   "timestamp": "2026-06-08T16:00:00.000Z",
   "source": "Elexon FUELINST/BMRS + ESO + PV Live",
   "status": "live",
   "freshnessNote": "dataset-fuelinst-stream@data",
   "metrics": {
-    "demandMW": 21637,
-    "generationMW": 30748,
-    "carbonIntensity": 111,
+    "demandMW": 23057,
+    "generationMW": 32344,
+    "carbonIntensity": 113,
     "carbonIndex": "moderate",
-    "renewableShare": 62.56341875894367,
-    "gasShare": 24.017822297385198,
-    "windMW": 7657,
-    "solarMW": 9475,
-    "gasMW": 7385,
-    "nuclearMW": 2972,
-    "importsMW": 3311,
-    "exportsMW": 902
+    "renewableShare": 59.75760573831314,
+    "gasShare": 28.598812762799902,
+    "windMW": 7687,
+    "solarMW": 9484,
+    "gasMW": 9250,
+    "nuclearMW": 2976,
+    "importsMW": 2596,
+    "exportsMW": 859
   },
   "display": {
-    "demand": "21.6 GW",
-    "generation": "30.7 GW",
-    "carbonIntensity": "111 gCO₂/kWh",
+    "demand": "23.1 GW",
+    "generation": "32.3 GW",
+    "carbonIntensity": "113 gCO₂/kWh",
     "carbonIndex": "moderate",
-    "renewableShare": "63%",
-    "gasShare": "24%",
+    "renewableShare": "60%",
+    "gasShare": "29%",
     "wind": "7.7 GW",
     "solar": "9.5 GW",
-    "gas": "7.4 GW",
+    "gas": "9.3 GW",
     "nuclear": "3.0 GW",
-    "importsExports": "3.3 GW net imports"
+    "importsExports": "2.6 GW net imports"
   }
 }
