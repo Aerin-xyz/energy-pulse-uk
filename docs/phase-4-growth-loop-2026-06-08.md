@@ -32,9 +32,16 @@ Current sitemap record:
 - Warnings: `0`
 - Errors: `0`
 
-Attempted API resubmission on 2026-06-08. It failed with `ACCESS_TOKEN_SCOPE_INSUFFICIENT` for `google.searchconsole.v1.SitemapsService.Submit`. The current token can read Search Console data but cannot submit sitemaps.
+Initial API resubmission on 2026-06-08 failed with `ACCESS_TOKEN_SCOPE_INSUFFICIENT` for `google.searchconsole.v1.SitemapsService.Submit`.
 
-Manual action needed: resubmit `https://energymix.info/sitemap.xml` in the Search Console UI for `sc-domain:energymix.info`.
+OAuth was refreshed later on 2026-06-08 with Search Console write and Tag Manager scopes. Sitemap resubmission then succeeded through the API:
+
+- Submit status: `204`
+- Last submitted: `2026-06-08T15:34:02.325Z`
+- Pending: `true`
+- Last downloaded: not reported by the API
+- Warnings: `0`
+- Errors: `0`
 
 ## URL inspection baseline
 
@@ -85,15 +92,40 @@ No Phase 3 newsletter CTA or signup events are visible yet. That is expected bef
 
 Live site includes GTM container `GTM-K3QJHHTW` and GA4 measurement ID `G-6C946559GE` appears in the public GTM script.
 
-Current token cannot inspect GTM via API because it lacks Tag Manager scopes. Public GTM script inspection did not show the new custom event names:
+Initial token could not inspect GTM via API because it lacked Tag Manager scopes. After OAuth refresh, the GTM container was inspected and only the base Google tag existed:
+
+- `GA4 - Google tag - G-6C946559GE`
+- Trigger: `All Pages - Page View`
+
+GTM changes made and published on 2026-06-08:
+
+- Created custom event triggers:
+  - `Custom Event - virtual_page_view`
+  - `Custom Event - newsletter_cta_click`
+  - `Custom Event - newsletter_signup_submit`
+  - `Custom Event - newsletter_signup_success`
+  - `Custom Event - api_widget_waitlist_click`
+  - `Custom Event - reports_cta_click`
+- Created matching GA4 event tags:
+  - `GA4 Event - virtual_page_view`
+  - `GA4 Event - newsletter_cta_click`
+  - `GA4 Event - newsletter_signup_submit`
+  - `GA4 Event - newsletter_signup_success`
+  - `GA4 Event - api_widget_waitlist_click`
+  - `GA4 Event - reports_cta_click`
+- Created and published GTM container version `3`: `Energy Mix Phase 4 GA4 event tracking`
+- GTM API reported no compiler error.
+
+Live GTM script verification shows the published container now includes:
 
 - `newsletter_cta_click`
 - `newsletter_signup_submit`
 - `newsletter_signup_success`
 - `api_widget_waitlist_click`
 - `virtual_page_view`
+- `reports_cta_click`
 
-Action needed: refresh OAuth with GTM scopes or check the GTM UI. Confirm whether GTM maps these `dataLayer` events to GA4 events. If not, add GTM triggers/tags for them rather than adding direct GA credentials in code.
+Follow-up: check GA4 Realtime/DebugView after a real visit or test click to confirm the new events arrive as expected.
 
 ## Search performance baseline
 
@@ -166,8 +198,8 @@ https://energymix.info/newsletter/
 
 ## Next checks
 
-- Manually resubmit the sitemap in Search Console.
+- Sitemap resubmission is complete.
 - Use Search Console URL Inspection UI to request indexing for the five Phase 3 pages and latest weekly report.
-- Refresh Google OAuth with GTM scopes, then confirm custom `dataLayer` events map into GA4.
+- Confirm custom `dataLayer` events arrive in GA4 after a real visit or test click.
 - Re-run GSC URL inspection in 3-5 days.
 - Re-run GA4/GSC baseline next Monday and compare impressions, clicks, indexed state and newsletter event counts.
