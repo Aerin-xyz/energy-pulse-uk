@@ -127,6 +127,19 @@ Live GTM script verification shows the published container now includes:
 
 Follow-up: check GA4 Realtime/DebugView after a real visit or test click to confirm the new events arrive as expected.
 
+## Interim discovery and tracking checks
+
+Completed after sitemap/GTM setup on 2026-06-08:
+
+- Submitted the new Phase 3 URLs, latest weekly report, `/newsletter/` and `/reports/` to IndexNow.
+- `https://api.indexnow.org/indexnow` returned `200`.
+- `https://www.bing.com/indexnow` returned `200`.
+- Ran a live Playwright check against `https://energymix.info/`.
+- Confirmed `dataLayer` receives GTM lifecycle events.
+- Confirmed a weekly report CTA click emits `newsletter_cta_click` with `event_label: weekly_report_body`.
+- Confirmed client-side navigation emits `virtual_page_view` with `page_path: /newsletter`.
+- Did not perform a real newsletter signup test, to avoid creating a test subscriber in MailerLite.
+
 ## Search performance baseline
 
 Search Console last 7 days, 2026-06-01 to 2026-06-08:
