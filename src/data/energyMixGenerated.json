@@ -1,34 +1,34 @@
 {
-  "generatedAt": "2026-07-26T09:01:42.389Z",
+  "generatedAt": "2026-07-27T10:29:04.274Z",
   "reports": [
     {
-      "slug": "/reports/weekly/2026-07-26",
-      "date": "2026-07-26",
-      "title": "UK Electricity Mix Weekly Report: Sunday 26 July",
-      "period": "Monday 20 July to Saturday 25 July",
-      "intro": "A measured weekly report for EnergyMix.info using the available 7-day historical generation feed for Monday 20 July to Saturday 25 July.",
-      "summary": "The week from Monday 20 July to Saturday 25 July averaged about 22.0 GW of measured generation, with renewables averaging 43.5% of measured output. The strongest renewable day in the available data was Saturday 25 July, when wind, solar and hydro together averaged 59.6% of measured generation. Gas was highest on Tuesday 21 July and lowest on Saturday 25 July.",
+      "slug": "/reports/weekly/2026-07-27",
+      "date": "2026-07-27",
+      "title": "UK Electricity Mix Weekly Report: Monday 27 July",
+      "period": "Tuesday 21 July to Sunday 26 July",
+      "intro": "A measured weekly report for EnergyMix.info using the available 7-day historical generation feed for Tuesday 21 July to Sunday 26 July.",
+      "summary": "The week from Tuesday 21 July to Sunday 26 July averaged about 21.9 GW of measured generation, with renewables averaging 47.0% of measured output. The strongest renewable day in the available data was Sunday 26 July, when wind, solar and hydro together averaged 62.5% of measured generation. Gas was highest on Tuesday 21 July and lowest on Sunday 26 July.",
       "takeaway": "For flexible electricity use, the cleanest opportunities are likely to appear when wind is strong, gas is low and demand is not at a peak. This is the foundation for future EV-charging guidance, clean-electricity alerts and weekly newsletter summaries.",
       "metrics": [
         [
           "Average measured generation",
-          "~22.0 GW across available settlement-period aggregates"
+          "~21.9 GW across available settlement-period aggregates"
         ],
         [
           "Average renewable share",
-          "43.5%"
+          "47.0%"
         ],
         [
           "Highest renewable share",
-          "59.6% on Saturday 25 July"
+          "62.5% on Sunday 26 July"
         ],
         [
           "Highest average wind output",
-          "~8.8 GW on Saturday 25 July"
+          "~8.8 GW on Sunday 26 July"
         ],
         [
           "Highest average solar output",
-          "~5.0 GW on Monday 20 July"
+          "~4.4 GW on Friday 24 July"
         ],
         [
           "Highest average gas output",
@@ -36,20 +36,20 @@
         ]
       ],
       "drivers": [
-        "Renewables were strongest on Saturday 25 July, when wind, solar and hydro averaged 59.6% of measured generation.",
-        "Wind was the largest swing factor in the available feed, peaking at about 8.8 GW average output on Saturday 25 July.",
-        "Solar was strongest on Monday 20 July, averaging about 5.0 GW across settlement periods after embedded-solar backfill where needed.",
-        "Gas averaged about 6.0 GW across the period, rising highest on Tuesday 21 July and falling lowest on Saturday 25 July.",
+        "Renewables were strongest on Sunday 26 July, when wind, solar and hydro averaged 62.5% of measured generation.",
+        "Wind was the largest swing factor in the available feed, peaking at about 8.8 GW average output on Sunday 26 July.",
+        "Solar was strongest on Friday 24 July, averaging about 4.4 GW across settlement periods after embedded-solar backfill where needed.",
+        "Gas averaged about 5.4 GW across the period, rising highest on Tuesday 21 July and falling lowest on Sunday 26 July.",
         "Measured generation was highest on Friday 24 July, at roughly 22.8 GW average output."
       ],
       "cleanestPeriods": [
         {
-          "title": "Best low-carbon proxy: Saturday 25 July",
-          "body": "Historical carbon-intensity aggregates are not yet part of this weekly report feed, so EnergyMix.info uses renewable share and gas output as cautious proxies. Saturday 25 July had the strongest renewable share at 59.6%."
+          "title": "Best low-carbon proxy: Sunday 26 July",
+          "body": "Historical carbon-intensity aggregates are not yet part of this weekly report feed, so EnergyMix.info uses renewable share and gas output as cautious proxies. Sunday 26 July had the strongest renewable share at 62.5%."
         },
         {
-          "title": "Lowest gas proxy: Saturday 25 July",
-          "body": "Gas generation averaged about 3.2 GW on Saturday 25 July. Lower gas periods are often cleaner, but the report does not yet claim this was the lowest-carbon period without historical carbon-intensity validation."
+          "title": "Lowest gas proxy: Sunday 26 July",
+          "body": "Gas generation averaged about 2.4 GW on Sunday 26 July. Lower gas periods are often cleaner, but the report does not yet claim this was the lowest-carbon period without historical carbon-intensity validation."
         }
       ],
       "higherCarbonPeriods": [
@@ -61,34 +61,34 @@
       "highlights": [
         {
           "label": "Wind",
-          "value": "Highest average wind output was about 8.8 GW on Saturday 25 July."
+          "value": "Highest average wind output was about 8.8 GW on Sunday 26 July."
         },
         {
           "label": "Solar",
-          "value": "Highest average solar output was about 5.0 GW on Monday 20 July."
+          "value": "Highest average solar output was about 4.4 GW on Friday 24 July."
         },
         {
           "label": "Gas",
-          "value": "Highest average gas output was about 7.3 GW on Tuesday 21 July; lowest was about 3.2 GW on Saturday 25 July."
+          "value": "Highest average gas output was about 7.3 GW on Tuesday 21 July; lowest was about 2.4 GW on Sunday 26 July."
         }
       ],
       "methodologyNote": "This report is generated from the available 7-day historical generation feed and validated against external public data. Carbon-intensity highs/lows and interconnector summaries should be treated as future additions unless they are present as validated historical aggregates."
     }
   ],
-  "latestReportSlug": "/reports/weekly/2026-07-26",
+  "latestReportSlug": "/reports/weekly/2026-07-27",
   "yesterday": {
     "slug": "/yesterday",
-    "date": "2026-07-25",
-    "title": "UK Electricity Mix Yesterday: Saturday 25 July",
-    "summary": "Yesterday, Saturday 25 July, measured average generation was about 21.9 GW. Renewables averaged 59.6% of measured generation, gas averaged 3.2 GW, wind averaged 8.8 GW and solar averaged 3.9 GW.",
+    "date": "2026-07-26",
+    "title": "UK Electricity Mix Yesterday: Sunday 26 July",
+    "summary": "Yesterday, Sunday 26 July, measured average generation was about 20.1 GW. Renewables averaged 62.5% of measured generation, gas averaged 2.4 GW, wind averaged 8.8 GW and solar averaged 3.4 GW.",
     "metrics": [
       [
         "Average measured generation",
-        "~21.9 GW"
+        "~20.1 GW"
       ],
       [
         "Average renewable share",
-        "59.6%"
+        "62.5%"
       ],
       [
         "Average wind output",
@@ -96,29 +96,29 @@
       ],
       [
         "Average solar output",
-        "~3.9 GW"
+        "~3.4 GW"
       ],
       [
         "Average gas output",
-        "~3.2 GW"
+        "~2.4 GW"
       ]
     ]
   },
   "records": {
     "highestRenewableShare": {
-      "value": "59.6%",
-      "date": "Saturday 25 July",
-      "text": "Current measured 7-day high: 59.6% average renewable share on Saturday 25 July, based on the available historical generation feed."
+      "value": "62.5%",
+      "date": "Sunday 26 July",
+      "text": "Current measured 7-day high: 62.5% average renewable share on Sunday 26 July, based on the available historical generation feed."
     },
     "highestWindGeneration": {
       "value": "8.8 GW",
-      "date": "Saturday 25 July",
-      "text": "Current measured 7-day high: about 8.8 GW average wind output on Saturday 25 July, based on the available historical generation feed."
+      "date": "Sunday 26 July",
+      "text": "Current measured 7-day high: about 8.8 GW average wind output on Sunday 26 July, based on the available historical generation feed."
     },
     "highestSolarGeneration": {
-      "value": "5.0 GW",
-      "date": "Monday 20 July",
-      "text": "Current measured 7-day high: about 5.0 GW average solar output on Monday 20 July, based on the available historical generation feed."
+      "value": "4.4 GW",
+      "date": "Friday 24 July",
+      "text": "Current measured 7-day high: about 4.4 GW average solar output on Friday 24 July, based on the available historical generation feed."
     },
     "highestGasGeneration": {
       "value": "7.3 GW",
@@ -129,7 +129,7 @@
   "socialPosts": [
     {
       "title": "Monday weekly grid brief",
-      "body": "Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: 59.6% on Saturday 25 July\n• Highest average wind output: ~8.8 GW on Saturday 25 July\n• Highest average solar output: ~5.0 GW on Monday 20 July\n• Highest average gas output: ~7.3 GW on Tuesday 21 July\n\nThe shift was clear: gas-heavy weekdays gave way to a cleaner, wind-led weekend.\n\nFull report: https://energymix.info/reports/weekly/2026-07-26/"
+      "body": "Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: 62.5% on Sunday 26 July\n• Highest average wind output: ~8.8 GW on Sunday 26 July\n• Highest average solar output: ~4.4 GW on Friday 24 July\n• Highest average gas output: ~7.3 GW on Tuesday 21 July\n\nThe shift was clear: gas-heavy weekdays gave way to a cleaner, wind-led weekend.\n\nFull report: https://energymix.info/reports/weekly/2026-07-27/"
     },
     {
       "title": "Wednesday explainer",
