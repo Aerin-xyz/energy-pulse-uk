@@ -1,23 +1,23 @@
 {
   "status": "warning",
-  "generatedAt": "2026-08-10T08:16:29.490Z",
-  "date": "2026-08-09",
+  "generatedAt": "2026-08-11T07:56:14.627Z",
+  "date": "2026-08-10",
   "generated": {
-    "date": "2026-08-09",
+    "date": "2026-08-10",
     "periodCount": 48,
     "averagesMw": {
-      "measuredGeneration": 20790.897895833332,
-      "gas": 4630.3125,
-      "wind": 5421.395833333333,
-      "solar": 3906.168729166667,
-      "hydro": 421.5416666666667,
-      "nuclear": 3856.8958333333335,
-      "biomass": 1854.6666666666667,
+      "measuredGeneration": 23329.053458333336,
+      "gas": 7269.833333333333,
+      "wind": 4207.8125,
+      "solar": 4513.803458333335,
+      "hydro": 538.2291666666666,
+      "nuclear": 3805,
+      "biomass": 2291.0208333333335,
       "coal": 0,
-      "other": 699.9166666666666,
-      "renewable": 9749.106229166666
+      "other": 703.3541666666666,
+      "renewable": 9259.845125000002
     },
-    "renewableShare": 46.891222678364784
+    "renewableShare": 39.69233103065443
   },
   "sources": {
     "elexonFuelHh": {
@@ -27,14 +27,14 @@
       },
       "periodCount": 48,
       "averagesMw": {
-        "measuredGenerationExcludingSolar": 16452.6875,
-        "gas": 4630.3125,
-        "wind": 5421.395833333333,
-        "hydroAndPumpedStorage": -10.5,
-        "nuclear": 3856.8958333333335,
-        "biomass": 1854.6666666666667,
+        "measuredGenerationExcludingSolar": 18590.791666666668,
+        "gas": 7269.833333333333,
+        "wind": 4207.8125,
+        "hydroAndPumpedStorage": 313.7708333333333,
+        "nuclear": 3805,
+        "biomass": 2291.0208333333335,
         "coalAndOil": 0,
-        "other": 699.9166666666666
+        "other": 703.3541666666666
       }
     },
     "nesoHistoricGenerationMix": {
@@ -45,17 +45,17 @@
       },
       "periodCount": 48,
       "averagesMw": {
-        "generationWithImports": 27391.125,
-        "gas": 4630.3125,
-        "wind": 5421.395833333333,
-        "embeddedWind": 1352.6458333333333,
-        "solar": 3905.9583333333335,
-        "hydro": 252.83333333333334,
-        "nuclear": 3856.8958333333335,
-        "biomass": 1854.6666666666667,
-        "imports": 5247.791666666667,
-        "renewableIncludingEmbeddedWind": 11101.541666666666,
-        "carbonIntensity": 136.08333333333334
+        "generationWithImports": 30113.854166666668,
+        "gas": 7269.833333333333,
+        "wind": 4207.8125,
+        "embeddedWind": 776.0833333333334,
+        "solar": 4515,
+        "hydro": 294.6041666666667,
+        "nuclear": 3805,
+        "biomass": 2291.0208333333335,
+        "imports": 6096.25,
+        "renewableIncludingEmbeddedWind": 10037.125,
+        "carbonIntensity": 181.54166666666666
       }
     }
   },
@@ -80,11 +80,11 @@
       "label": "Generated average measured generation is plausible",
       "status": "pass",
       "source": "internal plausibility band",
-      "actual": 20790.9,
+      "actual": 23329.05,
       "expected": 30000,
       "unit": "MW",
-      "delta": -9209.1,
-      "deltaPercent": -30.7,
+      "delta": -6670.95,
+      "deltaPercent": -22.24,
       "tolerance": {
         "maxAbsDelta": 20000
       }
@@ -94,8 +94,8 @@
       "label": "Gas average matches Elexon FUELHH CCGT + OCGT",
       "status": "pass",
       "source": "Elexon Insights FUELHH",
-      "actual": 4630.31,
-      "expected": 4630.31,
+      "actual": 7269.83,
+      "expected": 7269.83,
       "unit": "MW",
       "delta": 0,
       "deltaPercent": 0,
@@ -109,8 +109,8 @@
       "label": "Wind average matches Elexon FUELHH",
       "status": "pass",
       "source": "Elexon Insights FUELHH",
-      "actual": 5421.4,
-      "expected": 5421.4,
+      "actual": 4207.81,
+      "expected": 4207.81,
       "unit": "MW",
       "delta": 0,
       "deltaPercent": 0,
@@ -124,11 +124,11 @@
       "label": "Measured generation matches Elexon FUELHH plus generated solar",
       "status": "pass",
       "source": "Elexon Insights FUELHH",
-      "actual": 20790.9,
-      "expected": 20358.86,
+      "actual": 23329.05,
+      "expected": 23104.6,
       "unit": "MW",
-      "delta": 432.04,
-      "deltaPercent": 2.12,
+      "delta": 224.46,
+      "deltaPercent": 0.97,
       "tolerance": {
         "maxAbsDelta": 750,
         "maxPctDelta": 4
@@ -139,8 +139,8 @@
       "label": "Nuclear average matches Elexon FUELHH",
       "status": "pass",
       "source": "Elexon Insights FUELHH",
-      "actual": 3856.9,
-      "expected": 3856.9,
+      "actual": 3805,
+      "expected": 3805,
       "unit": "MW",
       "delta": 0,
       "deltaPercent": 0,
@@ -154,8 +154,8 @@
       "label": "Gas average matches NESO historic generation mix",
       "status": "pass",
       "source": "NESO Historic GB Generation Mix",
-      "actual": 4630.31,
-      "expected": 4630.31,
+      "actual": 7269.83,
+      "expected": 7269.83,
       "unit": "MW",
       "delta": 0,
       "deltaPercent": 0,
@@ -169,8 +169,8 @@
       "label": "Wind average matches NESO transmission wind",
       "status": "pass",
       "source": "NESO Historic GB Generation Mix",
-      "actual": 5421.4,
-      "expected": 5421.4,
+      "actual": 4207.81,
+      "expected": 4207.81,
       "unit": "MW",
       "delta": 0,
       "deltaPercent": 0,
@@ -184,11 +184,11 @@
       "label": "Solar average broadly matches NESO historic generation mix",
       "status": "pass",
       "source": "NESO Historic GB Generation Mix",
-      "actual": 3906.17,
-      "expected": 3905.96,
+      "actual": 4513.8,
+      "expected": 4515,
       "unit": "MW",
-      "delta": 0.21,
-      "deltaPercent": 0.01,
+      "delta": -1.2,
+      "deltaPercent": -0.03,
       "tolerance": {
         "maxAbsDelta": 500,
         "maxPctDelta": 15
@@ -199,7 +199,7 @@
       "label": "NESO demand validator fetch",
       "status": "warning",
       "source": "NESO Demand Data Update",
-      "message": "NESO demand update returned 17 actual periods for 2026-08-09"
+      "message": "NESO demand update returned 17 actual periods for 2026-08-10"
     }
   ]
 }
