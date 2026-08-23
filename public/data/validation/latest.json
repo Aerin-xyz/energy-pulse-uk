@@ -1,23 +1,23 @@
 {
   "status": "warning",
-  "generatedAt": "2026-08-22T07:19:16.493Z",
-  "date": "2026-08-21",
+  "generatedAt": "2026-08-23T07:20:20.089Z",
+  "date": "2026-08-22",
   "generated": {
-    "date": "2026-08-21",
+    "date": "2026-08-22",
     "periodCount": 48,
     "averagesMw": {
-      "measuredGeneration": 24250.305020833333,
-      "gas": 7225.291666666667,
-      "wind": 6134.958333333333,
-      "solar": 3326.2633541666655,
-      "hydro": 337.5,
-      "nuclear": 4400.208333333333,
-      "biomass": 2088.6666666666665,
+      "measuredGeneration": 19757.5473125,
+      "gas": 2587.8333333333335,
+      "wind": 5521.520833333333,
+      "solar": 3952.2973124999994,
+      "hydro": 273.2083333333333,
+      "nuclear": 4401.625,
+      "biomass": 2398.875,
       "coal": 0,
-      "other": 737.4166666666666,
-      "renewable": 9798.7216875
+      "other": 622.1875,
+      "renewable": 9747.026479166665
     },
-    "renewableShare": 40.40659150093972
+    "renewableShare": 49.333180505659314
   },
   "sources": {
     "elexonFuelHh": {
@@ -27,14 +27,14 @@
       },
       "periodCount": 48,
       "averagesMw": {
-        "measuredGenerationExcludingSolar": 20848.708333333332,
-        "gas": 7225.291666666667,
-        "wind": 6134.958333333333,
-        "hydroAndPumpedStorage": 262.1666666666667,
-        "nuclear": 4400.208333333333,
-        "biomass": 2088.6666666666665,
+        "measuredGenerationExcludingSolar": 15173.208333333334,
+        "gas": 2587.8333333333335,
+        "wind": 5521.520833333333,
+        "hydroAndPumpedStorage": -358.8333333333333,
+        "nuclear": 4401.625,
+        "biomass": 2398.875,
         "coalAndOil": 0,
-        "other": 737.4166666666666
+        "other": 622.1875
       }
     },
     "nesoHistoricGenerationMix": {
@@ -45,17 +45,17 @@
       },
       "periodCount": 48,
       "averagesMw": {
-        "generationWithImports": 29454.125,
-        "gas": 7225.291666666667,
-        "wind": 6134.958333333333,
-        "embeddedWind": 884.4375,
-        "solar": 3325.8333333333335,
-        "hydro": 276.375,
-        "nuclear": 4400.208333333333,
-        "biomass": 2088.6666666666665,
-        "imports": 4319.75,
-        "renewableIncludingEmbeddedWind": 10682.729166666666,
-        "carbonIntensity": 163.79166666666666
+        "generationWithImports": 27643.75,
+        "gas": 2587.8333333333335,
+        "wind": 5521.520833333333,
+        "embeddedWind": 556.8125,
+        "solar": 3952.8541666666665,
+        "hydro": 236.20833333333334,
+        "nuclear": 4401.625,
+        "biomass": 2398.875,
+        "imports": 7328.833333333333,
+        "renewableIncludingEmbeddedWind": 10304.395833333334,
+        "carbonIntensity": 148.95833333333334
       }
     }
   },
@@ -80,11 +80,11 @@
       "label": "Generated average measured generation is plausible",
       "status": "pass",
       "source": "internal plausibility band",
-      "actual": 24250.31,
+      "actual": 19757.55,
       "expected": 30000,
       "unit": "MW",
-      "delta": -5749.69,
-      "deltaPercent": -19.17,
+      "delta": -10242.45,
+      "deltaPercent": -34.14,
       "tolerance": {
         "maxAbsDelta": 20000
       }
@@ -94,8 +94,8 @@
       "label": "Gas average matches Elexon FUELHH CCGT + OCGT",
       "status": "pass",
       "source": "Elexon Insights FUELHH",
-      "actual": 7225.29,
-      "expected": 7225.29,
+      "actual": 2587.83,
+      "expected": 2587.83,
       "unit": "MW",
       "delta": 0,
       "deltaPercent": 0,
@@ -109,8 +109,8 @@
       "label": "Wind average matches Elexon FUELHH",
       "status": "pass",
       "source": "Elexon Insights FUELHH",
-      "actual": 6134.96,
-      "expected": 6134.96,
+      "actual": 5521.52,
+      "expected": 5521.52,
       "unit": "MW",
       "delta": 0,
       "deltaPercent": 0,
@@ -124,11 +124,11 @@
       "label": "Measured generation matches Elexon FUELHH plus generated solar",
       "status": "pass",
       "source": "Elexon Insights FUELHH",
-      "actual": 24250.31,
-      "expected": 24174.97,
+      "actual": 19757.55,
+      "expected": 19125.51,
       "unit": "MW",
-      "delta": 75.33,
-      "deltaPercent": 0.31,
+      "delta": 632.04,
+      "deltaPercent": 3.3,
       "tolerance": {
         "maxAbsDelta": 750,
         "maxPctDelta": 4
@@ -139,8 +139,8 @@
       "label": "Nuclear average matches Elexon FUELHH",
       "status": "pass",
       "source": "Elexon Insights FUELHH",
-      "actual": 4400.21,
-      "expected": 4400.21,
+      "actual": 4401.63,
+      "expected": 4401.63,
       "unit": "MW",
       "delta": 0,
       "deltaPercent": 0,
@@ -154,8 +154,8 @@
       "label": "Gas average matches NESO historic generation mix",
       "status": "pass",
       "source": "NESO Historic GB Generation Mix",
-      "actual": 7225.29,
-      "expected": 7225.29,
+      "actual": 2587.83,
+      "expected": 2587.83,
       "unit": "MW",
       "delta": 0,
       "deltaPercent": 0,
@@ -169,8 +169,8 @@
       "label": "Wind average matches NESO transmission wind",
       "status": "pass",
       "source": "NESO Historic GB Generation Mix",
-      "actual": 6134.96,
-      "expected": 6134.96,
+      "actual": 5521.52,
+      "expected": 5521.52,
       "unit": "MW",
       "delta": 0,
       "deltaPercent": 0,
@@ -184,11 +184,11 @@
       "label": "Solar average broadly matches NESO historic generation mix",
       "status": "pass",
       "source": "NESO Historic GB Generation Mix",
-      "actual": 3326.26,
-      "expected": 3325.83,
+      "actual": 3952.3,
+      "expected": 3952.85,
       "unit": "MW",
-      "delta": 0.43,
-      "deltaPercent": 0.01,
+      "delta": -0.56,
+      "deltaPercent": -0.01,
       "tolerance": {
         "maxAbsDelta": 500,
         "maxPctDelta": 15
@@ -199,7 +199,7 @@
       "label": "NESO demand validator fetch",
       "status": "warning",
       "source": "NESO Demand Data Update",
-      "message": "NESO demand update returned 17 actual periods for 2026-08-21"
+      "message": "NESO demand update returned 17 actual periods for 2026-08-22"
     }
   ]
 }
