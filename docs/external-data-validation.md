@@ -5,7 +5,7 @@ Energy Mix validates generated daily/weekly figures before publishing them.
 ## Wiring
 
 1. `scripts/generate-weekly-report.mjs` fetches the primary historical feed from the Supabase `historical-generation` edge function.
-2. It filters to complete days only, requiring at least 46 settlement periods.
+2. It filters to complete days only, requiring the expected number of periods for the declared day basis.
 3. It calls `validateHistoricalRows()` from `scripts/external-data-validation.mjs`.
 4. The validator fetches independent comparison data:
    - Elexon Insights `FUELHH`: half-hourly generation by fuel type.
@@ -46,6 +46,10 @@ The validator uses deliberately tight bands for direct Elexon fuel-type matches 
 - gas/wind/nuclear: 300 MW or 8%
 - measured generation vs Elexon plus solar: 750 MW or 4%
 - solar: 500 MW or 15%
-- settlement periods: expected 48, allow 46+
+- settlement periods: exact declared day length; legacy UTC days use 48, UK settlement days use 46/48/50 around DST
 
 These are sanity gates, not accounting-grade settlement reconciliation. The aim is to catch unit mistakes, incomplete days, stale/current-day leakage, and major source-definition drift before publishing.
+
+## Redesign integrity update — 12 September 2026
+
+The validator now records a legacy-UTC warning when the deployed feed does not declare `Europe/London` day grouping. UTC and UK settlement days are not treated as identical. New backend code supplies the UK day basis; legacy archives retain their original basis and definitions. The current NESO historical generation comparison can be unavailable, in which case validation remains a warning rather than a full pass.

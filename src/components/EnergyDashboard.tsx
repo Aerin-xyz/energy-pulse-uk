@@ -183,7 +183,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                   storage={storageSignal}
                   demandBreakdown={data.demandBreakdown}
                   settlementPeriod={data.asOf?.settlementPeriod}
-                  sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp || data.asOf?.endISO}
+                  sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp}
                 />
               </div>
 

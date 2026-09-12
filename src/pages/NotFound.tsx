@@ -1,27 +1,25 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
-
-const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error(
-      "404 Error: User attempted to access non-existent route:",
-      location.pathname
-    );
-  }, [location.pathname]);
-
+import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
+import { AtlasNavigation } from "@/components/AtlasNavigation";
+export default function NotFound() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">404</h1>
-        <p className="text-xl text-gray-600 mb-4">Oops! Page not found</p>
-        <a href="/" className="text-blue-500 hover:text-blue-700 underline">
-          Return to Home
-        </a>
-      </div>
-    </div>
+    <>
+      <Helmet>
+        <title>Page not found | Energy Mix</title>
+        <meta name="robots" content="noindex, follow" />
+      </Helmet>
+      <AtlasNavigation />
+      <main className="container mx-auto px-6 py-24">
+        <p className="atlas-eyebrow">404 / NO READING HERE</p>
+        <h1 className="text-4xl mb-5">This page is not in the archive.</h1>
+        <p className="mb-6">
+          We won’t substitute another date’s report. Browse the available
+          evidence instead.
+        </p>
+        <Link className="atlas-text-link" to="/reports">
+          Browse the report archive →
+        </Link>
+      </main>
+    </>
   );
-};
-
-export default NotFound;
+}

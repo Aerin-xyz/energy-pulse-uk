@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local review/runtime outputs
+.wrangler/
+test-results/
+playwright-report/

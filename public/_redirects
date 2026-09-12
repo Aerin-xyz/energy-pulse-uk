@@ -1,1 +1,6 @@
-/* /index.html 200
+/admin/* / 200
+/share/* / 200
+/uk-renewable-electricity /renewables/ 301
+/uk-wind-generation-live /uk-wind-power-today/ 301
+/uk-electricity-carbon-intensity /carbon-intensity/ 301
+/uk-electricity-imports-exports /interconnectors/ 301

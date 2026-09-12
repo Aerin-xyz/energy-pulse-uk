@@ -391,7 +391,7 @@ export const HistoricalGenerationChart = ({
                   />
                   
                   {sortedFuelTypes.map((fuelType) => (
-                    <Area
+                    <Area isAnimationActive={false}
                       key={fuelType}
                       type="monotone"
                       dataKey={fuelType}
@@ -476,7 +476,7 @@ export const HistoricalGenerationChart = ({
                       />
                       
                       {sortedWeeklyFuelTypes.map((fuelType) => (
-                        <Bar
+                        <Bar isAnimationActive={false}
                           key={fuelType}
                           dataKey={fuelType}
                           stackId="1"

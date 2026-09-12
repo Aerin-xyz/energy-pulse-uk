@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback, useRef, Re
 import { useToast } from '@/hooks/use-toast';
 
 // localStorage cache utilities for instant loading
-const CACHE_KEY = 'energymix_cache_v3'; // Bumped to invalidate slower pre-FUELINST cache
+const CACHE_KEY = 'energymix_cache_v4'; // Bumped to invalidate slower pre-FUELINST cache
 const CACHE_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
 
 interface CachedData {
@@ -56,6 +56,8 @@ interface GenerationData {
 }
 
 interface InterconnectorData {
+  status?: 'live' | 'unavailable' | 'offline' | 'bmrs-fallback';
+  asOf?: string;
   name: string;
   country: string;
   flow: number;
@@ -290,7 +292,7 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
           totalGenerationMW: energyData.totalGenerationMW || (energyData.totalGeneration || 0) * 1000,
           totalDemandMW: energyData.totalDemandMW || (energyData.totalDemand || 0) * 1000,
           lastUpdated: new Date(energyData.lastUpdated),
-          carbonIntensity: energyData.carbonIntensity || cachedData?.carbonIntensity,
+          carbonIntensity: energyData.carbonIntensity ? {...energyData.carbonIntensity, forecastData: (energyData.carbonIntensity.forecastData || []).filter((p: {from:string}) => Date.parse(p.from) >= Date.now())} : cachedData?.carbonIntensity,
           marketIndexPrice: energyData.marketIndexPrice || cachedData?.marketIndexPrice || null,
           systemFrequency: energyData.systemFrequency || cachedData?.systemFrequency || null,
           storage: energyData.storage || cachedData?.storage || null,

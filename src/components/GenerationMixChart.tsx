@@ -106,8 +106,8 @@ const FILTERS = [
 type FilterKey = typeof FILTERS[number]['key'];
 type UnitMode = 'gw' | 'percent';
 
-const RENEWABLES = new Set(['Wind', 'Solar', 'Hydro', 'PSH']);
-const LOW_CARBON = new Set(['Wind', 'Solar', 'Hydro', 'PSH', 'Nuclear', 'Biomass']);
+const RENEWABLES = new Set(['Wind', 'Solar', 'Hydro', 'Biomass']);
+const LOW_CARBON = new Set(['Wind', 'Solar', 'Hydro', 'Nuclear', 'Biomass']);
 const FOSSIL = new Set(['Gas', 'Oil', 'Coal']);
 const IMPORTS_STORAGE = new Set(['Imports', 'Pumped Storage', 'PSH']);
 

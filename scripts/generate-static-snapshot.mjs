@@ -1,5 +1,6 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
+import { supplyBalance, transfers, RENEWABLE_FUELS, fuelValue, DEFINITION_VERSION } from '../src/lib/gridMetrics.mjs';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const OUT = join(ROOT, 'src/data/staticGridSnapshot.json');
@@ -27,8 +28,8 @@ try {
   if (!response.ok) throw new Error(`energy-data failed ${response.status}`);
   const data = await response.json();
   const mix = Array.isArray(data.generationMix) ? data.generationMix : [];
-  const totalGenerationMW = Number(data.totalGenerationMW) || mix.reduce((sum, item) => sum + (Number(item.value) || 0), 0);
-  const totalDemandMW = Number(data.totalDemandMW) || 0;
+  const totalGenerationMW = Number(data.totalGenerationMW) || mix.filter(item => !['Imports', 'PSH', 'Pumped Storage'].includes(item.name)).reduce((sum, item) => sum + (Number(item.value) || 0), 0);
+  const totalDemandMW = supplyBalance(data.totalGenerationMW, data.interconnectors, data.storage?.netMW);
   const windMW = valueFor(mix, ['Wind']);
   const solarMW = valueFor(mix, ['Solar']);
   const hydroMW = valueFor(mix, ['Hydro']);
@@ -37,16 +38,19 @@ try {
   const nuclearMW = valueFor(mix, ['Nuclear']);
   const importsMW = valueFor(mix, ['Imports']);
   const exportsMW = (data.interconnectors || []).reduce((sum, item) => sum + Math.max(0, -(Number(item.flow) || 0)), 0);
-  const renewablesMW = windMW + solarMW + hydroMW + biomassMW;
+  const renewablesMW = fuelValue(mix, RENEWABLE_FUELS);
   const renewableShare = pctOf(renewablesMW, totalGenerationMW);
   const gasShare = pctOf(gasMW, totalGenerationMW);
-  const timestamp = isoOrNull(data.asOf?.endISO || data.lastUpdated || data.carbonIntensity?.timestamp);
+  const timestamp = isoOrNull(data.dataFreshness?.sourceFreshness?.generation?.timestamp);
 
   snapshot = {
     generatedAt: new Date().toISOString(),
+    definitionVersion: DEFINITION_VERSION,
+    sourceFreshness: data.dataFreshness?.sourceFreshness || {},
     timestamp,
     source: data.dataFreshness?.source || 'Elexon BMRS/FUELINST, NESO and Carbon Intensity API',
-    status: data.dataFreshness?.status || (data.dataFreshness?.isRealtime ? 'live' : 'cached'),
+    status: 'snapshot',
+    upstreamStatus: data.dataFreshness?.status || 'unknown',
     freshnessNote: data.dataFreshness?.note || data.dataFreshness?.variant || 'latest available public grid data at build time',
     metrics: {
       demandMW: totalDemandMW,
@@ -73,7 +77,7 @@ try {
       solar: fmtGW(solarMW),
       gas: fmtGW(gasMW),
       nuclear: fmtGW(nuclearMW),
-      importsExports: importsMW > 0 ? `${fmtGW(importsMW)} net imports` : exportsMW > 0 ? `${fmtGW(exportsMW)} net exports` : 'broadly balanced',
+      importsExports: transfers(data.interconnectors).net === null ? 'unavailable' : `${fmtGW(Math.abs(transfers(data.interconnectors).net))} net ${transfers(data.interconnectors).net >= 0 ? 'imports' : 'exports'}`,
     },
   };
 } catch (error) {

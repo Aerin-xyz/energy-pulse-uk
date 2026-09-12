@@ -95,6 +95,7 @@ function parseStorage(rows: Array<Record<string, unknown>>): StorageStatus | nul
   if (!timed.length) return null;
   const latestTime = Math.max(...timed.map((item) => item.time));
   const latestRows = timed.filter((item) => item.time === latestTime).map((item) => item.row);
+  if (!latestRows.some(row => String(row.fuelType ?? '').toUpperCase() === 'PS' || String(row.fuelType ?? '').toUpperCase().includes('PUMP'))) return null;
   const netMW = latestRows.reduce((sum, row) => {
     const fuel = String(row.fuelType ?? '').toUpperCase();
     if (fuel !== 'PS' && !fuel.includes('PUMP')) return sum;

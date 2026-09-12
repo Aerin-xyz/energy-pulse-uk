@@ -3,8 +3,11 @@ import { Link, useParams } from 'react-router-dom';
 import { StaticPageLayout } from '@/components/StaticPageLayout';
 import { NewsletterCta } from '@/components/NewsletterCta';
 import generated from '@/data/energyMixGenerated.json';
+import archive from '@/data/reportArchive.json';
+import NotFound from './NotFound';
+const reports = archive as typeof generated.reports;
 
-const latestReport = generated.reports[0];
+const latestReport = reports[0];
 type ReportCallout = { title: string; body: string };
 type ReportHighlight = { label: string; value: string };
 type GeneratedReport = typeof latestReport & {
@@ -63,7 +66,7 @@ export const ReportsIndex = () => (
           These reports are generated from the available historical generation feed, then linked back to the live dashboard and source notes so the public numbers can be checked rather than treated as a black box.
         </p>
         <div className="grid gap-4">
-          {generated.reports.map((report) => (
+          {reports.map((report) => (
             <Link key={report.slug} to={report.slug} className="block rounded-lg border border-primary/20 bg-background/40 p-5 hover:bg-primary/10 transition-colors">
               <p className="text-sm uppercase tracking-[0.18em] text-primary/70 mb-2">Weekly report</p>
               <h3 className="text-xl font-semibold text-cosmic-cyan">{report.title}</h3>
@@ -101,7 +104,8 @@ export const ReportsIndex = () => (
 
 export const WeeklyReportPage = () => {
   const { date } = useParams();
-  const report = (generated.reports.find((item) => item.slug.endsWith(String(date))) || latestReport) as GeneratedReport;
+  const report = reports.find((item) => item.slug === `/reports/weekly/${date}`) as GeneratedReport;
+  if (!report) return <NotFound />;
   const drivers = report.drivers || [];
   const cleanestPeriods = report.cleanestPeriods || [];
   const higherCarbonPeriods = report.higherCarbonPeriods || [];

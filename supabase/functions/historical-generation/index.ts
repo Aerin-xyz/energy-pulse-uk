@@ -1,3 +1,4 @@
+import { settlementStart, settlementCoordinates, expectedPeriods } from '../_shared/settlementTime.mjs';
 import { 
   checkRateLimit, 
   getClientIP,
@@ -138,7 +139,7 @@ function normaliseFuelHH(rows: any[], DEBUG=false){
       if (dstr && sp > 0){
         const y = Number(dstr.slice(0,4)), m = Number(dstr.slice(5,7)), d = Number(dstr.slice(8,10));
         const base = new Date(Date.UTC(y, m-1, d, 0, 0, 0));
-        tISO = toISO(addMinutes(base, (sp-1)*30));
+        tISO = settlementStart(dstr.slice(0,10), sp);
       }else{
         continue;
       }
@@ -325,8 +326,8 @@ async function buildPastWeekGeneration(DEBUG=false){
   }
 
   // 2) Solar from PV_Live for same calendar window (use existing fetch)
-  const pvStartISO = `${dateFrom}T00:00:00Z`;
-  const pvEndISO   = `${dateTo}T23:59:59Z`;
+  const pvStartISO = settlementStart(dateFrom);
+  const pvEndISO   = settlementStart(dateTo, expectedPeriods(dateTo) + 1);
   let pv: Array<{t:string; mw:number}> = [];
   try { 
     pv = await fetchPVLiveNationalSeries(pvStartISO, pvEndISO, DEBUG); 
@@ -762,7 +763,7 @@ function convertFUELHHToExpectedFormat(weeklyResult: any, debug = false): any[] 
 
   for (const period of weeklyResult.rows) {
     const startTime = new Date(period.periodStartISO);
-    const dateKey = startTime.toISOString().split('T')[0];
+    const dateKey = settlementCoordinates(startTime.toISOString()).date;
     
     if (!dayMap.has(dateKey)) {
       dayMap.set(dateKey, {
@@ -807,7 +808,7 @@ function convertFUELHHToExpectedFormat(weeklyResult: any, debug = false): any[] 
       });
       
       // Add validation for DST days or missing periods
-      if (dayData.totalPeriods < 46) {
+      if (dayData.totalPeriods !== expectedPeriods(dayData.date)) {
         console.log(`[FUELHH] Partial day detected: ${dayData.date} has only ${dayData.totalPeriods} periods`);
       }
       
@@ -816,6 +817,7 @@ function convertFUELHHToExpectedFormat(weeklyResult: any, debug = false): any[] 
       
       return {
         settlementDate: dayData.date,
+        timeBasis: "Europe/London",
         settlementPeriod: 0,
         timestamp: dayTimestamp.toISOString(),
         fuelMix: Object.entries(dailyFuelMix).map(([fuelType, gwh]) => ({
@@ -857,7 +859,7 @@ async function processWeeklyDataLegacy(dataArray: any[], pvLiveData: Array<{t: s
   // Process each settlement period and group by day
   for (const item of dataArray) {
     const startTime = new Date(item.startTime);
-    const dateKey = startTime.toISOString().split('T')[0]; // YYYY-MM-DD
+    const dateKey = settlementCoordinates(startTime.toISOString()).date; // YYYY-MM-DD
     availableDates.add(dateKey);
     
     if (!dayMap.has(dateKey)) {
@@ -962,6 +964,7 @@ async function processWeeklyDataLegacy(dataArray: any[], pvLiveData: Array<{t: s
       
       return {
         settlementDate: dayData.date,
+        timeBasis: "Europe/London",
         settlementPeriod: 0, // Not applicable for daily data
         timestamp: dayTimestamp.toISOString(),
         fuelMix: Object.entries(dailyFuelMix).map(([fuelType, mw]) => ({

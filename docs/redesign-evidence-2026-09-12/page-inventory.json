@@ -1,0 +1,339 @@
+[
+  {
+    "file": "src/pages/Partners.tsx",
+    "headings": [
+      "What we are packaging",
+      "Potential use cases",
+      "Useful starting points",
+      "Register interest"
+    ],
+    "apis": [
+      "https://energymix.info/partners/",
+      "https://energymix.info/partners/",
+      "https://energymix.info/og-data.jpg",
+      "https://schema.org",
+      "https://energymix.info/"
+    ]
+  },
+  {
+    "file": "src/pages/Data.tsx",
+    "headings": [
+      "UK Electricity Data Sources",
+      "At a glance",
+      "Primary Sources",
+      "Why numbers differ between dashboards",
+      "Renewables and low-carbon definitions",
+      "Update Frequency",
+      "Data roadmap and known gaps",
+      "API, widget and embed interest",
+      "Licenses & Attribution",
+      "Related Pages"
+    ],
+    "apis": [
+      "https://bmrs.elexon.co.uk/",
+      "https://www.neso.energy/",
+      "https://carbonintensity.org.uk",
+      "https://www.solar.sheffield.ac.uk/pvlive/",
+      "https://transparency.entsoe.eu/"
+    ]
+  },
+  {
+    "file": "src/pages/Privacy.tsx",
+    "headings": [
+      "Analytics and measurement",
+      "Search Console",
+      "Newsletter",
+      "Cookies",
+      "Contact"
+    ],
+    "apis": [
+      "https://energymix.info/privacy/",
+      "https://energymix.info/privacy/",
+      "https://energymix.info/og-default.jpg"
+    ]
+  },
+  {
+    "file": "src/pages/ShareDailySummary.tsx",
+    "headings": [],
+    "apis": []
+  },
+  {
+    "file": "src/pages/Citation.tsx",
+    "headings": [
+      "Suggested citation",
+      "For specific pages or reports",
+      "Original data sources"
+    ],
+    "apis": [
+      "https://energymix.info/citation/",
+      "https://energymix.info/citation/",
+      "https://energymix.info/og-default.jpg",
+      "https://energymix.info/"
+    ]
+  },
+  {
+    "file": "src/pages/Reports.tsx",
+    "headings": [
+      "Latest weekly report",
+      "Latest reports",
+      "What reports track",
+      "How the report engine works",
+      "Summary",
+      "The week in key numbers",
+      "What drove the electricity mix this week?",
+      "Cleanest periods",
+      "Highest-carbon periods",
+      "Wind, solar and gas highlights",
+      "Data notes",
+      "Related pages"
+    ],
+    "apis": [
+      "https://energymix.info/reports/",
+      "https://energymix.info/reports/",
+      "https://energymix.info/og-insights.jpg",
+      "https://energymix.info/og-insights.jpg",
+      "https://energymix.info${report.slug}/"
+    ]
+  },
+  {
+    "file": "src/pages/AdminSocialPosts.tsx",
+    "headings": [
+      "LinkedIn Post Approval"
+    ],
+    "apis": []
+  },
+  {
+    "file": "src/pages/Measurement.tsx",
+    "headings": [
+      "Weekly checks",
+      "Events to track next",
+      "Source-of-truth pages"
+    ],
+    "apis": [
+      "https://energymix.info/measurement/",
+      "https://energymix.info/measurement/",
+      "https://energymix.info/og-insights.jpg"
+    ]
+  },
+  {
+    "file": "src/pages/GridInsightPages.tsx",
+    "headings": [
+      "Current grid context",
+      "FAQs",
+      "Related pages"
+    ],
+    "apis": [
+      "https://energymix.info${canonicalPath(page.slug)}",
+      "https://energymix.info${canonicalPath(page.slug)}",
+      "https://energymix.info/og-insights.jpg",
+      "https://schema.org"
+    ]
+  },
+  {
+    "file": "src/pages/NotFound.tsx",
+    "headings": [
+      "404"
+    ],
+    "apis": []
+  },
+  {
+    "file": "src/pages/About.tsx",
+    "headings": [
+      "About Energy Mix"
+    ],
+    "apis": [
+      "https://energymix.info/about/",
+      "https://energymix.info/about/",
+      "https://energymix.info/og-about.jpg",
+      "https://energymix.info/og-about.jpg",
+      "https://schema.org"
+    ]
+  },
+  {
+    "file": "src/pages/Insights.tsx",
+    "headings": [
+      "Energy Insights",
+      "Recent Topics"
+    ],
+    "apis": [
+      "https://assets.mailerlite.com/jsonp/343200/forms/169882898276550620/takel",
+      "https://energymix.info/insights/",
+      "https://energymix.info/insights/",
+      "https://energymix.info/og-insights.jpg",
+      "https://energymix.info/og-insights.jpg"
+    ]
+  },
+  {
+    "file": "src/pages/Newsletter.tsx",
+    "headings": [
+      "Weekly UK Electricity Mix Newsletter",
+      "What you\u2019ll get each week",
+      "Get the weekly UK electricity mix brief",
+      "Sample issue",
+      "Who it\u2019s for"
+    ],
+    "apis": [
+      "https://assets.mailerlite.com/jsonp/343200/forms/169882898276550620/takel",
+      "https://energymix.info/newsletter/",
+      "https://energymix.info/newsletter/",
+      "https://energymix.info/og-newsletter.jpg",
+      "https://energymix.info/og-newsletter.jpg"
+    ]
+  },
+  {
+    "file": "src/pages/Glossary.tsx",
+    "headings": [
+      "Quick answer",
+      "Terms"
+    ],
+    "apis": [
+      "https://energymix.info/glossary/",
+      "https://energymix.info/glossary/",
+      "https://energymix.info/og-insights.jpg",
+      "https://schema.org",
+      "https://energymix.info/glossary/"
+    ]
+  },
+  {
+    "file": "src/pages/Index.tsx",
+    "headings": [
+      "UK Electricity Mix Live - Great Britain Generation, Demand and Carbon Intensity",
+      "About the UK electricity mix"
+    ],
+    "apis": [
+      "https://energymix.info/",
+      "https://energymix.info/",
+      "https://energymix.info/og-default.jpg",
+      "https://energymix.info/og-default.jpg",
+      "https://schema.org"
+    ]
+  },
+  {
+    "file": "src/pages/Yesterday.tsx",
+    "headings": [
+      "Summary",
+      "Yesterday in five numbers",
+      "Related pages"
+    ],
+    "apis": [
+      "https://energymix.info/yesterday/",
+      "https://energymix.info/yesterday/",
+      "https://energymix.info/og-insights.jpg"
+    ]
+  },
+  {
+    "file": "src/pages/CoreExplainers.tsx",
+    "headings": [
+      "Short answer",
+      "FAQs",
+      "Related pages"
+    ],
+    "apis": [
+      "https://energymix.info${canonicalPath(page.slug)}",
+      "https://energymix.info${canonicalPath(page.slug)}",
+      "https://energymix.info/og-insights.jpg",
+      "https://schema.org"
+    ]
+  },
+  {
+    "file": "src/pages/AdminDailySummary.tsx",
+    "headings": [
+      "\n                Daily Summary Cards\n              "
+    ],
+    "apis": []
+  },
+  {
+    "file": "src/pages/DigestPreview.tsx",
+    "headings": [
+      "Energy Mix Weekly Digest"
+    ],
+    "apis": []
+  },
+  {
+    "file": "src/pages/Records.tsx",
+    "headings": [
+      "Current record pages",
+      "Record methodology",
+      "Current record",
+      "Why this record matters",
+      "Source notes",
+      "Related pages"
+    ],
+    "apis": [
+      "https://energymix.info/records/",
+      "https://energymix.info/records/",
+      "https://energymix.info/og-insights.jpg",
+      "https://energymix.info${page.slug}/",
+      "https://energymix.info${page.slug}/"
+    ]
+  },
+  {
+    "file": "src/pages/Contact.tsx",
+    "headings": [
+      "Corrections and data issues",
+      "Press and citation enquiries",
+      "Partnerships, sponsorship and data products"
+    ],
+    "apis": [
+      "https://energymix.info/contact/",
+      "https://energymix.info/contact/",
+      "https://energymix.info/og-default.jpg"
+    ]
+  },
+  {
+    "file": "src/pages/Today.tsx",
+    "headings": [
+      "Current summary",
+      "Validated daily context",
+      "Today\u2019s key signals",
+      "How to read today\u2019s page",
+      "Related pages"
+    ],
+    "apis": [
+      "https://energymix.info/today/",
+      "https://energymix.info/today/",
+      "https://energymix.info/og-insights.jpg"
+    ]
+  },
+  {
+    "file": "src/pages/Social.tsx",
+    "headings": [
+      "This week\u2019s posts",
+      "Posting rhythm"
+    ],
+    "apis": [
+      "https://energymix.info/social/",
+      "https://energymix.info/social/",
+      "https://energymix.info/og-insights.jpg"
+    ]
+  },
+  {
+    "file": "src/pages/PowerFlow.tsx",
+    "headings": [
+      "How to read it",
+      "Related pages"
+    ],
+    "apis": [
+      "https://energymix.info/power-flow/",
+      "https://energymix.info/power-flow/",
+      "https://energymix.info/og-default.jpg"
+    ]
+  },
+  {
+    "file": "src/pages/Methodology.tsx",
+    "headings": [
+      "Geographic coverage",
+      "Primary data sources",
+      "Update frequency",
+      "Known limitations",
+      "How percentages are calculated"
+    ],
+    "apis": [
+      "https://energymix.info/methodology/",
+      "https://energymix.info/methodology/",
+      "https://energymix.info/og-data.jpg",
+      "https://schema.org",
+      "https://energymix.info/methodology/"
+    ]
+  }
+]

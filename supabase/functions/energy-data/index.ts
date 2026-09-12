@@ -1,3 +1,4 @@
+import { settlementStart, settlementCoordinates } from '../_shared/settlementTime.mjs';
 import { XMLParser } from "https://esm.sh/fast-xml-parser@4.5.0";
 import {
   checkRateLimit,
@@ -251,20 +252,20 @@ async function fetchCarbonIntensity(debug = false): Promise<{
     // Fetch forecast for next 24 hours
     let forecastData: any[] = [];
     try {
-      const forecastRes = await fetch('https://api.carbonintensity.org.uk/intensity/date', {
+      const forecastRes = await fetch(`https://api.carbonintensity.org.uk/intensity/${new Date().toISOString().slice(0,16)+'Z'}/fw24h`, {
         headers: { 'Accept': 'application/json' },
         cache: 'no-store'
       });
 
       if (forecastRes.ok) {
         const forecastJson = await forecastRes.json();
-        forecastData = forecastJson?.data || [];
+        forecastData = (forecastJson?.data || []).filter((p: any) => Date.parse(p.from) >= Date.now() && Number.isFinite(p.intensity?.forecast));
       }
     } catch (e) {
       if (debug) console.log('[carbon] Forecast fetch error:', (e as Error).message);
     }
 
-    const actual = latest.intensity.actual || latest.intensity.forecast;
+    const actual = latest.intensity.actual ?? latest.intensity.forecast;
     const forecast = latest.intensity.forecast;
     const index = latest.intensity.index;
     const timestamp = latest.from;
@@ -1431,12 +1432,7 @@ function parseBMRSHVGeneration(rows: any[]) {
 
 // Convert datetime to settlement period (simplified for PV Live alignment)
 function datetimeToSP(datetimeUTC: string): { date: string, period: number } {
-  const dt = new Date(datetimeUTC);
-  const dateStr = dt.toISOString().split('T')[0];
-  const hour = dt.getUTCHours();
-  const minute = dt.getUTCMinutes();
-  const period = Math.floor((hour * 60 + minute) / 30) + 1;
-  return { date: dateStr, period };
+  return settlementCoordinates(datetimeUTC);
 }
 
 // Five-minute transmission-connected generation, matching the fast cadence used by
@@ -1516,9 +1512,7 @@ async function fetchFUELHHStream(limit = 200): Promise<StrictResult> {
 
 function anchorEndISOFromSP(anchorDate: string, anchorSP: number): string | null {
   if (!anchorDate || !anchorSP) return null;
-  const dt = new Date(`${anchorDate}T00:00:00Z`);
-  dt.setUTCMinutes((anchorSP - 1) * 30 + 30);
-  return dt.toISOString();
+  return settlementStart(anchorDate, anchorSP + 1);
 }
 
 function safeSourceTimestamp(iso: string | null | undefined, responseNow = new Date()): string | null {
@@ -1527,13 +1521,14 @@ function safeSourceTimestamp(iso: string | null | undefined, responseNow = new D
   if (!Number.isFinite(parsed)) return null;
   // Settlement-period fields can be expressed as local clock labels but marked Z;
   // never expose a future timestamp as upstream source freshness.
-  if (parsed > responseNow.getTime() + 2 * 60 * 1000) return null;
+  if (parsed > responseNow.getTime()) return null;
   return new Date(parsed).toISOString();
 }
 
 function parsePumpedStorage(rows: any[], variant: "insights" | "dataset", sourceTime?: string | null) {
   const latest = pickLatestSP(rows).length ? pickLatestSP(rows) : rows;
   let netMW = 0;
+  let available = false;
   let settlementDate = "";
   let settlementPeriod = 0;
 
@@ -1547,6 +1542,7 @@ function parsePumpedStorage(rows: any[], variant: "insights" | "dataset", source
       mw = Number.isFinite(mwh) ? mwh * 2 : NaN;
     }
     if (!Number.isFinite(mw)) continue;
+    available = true;
     netMW += mw;
 
     if (!settlementPeriod) {
@@ -1559,6 +1555,7 @@ function parsePumpedStorage(rows: any[], variant: "insights" | "dataset", source
   const mode = netMW > 25 ? "generating" : netMW < -25 ? "charging" : "idle";
   const timestamp = sourceTime || anchorEndISOFromSP(settlementDate, settlementPeriod);
   return {
+    available,
     netMW: Math.round(netMW),
     absMW,
     mode,
@@ -2199,7 +2196,7 @@ try {
         source: 'Elexon FUELINST/BMRS',
         timestamp: safeSourceTimestamp(storage.timestamp || null, responseNow),
         cadenceMinutes: variant?.includes('fuelinst') ? 5 : 30,
-        status: storage.mode,
+        status: storage.available ? storage.mode : "unavailable",
       },
       stationLoad: {
         label: 'Station load',
@@ -2244,11 +2241,11 @@ try {
       carbonIntensity: carbonIntensity ? {
         ...carbonIntensity,
         // Trim forecast to next 12 hours (24 half-hourly periods) to reduce payload size
-        forecastData: carbonIntensity.forecastData?.slice(0, 24)
+        forecastData: carbonIntensity.forecastData?.filter((p: any) => Date.parse(p.from) >= Date.now()).slice(0, 48)
       } : null,
       marketIndexPrice,
       systemFrequency,
-      storage,
+      storage: storage.available ? storage : null,
       demandBreakdown,
 dataFreshness: {
   source: "Elexon FUELINST/BMRS + ESO + PV Live",

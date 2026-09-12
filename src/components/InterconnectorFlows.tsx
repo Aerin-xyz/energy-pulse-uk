@@ -257,7 +257,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
                 
                 <div className="text-xs text-muted-foreground border-t border-border pt-2 space-y-1">
                   <p>Interconnectors may be offline due to maintenance, market conditions, weather, or technical constraints.</p>
-                  <p className="text-[11px]">Note: Temporary overloads or reporting delays can push values over 100%.</p>
+                  <p className="text-[11px]">Capacity values are reference hints. Values above 100% require reconciliation; they do not prove a physical overload.</p>
                 </div>
               </div>
             }
@@ -325,7 +325,7 @@ export const InterconnectorFlows = ({ data, interconnectorStatus = 'live' }: Int
             const isImport = interconnector.flow > 0;
             const flowValue = Math.abs(interconnector.flow);
             const utilization = (flowValue / interconnector.capacity) * 100;
-            const isActive = (interconnector.status === 'live' || interconnector.status === 'bmrs-fallback') && flowValue > 0;
+            const isActive = (interconnector.status === 'live' || interconnector.status === 'bmrs-fallback') && Number.isFinite(interconnector.flow);
             const isOffline = interconnector.status === 'offline';
             const isUnavailable = interconnector.status === 'unavailable';
             const details = interconnectorDetails[interconnector.name];

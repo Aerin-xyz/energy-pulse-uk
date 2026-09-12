@@ -1,7 +1,7 @@
 import snapshot from '@/data/staticGridSnapshot.json';
 
 const items = [
-  ['Demand', snapshot.display?.demand],
+  ['Estimated demand', snapshot.display?.demand],
   ['Generation', snapshot.display?.generation],
   ['Carbon', snapshot.display?.carbonIntensity],
   ['Renewables', snapshot.display?.renewableShare],
@@ -31,7 +31,7 @@ export const StaticGridSnapshot = ({ compact = false }: StaticGridSnapshotProps)
       <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Latest grid snapshot</p>
-          <h2 id="latest-grid-snapshot" className="mt-1 text-xl md:text-2xl font-semibold text-foreground">GB electricity right now</h2>
+          <h2 id="latest-grid-snapshot" className="mt-1 text-xl md:text-2xl font-semibold text-foreground">Saved GB electricity snapshot</h2>
         </div>
         <p className="text-xs text-foreground/55">
           {formatTimestamp(snapshot.timestamp)} · {snapshot.source || 'public grid data'}
@@ -48,7 +48,7 @@ export const StaticGridSnapshot = ({ compact = false }: StaticGridSnapshotProps)
       </div>
 
       <p className="mt-4 text-xs text-foreground/55 leading-relaxed">
-        Cached at build time for a fast, crawlable summary. The interactive dashboard refreshes from public grid and carbon-intensity sources in the browser.
+        Saved at build time, not a live reading. Demand is an estimated supply balance; generation and shares exclude imports and pumped storage. The interactive dashboard refreshes from public grid and carbon-intensity sources in the browser.
       </p>
     </section>
   );

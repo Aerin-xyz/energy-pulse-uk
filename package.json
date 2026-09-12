@@ -12,7 +12,9 @@
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
-    "test:power-flow-layout": "playwright test tests/power-flow-layout.spec.ts"
+    "test:power-flow-layout": "playwright test tests/power-flow-layout.spec.ts",
+    "test:metrics": "node --test tests/grid-metrics.test.mjs tests/archive-routing.test.mjs",
+    "test:atlas": "playwright test tests/atlas.spec.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

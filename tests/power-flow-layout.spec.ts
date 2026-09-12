@@ -1,4 +1,7 @@
+import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
+const snapshot = JSON.parse(readFileSync(new URL('./fixtures/grid-snapshot.json', import.meta.url), 'utf8'));
+test.beforeEach(async ({page}) => { await page.route('**/functions/v1/energy-data?**', route => route.fulfill({json:snapshot})); });
 
 type Box = { x: number; y: number; width: number; height: number; id: string };
 
@@ -26,7 +29,7 @@ test.describe('power-flow deterministic layout', () => {
   for (const viewport of viewports) {
     test(`no overlaps or horizontal scrolling at ${viewport.name}`, async ({ page }) => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
-      await page.goto('/?debugFlowLayout=1', { waitUntil: 'networkidle' });
+      await page.goto('/power-flow?debugFlowLayout=1', { waitUntil: 'networkidle' });
       await expect(page.locator('#power-flow')).toBeVisible({ timeout: 20_000 });
       await expect(page.locator('#power-flow')).toContainText('Storage');
       await expect(page.locator('#power-flow')).toContainText('Hydro');
@@ -57,7 +60,7 @@ test.describe('power-flow deterministic layout', () => {
         };
       });
 
-      expect(result.title).toBe('EnergyMix.info | UK Electricity Dashboard');
+      expect(result.title).toBe('GB Power Flow Live | UK Electricity Generation and Demand Visualisation');
       expect(result.scrollWidth).toBeLessThanOrEqual(result.clientWidth + 1);
 
       for (const box of [...result.nodes, ...result.labels]) {

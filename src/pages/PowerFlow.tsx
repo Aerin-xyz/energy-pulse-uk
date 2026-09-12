@@ -48,7 +48,7 @@ const PowerFlow = () => {
             storage={storageSignal}
             demandBreakdown={data.demandBreakdown}
             settlementPeriod={data.asOf?.settlementPeriod}
-            sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp || data.asOf?.endISO}
+            sourceTimestamp={data.dataFreshness?.sourceFreshness?.generation?.timestamp}
           />
         ) : (
           <div className="rounded-lg border border-primary/20 bg-background/40 p-5">Awaiting live grid data…</div>

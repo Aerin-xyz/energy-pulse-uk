@@ -117,20 +117,7 @@ export const CarbonIntensityCard = ({
           </div>
         </div>
 
-        {/* Comparison to Average */}
-        <div className="flex items-center justify-center gap-2 text-sm">
-          {isLow ? (
-            <TrendingDown className="w-4 h-4 text-carbon-low" />
-          ) : (
-            <TrendingUp className="w-4 h-4 text-carbon-high" />
-          )}
-          <span className={cn(
-            "font-semibold",
-            isLow ? "text-carbon-low" : "text-carbon-high"
-          )}>
-            {Math.abs(percentOfAverage).toFixed(0)}% {isLow ? 'below' : 'above'} GB average
-          </span>
-        </div>
+        <p className="text-center text-xs text-muted-foreground">Carbon Intensity API estimate · read the source interval alongside this value. No fixed annual-average baseline is assumed.</p>
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">

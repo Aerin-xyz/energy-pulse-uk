@@ -407,8 +407,8 @@ export const PowerFlowCard = ({
                 <p className="font-mono text-xl font-bold text-green-300">{model.lowCarbonShare.toFixed(1)}%</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">
-                <p className="text-xs text-muted-foreground">Net transfers</p>
-                <p className="font-mono text-xl font-bold text-cosmic-cyan">{formatGWfromMW(model.transferMW)} GW</p>
+                <p className="text-xs text-muted-foreground">Net transfers (+ into GB)</p>
+                <p className="font-mono text-xl font-bold text-cosmic-cyan">{formatGWfromMW(model.importMW - model.exportMW)} GW</p>
                 <p className="text-[11px] text-muted-foreground">imports {formatGWfromMW(model.importMW)} · exports {formatGWfromMW(model.exportMW)}</p>
               </div>
               <div className="rounded-xl border border-white/10 bg-white/[0.03] p-3">

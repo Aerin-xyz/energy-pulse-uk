@@ -1,3 +1,4 @@
+import { expectedPeriods, settlementStart } from '../supabase/functions/_shared/settlementTime.mjs';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { validateHistoricalRows, writeValidationReport } from './external-data-validation.mjs';
@@ -5,7 +6,6 @@ import { fetchHistoricalGeneration } from './historical-feed.mjs';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const OUT = join(ROOT, 'src/data/energyMixGenerated.json');
-const SITEMAP = join(ROOT, 'public/sitemap.xml');
 const VALIDATION_OUT = join(ROOT, 'public/data/validation/latest.json');
 const NESO_DEMAND_RESOURCE_ID = '177f6fa4-ae49-4182-81ea-0c6b35f26ca6';
 const NESO_SQL_URL = 'https://api.neso.energy/api/3/action/datastore_search_sql';
@@ -29,7 +29,7 @@ const fetchEmbeddedSolarAverageMw = async (date) => {
 
   const json = await response.json();
   const actualRows = (json.result?.records || []).filter((row) => row.FORECAST_ACTUAL_INDICATOR === 'A');
-  if (actualRows.length < 46) throw new Error(`NESO Demand Data Update returned ${actualRows.length} actual periods for ${date}`);
+  if (actualRows.length !== expectedPeriods(date)) throw new Error(`NESO Demand Data Update returned ${actualRows.length} actual periods for ${date}`);
 
   return averageField(actualRows, 'EMBEDDED_SOLAR_GENERATION');
 };
@@ -68,7 +68,7 @@ const withSolarBackfill = async (row) => {
 
 const feed = await fetchHistoricalGeneration('7d');
 const feedRows = feed.data || [];
-const rows = await Promise.all(feedRows.filter((row) => periodsFor(row) >= 46).map(withSolarBackfill));
+const rows = await Promise.all(feedRows.filter((row) => periodsFor(row) === (row.timeBasis === 'Europe/London' ? expectedPeriods(row.settlementDate) : 48)).map(withSolarBackfill));
 if (rows.length < 2) throw new Error('Need at least 2 complete days of historical data');
 
 const start = rows[0].settlementDate;
@@ -182,40 +182,14 @@ const generated = {
 
 mkdirSync(dirname(OUT), { recursive: true });
 writeFileSync(OUT, JSON.stringify(generated, null, 2) + '\n');
-
-let sitemap = readFileSync(SITEMAP, 'utf8');
-const upsertSitemapUrl = (url, lastmod, changefreq = 'weekly', priority = '0.75') => {
-  const escapedUrl = url.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const block = new RegExp(`  <url>\\n    <loc>${escapedUrl}<\\/loc>\\n    <lastmod>[^<]+<\\/lastmod>\\n    <changefreq>[^<]+<\\/changefreq>\\n    <priority>[^<]+<\\/priority>\\n  <\\/url>`);
-  const next = `  <url>\n    <loc>${url}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>${changefreq}</changefreq>\n    <priority>${priority}</priority>\n  </url>`;
-  if (block.test(sitemap)) {
-    sitemap = sitemap.replace(block, next);
-    return;
-  }
-  sitemap = sitemap.replace('</urlset>', `${next}\n</urlset>`);
-};
-
-for (const [url, changefreq, priority] of [
-  ['https://energymix.info/', 'hourly', '1.0'],
-  ['https://energymix.info/uk-electricity-mix', 'weekly', '0.95'],
-  [`https://energymix.info${slug}/`, 'weekly', '0.75'],
-  ['https://energymix.info/yesterday/', 'weekly', '0.75'],
-  ['https://energymix.info/today/', 'hourly', '0.9'],
-  ['https://energymix.info/reports/', 'weekly', '0.8'],
-  ['https://energymix.info/carbon-intensity/', 'weekly', '0.9'],
-  ['https://energymix.info/renewables/', 'weekly', '0.9'],
-  ['https://energymix.info/cleanest-time-to-use-electricity/', 'weekly', '0.9'],
-  ['https://energymix.info/gas-generation/', 'weekly', '0.85'],
-  ['https://energymix.info/interconnectors/', 'weekly', '0.85'],
-  ['https://energymix.info/electricity-demand/', 'weekly', '0.85'],
-  ['https://energymix.info/uk-electricity-generation-live/', 'weekly', '0.9'],
-  ['https://energymix.info/uk-renewable-electricity', 'hourly', '0.9'],
-  ['https://energymix.info/uk-wind-generation-live', 'hourly', '0.85'],
-  ['https://energymix.info/uk-electricity-carbon-intensity', 'hourly', '0.85'],
-  ['https://energymix.info/uk-electricity-imports-exports', 'hourly', '0.85'],
-]) {
-  upsertSitemapUrl(url, reportDate, changefreq, priority);
+// Freeze each published date; future refreshes must not silently rewrite history.
+const archivePath = join(ROOT, 'src/data/reportArchive.json');
+const archive = JSON.parse(readFileSync(archivePath, 'utf8'));
+for (const report of generated.reports) {
+  if (!archive.some(item => item.slug === report.slug)) archive.push({...report, archiveProvenance: { archivedAt: new Date().toISOString(), definition: 'historical-measured-v1', timeBasis: rows[0]?.timeBasis || 'UTC', validationStatus: validation.status, coverage: 'available completed reporting days' }});
 }
-writeFileSync(SITEMAP, sitemap);
+archive.sort((a,b) => b.slug.localeCompare(a.slug));
+writeFileSync(archivePath, JSON.stringify(archive, null, 2) + '\n');
+
 console.log(`Generated weekly report data for ${slug}`);
 console.log(`External validation ${validation.status} for ${yesterday.settlementDate}: ${VALIDATION_OUT}`);

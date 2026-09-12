@@ -1,3 +1,4 @@
+import { expectedPeriods, settlementStart } from '../supabase/functions/_shared/settlementTime.mjs';
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fetchHistoricalGeneration } from './historical-feed.mjs';
@@ -101,7 +102,7 @@ const fetchNesoGenerationForDate = async (date) => {
   const sql = `SELECT * from "${NESO_GENERATION_RESOURCE_ID}" WHERE "DATETIME" >= '${date}T00:00:00' AND "DATETIME" < '${next}T00:00:00'`;
   const json = await fetchJson(sqlUrl(sql));
   const rows = json.result?.records || [];
-  if (rows.length < 46) throw new Error(`NESO generation mix returned ${rows.length} periods for ${date}`);
+  if (rows.length !== expectedPeriods(date)) throw new Error(`NESO generation mix returned ${rows.length} periods for ${date}`);
 
   return {
     source: SOURCES.nesoHistoricGenerationMix,
@@ -126,7 +127,7 @@ const fetchNesoDemandForDate = async (date) => {
   const sql = `SELECT * from "${NESO_DEMAND_RESOURCE_ID}" WHERE "SETTLEMENT_DATE" = '${date}'`;
   const json = await fetchJson(`${SOURCES.nesoDemandUpdate.url}?sql=${encodeURIComponent(sql)}`);
   const actualRows = (json.result?.records || []).filter((row) => row.FORECAST_ACTUAL_INDICATOR === 'A');
-  if (actualRows.length < 46) throw new Error(`NESO demand update returned ${actualRows.length} actual periods for ${date}`);
+  if (actualRows.length !== expectedPeriods(date)) throw new Error(`NESO demand update returned ${actualRows.length} actual periods for ${date}`);
 
   return {
     source: SOURCES.nesoDemandUpdate,
@@ -141,11 +142,14 @@ const fetchNesoDemandForDate = async (date) => {
   };
 };
 
-const fetchElexonFuelHhForDate = async (date) => {
+const fetchElexonFuelHhForDate = async (date, timeBasis) => {
   const next = addDays(date, 1);
-  const url = `${SOURCES.elexonFuelHh.url}?publishDateTimeFrom=${date}T00:00Z&publishDateTimeTo=${next}T00:30Z`;
+  const start = timeBasis === 'Europe/London' ? settlementStart(date) : `${date}T00:00:00Z`;
+  const end = timeBasis === 'Europe/London' ? settlementStart(next) : `${next}T00:00:00Z`;
+  const publishEnd = new Date(Date.parse(end) + 1800000).toISOString();
+  const url = `${SOURCES.elexonFuelHh.url}?publishDateTimeFrom=${start}&publishDateTimeTo=${publishEnd}`;
   const json = await fetchJson(url);
-  const records = (json.data || json).filter((row) => row.startTime >= `${date}T00:00:00Z` && row.startTime < `${next}T00:00:00Z`);
+  const records = (json.data || json).filter((row) => Date.parse(row.startTime) >= Date.parse(start) && Date.parse(row.startTime) < Date.parse(end));
 
   const periodMap = new Map();
   for (const row of records) {
@@ -155,7 +159,7 @@ const fetchElexonFuelHhForDate = async (date) => {
   }
 
   const periods = Array.from(periodMap.values());
-  if (periods.length < 46) throw new Error(`Elexon FUELHH returned ${periods.length} periods for ${date}`);
+  if (periods.length !== (timeBasis === 'Europe/London' ? expectedPeriods(date) : 48)) throw new Error(`Elexon FUELHH returned ${periods.length} periods for ${date}`);
 
   return {
     source: SOURCES.elexonFuelHh,
@@ -174,7 +178,7 @@ const fetchElexonFuelHhForDate = async (date) => {
 };
 
 export const validateHistoricalRows = async (rows, options = {}) => {
-  const completeRows = rows.filter((row) => periodsFor(row) >= 46);
+  const completeRows = rows.filter((row) => periodsFor(row) === (row.timeBasis === 'Europe/London' ? expectedPeriods(row.settlementDate) : 48));
   const target = options.targetDate
     ? completeRows.find((row) => row.settlementDate === options.targetDate)
     : completeRows[completeRows.length - 1];
@@ -183,6 +187,7 @@ export const validateHistoricalRows = async (rows, options = {}) => {
 
   const generated = {
     date: target.settlementDate,
+    timeBasis: target.timeBasis || 'UTC',
     periodCount: periodsFor(target),
     averagesMw: {
       measuredGeneration: averageMw(target, target.totalMW),
@@ -201,17 +206,18 @@ export const validateHistoricalRows = async (rows, options = {}) => {
   generated.renewableShare = percentage(generated.averagesMw.renewable, generated.averagesMw.measuredGeneration);
 
   const checks = [
+    { id: 'generated.time-basis', label: 'Historical day basis', status: target.timeBasis === 'Europe/London' ? 'pass' : 'warning', message: target.timeBasis === 'Europe/London' ? 'UK settlement day' : 'Legacy UTC reporting day; NESO settlement-day comparisons have different bounds.' },
     {
       id: 'generated.complete-day-periods',
-      label: 'Generated day has at least 46 settlement periods',
-      status: generated.periodCount >= 46 ? 'pass' : 'fail',
+      label: 'Generated day matches its GB settlement-day length',
+      status: generated.periodCount === (target.timeBasis === 'Europe/London' ? expectedPeriods(target.settlementDate) : 48) ? 'pass' : 'fail',
       source: 'generated feed',
       actual: generated.periodCount,
-      expected: 48,
+      expected: (target.timeBasis === 'Europe/London' ? expectedPeriods(target.settlementDate) : 48),
       unit: 'periods',
-      delta: generated.periodCount - 48,
-      deltaPercent: relativeDelta(generated.periodCount, 48),
-      tolerance: { maxAbsDelta: 2, maxPctDelta: null },
+      delta: generated.periodCount - (target.timeBasis === 'Europe/London' ? expectedPeriods(target.settlementDate) : 48),
+      deltaPercent: relativeDelta(generated.periodCount, (target.timeBasis === 'Europe/London' ? expectedPeriods(target.settlementDate) : 48)),
+      tolerance: { maxAbsDelta: 0, maxPctDelta: null },
     },
     makeCheck({
       id: 'generated.measured-generation-plausible',
@@ -227,7 +233,7 @@ export const validateHistoricalRows = async (rows, options = {}) => {
   const sourceResults = {};
 
   try {
-    const elexon = await fetchElexonFuelHhForDate(generated.date);
+    const elexon = await fetchElexonFuelHhForDate(generated.date, target.timeBasis);
     sourceResults.elexonFuelHh = elexon;
     checks.push(
       makeCheck({
@@ -336,7 +342,7 @@ export const validateHistoricalRows = async (rows, options = {}) => {
         id: 'neso-demand.period-count',
         label: 'NESO Demand Data Update has a complete actual day',
         actual: nesoDemand.periodCount,
-        expected: 48,
+        expected: (target.timeBasis === 'Europe/London' ? expectedPeriods(target.settlementDate) : 48),
         maxAbsDelta: 2,
         source: nesoDemand.source.name,
         unit: 'periods',

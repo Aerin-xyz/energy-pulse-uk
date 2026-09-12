@@ -1,0 +1,496 @@
+[
+  {
+    "path": "/",
+    "ok": true,
+    "title": [
+      "UK Electricity Mix Live | EnergyMix.info"
+    ],
+    "h1": [
+      "UK Electricity Mix Live"
+    ],
+    "canonical": [
+      "https://energymix.info/"
+    ]
+  },
+  {
+    "path": "/about",
+    "ok": true,
+    "title": [
+      "About EnergyMix.info | UK Electricity Dashboard"
+    ],
+    "h1": [
+      "About EnergyMix.info"
+    ],
+    "canonical": [
+      "https://energymix.info/about/"
+    ]
+  },
+  {
+    "path": "/data",
+    "ok": true,
+    "title": [
+      "UK Electricity Data Sources: Elexon, NESO, Carbon Intensity & PV Live"
+    ],
+    "h1": [
+      "UK Electricity Data Sources"
+    ],
+    "canonical": [
+      "https://energymix.info/data/"
+    ]
+  },
+  {
+    "path": "/insights",
+    "ok": true,
+    "title": [
+      "Energy Mix Insights | UK Grid Trends & Renewable Generation Analysis"
+    ],
+    "h1": [
+      "Energy Insights"
+    ],
+    "canonical": [
+      "https://energymix.info/insights/"
+    ]
+  },
+  {
+    "path": "/newsletter",
+    "ok": true,
+    "title": [
+      "Weekly UK Electricity Mix Newsletter | EnergyMix.info"
+    ],
+    "h1": [
+      "Weekly UK Electricity Mix Newsletter"
+    ],
+    "canonical": [
+      "https://energymix.info/newsletter/"
+    ]
+  },
+  {
+    "path": "/methodology",
+    "ok": true,
+    "title": [
+      "Energy Mix Methodology | GB Electricity Sources and Limits"
+    ],
+    "h1": [
+      "Methodology"
+    ],
+    "canonical": [
+      "https://energymix.info/methodology/"
+    ]
+  },
+  {
+    "path": "/contact",
+    "ok": true,
+    "title": [
+      "Contact EnergyMix.info | Corrections, Press, Widgets and Data"
+    ],
+    "h1": [
+      "Contact EnergyMix.info"
+    ],
+    "canonical": [
+      "https://energymix.info/contact/"
+    ]
+  },
+  {
+    "path": "/privacy",
+    "ok": true,
+    "title": [
+      "Privacy Policy | EnergyMix.info"
+    ],
+    "h1": [
+      "Privacy Policy"
+    ],
+    "canonical": [
+      "https://energymix.info/privacy/"
+    ]
+  },
+  {
+    "path": "/citation",
+    "ok": true,
+    "title": [
+      "How to Cite EnergyMix.info | UK Electricity Mix Data"
+    ],
+    "h1": [
+      "How to cite EnergyMix.info"
+    ],
+    "canonical": [
+      "https://energymix.info/citation/"
+    ]
+  },
+  {
+    "path": "/uk-electricity-mix",
+    "ok": true,
+    "title": [
+      "UK Electricity Mix Live \u2014 Wind, Gas, Nuclear, Solar and Imports | Energy Mix"
+    ],
+    "h1": [
+      "UK electricity mix live"
+    ],
+    "canonical": [
+      "https://energymix.info/uk-electricity-mix"
+    ]
+  },
+  {
+    "path": "/carbon-intensity",
+    "ok": true,
+    "title": [
+      "UK Carbon Intensity Now | Live Grid CO2/kWh"
+    ],
+    "h1": [
+      "UK Carbon Intensity Now"
+    ],
+    "canonical": [
+      "https://energymix.info/carbon-intensity/"
+    ]
+  },
+  {
+    "path": "/renewables",
+    "ok": true,
+    "title": [
+      "UK Renewable Electricity Live | Wind, Solar, Hydro and Biomass"
+    ],
+    "h1": [
+      "UK Renewable Electricity"
+    ],
+    "canonical": [
+      "https://energymix.info/renewables/"
+    ]
+  },
+  {
+    "path": "/gas-generation",
+    "ok": true,
+    "title": [
+      "UK Gas Power Generation Live | Why Gas Is High Today"
+    ],
+    "h1": [
+      "UK Gas Generation"
+    ],
+    "canonical": [
+      "https://energymix.info/gas-generation/"
+    ]
+  },
+  {
+    "path": "/nuclear-power",
+    "ok": true,
+    "title": [
+      "UK Nuclear Power Today | Live Nuclear Electricity Share"
+    ],
+    "h1": [
+      "UK Nuclear Power"
+    ],
+    "canonical": [
+      "https://energymix.info/nuclear-power/"
+    ]
+  },
+  {
+    "path": "/interconnectors",
+    "ok": true,
+    "title": [
+      "UK Electricity Imports and Exports Live | Interconnector Flows"
+    ],
+    "h1": [
+      "UK Electricity Interconnectors"
+    ],
+    "canonical": [
+      "https://energymix.info/interconnectors/"
+    ]
+  },
+  {
+    "path": "/electricity-demand",
+    "ok": true,
+    "title": [
+      "UK Electricity Demand Live | GB Grid Demand Today"
+    ],
+    "h1": [
+      "UK Electricity Demand"
+    ],
+    "canonical": [
+      "https://energymix.info/electricity-demand/"
+    ]
+  },
+  {
+    "path": "/uk-electricity-generation-live",
+    "ok": true,
+    "title": [
+      "UK Electricity Generation Live | GB Generation by Source"
+    ],
+    "h1": [
+      "UK Electricity Generation Live"
+    ],
+    "canonical": [
+      "https://energymix.info/uk-electricity-generation-live/"
+    ]
+  },
+  {
+    "path": "/cleanest-time-to-use-electricity",
+    "ok": true,
+    "title": [
+      "Cleanest Time to Use Electricity UK | EV Charging and Appliances"
+    ],
+    "h1": [
+      "Cleanest Time to Use Electricity"
+    ],
+    "canonical": [
+      "https://energymix.info/cleanest-time-to-use-electricity/"
+    ]
+  },
+  {
+    "path": "/uk-wind-power-today",
+    "ok": true,
+    "title": [
+      "UK Wind Power Today | Live GB Wind Generation"
+    ],
+    "h1": [
+      "UK Wind Power Today"
+    ],
+    "canonical": [
+      "https://energymix.info/uk-wind-power-today/"
+    ]
+  },
+  {
+    "path": "/uk-solar-power-today",
+    "ok": true,
+    "title": [
+      "UK Solar Power Today | Live GB Solar Generation"
+    ],
+    "h1": [
+      "UK Solar Power Today"
+    ],
+    "canonical": [
+      "https://energymix.info/uk-solar-power-today/"
+    ]
+  },
+  {
+    "path": "/gas-share-of-electricity",
+    "ok": true,
+    "title": [
+      "Gas Share of UK Electricity | Live GB Gas Generation"
+    ],
+    "h1": [
+      "Gas Share of UK Electricity"
+    ],
+    "canonical": [
+      "https://energymix.info/gas-share-of-electricity/"
+    ]
+  },
+  {
+    "path": "/renewables-share-today",
+    "ok": true,
+    "title": [
+      "Renewables Share Today | UK Electricity Mix"
+    ],
+    "h1": [
+      "Renewables Share Today"
+    ],
+    "canonical": [
+      "https://energymix.info/renewables-share-today/"
+    ]
+  },
+  {
+    "path": "/carbon-intensity-today",
+    "ok": true,
+    "title": [
+      "UK Carbon Intensity Today | Live GB Electricity Emissions"
+    ],
+    "h1": [
+      "UK Carbon Intensity Today"
+    ],
+    "canonical": [
+      "https://energymix.info/carbon-intensity-today/"
+    ]
+  },
+  {
+    "path": "/today",
+    "ok": true,
+    "title": [
+      "UK Electricity Mix Today | Live Generation and Carbon Intensity"
+    ],
+    "h1": [
+      "UK Electricity Mix Today"
+    ],
+    "canonical": [
+      "https://energymix.info/today/"
+    ]
+  },
+  {
+    "path": "/yesterday",
+    "ok": true,
+    "title": [
+      "UK Electricity Mix Yesterday: Friday 11 September | EnergyMix.info"
+    ],
+    "h1": [
+      "UK Electricity Mix Yesterday: Friday 11 September"
+    ],
+    "canonical": [
+      "https://energymix.info/yesterday/"
+    ]
+  },
+  {
+    "path": "/power-flow",
+    "ok": true,
+    "title": [
+      "GB Power Flow Live | UK Electricity Generation and Demand Visualisation"
+    ],
+    "h1": [
+      "GB Power Flow"
+    ],
+    "canonical": [
+      "https://energymix.info/power-flow/"
+    ]
+  },
+  {
+    "path": "/reports",
+    "ok": true,
+    "title": [
+      "UK Electricity Mix Reports: Daily and Weekly Grid Summaries"
+    ],
+    "h1": [
+      "UK Electricity Mix Reports"
+    ],
+    "canonical": [
+      "https://energymix.info/reports/"
+    ]
+  },
+  {
+    "path": "/records",
+    "ok": true,
+    "title": [
+      "UK Electricity Mix Records | Wind, Solar, Renewables and Gas"
+    ],
+    "h1": [
+      "UK Electricity Mix Records"
+    ],
+    "canonical": [
+      "https://energymix.info/records/"
+    ]
+  },
+  {
+    "path": "/records/highest-renewable-share",
+    "ok": true,
+    "title": [
+      "Highest Renewable Share | UK Electricity Mix Records"
+    ],
+    "h1": [
+      "Highest Renewable Share Record"
+    ],
+    "canonical": [
+      "https://energymix.info/records/highest-renewable-share/"
+    ]
+  },
+  {
+    "path": "/records/highest-wind-generation",
+    "ok": true,
+    "title": [
+      "Highest Wind Generation | UK Electricity Mix Records"
+    ],
+    "h1": [
+      "Highest Wind Generation Record"
+    ],
+    "canonical": [
+      "https://energymix.info/records/highest-wind-generation/"
+    ]
+  },
+  {
+    "path": "/records/highest-solar-generation",
+    "ok": true,
+    "title": [
+      "Highest Solar Generation | UK Electricity Mix Records"
+    ],
+    "h1": [
+      "Highest Solar Generation Record"
+    ],
+    "canonical": [
+      "https://energymix.info/records/highest-solar-generation/"
+    ]
+  },
+  {
+    "path": "/records/highest-gas-generation",
+    "ok": true,
+    "title": [
+      "Highest Gas Generation | UK Electricity Mix Records"
+    ],
+    "h1": [
+      "Highest Gas Generation Record"
+    ],
+    "canonical": [
+      "https://energymix.info/records/highest-gas-generation/"
+    ]
+  },
+  {
+    "path": "/social",
+    "ok": true,
+    "title": [
+      "Energy Mix LinkedIn Post Templates | Weekly Grid Briefs"
+    ],
+    "h1": [
+      "LinkedIn post templates"
+    ],
+    "canonical": [
+      "https://energymix.info/social/"
+    ]
+  },
+  {
+    "path": "/measurement",
+    "ok": true,
+    "title": [
+      "Energy Mix Measurement Plan | GA4, Search Console and SEO Tracking"
+    ],
+    "h1": [
+      "Measurement plan"
+    ],
+    "canonical": [
+      "https://energymix.info/measurement/"
+    ]
+  },
+  {
+    "path": "/glossary",
+    "ok": true,
+    "title": [
+      "UK Electricity Glossary | Energy Mix Terms Explained"
+    ],
+    "h1": [
+      "UK electricity glossary"
+    ],
+    "canonical": [
+      "https://energymix.info/glossary/"
+    ]
+  },
+  {
+    "path": "/partners",
+    "ok": true,
+    "title": [
+      "Energy Mix for Publishers, Widgets and Data Access"
+    ],
+    "h1": [
+      "Energy Mix widgets and data access"
+    ],
+    "canonical": [
+      "https://energymix.info/partners/"
+    ]
+  },
+  {
+    "path": "/reports/weekly/2026-05-11",
+    "ok": true,
+    "title": [
+      "UK Electricity Mix Live | EnergyMix.info"
+    ],
+    "h1": [
+      "UK Electricity Mix Live"
+    ],
+    "canonical": [
+      "https://energymix.info/"
+    ]
+  },
+  {
+    "path": "/reports/weekly/1900-01-01",
+    "ok": true,
+    "title": [
+      "UK Electricity Mix Live | EnergyMix.info"
+    ],
+    "h1": [
+      "UK Electricity Mix Live"
+    ],
+    "canonical": [
+      "https://energymix.info/"
+    ]
+  }
+]

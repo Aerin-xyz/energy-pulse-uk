@@ -1,0 +1,334 @@
+UK Electricity Mix Live - Great Britain Generation, Demand and Carbon Intensity
+energy mix
+UK ELECTRICITY DASHBOARD
+
+Real-time UK grid data
+
+Power flow
+Explore
+
+LIVE GRID INTELLIGENCE
+
+Britain’s electricity system, decoded
+3 min old
+GB POWER
+36.9GW
+Live
+CARBON
+35g
+Low carbon
+WIND
+21.4GW
+Wind carrying
+IMPORTS
+-0.9GW
+Exporting
+WHOLESALE
+£-1/MWh
+Cheap
+FREQUENCY
+50.15Hz
+Stable
+STORAGE
+1.2GW
+Storage charging
+NOW
+
+Right now, wind is the largest source. Carbon is low, Britain is exporting power, wholesale prices are cheap. Demand is about 34.8GW; frequency is stable.
+
+RENEWABLE
+79%
+wind, solar, hydro and PSH
+LOW-CARBON
+92%
+renewables, nuclear and biomass
+GAS RELIANCE
+6%
+gas share of production
+LIVE
+low
+Live power flow
+Notes
+21.4
+GW
+Wind
+7.7
+GW
+Solar
+3.7
+GW
+Nuclear
+→ 2.9
+← 3.8
+Transfers
+34.8
+GW
+DEMAND
+1.2
+GW
+Storage charging
+2.4
+GW
+Gas
+1.0
+GW
+Biomass
+0.2
+GW
+Hydro
+
+SNAPSHOT
+
+01:40 PM
+
+Settlement period 26
+
+Low-carbon
+
+92.1%
+
+Net transfers
+
+3.8 GW
+
+imports 2.9 · exports 3.8
+
+Storage
+
+1.2 GW
+
+Charging
+
+Station load
+
+0.5 GW
+
+NESO estimate
+
+Wind
+21.4 GW
+Solar
+7.7 GW
+Transfers
+3.8 GW
+Nuclear
+3.7 GW
+Gas
+2.4 GW
+Storage charging
+1.2 GW
+Biomass
+1.0 GW
+
+Displayed demand is a live power-balance view: GB production plus net transfers and storage. This is a simplified system view, not a physical grid map.
+
+UK Energy Mix
+Live
+
+As of 12:30 (SP 26) on 9/12/2026
+
+Primary generation fast-follows Elexon FUELINST where available; settlement-period sources update at their native cadence. Latest upstream generation point: 01:40 PM.
+
+All
+Renewables
+Low-carbon
+Fossil
+Imports/storage
+GW
+%
+53.7%
+19.2%
+9.3%
+7.3%
+5.9%
+39.9 GW
+Selected Supply
+36.9 GW
+UK Generation
+Generation Type	Live Generation
+
+Wind
+
+21.41 GW
+54% of full mix
+
+
+Solar
+
+7.67 GW
+19% of full mix
+
+
+Nuclear
+
+3.73 GW
+9% of full mix
+
+
+Imports
+
+2.92 GW
+7% of full mix
+
+
+Gas
+
+2.36 GW
+6% of full mix
+
+
+Biomass
+
+1.03 GW
+3% of full mix
+
+
+Other
+
+0.56 GW
+1% of full mix
+
+
+Hydro
+
+0.17 GW
+0% of full mix
+Historical Generation
+Updated 01:51 PM
+Last 24 hours
+Weekly View
+02:30 PM
+04:00 PM
+05:30 PM
+07:00 PM
+08:30 PM
+10:00 PM
+11:30 PM
+01:00 AM
+02:30 AM
+04:00 AM
+05:30 AM
+07:00 AM
+08:30 AM
+10:00 AM
+11:30 AM
+01:00 PM
+0GW
+9GW
+17GW
+26GW
+34GW
+GasWindNuclearBiomassSolarOtherHydroPSHCoal
+Settlement periods (30-minute intervals) • Data from BMRS + PV Live
+Interconnector Flows
+Live
+Total Imports
+2922.0 MW
+Total Exports
+3848.0 MW
+IFA / IFA2 / ElecLink
+🇫🇷
+France
+Capacity: 4000 MW
+2922 MW
+73.0% utilization
+North Sea Link
+🇳🇴
+Norway
+Capacity: 1400 MW
+1197 MW
+85.5% utilization
+Viking Link
+🇩🇰
+Denmark
+Capacity: 1400 MW
+893 MW
+63.8% utilization
+Nemo Link
+🇧🇪
+Belgium
+Capacity: 1000 MW
+359 MW
+35.9% utilization
+BritNed
+🇳🇱
+Netherlands
+Capacity: 1000 MW
+Unavailable
+No data
+Greenlink
+🇮🇪
+Ireland
+Capacity: 500 MW
+515 MW
+103.0% utilization
+Moyle
+🇬🇧
+Northern Ireland
+Capacity: 500 MW
+452 MW
+90.4% utilization
+East–West Interconnector
+🇮🇪
+Ireland
+Capacity: 500 MW
+432 MW
+86.4% utilization
+
+LATEST GRID SNAPSHOT
+
+GB electricity right now
+
+12 Sept 2026, 12:30 · Elexon FUELINST/BMRS + ESO + PV Live
+
+DEMAND
+26.1 GW
+GENERATION
+34.1 GW
+CARBON
+37 gCO₂/kWh
+RENEWABLES
+80%
+GAS
+7%
+WIND
+20.3 GW
+SOLAR
+5.9 GW
+NUCLEAR
+3.7 GW
+FLOWS
+2.9 GW net imports
+
+Cached at build time for a fast, crawlable summary. The interactive dashboard refreshes from public grid and carbon-intensity sources in the browser.
+
+LIVE GB ELECTRICITY INTELLIGENCE
+
+About the UK electricity mix
+
+EnergyMix.info shows Great Britain’s live electricity mix, including demand, wind, solar, gas, nuclear, imports, storage, hydro, biomass and carbon intensity.
+
+Most live grid data covers Great Britain’s electricity system: England, Scotland and Wales. Northern Ireland is part of the UK but operates in a separate electricity market.
+
+The dashboard updates from public electricity and carbon-intensity data sources and explains how clean the grid is now, what changed today, and what it means for homes, EV charging and businesses.
+
+Today’s electricity mix
+What the mix means
+UK carbon intensity
+Weekly reports
+Newsletter
+
+WEEKLY BRIEF
+
+Get the weekly UK electricity mix briefing
+
+Get the useful weekly version of this dashboard: what changed, what drove it, and when the grid was cleaner.
+
+Subscribe to the weekly brief
+Read latest reports
+About
+Data
+Insights
+Newsletter
+Contains BMRS data © Elexon Limited copyright and database right 2026
+0GW

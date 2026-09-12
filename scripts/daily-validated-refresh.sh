@@ -23,7 +23,8 @@ git add \
   public/sitemap.xml \
   public/data/validation/latest.json \
   src/data/energyMixGenerated.json \
-  src/data/staticGridSnapshot.json
+  src/data/staticGridSnapshot.json \
+  src/data/reportArchive.json
 
 if git diff --cached --quiet; then
   echo "$LOG_PREFIX no generated data changes to publish"

@@ -1,9 +1,10 @@
 {
   "status": "warning",
-  "generatedAt": "2026-09-12T11:16:11.065Z",
+  "generatedAt": "2026-09-12T13:25:13.985Z",
   "date": "2026-09-11",
   "generated": {
     "date": "2026-09-11",
+    "timeBasis": "UTC",
     "periodCount": 48,
     "averagesMw": {
       "measuredGeneration": 25241.731375,
@@ -55,8 +56,14 @@
   },
   "checks": [
     {
+      "id": "generated.time-basis",
+      "label": "Historical day basis",
+      "status": "warning",
+      "message": "Legacy UTC reporting day; NESO settlement-day comparisons have different bounds."
+    },
+    {
       "id": "generated.complete-day-periods",
-      "label": "Generated day has at least 46 settlement periods",
+      "label": "Generated day matches its GB settlement-day length",
       "status": "pass",
       "source": "generated feed",
       "actual": 48,
@@ -65,7 +72,7 @@
       "delta": 0,
       "deltaPercent": 0,
       "tolerance": {
-        "maxAbsDelta": 2,
+        "maxAbsDelta": 0,
         "maxPctDelta": null
       }
     },

@@ -88,7 +88,7 @@ const focusCopy: Record<Focus, { title: string; description: string }> = {
 export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
   const { data, loading, error } = useEnergyData();
   const mix = data?.generationMix || [];
-  const totalMix = mix.reduce((sum, item) => sum + Number(item.value || 0), 0);
+  const totalMix = data?.totalGenerationMW || 0;
   const wind = getMixValue(mix, ['Wind']);
   const solar = getMixValue(mix, ['Solar']);
   const hydro = getMixValue(mix, ['Hydro']);
@@ -123,23 +123,23 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
     carbon: [
       { label: 'Now', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
       { label: 'Best upcoming', value: cleanWindow ? `${cleanWindow.value} gCO₂/kWh` : 'Checking…', note: cleanWindow ? `${fmtTime(cleanWindow.from)}–${fmtTime(cleanWindow.to)}` : 'forecast window' },
-      { label: 'Gas', value: fmtGW(gas), note: `${pct(gas, totalMix)} of visible mix` },
+      { label: 'Gas', value: fmtGW(gas), note: `${pct(gas, totalMix)} of domestic generation` },
       { label: 'Low-carbon', value: pct(lowCarbon, totalMix), note: 'current visible share' },
     ],
     renewables: [
-      { label: 'Renewables', value: fmtGW(renewables), note: `${pct(renewables, totalMix)} of visible mix` },
+      { label: 'Renewables', value: fmtGW(renewables), note: `${pct(renewables, totalMix)} of domestic generation` },
       { label: 'Wind', value: fmtGW(wind), note: 'largest swing source' },
       { label: 'Solar', value: fmtGW(solar), note: 'daylight dependent' },
       { label: 'Hydro + biomass', value: fmtGW(hydro + biomass), note: 'smaller renewable sources' },
     ],
     gas: [
-      { label: 'Gas', value: fmtGW(gas), note: `${pct(gas, totalMix)} of visible mix` },
+      { label: 'Gas', value: fmtGW(gas), note: `${pct(gas, totalMix)} of domestic generation` },
       { label: 'Demand', value: fmtGW(displayDemandMW), note: 'demand pressure' },
       { label: 'Renewables', value: pct(renewables, totalMix), note: 'renewable share' },
       { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
     ],
     nuclear: [
-      { label: 'Nuclear', value: fmtGW(nuclear), note: `${pct(nuclear, totalMix)} of visible mix` },
+      { label: 'Nuclear', value: fmtGW(nuclear), note: `${pct(nuclear, totalMix)} of domestic generation` },
       { label: 'Low-carbon', value: pct(lowCarbon, totalMix), note: 'including nuclear' },
       { label: 'Demand', value: fmtGW(displayDemandMW), note: 'current grid demand' },
       { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
@@ -158,7 +158,7 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
     ],
     generation: [
       { label: 'Generation', value: fmtGW(data?.totalGenerationMW), note: 'domestic generation' },
-      { label: 'Wind + solar', value: fmtGW(wind + solar), note: `${pct(wind + solar, totalMix)} of visible mix` },
+      { label: 'Wind + solar', value: fmtGW(wind + solar), note: `${pct(wind + solar, totalMix)} of domestic generation` },
       { label: 'Gas', value: fmtGW(gas), note: 'flexible fossil generation' },
       { label: 'Nuclear', value: fmtGW(nuclear), note: 'steady low-carbon output' },
     ],

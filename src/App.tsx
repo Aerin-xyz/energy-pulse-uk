@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -5,31 +6,51 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { EnergyDataProvider } from "@/contexts/EnergyDataContext";
 import { HelmetProvider } from 'react-helmet-async';
+import "./styles/observatory.css";
 import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
-import About from "./pages/About";
-import Data from "./pages/Data";
-import Insights from "./pages/Insights";
-import Newsletter from "./pages/Newsletter";
-import Methodology from "./pages/Methodology";
-import Contact from "./pages/Contact";
-import Privacy from "./pages/Privacy";
-import Citation from "./pages/Citation";
-import { UkElectricityMix, CarbonIntensity, Renewables, GasGeneration, NuclearPower, Interconnectors, ElectricityDemand, UkElectricityGenerationLive, CleanestTimeToUseElectricity } from "./pages/CoreExplainers";
-import { UkWindPowerToday, UkSolarPowerToday, GasShareOfElectricity, RenewablesShareToday, CarbonIntensityToday } from "./pages/GridInsightPages";
-import Today from "./pages/Today";
-import Yesterday from "./pages/Yesterday";
-import PowerFlow from "./pages/PowerFlow";
-import { ReportsIndex, WeeklyReportPage } from "./pages/Reports";
-import { RecordsIndex, HighestRenewableShare, HighestWindGeneration, HighestSolarGeneration, HighestGasGeneration } from "./pages/Records";
-import Social from "./pages/Social";
-import Measurement from "./pages/Measurement";
-import Glossary from "./pages/Glossary";
-import Partners from "./pages/Partners";
-import DigestPreview from "./pages/DigestPreview";
-import AdminSocialPosts from "./pages/AdminSocialPosts";
-import ShareDailySummary from "./pages/ShareDailySummary";
-import AdminDailySummary from "./pages/AdminDailySummary";
+const Explore = lazy(() => import("./pages/Explore"));
+const GridSignalPage = lazy(() => import("./pages/GridSignalPage").then(m => ({default:m.GridSignalPage})));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const About = lazy(() => import("./pages/About"));
+const Data = lazy(() => import("./pages/Data"));
+const Insights = lazy(() => import("./pages/Insights"));
+const Newsletter = lazy(() => import("./pages/Newsletter"));
+const Methodology = lazy(() => import("./pages/Methodology"));
+const Contact = lazy(() => import("./pages/Contact"));
+const Privacy = lazy(() => import("./pages/Privacy"));
+const Citation = lazy(() => import("./pages/Citation"));
+const UkElectricityMix = lazy(() => import("./pages/CoreExplainers").then(m => ({default:m.UkElectricityMix})));
+const CarbonIntensity = lazy(() => import("./pages/CoreExplainers").then(m => ({default:m.CarbonIntensity})));
+const Renewables = lazy(() => import("./pages/CoreExplainers").then(m => ({default:m.Renewables})));
+const GasGeneration = lazy(() => import("./pages/CoreExplainers").then(m => ({default:m.GasGeneration})));
+const NuclearPower = lazy(() => import("./pages/CoreExplainers").then(m => ({default:m.NuclearPower})));
+const Interconnectors = lazy(() => import("./pages/CoreExplainers").then(m => ({default:m.Interconnectors})));
+const ElectricityDemand = lazy(() => import("./pages/CoreExplainers").then(m => ({default:m.ElectricityDemand})));
+const UkElectricityGenerationLive = lazy(() => import("./pages/CoreExplainers").then(m => ({default:m.UkElectricityGenerationLive})));
+const CleanestTimeToUseElectricity = lazy(() => import("./pages/CoreExplainers").then(m => ({default:m.CleanestTimeToUseElectricity})));
+const UkWindPowerToday = lazy(() => import("./pages/GridInsightPages").then(m => ({default:m.UkWindPowerToday})));
+const UkSolarPowerToday = lazy(() => import("./pages/GridInsightPages").then(m => ({default:m.UkSolarPowerToday})));
+const GasShareOfElectricity = lazy(() => import("./pages/GridInsightPages").then(m => ({default:m.GasShareOfElectricity})));
+const RenewablesShareToday = lazy(() => import("./pages/GridInsightPages").then(m => ({default:m.RenewablesShareToday})));
+const CarbonIntensityToday = lazy(() => import("./pages/GridInsightPages").then(m => ({default:m.CarbonIntensityToday})));
+const Today = lazy(() => import("./pages/Today"));
+const Yesterday = lazy(() => import("./pages/Yesterday"));
+const PowerFlow = lazy(() => import("./pages/PowerFlow"));
+const ReportsIndex = lazy(() => import("./pages/Reports").then(m => ({default:m.ReportsIndex})));
+const WeeklyReportPage = lazy(() => import("./pages/Reports").then(m => ({default:m.WeeklyReportPage})));
+const RecordsIndex = lazy(() => import("./pages/Records").then(m => ({default:m.RecordsIndex})));
+const HighestRenewableShare = lazy(() => import("./pages/Records").then(m => ({default:m.HighestRenewableShare})));
+const HighestWindGeneration = lazy(() => import("./pages/Records").then(m => ({default:m.HighestWindGeneration})));
+const HighestSolarGeneration = lazy(() => import("./pages/Records").then(m => ({default:m.HighestSolarGeneration})));
+const HighestGasGeneration = lazy(() => import("./pages/Records").then(m => ({default:m.HighestGasGeneration})));
+const Social = lazy(() => import("./pages/Social"));
+const Measurement = lazy(() => import("./pages/Measurement"));
+const Glossary = lazy(() => import("./pages/Glossary"));
+const Partners = lazy(() => import("./pages/Partners"));
+const DigestPreview = lazy(() => import("./pages/DigestPreview"));
+const AdminSocialPosts = lazy(() => import("./pages/AdminSocialPosts"));
+const ShareDailySummary = lazy(() => import("./pages/ShareDailySummary"));
+const AdminDailySummary = lazy(() => import("./pages/AdminDailySummary"));
 import { RouteAnalytics } from "./components/RouteAnalytics";
 
 const queryClient = new QueryClient();
@@ -43,8 +64,11 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <RouteAnalytics />
-          <Routes>
+          <Suspense fallback={<main className="container mx-auto p-12" role="status">Loading this part of the grid…</main>}><Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/explore" element={<Explore />} />
+            <Route path="/wholesale-electricity-price" element={<GridSignalPage kind="price" />} />
+            <Route path="/pumped-storage" element={<GridSignalPage kind="storage" />} />
             <Route path="/about" element={<About />} />
             <Route path="/data" element={<Data />} />
             <Route path="/insights" element={<Insights />} />
@@ -87,7 +111,7 @@ const App = () => (
             <Route path="/admin/daily-summary" element={<AdminDailySummary />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
-          </Routes>
+          </Routes></Suspense>
         </BrowserRouter>
       </EnergyDataProvider>
     </TooltipProvider>

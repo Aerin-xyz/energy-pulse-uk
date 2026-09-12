@@ -69,7 +69,7 @@ const carbonSignal = (actual?: number) => {
 
 const priceSignal = (price?: number) => {
   if (!Number.isFinite(price)) return { label: 'Awaiting price', tone: 'muted' as const };
-  if ((price || 0) < 60) return { label: 'Cheap', tone: 'calm' as const };
+  if ((price || 0) < 60) return { label: 'Below £60/MWh', tone: 'calm' as const };
   if ((price || 0) < 120) return { label: 'Normal', tone: 'cyan' as const };
   if ((price || 0) < 180) return { label: 'Elevated', tone: 'amber' as const };
   return { label: 'Expensive', tone: 'rose' as const };
@@ -79,7 +79,7 @@ const frequencySignal = (hz?: number, status?: string) => {
   if (!Number.isFinite(hz)) return { label: 'Awaiting frequency', tone: 'muted' as const };
   if (status === 'normal' || Math.abs((hz || 50) - 50) < 0.08) return { label: 'Stable', tone: 'calm' as const };
   if (Math.abs((hz || 50) - 50) < 0.15) return { label: 'Watch', tone: 'amber' as const };
-  return { label: 'Stressed', tone: 'rose' as const };
+  return { label: 'Frequency deviation', tone: 'rose' as const };
 };
 
 const importSignal = (netMW: number) => {
@@ -105,8 +105,8 @@ export const GridIntelligenceHeader = ({
   const solarMW = valueFor(generationMix, ['Solar']);
   const gasMW = valueFor(generationMix, ['Gas']);
   const nuclearMW = valueFor(generationMix, ['Nuclear']);
-  const renewablesMW = valueFor(generationMix, ['Wind', 'Solar', 'Hydro', 'PSH']);
-  const lowCarbonMW = renewablesMW + nuclearMW + valueFor(generationMix, ['Biomass']);
+  const renewablesMW = valueFor(generationMix, ['Wind', 'Solar', 'Hydro', 'Biomass']);
+  const lowCarbonMW = renewablesMW + nuclearMW;
   const netInterconnectorMW = interconnectors.reduce((sum, item) => sum + (item.flow || 0), 0);
 
   const dominant = [...generationMix]
@@ -145,7 +145,7 @@ export const GridIntelligenceHeader = ({
         ? 'imports are high'
         : 'imports are supporting demand';
   const priceSentence = price.label !== 'Awaiting price'
-    ? `wholesale prices are ${price.label.toLowerCase()}`
+    ? `wholesale index is ${price.label.toLowerCase()}`
     : null;
   const marketSentence = [carbonSentence, transferSentence, priceSentence].filter(Boolean).join(', ');
 
@@ -165,16 +165,16 @@ export const GridIntelligenceHeader = ({
     {
       label: 'Renewable',
       value: `${renewableShare.toFixed(0)}%`,
-      caption: 'wind, solar, hydro and PSH',
+      caption: 'wind, solar, hydro and biomass',
       tone: renewableShare >= 45 ? 'calm' as const : renewableShare >= 25 ? 'cyan' as const : 'muted' as const,
       help: 'Renewable share includes wind, solar, hydro and pumped storage hydro in the domestic generation mix, excluding imports.',
     },
     {
       label: 'Low-carbon',
       value: `${lowCarbonShare.toFixed(0)}%`,
-      caption: 'renewables, nuclear and biomass',
+      caption: 'renewables and nuclear',
       tone: carbon.tone,
-      help: 'Low-carbon share includes renewables, nuclear and biomass in the domestic generation mix.',
+      help: 'Low-carbon share includes renewables and nuclear in the domestic generation mix.',
     },
     {
       label: 'Gas reliance',

@@ -41,7 +41,13 @@ const Methodology = () => {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-primary mb-3">Primary data sources</h2>
+          <h2 className="text-2xl font-semibold text-primary mb-3">Metric definitions used by the atlas</h2>
+          <p>Domestic generation excludes imports and pumped storage. Renewable share is wind, solar, hydro and biomass divided by domestic generation; low-carbon share additionally includes nuclear. Biomass is reported explicitly, not treated as zero-emission.</p>
+          <p>Estimated supply-balance demand is domestic generation plus signed net imports plus pumped-storage transfer. It is not a direct measure of national consumption and is not substituted for transmission demand based on a tolerance. Mixed source intervals and losses limit reconciliation.</p>
+          <p>Historical measured-generation reports retain their original definitions: archived renewable-share figures can exclude biomass and historical hydro can include pumped storage. They are not directly comparable to the atlas’s domestic-generation share. Corrections to archived evidence must be explicit.</p>
+          <p>Map connections are schematic country aggregates, not cable telemetry. Regional carbon markers are forecasts at approximate region centres. Northern Ireland is shown for geographic context but is outside Great Britain’s headline totals.</p>
+          <p>Forecast windows must consist of contiguous future intervals. The source retrieval time is not the forecast issue time. A timestamp ahead of the current time is never used as the last observation. Source age and operating mode are separate.</p>
+          <h2 className="text-2xl font-semibold text-primary mb-3 mt-8">Primary data sources</h2>
           <ul className="space-y-3 list-disc pl-5">
             <li><strong>Elexon BMRS / FUELINST:</strong> transmission-connected generation, balancing and related electricity market data.</li>
             <li><strong>NESO / National Grid ESO sources:</strong> grid demand, embedded generation context and system-level data where available.</li>
