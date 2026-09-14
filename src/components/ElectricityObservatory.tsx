@@ -38,6 +38,7 @@ export function ElectricityObservatory() {
   const carbon = useCarbonOutlook();
   const [now, setNow] = useState(Date.now());
   const [duration, setDuration] = useState(120);
+  const [motion, setMotion] = useState(true);
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 30000);
     return () => clearInterval(t);
@@ -79,8 +80,8 @@ export function ElectricityObservatory() {
     return { items, start: start.timestamp, end: end.timestamp };
   }, [history.data, now]);
   return (
-    <div className="observatory">
-      <CommandNavigation now={now} refresh={refetch} loading={loading}/>
+    <div className="observatory" data-motion={motion ? "on" : "off"}>
+      <CommandNavigation now={now} refresh={refetch} loading={loading} motion={motion} toggleMotion={()=>setMotion(v=>!v)}/>
       <main className="atlas-shell">
         {error && <p className="atlas-notice" role="status">Live refresh unavailable. Last known values retain their source timestamps.</p>}
         <GridCommandCentre data={data} history={history} carbon={carbon} now={now}/>

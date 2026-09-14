@@ -164,8 +164,8 @@ export function GridAtlas({
             <stop offset="1" stopColor="#07151c" stopOpacity="0" />
           </radialGradient>
           <linearGradient id="atlas-land" x2="1" y2="1">
-            <stop stopColor="#163d42" />
-            <stop offset="1" stopColor="#0e272e" />
+            <stop stopColor="#075381" />
+            <stop offset=".55" stopColor="#0b394d" /><stop offset="1" stopColor="#123a53" />
           </linearGradient>
           <pattern id="atlas-terrain" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".7" fill="#38bfee" opacity=".6"/><circle cx="6" cy="7" r=".45" fill="#18e1ce" opacity=".4"/></pattern>
           <filter id="atlas-glow">
@@ -266,6 +266,7 @@ export function GridAtlas({
                     )}
                   </>
                 )}
+                {fresh && g.known && g.flow !== 0 && <circle className="cc-node-pulse" cx={lx} cy={ly} r="10" fill="none" stroke="#46ffe1" strokeWidth="1" aria-hidden="true"/>}
                 <circle cx={lx} cy={ly} r="3" fill="#72d9bd" />
                 <circle
                   cx={x}

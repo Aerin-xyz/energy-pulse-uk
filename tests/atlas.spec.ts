@@ -147,3 +147,15 @@ test('expanded map is a keyboard-dismissable modal and restores focus',async({pa
  await expect(page.getByRole('dialog')).toHaveCount(0);
  await expect(page.getByRole('button',{name:'Expand map',exact:true})).toBeFocused();
 });
+
+test('ambient motion can be paused independently of live readings', async ({page})=>{
+ await page.goto('/');
+ await expect(page.locator('.cc-summary')).toContainText('36.9');
+ await page.getByRole('button',{name:'Pause ambient motion'}).click();
+ await expect(page.locator('.observatory')).toHaveAttribute('data-motion','off');
+ expect(await page.locator('.atlas-traveller:visible').count()).toBe(0);
+ expect(await page.locator('.cc-orb').evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
+ await expect(page.locator('.cc-summary')).toContainText('36.9');
+ await page.getByRole('button',{name:'Enable ambient motion'}).click();
+ await expect(page.locator('.observatory')).toHaveAttribute('data-motion','on');
+});
