@@ -4,21 +4,13 @@ import {
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
-  Clock3,
-  RefreshCw,
-  Wind,
-  Sun,
-  Radio,
-  Flame,
-  Droplets,
-  Leaf,
-  Zap,
 } from "lucide-react";
 import { useEnergyData } from "@/contexts/EnergyDataContext";
 import { useHistoricalGeneration } from "@/hooks/useHistoricalGeneration";
 import { useCarbonOutlook } from "@/hooks/useCarbonOutlook";
-import { GridAtlas } from "./GridAtlas";
-import { AtlasNavigation } from "./AtlasNavigation";
+
+import { CommandNavigation, GridCommandCentre } from "./GridCommandCentre";
+import "@/styles/command-centre.css";
 const HistoricalGenerationChart = lazy(() =>
   import("./HistoricalGenerationChart").then((m) => ({
     default: m.HistoricalGenerationChart,
@@ -28,10 +20,7 @@ import { StaticGridSnapshot } from "./StaticGridSnapshot";
 import {
   cleanWindow,
   finite,
-  fuelValue,
-  RENEWABLE_FUELS,
   sourceState,
-  supplyBalance,
   transfers,
 } from "@/lib/gridMetrics.mjs";
 import generated from "@/data/energyMixGenerated.json";
@@ -43,31 +32,12 @@ const time = (v: string | Date) =>
     minute: "2-digit",
     timeZone: "Europe/London",
   }).format(new Date(v));
-const colors: Record<string, string> = {
-  Wind: "#78dcb8",
-  Solar: "#f3c46d",
-  Nuclear: "#b8a2e3",
-  Gas: "#f09080",
-  Hydro: "#79b8de",
-  Biomass: "#a6bf7a",
-  Other: "#799099",
-  Coal: "#aaa5a0",
-};
-const icons: Record<string, typeof Wind> = {
-  Wind,
-  Solar: Sun,
-  Nuclear: Radio,
-  Gas: Flame,
-  Hydro: Droplets,
-  Biomass: Leaf,
-};
 export function ElectricityObservatory() {
   const { data, error, loading, refetch } = useEnergyData();
   const history = useHistoricalGeneration();
   const carbon = useCarbonOutlook();
   const [now, setNow] = useState(Date.now());
   const [duration, setDuration] = useState(120);
-  const [units, setUnits] = useState<"GW" | "%">("GW");
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 30000);
     return () => clearInterval(t);
@@ -75,19 +45,9 @@ export function ElectricityObservatory() {
   const mix = (data?.generationMix || [])
     .filter((x) => !["Imports", "PSH", "Pumped Storage"].includes(x.name))
     .sort((a, b) => b.value - a.value);
-  const total = data?.totalGenerationMW;
   const top = mix.find(item => finite(item.value) && item.value > 0);
-  const renewable = total
-    ? (fuelValue(mix, RENEWABLE_FUELS) / total) * 100
-    : null;
   const flow = transfers(data?.interconnectors);
-  const demand = supplyBalance(
-    total,
-    data?.interconnectors,
-    data?.storage?.netMW,
-  );
   const freshness = data?.dataFreshness?.sourceFreshness;
-  const generationState = sourceState(freshness?.generation?.timestamp, 5, now);
   const best = useMemo(
     () => cleanWindow(carbon.periods, duration, now),
     [carbon.periods, duration, now],
@@ -120,224 +80,10 @@ export function ElectricityObservatory() {
   }, [history.data, now]);
   return (
     <div className="observatory">
-      <AtlasNavigation />
+      <CommandNavigation now={now} refresh={refetch} loading={loading}/>
       <main className="atlas-shell">
-        <section className="atlas-intro">
-          <div>
-            <p className="atlas-eyebrow">
-              <span className="atlas-dot" /> GREAT BRITAIN / ELECTRICITY
-              INTELLIGENCE
-            </p>
-            <h1>
-              Britain’s electricity.
-              <br />
-              <span>Live, explained.</span>
-            </h1>
-            <p className="atlas-deck">
-              A living picture of what powers us. Follow the flows.
-              <br className="atlas-desktop-break" /> Understand the changes.
-              Look a little further ahead.
-            </p>
-          </div>
-          <div className="atlas-clock">
-            <span>
-              {new Intl.DateTimeFormat("en-GB", {
-                day: "2-digit",
-                month: "short",
-                year: "numeric",
-                timeZone: "Europe/London",
-              }).format(now)}
-            </span>
-            <strong>
-              {time(new Date(now))}
-              <small> UK</small>
-            </strong>
-            <button onClick={() => refetch()} disabled={loading}>
-              <RefreshCw size={13} />
-              {loading ? "Refreshing…" : "Refresh sources"}
-            </button>
-          </div>
-        </section>
-        {error && (
-          <p className="atlas-notice" role="status">
-            Live refresh unavailable.{" "}
-            {data
-              ? "Last known values retain their source timestamps."
-              : "No current values are being inferred."}
-          </p>
-        )}
-        <div className="atlas-hero">
-          <GridAtlas
-            flows={data?.interconnectors || []}
-            regions={carbon.regions}
-            regionFrom={carbon.from}
-            regionTo={carbon.to}
-            flowTime={freshness?.interconnectors?.timestamp || undefined}
-            now={now}
-          />
-          <aside className="atlas-now">
-            <p className="atlas-eyebrow">
-              01 / NOW{" "}
-              <span
-                className={
-                  generationState.fresh
-                    ? "atlas-status"
-                    : "atlas-status delayed"
-                }
-              >
-                {generationState.label}
-              </span>
-            </p>
-            <h2>
-              {top
-                ? `${top.name} is ${top.name === "Wind" ? "setting the pace." : "leading the mix."}`
-                : "The grid, in focus."}
-            </h2>
-            <p>
-              {top
-                ? `${gw(top.value)} GW of ${top.name.toLowerCase()} in the latest generation reading. ${finite(flow.net) ? `Britain is ${flow.net > 0 ? "a net importer" : flow.net < 0 ? "a net exporter" : "balanced across its connections"}.` : "Transfer data is incomplete."}`
-                : "Connecting to public electricity sources. Missing readings stay missing."}
-            </p>
-            <div className="atlas-key-number">
-              <span>DOMESTIC GENERATION</span>
-              <div>
-                {gw(total)}
-                <small> GW</small>
-              </div>
-              <div className="atlas-mini-composition">
-                {mix.map((m) => (
-                  <span
-                    key={m.name}
-                    style={{
-                      width: `${total ? (m.value / total) * 100 : 0}%`,
-                      background: colors[m.name] || "#789099",
-                    }}
-                    title={`${m.name}: ${gw(m.value)} GW`}
-                  />
-                ))}
-              </div>
-              <small>Excludes imports and pumped storage</small>
-            </div>
-            <dl className="atlas-now-metrics">
-              <div>
-                <dt>Renewable share</dt>
-                <dd>
-                  {finite(renewable) ? renewable.toFixed(1) : "—"}
-                  <small>%</small>
-                </dd>
-              </div>
-              <div>
-                <dt>
-                  Carbon intensity{" "}
-                  <small>
-                    {sourceState(freshness?.carbon?.timestamp, 30, now).label}
-                  </small>
-                </dt>
-                <dd>
-                  {data?.carbonIntensity?.actual ?? "—"}
-                  <small> gCO₂/kWh</small>
-                </dd>
-              </div>
-              <div>
-                <dt>
-                  Estimated demand <small>Supply-balance definition</small>
-                </dt>
-                <dd>
-                  {gw(demand)}
-                  <small> GW</small>
-                </dd>
-              </div>
-            </dl>
-            <Link to="/methodology" className="atlas-text-link">
-              Understand these numbers <ArrowUpRight size={14} />
-            </Link>
-            <div className="atlas-now-foot">
-              <Clock3 size={13} />
-              <span>
-                Source intervals differ. “Live” means latest available, not
-                instantaneous.
-              </span>
-            </div>
-          </aside>
-        </div>
-        <section
-          className="atlas-generation"
-          aria-labelledby="generation-heading"
-        >
-          <div className="atlas-section-head">
-            <div>
-              <p className="atlas-eyebrow">THE MIX</p>
-              <h2 id="generation-heading">Many sources. One system.</h2>
-            </div>
-            <div className="atlas-tabs">
-              {(["GW", "%"] as const).map((u) => (
-                <button
-                  key={u}
-                  aria-pressed={units === u}
-                  onClick={() => setUnits(u)}
-                >
-                  {u}
-                </button>
-              ))}
-            </div>
-          </div>
-          <div className="atlas-fuel-grid">
-            {mix.length ? (
-              mix.map((m) => {
-                const Icon = icons[m.name] || Zap;
-                return (
-                  <Link
-                    key={m.name}
-                    to={
-                      m.name === "Wind"
-                        ? "/uk-wind-power-today"
-                        : m.name === "Solar"
-                          ? "/uk-solar-power-today"
-                          : m.name === "Gas"
-                            ? "/gas-generation"
-                            : m.name === "Nuclear"
-                              ? "/nuclear-power"
-                              : "/explore"
-                    }
-                    className="atlas-fuel"
-                    style={
-                      {
-                        "--fuel": colors[m.name] || "#789099",
-                      } as React.CSSProperties
-                    }
-                  >
-                    <span>
-                      <Icon size={17} />
-                      {m.name}
-                      <ArrowUpRight size={12} />
-                    </span>
-                    <strong>
-                      {units === "GW"
-                        ? gw(m.value)
-                        : total
-                          ? ((m.value / total) * 100).toFixed(1)
-                          : "—"}
-                      <small>{units}</small>
-                    </strong>
-                    <div className="atlas-fuel-track">
-                      <i
-                        style={{
-                          width: `${total ? (m.value / total) * 100 : 0}%`,
-                        }}
-                      />
-                    </div>
-                  </Link>
-                );
-              })
-            ) : (
-              <p className="atlas-empty">Awaiting generation readings…</p>
-            )}
-          </div>
-          <p className="atlas-caption">
-            Share of domestic generation · renewables include wind, solar, hydro
-            and biomass; pumped storage is separate.
-          </p>
-        </section>
+        {error && <p className="atlas-notice" role="status">Live refresh unavailable. Last known values retain their source timestamps.</p>}
+        <GridCommandCentre data={data} history={history} carbon={carbon} now={now}/>
         <section className="atlas-editorial">
           <article>
             <p className="atlas-eyebrow">02 / WHAT CHANGED</p>
@@ -394,7 +140,7 @@ export function ElectricityObservatory() {
               Read the explanation <ArrowUpRight size={14} />
             </Link>
           </article>
-          <article className="atlas-outlook">
+          <article className="atlas-outlook" id="outlook">
             <p className="atlas-eyebrow">04 / WHAT HAPPENS NEXT</p>
             <h2>A cleaner window.</h2>
             <label className="atlas-duration">

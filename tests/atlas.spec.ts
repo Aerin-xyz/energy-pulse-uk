@@ -51,10 +51,10 @@ for (const width of [390, 768, 1440])
     await page.goto("/");
     await expect(
       page.getByRole("heading", {
-        name: "Britain’s electricity. Live, explained.",
+        name: "Grid Command Centre",
       }),
     ).toBeVisible();
-    await expect(page.locator(".atlas-now")).toContainText("36.9");
+    await expect(page.locator(".cc-summary")).toContainText("36.9");
     await expect(page.locator(".atlas-signals")).toContainText("0.9");
     await expect(page.locator(".atlas-outlook")).toContainText(
       "Lowest average forecast",
@@ -109,14 +109,14 @@ test("unavailable readings do not invent a trend or forecast", async ({
     "No complete future window",
   );
   await expect(page.locator(".atlas-now")).toContainText(
-    "Missing readings stay missing",
+    "Unavailable",
   );
-  await expect(page.locator(".atlas-key-number")).toContainText("—");
+  await expect(page.locator(".cc-donut")).toContainText("—");
 });
 test("reduced motion hides flow travellers", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
-  await expect(page.locator(".atlas-now")).toContainText("36.9");
+  await expect(page.locator(".cc-summary")).toContainText("36.9");
   expect(await page.locator(".atlas-traveller:visible").count()).toBe(0);
 });
 test("archived HTML and current snapshot have correct canonical meaning without JavaScript", async ({

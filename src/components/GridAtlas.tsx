@@ -114,7 +114,7 @@ export function GridAtlas({
     >
       <div className="atlas-toolbar">
         <span>
-          <Layers size={14} /> THE ELECTRICITY ATLAS
+          <Layers size={14} /> Live Grid Map
         </span>
         <div className="atlas-tabs" aria-label="Map layer">
           {(["connections", "carbon"] as const).map((m) => (
@@ -167,6 +167,7 @@ export function GridAtlas({
             <stop stopColor="#163d42" />
             <stop offset="1" stopColor="#0e272e" />
           </linearGradient>
+          <pattern id="atlas-terrain" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".7" fill="#38bfee" opacity=".6"/><circle cx="6" cy="7" r=".45" fill="#18e1ce" opacity=".4"/></pattern>
           <filter id="atlas-glow">
             <feGaussianBlur stdDeviation="4" />
           </filter>
@@ -190,6 +191,7 @@ export function GridAtlas({
             fill={c.name === "United Kingdom" ? "url(#atlas-land)" : "#101e27"}
           />
         ))}
+        {countries.filter(c=>c.name==='United Kingdom').map(c=><path key="terrain" d={c.path} fill="url(#atlas-terrain)" pointerEvents="none" aria-hidden="true"/>)}
         <text
           x="150"
           y="235"
@@ -292,6 +294,12 @@ export function GridAtlas({
               </g>
             );
           })}
+        {mode === "connections" && regions.filter(r=>[1,3,5,7,10,11].includes(r.regionid)).map(r=>{
+          const c=centres[r.regionid];if(!c)return null;
+          const x=(c[0]+12)*40,y=(61-c[1])*63;
+          const left=[1,3,7,11].includes(r.regionid);const bx=left?x-155:x+28;const by=y-29;
+          return <g className="cc-region-card" key={r.regionid} pointerEvents="none"><line x1={x} y1={y} x2={left?bx+135:bx} y2={by+20}/><circle cx={x} cy={y} r="8" fill="#13edca" opacity=".2"/><circle cx={x} cy={y} r="2.5" fill="#72ffe0"/><rect x={bx} y={by} width="135" height="43" rx="4"/><text x={bx+8} y={by+13}>{r.shortname}</text><text className="cc-region-reading" x={bx+8} y={by+29}>{r.intensity.forecast}<tspan fontSize="8" fontWeight="400"> gCO₂/kWh forecast</tspan></text></g>
+        })}
         {mode === "carbon" &&
           regions.map((r) => {
             const c = centres[r.regionid];
@@ -335,7 +343,7 @@ export function GridAtlas({
       <div className="atlas-map-note">
         <span className="atlas-dot" />{" "}
         {mode === "connections"
-          ? "Schematic connections · positive flow into GB"
+          ? "Schematic flows into GB · labels: regional carbon forecasts"
           : "Regional forecasts · gCO₂/kWh · approximate region centres"}
       </div>
       {mode === "carbon" && !regions.length && (

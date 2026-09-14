@@ -1,108 +1,108 @@
 {
-  "generatedAt": "2026-09-14T13:22:20.160Z",
+  "generatedAt": "2026-09-14T18:23:21.754Z",
   "definitionVersion": "gb-domestic-v1",
   "sourceFreshness": {
-    "generation": {
-      "label": "Live generation",
-      "source": "Elexon FUELINST",
-      "timestamp": "2026-09-14T13:15:00.000Z",
-      "cadenceMinutes": 5,
-      "status": "live"
-    },
     "wind": {
       "label": "Embedded wind",
       "source": "NESO embedded wind",
+      "status": "live",
       "timestamp": null,
-      "cadenceMinutes": 30,
-      "status": "live"
-    },
-    "solar": {
-      "label": "Solar",
-      "source": "PV Live",
-      "timestamp": "2026-09-14T13:00:00.000Z",
-      "cadenceMinutes": 30,
-      "status": "live"
-    },
-    "interconnectors": {
-      "label": "Transfers",
-      "source": "ENTSO-E/BMRS",
-      "timestamp": "2026-09-14T12:00:00.000Z",
-      "cadenceMinutes": 30,
-      "status": "live"
-    },
-    "demand": {
-      "label": "Demand",
-      "source": "BMRS ITSDO",
-      "timestamp": null,
-      "cadenceMinutes": 30,
-      "status": "live"
-    },
-    "carbon": {
-      "label": "Carbon",
-      "source": "Carbon Intensity API",
-      "timestamp": "2026-09-14T12:30:00.000Z",
-      "cadenceMinutes": 30,
-      "status": "live"
+      "cadenceMinutes": 30
     },
     "price": {
       "label": "Market price",
       "source": "Elexon Market Index Price",
-      "timestamp": "2026-09-14T13:00:00.000Z",
-      "cadenceMinutes": 30,
-      "status": "live"
+      "status": "live",
+      "timestamp": "2026-09-14T18:00:00.000Z",
+      "cadenceMinutes": 30
     },
-    "frequency": {
-      "label": "Grid frequency",
-      "source": "Elexon FREQ",
-      "timestamp": "2026-09-14T13:21:45.000Z",
-      "cadenceMinutes": 2,
-      "status": "normal"
+    "solar": {
+      "label": "Solar",
+      "source": "PV Live",
+      "status": "live",
+      "timestamp": "2026-09-14T18:00:00.000Z",
+      "cadenceMinutes": 30
+    },
+    "carbon": {
+      "label": "Carbon",
+      "source": "Carbon Intensity API",
+      "status": "live",
+      "timestamp": "2026-09-14T17:30:00.000Z",
+      "cadenceMinutes": 30
+    },
+    "demand": {
+      "label": "Demand",
+      "source": "BMRS ITSDO",
+      "status": "live",
+      "timestamp": null,
+      "cadenceMinutes": 30
     },
     "storage": {
       "label": "Pumped storage",
       "source": "Elexon FUELINST/BMRS",
-      "timestamp": "2026-09-14T13:15:00.000Z",
-      "cadenceMinutes": 5,
-      "status": "charging"
+      "status": "generating",
+      "timestamp": "2026-09-14T18:10:00.000Z",
+      "cadenceMinutes": 5
+    },
+    "frequency": {
+      "label": "Grid frequency",
+      "source": "Elexon FREQ",
+      "status": "normal",
+      "timestamp": "2026-09-14T18:17:45.000Z",
+      "cadenceMinutes": 2
+    },
+    "generation": {
+      "label": "Live generation",
+      "source": "Elexon FUELINST",
+      "status": "live",
+      "timestamp": "2026-09-14T18:10:00.000Z",
+      "cadenceMinutes": 5
     },
     "stationLoad": {
       "label": "Station load",
       "source": "NESO Demand Data Update",
+      "status": "latest-actual",
       "timestamp": "2026-09-14T08:30:00.000Z",
-      "cadenceMinutes": 30,
-      "status": "latest-actual"
+      "cadenceMinutes": 30
+    },
+    "interconnectors": {
+      "label": "Transfers",
+      "source": "ENTSO-E/BMRS",
+      "status": "live",
+      "timestamp": "2026-09-14T17:00:00.000Z",
+      "cadenceMinutes": 30
     }
   },
-  "timestamp": "2026-09-14T13:15:00.000Z",
+  "timestamp": "2026-09-14T18:10:00.000Z",
   "source": "Elexon FUELINST/BMRS + ESO + PV Live",
   "status": "snapshot",
   "upstreamStatus": "live",
   "freshnessNote": "dataset-fuelinst-stream@data",
   "metrics": {
-    "demandMW": 36168,
-    "generationMW": 30488,
-    "carbonIntensity": 109,
+    "demandMW": 33075,
+    "generationMW": 33360,
+    "carbonIntensity": 156,
     "carbonIndex": "moderate",
-    "renewableShare": 61.94568354762529,
-    "gasShare": 25.085279454211495,
-    "windMW": 8566,
-    "solarMW": 7461,
-    "gasMW": 7648,
-    "nuclearMW": 3337,
-    "importsMW": 6390,
-    "exportsMW": 583
+    "renewableShare": 49.0347721822542,
+    "gasShare": 34.490407673860915,
+    "windMW": 13053,
+    "solarMW": 352,
+    "gasMW": 11506,
+    "nuclearMW": 3293,
+    "importsMW": 975,
+    "exportsMW": 1630
   },
   "display": {
-    "demand": "36.2 GW",
-    "generation": "30.5 GW",
-    "carbonIntensity": "109 gCO₂/kWh",
+    "demand": "33.1 GW",
+    "generation": "33.4 GW",
+    "carbonIntensity": "156 gCO₂/kWh",
     "carbonIndex": "moderate",
-    "renewableShare": "62%",
-    "gasShare": "25%",
-    "wind": "8.6 GW",
-    "solar": "7.5 GW",
-    "gas": "7.6 GW",
+    "renewableShare": "49%",
+    "gasShare": "34%",
+    "wind": "13.1 GW",
+    "solar": "0.4 GW",
+    "gas": "11.5 GW",
     "nuclear": "3.3 GW",
-    "importsExports": "5.8 GW net imports"
+    "importsExports": "0.7 GW net exports"
   }
 }
