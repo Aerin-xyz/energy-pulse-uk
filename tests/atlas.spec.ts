@@ -39,6 +39,7 @@ test.beforeEach(async ({ page }) => {
       },
     }),
   );
+  await page.route("**/data.elexon.co.uk/bmrs/api/v1/datasets/FUELINST?**",route=>route.fulfill({json:{data:[]}}));
   await page.route("**/functions/v1/historical-generation", (route) =>
     route.fulfill({
       json: { data: [], totalPeriods: 0, meta: { periods: 0 } },
@@ -62,6 +63,7 @@ for (const width of [390, 768, 1440])
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBeLessThanOrEqual(width);
+    await page.getByRole("button", { name: "Connections", exact: true }).click();
     await page.getByRole("button", { name: "France", exact: true }).click();
     await expect(
       page.getByRole("region", { name: "Selected map evidence" }),
@@ -158,4 +160,30 @@ test('ambient motion can be paused independently of live readings', async ({page
  await expect(page.locator('.cc-summary')).toContainText('36.9');
  await page.getByRole('button',{name:'Enable ambient motion'}).click();
  await expect(page.locator('.observatory')).toHaveAttribute('data-motion','on');
+});
+
+test('cable layer keeps French readings separate and shows signed evidence',async({page})=>{
+ await page.clock.setFixedTime(new Date('2026-09-14T20:32:00Z'));
+ const cables=JSON.parse(readFileSync(new URL('./fixtures/cable-flows.json',import.meta.url),'utf8'));
+ await page.route('**/data.elexon.co.uk/bmrs/api/v1/datasets/FUELINST?**',route=>route.fulfill({json:cables}));
+ await page.goto('/');
+ await expect(page.locator('.cable-map-layer')).toContainText('603 MW ← GB');
+ await page.getByRole('button',{name:'ElecLink',exact:true}).click();
+ await expect(page.getByRole('region',{name:'Selected map evidence'})).toContainText('603 MW · exporting from GB');
+ await expect(page.locator('.cable-facts')).toContainText('60.3%');
+ await expect(page.locator('.cable-history')).toBeVisible();
+ await page.getByRole('button',{name:'Close map detail'}).click();
+ await page.getByRole('button',{name:'BritNed',exact:true}).click();
+ await expect(page.getByRole('region',{name:'Selected map evidence'})).toContainText('zero measured flow');
+});
+test('delayed cable readings are stationary and unavailable is not zero',async({page})=>{
+ await page.clock.setFixedTime(new Date('2026-09-14T22:00:00Z'));
+ const cables=JSON.parse(readFileSync(new URL('./fixtures/cable-flows.json',import.meta.url),'utf8'));
+ cables.data=cables.data.filter(r=>r.fuelType!=='INTELEC');
+ await page.route('**/data.elexon.co.uk/bmrs/api/v1/datasets/FUELINST?**',route=>route.fulfill({json:cables}));
+ await page.goto('/');
+ await expect(page.locator('.cable-map-layer')).toContainText('delayed');
+ expect(await page.locator('.cable-map-layer .atlas-traveller').count()).toBe(0);
+ await page.getByRole('button',{name:'ElecLink',exact:true}).click();
+ await expect(page.getByRole('region',{name:'Selected map evidence'})).toContainText('Reading unavailable');
 });

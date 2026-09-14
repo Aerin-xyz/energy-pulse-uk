@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Layers, Maximize2, X } from "lucide-react";
+import { cables } from "@/data/atlas/interconnectors";
+import { useCableFlows } from "@/hooks/useCableFlows";
+import { cableReadings } from "@/lib/cableReadings.mjs";
+import { CableMapLayer, CableEvidence } from "./CableMapLayer";
 import countries from "@/data/atlas/countries.json";
 import { sourceState } from "@/lib/gridMetrics.mjs";
 import type { CarbonRegion } from "@/hooks/useCarbonOutlook";
@@ -58,7 +62,8 @@ export function GridAtlas({
   flowTime?: string;
   now: number;
 }) {
-  const [mode, setMode] = useState<"connections" | "carbon">("connections");
+  const [mode, setMode] = useState<"cables" | "connections" | "carbon">("cables");
+  const cableFeed = useCableFlows();
   const [selected, setSelected] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
   const stageRef = useRef<HTMLElement>(null);
@@ -91,6 +96,7 @@ export function GridAtlas({
     };
   });
   const detail = grouped.find((g) => g.country === selected);
+  const cable = mode === "cables" ? cables.find(c=>c.id===selected) : undefined;
   const region = regions.find((r) => r.shortname === selected);
   return (
     <section
@@ -117,7 +123,7 @@ export function GridAtlas({
           <Layers size={14} /> Live Grid Map
         </span>
         <div className="atlas-tabs" aria-label="Map layer">
-          {(["connections", "carbon"] as const).map((m) => (
+          {(["cables", "connections", "carbon"] as const).map((m) => (
             <button
               key={m}
               aria-pressed={mode === m}
@@ -126,14 +132,14 @@ export function GridAtlas({
                 setSelected(null);
               }}
             >
-              {m === "connections" ? "Connections" : "Regional carbon"}
+              {m === "cables" ? "Cables" : m === "connections" ? "Connections" : "Regional carbon"}
             </button>
           ))}
         </div>
       </div>
       <svg
         className="atlas-map"
-        viewBox="65 55 825 720"
+        viewBox={mode === "cables" ? "65 55 855 755" : "65 55 825 720"}
         role="group"
         aria-labelledby="atlas-map-title atlas-map-desc"
       >
@@ -212,6 +218,7 @@ export function GridAtlas({
         <text x="285" y="541" className="atlas-place">
           WALES
         </text>
+        {mode === "cables" && <CableMapLayer rows={cableFeed.rows} now={now} selected={selected} select={setSelected}/>}
         {mode === "connections" &&
           grouped.map((g) => {
             const [x, y] = g.point,
@@ -343,8 +350,8 @@ export function GridAtlas({
       </svg>
       <div className="atlas-map-note">
         <span className="atlas-dot" />{" "}
-        {mode === "connections"
-          ? "Schematic flows into GB · labels: regional carbon forecasts"
+        {mode === "cables" ? "Elexon · mint imports / violet exports · approximate terminals & schematic paths" : mode === "connections"
+          ? "Country aggregates · schematic flows · labels: carbon forecasts"
           : "Regional forecasts · gCO₂/kWh · approximate region centres"}
       </div>
       {mode === "carbon" && !regions.length && (
@@ -367,11 +374,12 @@ export function GridAtlas({
       </div>
       <div
         className="atlas-access-list"
+        data-layer={mode}
         aria-label={
-          mode === "connections" ? "Select a connection" : "Select a region"
+          mode === "cables" ? "Select a cable" : mode === "connections" ? "Select a connection" : "Select a region"
         }
       >
-        {mode === "connections"
+        {mode === "cables" ? cables.map(c=>{const r=cableReadings(cableFeed.rows,c.code,now);return <button key={c.id} aria-label={c.name} onClick={()=>setSelected(c.id)} aria-pressed={selected===c.id}><span>{c.name}</span><strong>{r.mw===null?"Unavailable":`${Math.abs(r.mw)} MW ${r.mw>0?"in":r.mw<0?"out":"zero"}`}</strong></button>}) : mode === "connections"
           ? grouped.map((g) => (
               <button
                 key={g.country}
@@ -405,8 +413,8 @@ export function GridAtlas({
           >
             <X size={16} />
           </button>
-          <h3>{selected}</h3>
-          {detail ? (
+          {!cable && <h3>{selected}</h3>}
+          {cable ? <CableEvidence cable={cable} rows={cableFeed.rows} now={now} error={cableFeed.error}/> : detail ? (
             <>
               <p>
                 {detail.known
