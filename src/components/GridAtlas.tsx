@@ -1,4 +1,4 @@
-import {assets, GenerationMapLayer, AssetEvidence, useAssetSnapshot, assetTime} from './GenerationMapLayer';
+import {assets, GenerationMapLayer, AssetEvidence, useAssetSnapshot, assetTime, matchingAssets} from './GenerationMapLayer';
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Layers, Maximize2, X } from "lucide-react";
 import { cables } from "@/data/atlas/interconnectors";
@@ -66,6 +66,7 @@ export function GridAtlas({
   const [mode, setMode] = useState<"cables" | "connections" | "carbon" | "generation">("cables");
   const cableFeed = useCableFlows();
   const [assetFilter,setAssetFilter]=useState("All");
+  const [assetSearch,setAssetSearch]=useState("");
   const {snapshot:assetSnapshot,error:assetError}=useAssetSnapshot(mode === "generation");
   const [selected, setSelected] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
@@ -114,7 +115,7 @@ export function GridAtlas({
           else setExpanded(false);
         }
         if (expanded && e.key === 'Tab') {
-          const nodes = Array.from(stageRef.current?.querySelectorAll<HTMLElement>('button, a[href], [tabindex="0"]') || []).filter(el => el.getClientRects().length);
+          const nodes = Array.from(stageRef.current?.querySelectorAll<HTMLElement>('button, input, a[href], [tabindex="0"]') || []).filter(el => el.getClientRects().length);
           const first=nodes[0], last=nodes[nodes.length-1];
           if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
           if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
@@ -140,7 +141,7 @@ export function GridAtlas({
           ))}
         </div>
       </div>
-      {mode === "generation" && <div className="asset-controls"><p>Selected major sites · <strong>metered history, not live</strong></p><div aria-label="Generation type">{["All",...new Set(assets.map(a=>a.type))].map(t=><button key={t} aria-pressed={assetFilter===t} onClick={()=>{setAssetFilter(t);setSelected(null)}}>{t}</button>)}</div></div>}
+      {mode === "generation" && <div className="asset-controls"><p>{assets.length} GB sites above 500 MW installed · <strong>metered history, not live</strong></p><label className="asset-search"><span>Find a generation site</span><input type="search" placeholder="Search sites, fuels or countries" value={assetSearch} onChange={e=>{setAssetSearch(e.target.value);setSelected(null)}}/></label><div aria-label="Generation type">{["All",...new Set(assets.map(a=>a.type))].map(t=><button key={t} aria-pressed={assetFilter===t} onClick={()=>{setAssetFilter(t);setSelected(null)}}>{t}</button>)}</div></div>}
       <svg
         className="atlas-map"
         viewBox={mode === "generation" ? "155 80 520 650" : mode === "cables" ? "65 55 855 755" : "65 55 825 720"}
@@ -148,11 +149,11 @@ export function GridAtlas({
         aria-labelledby="atlas-map-title atlas-map-desc"
       >
         <title id="atlas-map-title">
-          Great Britain and its electricity connections
+          {mode === "generation" ? "Great Britain generation sites above 500 MW installed" : "Great Britain and its electricity connections"}
         </title>
         <desc id="atlas-map-desc">
           Geographic country outlines. Connection lines are schematic, not
-          physical cable routes. All values are available in the list below the
+          physical cable routes. Generation markers use approximate register positions; numbered markers group nearby sites. All values are available in the list below the
           map.
         </desc>
         <defs>
@@ -351,7 +352,7 @@ export function GridAtlas({
               </g>
             );
           })}
-        {mode === "generation" && <GenerationMapLayer filter={assetFilter} selected={selected} onSelect={setSelected} snapshot={assetSnapshot}/>}
+        {mode === "generation" && <GenerationMapLayer filter={assetFilter} search={assetSearch} selected={selected} onSelect={setSelected} snapshot={assetSnapshot}/>}
       </svg>
       <div className="atlas-map-note">
         <span className="atlas-dot" />{" "}
@@ -373,10 +374,11 @@ export function GridAtlas({
         >
           <Maximize2 size={13} /> {expanded ? 'Close expanded map' : 'Expand map'}
         </button>
-        <a href="/carbon-intensity/">
-          Check a postcode <ArrowUpRight size={13} />
+        <a href={mode === "generation" ? "https://www.gov.uk/government/statistics/electricity-chapter-5-digest-of-united-kingdom-energy-statistics-dukes" : "/carbon-intensity/"}>
+          {mode === "generation" ? "Asset register" : "Check a postcode"} <ArrowUpRight size={13} />
         </a>
       </div>
+      {mode === "generation" && <p className="asset-results" role="status">{matchingAssets(assetFilter,assetSearch).length} sites shown · May 2026 installed-capacity register · numbered markers group nearby sites{matchingAssets(assetFilter,assetSearch).length===0 ? ". No matching sites; try another search or fuel." : ""}</p>}
       <div
         className="atlas-access-list"
         data-layer={mode}
@@ -384,7 +386,7 @@ export function GridAtlas({
           mode === "generation" ? "Select a generation asset" : mode === "cables" ? "Select a cable" : mode === "connections" ? "Select a connection" : "Select a region"
         }
       >
-        {mode === "generation" ? assets.filter(a=>assetFilter==="All"||a.type===assetFilter).map(a=><button key={a.id} aria-pressed={selected===a.id} onClick={()=>setSelected(a.id)}><span>{a.name}</span><strong>{a.type}</strong></button>) : mode === "cables" ? cables.map(c=>{const r=cableReadings(cableFeed.rows,c.code,now);return <button key={c.id} aria-label={c.name} onClick={()=>setSelected(c.id)} aria-pressed={selected===c.id}><span>{c.name}</span><strong>{r.mw===null?"Unavailable":`${Math.abs(r.mw)} MW ${r.mw>0?"in":r.mw<0?"out":"zero"}`}</strong></button>}) : mode === "connections"
+        {mode === "generation" ? matchingAssets(assetFilter,assetSearch).map(a=><button key={a.id} aria-pressed={selected===a.id} onClick={()=>setSelected(a.id)}><span>{a.name}</span><strong>{a.installedCapacityMW.toLocaleString("en-GB")} MW · {a.type}</strong></button>) : mode === "cables" ? cables.map(c=>{const r=cableReadings(cableFeed.rows,c.code,now);return <button key={c.id} aria-label={c.name} onClick={()=>setSelected(c.id)} aria-pressed={selected===c.id}><span>{c.name}</span><strong>{r.mw===null?"Unavailable":`${Math.abs(r.mw)} MW ${r.mw>0?"in":r.mw<0?"out":"zero"}`}</strong></button>}) : mode === "connections"
           ? grouped.map((g) => (
               <button
                 key={g.country}
@@ -419,7 +421,7 @@ export function GridAtlas({
             <X size={16} />
           </button>
           {!cable && mode !== "generation" && <h3>{selected}</h3>}
-          {mode === "generation" ? <AssetEvidence id={selected} snapshot={assetSnapshot} error={assetError}/> : cable ? <CableEvidence cable={cable} rows={cableFeed.rows} now={now} error={cableFeed.error}/> : detail ? (
+          {mode === "generation" ? <AssetEvidence id={selected} snapshot={assetSnapshot} error={assetError} onSelect={setSelected}/> : cable ? <CableEvidence cable={cable} rows={cableFeed.rows} now={now} error={cableFeed.error}/> : detail ? (
             <>
               <p>
                 {detail.known
@@ -459,7 +461,7 @@ export function GridAtlas({
           Natural Earth
         </a>{" "}
         (public domain). Northern Ireland operates in the separate all-island
-        electricity market.
+        electricity market. {mode === "generation" && <>Asset records: DESNZ, <a href="https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/">Open Government Licence v3.0</a>.</>}
       </p>
     </section>
   );

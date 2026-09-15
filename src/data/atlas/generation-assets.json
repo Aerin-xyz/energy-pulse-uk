@@ -3,8 +3,8 @@
     "id": "drax",
     "name": "Drax",
     "type": "Biomass",
-    "latitude": 53.7358,
-    "longitude": -0.9964,
+    "latitude": 53.73559,
+    "longitude": -0.9911,
     "units": [
       "T_DRAXX-1",
       "T_DRAXX-2",
@@ -12,95 +12,97 @@
       "T_DRAXX-4"
     ],
     "registeredCapacityMW": 2641.048,
-    "geographySource": "https://en.wikipedia.org/wiki/Drax_Power_Station"
-  },
-  {
-    "id": "hornsea-one",
-    "name": "Hornsea One",
-    "type": "Offshore wind",
-    "latitude": 53.885,
-    "longitude": 1.7911,
-    "units": [
-      "T_HOWAO-1",
-      "T_HOWAO-2",
-      "T_HOWAO-3"
+    "installedCapacityMW": 2580,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "BIO-000501"
     ],
-    "registeredCapacityMW": 1200.0,
-    "geographySource": "https://en.wikipedia.org/wiki/Hornsea_Wind_Farm"
+    "mappingNote": "",
+    "scopeNote": ""
   },
   {
-    "id": "sizewell-b",
-    "name": "Sizewell B",
-    "type": "Nuclear",
-    "latitude": 52.215,
-    "longitude": 1.6197,
-    "units": [
-      "T_SIZB-1",
-      "T_SIZB-2"
-    ],
-    "registeredCapacityMW": 1286.92,
-    "geographySource": "https://en.wikipedia.org/wiki/Sizewell_nuclear_power_stations"
-  },
-  {
-    "id": "torness",
-    "name": "Torness",
-    "type": "Nuclear",
-    "latitude": 55.9681,
-    "longitude": -2.4092,
-    "units": [
-      "T_TORN-1",
-      "T_TORN-2"
-    ],
-    "registeredCapacityMW": 1352.0,
-    "geographySource": "https://en.wikipedia.org/wiki/Torness_nuclear_power_station"
-  },
-  {
-    "id": "whitelee",
-    "name": "Whitelee",
-    "type": "Onshore wind",
-    "latitude": 55.6728,
-    "longitude": -4.2856,
-    "units": [
-      "T_WHILW-1",
-      "T_WHILW-2"
-    ],
-    "registeredCapacityMW": 515.0,
-    "geographySource": "https://en.wikipedia.org/wiki/Whitelee_Wind_Farm"
-  },
-  {
-    "id": "london-array",
-    "name": "London Array",
-    "type": "Offshore wind",
-    "latitude": 51.6439,
-    "longitude": 1.5536,
-    "units": [
-      "T_LARYW-1",
-      "T_LARYW-2",
-      "T_LARYW-3",
-      "T_LARYW-4"
-    ],
-    "registeredCapacityMW": 704.099,
-    "geographySource": "https://en.wikipedia.org/wiki/London_Array"
-  },
-  {
-    "id": "peterhead",
-    "name": "Peterhead",
+    "id": "pembroke",
+    "name": "Pembroke",
     "type": "Gas",
-    "latitude": 57.4772,
-    "longitude": -1.7889,
+    "latitude": 51.66193,
+    "longitude": -4.98905,
     "units": [
-      "T_PEHE-1",
-      "T_PEHE-2"
+      "T_PEMB-11",
+      "T_PEMB-21",
+      "T_PEMB-31",
+      "T_PEMB-41",
+      "T_PEMB-51"
     ],
-    "registeredCapacityMW": 1200.0,
-    "geographySource": "https://en.wikipedia.org/wiki/Peterhead_power_station"
+    "registeredCapacityMW": 2375,
+    "installedCapacityMW": 2325,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Wales",
+    "siteCodes": [
+      "GAS-000453"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "heysham",
+    "name": "Heysham",
+    "type": "Nuclear",
+    "latitude": 54.04567,
+    "longitude": -2.89494,
+    "units": [
+      "T_HEYM11",
+      "T_HEYM12",
+      "T_HEYM27",
+      "T_HEYM28"
+    ],
+    "registeredCapacityMW": 2531.152,
+    "installedCapacityMW": 2300,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "NUC-000127",
+      "NUC-000131"
+    ],
+    "mappingNote": "",
+    "scopeNote": "Grouped site: Heysham 1, Heysham 2."
+  },
+  {
+    "id": "staythorpe",
+    "name": "Staythorpe",
+    "type": "Gas",
+    "latitude": 53.07315,
+    "longitude": -0.85887,
+    "units": [
+      "T_STAY-1",
+      "T_STAY-2",
+      "T_STAY-3",
+      "T_STAY-4"
+    ],
+    "registeredCapacityMW": 1856,
+    "installedCapacityMW": 1828,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000375"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
   },
   {
     "id": "dinorwig",
     "name": "Dinorwig",
     "type": "Pumped storage",
-    "latitude": 53.1186,
-    "longitude": -4.1139,
+    "latitude": 53.11859,
+    "longitude": -4.10234,
     "units": [
       "T_DINO-1",
       "T_DINO-2",
@@ -109,7 +111,950 @@
       "T_DINO-5",
       "T_DINO-6"
     ],
-    "registeredCapacityMW": 1920.0,
-    "geographySource": "https://en.wikipedia.org/wiki/Dinorwig_Power_Station"
+    "registeredCapacityMW": 1920,
+    "installedCapacityMW": 1800,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Wales",
+    "siteCodes": [
+      "HST-000128"
+    ],
+    "mappingNote": "",
+    "scopeNote": "DUKES lists 1,800 MW; Q2 REPD lists 1,728 MW. The threshold uses the DUKES installed-capacity definition."
+  },
+  {
+    "id": "keadby",
+    "name": "Keadby",
+    "type": "Gas",
+    "latitude": 53.59501,
+    "longitude": -0.74317,
+    "units": [
+      "T_KEAD-1",
+      "T_KEAD-2"
+    ],
+    "registeredCapacityMW": 1654,
+    "installedCapacityMW": 1572,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000123",
+      "GAS-001553"
+    ],
+    "mappingNote": "",
+    "scopeNote": "Grouped site: Keadby, Keadby 2."
+  },
+  {
+    "id": "didcot-b",
+    "name": "Didcot B",
+    "type": "Gas",
+    "latitude": 51.62495,
+    "longitude": -1.26949,
+    "units": [
+      "T_DIDCB5",
+      "T_DIDCB6"
+    ],
+    "registeredCapacityMW": 1490,
+    "installedCapacityMW": 1490,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000176"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "grain",
+    "name": "Grain",
+    "type": "Gas",
+    "latitude": 51.44298,
+    "longitude": 0.70782,
+    "units": [
+      "T_GRAI-6",
+      "T_GRAI-7",
+      "T_GRAI-8"
+    ],
+    "registeredCapacityMW": 1404,
+    "installedCapacityMW": 1404,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000404"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "south-humber-bank",
+    "name": "South Humber Bank",
+    "type": "Gas",
+    "latitude": 53.60301,
+    "longitude": -0.14558,
+    "units": [
+      "T_SHBA-1",
+      "T_SHBA-2"
+    ],
+    "registeredCapacityMW": 1401.4,
+    "installedCapacityMW": 1400,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000169"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "hornsea-two",
+    "name": "Hornsea Two",
+    "type": "Offshore wind",
+    "latitude": 53.96,
+    "longitude": 1.53999,
+    "units": [
+      "T_HOWBO-1",
+      "T_HOWBO-2",
+      "T_HOWBO-3"
+    ],
+    "registeredCapacityMW": 1320,
+    "installedCapacityMW": 1386,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001365"
+    ],
+    "mappingNote": "",
+    "scopeNote": "DUKES lists 1,386 MW; Q2 REPD lists 1,320 MW. The threshold uses the DUKES installed-capacity definition."
+  },
+  {
+    "id": "connahs-quay",
+    "name": "Connah’s Quay",
+    "type": "Gas",
+    "latitude": 53.20727,
+    "longitude": -3.06633,
+    "units": [
+      "T_CNQPS-1",
+      "T_CNQPS-2",
+      "T_CNQPS-3",
+      "T_CNQPS-4"
+    ],
+    "registeredCapacityMW": 1409.162,
+    "installedCapacityMW": 1380,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Wales",
+    "siteCodes": [
+      "GAS-000162"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "west-burton-b",
+    "name": "West Burton B",
+    "type": "Gas",
+    "latitude": 53.36272,
+    "longitude": -0.81184,
+    "units": [
+      "T_WBURB-1",
+      "T_WBURB-2",
+      "T_WBURB-3"
+    ],
+    "registeredCapacityMW": 1410,
+    "installedCapacityMW": 1332,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000502"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "vpi-immingham",
+    "name": "VPI Immingham",
+    "type": "Gas",
+    "latitude": 53.63779,
+    "longitude": -0.23675,
+    "units": [
+      "T_HUMR-1"
+    ],
+    "registeredCapacityMW": 1283,
+    "installedCapacityMW": 1252,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000249"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "hornsea-one",
+    "name": "Hornsea One",
+    "type": "Offshore wind",
+    "latitude": 53.68154,
+    "longitude": 1.42074,
+    "units": [
+      "T_HOWAO-1",
+      "T_HOWAO-2",
+      "T_HOWAO-3"
+    ],
+    "registeredCapacityMW": 1200,
+    "installedCapacityMW": 1218,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001277"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "seabank",
+    "name": "Seabank",
+    "type": "Gas",
+    "latitude": 51.53912,
+    "longitude": -2.66998,
+    "units": [
+      "T_SEAB-1",
+      "T_SEAB-2"
+    ],
+    "registeredCapacityMW": 1236,
+    "installedCapacityMW": 1205,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000197"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "saltend",
+    "name": "Saltend",
+    "type": "Gas",
+    "latitude": 53.73567,
+    "longitude": -0.24337,
+    "units": [
+      "T_SCCL-1",
+      "T_SCCL-2",
+      "T_SCCL-3"
+    ],
+    "registeredCapacityMW": 1226.6,
+    "installedCapacityMW": 1200,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000198"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "torness",
+    "name": "Torness",
+    "type": "Nuclear",
+    "latitude": 55.96822,
+    "longitude": -2.4101,
+    "units": [
+      "T_TORN-1",
+      "T_TORN-2"
+    ],
+    "registeredCapacityMW": 1352,
+    "installedCapacityMW": 1200,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Scotland",
+    "siteCodes": [
+      "NUC-000132"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "sizewell-b",
+    "name": "Sizewell B",
+    "type": "Nuclear",
+    "latitude": 52.21492,
+    "longitude": 1.61986,
+    "units": [
+      "T_SIZB-1",
+      "T_SIZB-2"
+    ],
+    "registeredCapacityMW": 1286.92,
+    "installedCapacityMW": 1198,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "NUC-000159"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "hartlepool",
+    "name": "Hartlepool",
+    "type": "Nuclear",
+    "latitude": 54.67212,
+    "longitude": -1.19912,
+    "units": [
+      "T_HRTL-1",
+      "T_HRTL-2"
+    ],
+    "registeredCapacityMW": 1240,
+    "installedCapacityMW": 1185,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "NUC-000126"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "peterhead",
+    "name": "Peterhead",
+    "type": "Gas",
+    "latitude": 57.47791,
+    "longitude": -1.78837,
+    "units": [
+      "T_PEHE-1",
+      "T_PEHE-2"
+    ],
+    "registeredCapacityMW": 1200,
+    "installedCapacityMW": 1180,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Scotland",
+    "siteCodes": [
+      "GAS-000120"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "seagreen",
+    "name": "Seagreen",
+    "type": "Offshore wind",
+    "latitude": 56.63551,
+    "longitude": -1.92662,
+    "units": [],
+    "registeredCapacityMW": null,
+    "installedCapacityMW": 1075,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "Scotland",
+    "siteCodes": [
+      "WOF-001523"
+    ],
+    "mappingNote": "Unit grouping remains unverified. Capacity and location are shown without an inferred generation total.",
+    "scopeNote": ""
+  },
+  {
+    "id": "walney",
+    "name": "Walney",
+    "type": "Offshore wind",
+    "latitude": 54.08999,
+    "longitude": -3.74001,
+    "units": [
+      "T_WLNYW-1",
+      "T_WLNYO-2",
+      "T_WLNYO-3",
+      "T_WLNYO-4"
+    ],
+    "registeredCapacityMW": 1025.6,
+    "installedCapacityMW": 1026.2,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-000407",
+      "WOF-001139",
+      "WOF-001259",
+      "WOF-001280"
+    ],
+    "mappingNote": "",
+    "scopeNote": "Grouped site: Walney 01, Walney 03, Walney 04, Walney 02."
+  },
+  {
+    "id": "moray-east",
+    "name": "Moray East",
+    "type": "Offshore wind",
+    "latitude": 57.96732,
+    "longitude": -2.79054,
+    "units": [
+      "T_MOWEO-1",
+      "T_MOWEO-2",
+      "T_MOWEO-3"
+    ],
+    "registeredCapacityMW": 900,
+    "installedCapacityMW": 950,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "Scotland",
+    "siteCodes": [
+      "WOF-001390"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "spalding",
+    "name": "Spalding",
+    "type": "Gas",
+    "latitude": 52.80721,
+    "longitude": -0.13335,
+    "units": [
+      "T_SPLN-1"
+    ],
+    "registeredCapacityMW": 950,
+    "installedCapacityMW": 950,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000250"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "langage",
+    "name": "Langage",
+    "type": "Gas",
+    "latitude": 50.38822,
+    "longitude": -4.01176,
+    "units": [
+      "T_LAGA-1"
+    ],
+    "registeredCapacityMW": 905,
+    "installedCapacityMW": 905,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000376"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "marchwood",
+    "name": "Marchwood",
+    "type": "Gas",
+    "latitude": 50.89798,
+    "longitude": -1.4375,
+    "units": [
+      "T_MRWD-1"
+    ],
+    "registeredCapacityMW": 920,
+    "installedCapacityMW": 898,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000354"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "carrington",
+    "name": "Carrington",
+    "type": "Gas",
+    "latitude": 53.43343,
+    "longitude": -2.40354,
+    "units": [
+      "T_CARR-1",
+      "T_CARR-2"
+    ],
+    "registeredCapacityMW": 940,
+    "installedCapacityMW": 884,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000941"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "moray-west",
+    "name": "Moray West",
+    "type": "Offshore wind",
+    "latitude": 58.06989,
+    "longitude": -3.31307,
+    "units": [
+      "T_MOWWO-1",
+      "T_MOWWO-2",
+      "T_MOWWO-3",
+      "T_MOWWO-4"
+    ],
+    "registeredCapacityMW": 860,
+    "installedCapacityMW": 882,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "Scotland",
+    "siteCodes": [
+      "WOF-001644"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "triton-knoll",
+    "name": "Triton Knoll",
+    "type": "Offshore wind",
+    "latitude": 53.21227,
+    "longitude": 0.86164,
+    "units": [
+      "T_TKNEW-1",
+      "T_TKNWW-1"
+    ],
+    "registeredCapacityMW": 824,
+    "installedCapacityMW": 857,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001290"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "severn-power",
+    "name": "Severn Power",
+    "type": "Gas",
+    "latitude": 51.54777,
+    "longitude": -2.97518,
+    "units": [
+      "T_SVRP-10",
+      "T_SVRP-20"
+    ],
+    "registeredCapacityMW": 850,
+    "installedCapacityMW": 850,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Wales",
+    "siteCodes": [
+      "GAS-000377"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "sutton-bridge",
+    "name": "Sutton Bridge",
+    "type": "Gas",
+    "latitude": 52.75718,
+    "longitude": 0.19314,
+    "units": [
+      "T_SUTB-1"
+    ],
+    "registeredCapacityMW": 850,
+    "installedCapacityMW": 819,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000185"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "rocksavage",
+    "name": "Rocksavage",
+    "type": "Gas",
+    "latitude": 53.3157,
+    "longitude": -2.72679,
+    "units": [
+      "T_ROCK-1"
+    ],
+    "registeredCapacityMW": 810,
+    "installedCapacityMW": 810,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000178"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "damhead-creek",
+    "name": "Damhead Creek",
+    "type": "Gas",
+    "latitude": 51.42523,
+    "longitude": 0.60149,
+    "units": [
+      "T_DAMC-1"
+    ],
+    "registeredCapacityMW": 820,
+    "installedCapacityMW": 805,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000195"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "coryton",
+    "name": "Coryton",
+    "type": "Gas",
+    "latitude": 51.51237,
+    "longitude": 0.50536,
+    "units": [
+      "T_COSO-1"
+    ],
+    "registeredCapacityMW": 856.186,
+    "installedCapacityMW": 800,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000222"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "medway",
+    "name": "Medway",
+    "type": "Gas",
+    "latitude": 51.43972,
+    "longitude": 0.68976,
+    "units": [
+      "T_MEDP-1"
+    ],
+    "registeredCapacityMW": 750,
+    "installedCapacityMW": 755,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000152"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "little-barford",
+    "name": "Little Barford",
+    "type": "Gas",
+    "latitude": 52.20371,
+    "longitude": -0.26835,
+    "units": [
+      "T_LBAR-1"
+    ],
+    "registeredCapacityMW": 750,
+    "installedCapacityMW": 735,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000151"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "rye-house",
+    "name": "Rye House",
+    "type": "Gas",
+    "latitude": 51.76268,
+    "longitude": 0.00862,
+    "units": [
+      "T_RYHPS-1"
+    ],
+    "registeredCapacityMW": 720.98,
+    "installedCapacityMW": 715,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000138"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "east-anglia-one",
+    "name": "East Anglia One",
+    "type": "Offshore wind",
+    "latitude": 52.13744,
+    "longitude": 2.1709,
+    "units": [
+      "T_EAAO-1",
+      "T_EAAO-2"
+    ],
+    "registeredCapacityMW": 725,
+    "installedCapacityMW": 714,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001278"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "london-array",
+    "name": "London Array",
+    "type": "Offshore wind",
+    "latitude": 51.62168,
+    "longitude": 1.49583,
+    "units": [
+      "T_LARYW-1",
+      "T_LARYW-2",
+      "T_LARYW-3",
+      "T_LARYW-4"
+    ],
+    "registeredCapacityMW": 704.099,
+    "installedCapacityMW": 630,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-000504"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "killingholme",
+    "name": "Killingholme",
+    "type": "Gas",
+    "latitude": 53.66181,
+    "longitude": -0.23514,
+    "units": [
+      "T_KILLPG-1",
+      "T_KILLPG-2"
+    ],
+    "registeredCapacityMW": 627,
+    "installedCapacityMW": 619,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000136"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "dogger-bank-a",
+    "name": "Dogger Bank A",
+    "type": "Offshore wind",
+    "latitude": 54.81601,
+    "longitude": 0.64418,
+    "units": [],
+    "registeredCapacityMW": null,
+    "installedCapacityMW": 616,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001577"
+    ],
+    "mappingNote": "Commissioning-stage units are not yet mapped to the published installed portion. No output total is inferred.",
+    "scopeNote": "616 MW installed in the May register; not the full planned project capacity."
+  },
+  {
+    "id": "beatrice",
+    "name": "Beatrice",
+    "type": "Offshore wind",
+    "latitude": 58.08823,
+    "longitude": -2.95016,
+    "units": [
+      "T_BEATO-1",
+      "T_BEATO-2",
+      "T_BEATO-3",
+      "T_BEATO-4"
+    ],
+    "registeredCapacityMW": 681.526,
+    "installedCapacityMW": 588,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "Scotland",
+    "siteCodes": [
+      "WOF-001261"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "gwynt-y-mor",
+    "name": "Gwynt y Môr",
+    "type": "Offshore wind",
+    "latitude": 53.454,
+    "longitude": -3.62665,
+    "units": [
+      "T_GYMR-15",
+      "T_GYMR-17",
+      "T_GYMR-26",
+      "T_GYMR-28"
+    ],
+    "registeredCapacityMW": 592,
+    "installedCapacityMW": 576,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "Wales",
+    "siteCodes": [
+      "WOF-000508"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "race-bank",
+    "name": "Race Bank",
+    "type": "Offshore wind",
+    "latitude": 53.13597,
+    "longitude": 0.58917,
+    "units": [
+      "T_RCBKO-1",
+      "T_RCBKO-2"
+    ],
+    "registeredCapacityMW": 574,
+    "installedCapacityMW": 573,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001256"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
+  },
+  {
+    "id": "whitelee",
+    "name": "Whitelee",
+    "type": "Onshore wind",
+    "latitude": 55.68121,
+    "longitude": -4.27906,
+    "units": [
+      "T_WHILW-1",
+      "T_WHILW-2"
+    ],
+    "registeredCapacityMW": 515,
+    "installedCapacityMW": 539.02,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Scotland",
+    "siteCodes": [
+      "WON-000321",
+      "WON-000471"
+    ],
+    "mappingNote": "",
+    "scopeNote": "Grouped site: Whitelee I, Whitelee II."
+  },
+  {
+    "id": "clyde",
+    "name": "Clyde",
+    "type": "Onshore wind",
+    "latitude": 55.44163,
+    "longitude": -3.54273,
+    "units": [
+      "T_CLDSW-1",
+      "T_CLDCW-1",
+      "T_CLDNW-1"
+    ],
+    "registeredCapacityMW": 550,
+    "installedCapacityMW": 522.4,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Scotland",
+    "siteCodes": [
+      "WON-000419",
+      "WON-000425",
+      "WON-000476"
+    ],
+    "mappingNote": "",
+    "scopeNote": "Grouped site: Clyde Windfarm (South), Clyde Windfarm (Central), Clyde Windfarm (North)."
+  },
+  {
+    "id": "greater-gabbard",
+    "name": "Greater Gabbard",
+    "type": "Offshore wind",
+    "latitude": 51.91764,
+    "longitude": 1.92842,
+    "units": [
+      "T_GRGBW-1",
+      "T_GRGBW-2",
+      "T_GRGBW-3"
+    ],
+    "registeredCapacityMW": 539,
+    "installedCapacityMW": 504,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-000406"
+    ],
+    "mappingNote": "",
+    "scopeNote": ""
   }
 ]
