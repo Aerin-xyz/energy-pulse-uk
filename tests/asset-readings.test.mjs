@@ -1,0 +1,5 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {assetReading} from '../src/lib/assetReadings.mjs';
+const row=(bmUnit,quantity,extra={})=>({bmUnit,quantity,psrType:'Generation',settlementDate:'2026-09-07',settlementPeriod:48,settlementRunType:'II',...extra});
+test('half-hour energy converts to MW; revisions are not double counted',()=>{const r=assetReading([row('a',10),row('a',12,{settlementRunType:'RF'}),row('b',5)],['a','b'],'2026-09-07',48);assert.equal(r.mw,34)});
+test('incomplete, different-interval or nonnumeric units never manufacture a station total',()=>{for(const bad of [undefined,row('b',5,{settlementPeriod:47}),row('b',null)]){const r=assetReading([row('a',10),bad].filter(Boolean),['a','b'],'2026-09-07',48);assert.equal(r.mw,null);assert.equal(r.coverage,1)}});
+test('measured zero and signed storage remain real readings',()=>{assert.equal(assetReading([row('a',0)],['a'],'2026-09-07',48).mw,0);assert.equal(assetReading([row('a',-5)],['a'],'2026-09-07',48).mw,-10)});

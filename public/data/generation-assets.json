@@ -1,0 +1,560 @@
+{
+  "checkedAt": "2026-09-15T12:40:34.657Z",
+  "settlementDate": "2026-09-07",
+  "settlementPeriod": 48,
+  "source": "Elexon B1610",
+  "points": [
+    {
+      "from": "2026-09-07T17:00:00.000Z",
+      "to": "2026-09-07T17:30:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2563.5240000000003,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 71.458,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1179,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 653.712,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 181.89,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 325.422,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": 473,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    },
+    {
+      "from": "2026-09-07T17:30:00.000Z",
+      "to": "2026-09-07T18:00:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2565.78,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 63.768,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1179.12,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 654.4879999999999,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 263.558,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 522.652,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": 445.6,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    },
+    {
+      "from": "2026-09-07T18:00:00.000Z",
+      "to": "2026-09-07T18:30:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2569.26,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 33.928,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1179.1599999999999,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 655.008,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 351.296,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 526.682,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": 562.7,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    },
+    {
+      "from": "2026-09-07T18:30:00.000Z",
+      "to": "2026-09-07T19:00:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2571.54,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 42.906,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1179,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 654.192,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 298.272,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 523.218,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": 523.8,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    },
+    {
+      "from": "2026-09-07T19:00:00.000Z",
+      "to": "2026-09-07T19:30:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2557.3,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 92.37599999999999,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1179.46,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 654.648,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 263.322,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 532.0540000000001,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": 495.7,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    },
+    {
+      "from": "2026-09-07T19:30:00.000Z",
+      "to": "2026-09-07T20:00:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2540.86,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 130.16000000000003,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1179.42,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 656.216,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 256.028,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 441.342,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": 523.2,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    },
+    {
+      "from": "2026-09-07T20:00:00.000Z",
+      "to": "2026-09-07T20:30:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2551.58,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 188.87599999999998,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1179.62,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 653.504,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 249.28,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 443.60200000000003,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": 297.29999999999995,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    },
+    {
+      "from": "2026-09-07T20:30:00.000Z",
+      "to": "2026-09-07T21:00:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2529.42,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 292.596,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1179.08,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 655.72,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 305.406,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 565.86,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": 222.5,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    },
+    {
+      "from": "2026-09-07T21:00:00.000Z",
+      "to": "2026-09-07T21:30:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2511.08,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 457.804,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1179.8400000000001,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 653.112,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 307.578,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 581.5920000000001,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": -8.1,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    },
+    {
+      "from": "2026-09-07T21:30:00.000Z",
+      "to": "2026-09-07T22:00:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2511.78,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 556.3599999999999,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1179.74,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 654.056,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 256.98,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 542.226,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": -3.2,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    },
+    {
+      "from": "2026-09-07T22:00:00.000Z",
+      "to": "2026-09-07T22:30:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2510.1400000000003,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 514.4300000000001,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1179.8200000000002,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 653.288,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 250.616,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 485.54,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": -8.2,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    },
+    {
+      "from": "2026-09-07T22:30:00.000Z",
+      "to": "2026-09-07T23:00:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2501.26,
+          "coverage": 4,
+          "total": 4
+        },
+        "hornsea-one": {
+          "mw": 365.244,
+          "coverage": 3,
+          "total": 3
+        },
+        "sizewell-b": {
+          "mw": 1178.92,
+          "coverage": 2,
+          "total": 2
+        },
+        "torness": {
+          "mw": 653.7520000000001,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 162.156,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 308.03,
+          "coverage": 4,
+          "total": 4
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "dinorwig": {
+          "mw": -7.6000000000000005,
+          "coverage": 6,
+          "total": 6
+        }
+      }
+    }
+  ]
+}

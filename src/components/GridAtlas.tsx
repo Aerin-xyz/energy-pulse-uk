@@ -1,3 +1,4 @@
+import {assets, GenerationMapLayer, AssetEvidence, useAssetSnapshot, assetTime} from './GenerationMapLayer';
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Layers, Maximize2, X } from "lucide-react";
 import { cables } from "@/data/atlas/interconnectors";
@@ -62,8 +63,10 @@ export function GridAtlas({
   flowTime?: string;
   now: number;
 }) {
-  const [mode, setMode] = useState<"cables" | "connections" | "carbon">("cables");
+  const [mode, setMode] = useState<"cables" | "connections" | "carbon" | "generation">("cables");
   const cableFeed = useCableFlows();
+  const [assetFilter,setAssetFilter]=useState("All");
+  const {snapshot:assetSnapshot,error:assetError}=useAssetSnapshot(mode === "generation");
   const [selected, setSelected] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
   const stageRef = useRef<HTMLElement>(null);
@@ -120,10 +123,10 @@ export function GridAtlas({
     >
       <div className="atlas-toolbar">
         <span>
-          <Layers size={14} /> Live Grid Map
+          <Layers size={14} /> {mode === "generation" ? "Generation Atlas" : "Live Grid Map"}
         </span>
         <div className="atlas-tabs" aria-label="Map layer">
-          {(["cables", "connections", "carbon"] as const).map((m) => (
+          {(["cables", "generation", "connections", "carbon"] as const).map((m) => (
             <button
               key={m}
               aria-pressed={mode === m}
@@ -132,14 +135,15 @@ export function GridAtlas({
                 setSelected(null);
               }}
             >
-              {m === "cables" ? "Cables" : m === "connections" ? "Connections" : "Regional carbon"}
+              {m === "generation" ? "Generation" : m === "cables" ? "Cables" : m === "connections" ? "Connections" : "Regional carbon"}
             </button>
           ))}
         </div>
       </div>
+      {mode === "generation" && <div className="asset-controls"><p>Selected major sites · <strong>metered history, not live</strong></p><div aria-label="Generation type">{["All",...new Set(assets.map(a=>a.type))].map(t=><button key={t} aria-pressed={assetFilter===t} onClick={()=>{setAssetFilter(t);setSelected(null)}}>{t}</button>)}</div></div>}
       <svg
         className="atlas-map"
-        viewBox={mode === "cables" ? "65 55 855 755" : "65 55 825 720"}
+        viewBox={mode === "generation" ? "155 80 520 650" : mode === "cables" ? "65 55 855 755" : "65 55 825 720"}
         role="group"
         aria-labelledby="atlas-map-title atlas-map-desc"
       >
@@ -347,10 +351,11 @@ export function GridAtlas({
               </g>
             );
           })}
+        {mode === "generation" && <GenerationMapLayer filter={assetFilter} selected={selected} onSelect={setSelected} snapshot={assetSnapshot}/>}
       </svg>
       <div className="atlas-map-note">
         <span className="atlas-dot" />{" "}
-        {mode === "cables" ? "Elexon · mint imports / violet exports · approximate terminals & schematic paths" : mode === "connections"
+        {mode === "generation" ? `Elexon metered snapshot · ${assetSnapshot.points.length ? assetTime(assetSnapshot.points.at(-1)!.from)+" UK" : "Output unavailable"} · approximate sites` : mode === "cables" ? "Elexon · mint imports / violet exports · approximate terminals & schematic paths" : mode === "connections"
           ? "Country aggregates · schematic flows · labels: carbon forecasts"
           : "Regional forecasts · gCO₂/kWh · approximate region centres"}
       </div>
@@ -376,10 +381,10 @@ export function GridAtlas({
         className="atlas-access-list"
         data-layer={mode}
         aria-label={
-          mode === "cables" ? "Select a cable" : mode === "connections" ? "Select a connection" : "Select a region"
+          mode === "generation" ? "Select a generation asset" : mode === "cables" ? "Select a cable" : mode === "connections" ? "Select a connection" : "Select a region"
         }
       >
-        {mode === "cables" ? cables.map(c=>{const r=cableReadings(cableFeed.rows,c.code,now);return <button key={c.id} aria-label={c.name} onClick={()=>setSelected(c.id)} aria-pressed={selected===c.id}><span>{c.name}</span><strong>{r.mw===null?"Unavailable":`${Math.abs(r.mw)} MW ${r.mw>0?"in":r.mw<0?"out":"zero"}`}</strong></button>}) : mode === "connections"
+        {mode === "generation" ? assets.filter(a=>assetFilter==="All"||a.type===assetFilter).map(a=><button key={a.id} aria-pressed={selected===a.id} onClick={()=>setSelected(a.id)}><span>{a.name}</span><strong>{a.type}</strong></button>) : mode === "cables" ? cables.map(c=>{const r=cableReadings(cableFeed.rows,c.code,now);return <button key={c.id} aria-label={c.name} onClick={()=>setSelected(c.id)} aria-pressed={selected===c.id}><span>{c.name}</span><strong>{r.mw===null?"Unavailable":`${Math.abs(r.mw)} MW ${r.mw>0?"in":r.mw<0?"out":"zero"}`}</strong></button>}) : mode === "connections"
           ? grouped.map((g) => (
               <button
                 key={g.country}
@@ -413,8 +418,8 @@ export function GridAtlas({
           >
             <X size={16} />
           </button>
-          {!cable && <h3>{selected}</h3>}
-          {cable ? <CableEvidence cable={cable} rows={cableFeed.rows} now={now} error={cableFeed.error}/> : detail ? (
+          {!cable && mode !== "generation" && <h3>{selected}</h3>}
+          {mode === "generation" ? <AssetEvidence id={selected} snapshot={assetSnapshot} error={assetError}/> : cable ? <CableEvidence cable={cable} rows={cableFeed.rows} now={now} error={cableFeed.error}/> : detail ? (
             <>
               <p>
                 {detail.known

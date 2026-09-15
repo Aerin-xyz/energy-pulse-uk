@@ -1,0 +1,115 @@
+[
+  {
+    "id": "drax",
+    "name": "Drax",
+    "type": "Biomass",
+    "latitude": 53.7358,
+    "longitude": -0.9964,
+    "units": [
+      "T_DRAXX-1",
+      "T_DRAXX-2",
+      "T_DRAXX-3",
+      "T_DRAXX-4"
+    ],
+    "registeredCapacityMW": 2641.048,
+    "geographySource": "https://en.wikipedia.org/wiki/Drax_Power_Station"
+  },
+  {
+    "id": "hornsea-one",
+    "name": "Hornsea One",
+    "type": "Offshore wind",
+    "latitude": 53.885,
+    "longitude": 1.7911,
+    "units": [
+      "T_HOWAO-1",
+      "T_HOWAO-2",
+      "T_HOWAO-3"
+    ],
+    "registeredCapacityMW": 1200.0,
+    "geographySource": "https://en.wikipedia.org/wiki/Hornsea_Wind_Farm"
+  },
+  {
+    "id": "sizewell-b",
+    "name": "Sizewell B",
+    "type": "Nuclear",
+    "latitude": 52.215,
+    "longitude": 1.6197,
+    "units": [
+      "T_SIZB-1",
+      "T_SIZB-2"
+    ],
+    "registeredCapacityMW": 1286.92,
+    "geographySource": "https://en.wikipedia.org/wiki/Sizewell_nuclear_power_stations"
+  },
+  {
+    "id": "torness",
+    "name": "Torness",
+    "type": "Nuclear",
+    "latitude": 55.9681,
+    "longitude": -2.4092,
+    "units": [
+      "T_TORN-1",
+      "T_TORN-2"
+    ],
+    "registeredCapacityMW": 1352.0,
+    "geographySource": "https://en.wikipedia.org/wiki/Torness_nuclear_power_station"
+  },
+  {
+    "id": "whitelee",
+    "name": "Whitelee",
+    "type": "Onshore wind",
+    "latitude": 55.6728,
+    "longitude": -4.2856,
+    "units": [
+      "T_WHILW-1",
+      "T_WHILW-2"
+    ],
+    "registeredCapacityMW": 515.0,
+    "geographySource": "https://en.wikipedia.org/wiki/Whitelee_Wind_Farm"
+  },
+  {
+    "id": "london-array",
+    "name": "London Array",
+    "type": "Offshore wind",
+    "latitude": 51.6439,
+    "longitude": 1.5536,
+    "units": [
+      "T_LARYW-1",
+      "T_LARYW-2",
+      "T_LARYW-3",
+      "T_LARYW-4"
+    ],
+    "registeredCapacityMW": 704.099,
+    "geographySource": "https://en.wikipedia.org/wiki/London_Array"
+  },
+  {
+    "id": "peterhead",
+    "name": "Peterhead",
+    "type": "Gas",
+    "latitude": 57.4772,
+    "longitude": -1.7889,
+    "units": [
+      "T_PEHE-1",
+      "T_PEHE-2"
+    ],
+    "registeredCapacityMW": 1200.0,
+    "geographySource": "https://en.wikipedia.org/wiki/Peterhead_power_station"
+  },
+  {
+    "id": "dinorwig",
+    "name": "Dinorwig",
+    "type": "Pumped storage",
+    "latitude": 53.1186,
+    "longitude": -4.1139,
+    "units": [
+      "T_DINO-1",
+      "T_DINO-2",
+      "T_DINO-3",
+      "T_DINO-4",
+      "T_DINO-5",
+      "T_DINO-6"
+    ],
+    "registeredCapacityMW": 1920.0,
+    "geographySource": "https://en.wikipedia.org/wiki/Dinorwig_Power_Station"
+  }
+]
