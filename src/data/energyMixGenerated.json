@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-15T09:24:20.283Z",
+  "generatedAt": "2026-09-15T12:09:25.853Z",
   "reports": [
     {
       "slug": "/reports/weekly/2026-09-15",
@@ -40,7 +40,7 @@
         "Wind was the largest swing factor in the available feed, peaking at about 11.2 GW average output on Saturday 12 September.",
         "Solar was strongest on Wednesday 9 September, averaging about 2.9 GW across settlement periods after embedded-solar backfill where needed.",
         "Gas averaged about 7.5 GW across the period, rising highest on Monday 14 September and falling lowest on Saturday 12 September.",
-        "Measured generation was highest on Monday 14 September, at roughly 27.1 GW average output."
+        "Measured generation was highest on Monday 14 September, at roughly 27.2 GW average output."
       ],
       "cleanestPeriods": [
         {
@@ -80,15 +80,15 @@
     "slug": "/yesterday",
     "date": "2026-09-14",
     "title": "UK Electricity Mix Yesterday: Monday 14 September",
-    "summary": "Yesterday, Monday 14 September, measured average generation was about 27.1 GW. Renewables averaged 37.9% of measured generation, gas averaged 10.0 GW, wind averaged 7.5 GW and solar averaged 2.2 GW.",
+    "summary": "Yesterday, Monday 14 September, measured average generation was about 27.2 GW. Renewables averaged 38.0% of measured generation, gas averaged 10.0 GW, wind averaged 7.5 GW and solar averaged 2.2 GW.",
     "metrics": [
       [
         "Average measured generation",
-        "~27.1 GW"
+        "~27.2 GW"
       ],
       [
         "Average renewable share",
-        "37.9%"
+        "38.0%"
       ],
       [
         "Average wind output",
