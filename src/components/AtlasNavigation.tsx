@@ -1,7 +1,11 @@
+import { useContext } from "react";
+import { SiteChromeContext } from "./SiteChromeContext";
 import { Link, useLocation } from "react-router-dom";
 import { ArrowUpRight, Zap } from "lucide-react";
 export function AtlasNavigation() {
   const { pathname } = useLocation();
+  const framed = useContext(SiteChromeContext);
+  if (framed) return null;
   return (
     <header className="atlas-nav">
       <Link to="/" className="atlas-brand">

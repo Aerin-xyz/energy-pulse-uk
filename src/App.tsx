@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { EnergyDataProvider } from "@/contexts/EnergyDataContext";
 import { HelmetProvider } from 'react-helmet-async';
 import "./styles/observatory.css";
@@ -51,6 +51,7 @@ const DigestPreview = lazy(() => import("./pages/DigestPreview"));
 const AdminSocialPosts = lazy(() => import("./pages/AdminSocialPosts"));
 const ShareDailySummary = lazy(() => import("./pages/ShareDailySummary"));
 const AdminDailySummary = lazy(() => import("./pages/AdminDailySummary"));
+import { SiteFrame } from "./components/SiteFrame";
 import { RouteAnalytics } from "./components/RouteAnalytics";
 
 const queryClient = new QueryClient();
@@ -64,7 +65,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <RouteAnalytics />
-          <Suspense fallback={<main className="container mx-auto p-12" role="status">Loading this part of the grid…</main>}><Routes>
+          <SiteFrame><Suspense fallback={<main className="container mx-auto p-12" role="status">Loading this part of the grid…</main>}><Routes>
             <Route path="/" element={<Index />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/wholesale-electricity-price" element={<GridSignalPage kind="price" />} />
@@ -109,9 +110,13 @@ const App = () => (
             <Route path="/admin/digest-preview" element={<DigestPreview />} />
             <Route path="/admin/social-posts" element={<AdminSocialPosts />} />
             <Route path="/admin/daily-summary" element={<AdminDailySummary />} />
+            {Object.entries({"uk-electricity-mix":"uk-electricity-mix","uk-renewable-electricity":"renewables","uk-wind-generation-live":"uk-wind-power-today","uk-electricity-carbon-intensity":"carbon-intensity","uk-electricity-imports-exports":"interconnectors"}).flatMap(([alias,target])=>[
+              <Route key={alias+".html"} path={"/"+alias+".html"} element={<Navigate to={"/"+target} replace/>}/>,
+              ...(alias!==target?[<Route key={alias} path={"/"+alias} element={<Navigate to={"/"+target} replace/>}/>]:[])
+            ])}
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
-          </Routes></Suspense>
+          </Routes></Suspense></SiteFrame>
         </BrowserRouter>
       </EnergyDataProvider>
     </TooltipProvider>

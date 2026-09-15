@@ -1,4 +1,3 @@
-import { AnimatedLogo } from '@/components/AnimatedLogo';
 import { Link } from 'react-router-dom';
 import { Home, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -81,19 +80,7 @@ const Newsletter = () => {
         <div className="absolute inset-0 bg-gradient-nebula opacity-30 pointer-events-none"></div>
         
         {/* Header */}
-        <header className="border-b border-primary/20 glass-morphism relative">
-          <div className="container mx-auto px-4 py-3">
-            <div className="flex justify-between items-center">
-              <AnimatedLogo />
-              <Link to="/" aria-label="Back to Dashboard">
-                <Button variant="outline" size="sm" className="mr-1">
-                  <Home className="w-4 h-4 md:mr-2" />
-                  <span className="hidden md:inline">Dashboard</span>
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </header>
+
 
         {/* Main Content */}
         <main className="container mx-auto px-4 py-16 relative z-10">
@@ -173,7 +160,7 @@ const Newsletter = () => {
                         </div>
 
                         <div className="ml-form-recaptcha ml-validate-required">
-                          <div className="g-recaptcha" data-sitekey="6Lf1KHQUAAAAAFNKEX1hdSWCS3mRMv4FlFaNslaD"></div>
+                          <div className="g-recaptcha" data-theme="dark" data-sitekey="6Lf1KHQUAAAAAFNKEX1hdSWCS3mRMv4FlFaNslaD"></div>
                         </div>
 
                         <input type="hidden" name="ml-submit" value="1" />
@@ -234,20 +221,7 @@ const Newsletter = () => {
         </main>
 
         {/* Footer */}
-        <footer className="border-t border-primary/20 glass-morphism mt-16 relative">
-          <div className="absolute inset-0 bg-gradient-glow opacity-20"></div>
-          <div className="container mx-auto px-4 py-6 relative z-10">
-            <nav className="flex justify-center gap-6 mb-4">
-              <Link to="/about" className="text-sm text-foreground/70 hover:text-primary transition-colors">About</Link>
-              <Link to="/data" className="text-sm text-foreground/70 hover:text-primary transition-colors">Data</Link>
-              <Link to="/insights" className="text-sm text-foreground/70 hover:text-primary transition-colors">Insights</Link>
-              <Link to="/newsletter" className="text-sm text-foreground/70 hover:text-primary transition-colors">Newsletter</Link>
-            </nav>
-            <div className="text-xs text-foreground/50 text-center">
-              Contains BMRS data © Elexon Limited copyright and database right 2026
-            </div>
-          </div>
-        </footer>
+
       </div>
     </>
   );
