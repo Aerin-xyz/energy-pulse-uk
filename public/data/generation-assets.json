@@ -1,15 +1,15 @@
 {
-  "checkedAt": "2026-09-15T17:36:16.408Z",
-  "settlementDate": "2026-09-07",
+  "checkedAt": "2026-09-16T12:05:37.066Z",
+  "settlementDate": "2026-09-08",
   "settlementPeriod": 48,
   "source": "Elexon B1610",
   "points": [
     {
-      "from": "2026-09-07T17:00:00.000Z",
-      "to": "2026-09-07T17:30:00.000Z",
+      "from": "2026-09-08T17:00:00.000Z",
+      "to": "2026-09-08T17:30:00.000Z",
       "values": {
         "drax": {
-          "mw": 2563.5240000000003,
+          "mw": 2544.6600000000003,
           "coverage": 4,
           "total": 4
         },
@@ -19,42 +19,42 @@
           "total": 5
         },
         "heysham": {
-          "mw": 1307.208,
+          "mw": 1010.32,
           "coverage": 4,
           "total": 4
         },
         "staythorpe": {
-          "mw": 842.4,
+          "mw": 617.2,
           "coverage": 4,
           "total": 4
         },
         "dinorwig": {
-          "mw": 473,
+          "mw": 293.8,
           "coverage": 6,
           "total": 6
         },
         "keadby": {
-          "mw": 358.508,
+          "mw": 1.112,
           "coverage": 2,
           "total": 2
         },
         "didcot-b": {
-          "mw": 672.6,
+          "mw": 523.6,
           "coverage": 2,
           "total": 2
         },
         "grain": {
-          "mw": 619.2,
+          "mw": -8.5,
           "coverage": 3,
           "total": 3
         },
         "south-humber-bank": {
-          "mw": 180.8,
+          "mw": -1.882,
           "coverage": 2,
           "total": 2
         },
         "hornsea-two": {
-          "mw": 129.662,
+          "mw": 934.742,
           "coverage": 3,
           "total": 3
         },
@@ -64,22 +64,22 @@
           "total": 4
         },
         "west-burton-b": {
-          "mw": 751.768,
+          "mw": 724.954,
           "coverage": 3,
           "total": 3
         },
         "vpi-immingham": {
-          "mw": 313.388,
+          "mw": 304.53,
           "coverage": 1,
           "total": 1
         },
         "hornsea-one": {
-          "mw": 71.458,
+          "mw": 664.176,
           "coverage": 3,
           "total": 3
         },
         "seabank": {
-          "mw": 476.8,
+          "mw": 476,
           "coverage": 2,
           "total": 2
         },
@@ -89,17 +89,17 @@
           "total": 3
         },
         "torness": {
-          "mw": 653.712,
+          "mw": 654.5840000000001,
           "coverage": 2,
           "total": 2
         },
         "sizewell-b": {
-          "mw": 1179,
+          "mw": 1180.26,
           "coverage": 2,
           "total": 2
         },
         "hartlepool": {
-          "mw": 339.01599999999996,
+          "mw": 447.672,
           "coverage": 2,
           "total": 2
         },
@@ -114,17 +114,17 @@
           "total": 0
         },
         "walney": {
-          "mw": 715.3199999999999,
+          "mw": 712.6,
           "coverage": 4,
           "total": 4
         },
         "moray-east": {
-          "mw": -2.762,
+          "mw": -2.898,
           "coverage": 3,
           "total": 3
         },
         "spalding": {
-          "mw": 774.66,
+          "mw": 335.08,
           "coverage": 1,
           "total": 1
         },
@@ -134,293 +134,52 @@
           "total": 1
         },
         "marchwood": {
-          "mw": 809.2,
+          "mw": 732.4,
           "coverage": 1,
           "total": 1
         },
         "carrington": {
-          "mw": 416.4,
+          "mw": 319,
           "coverage": 2,
           "total": 2
         },
         "moray-west": {
-          "mw": 0.09800000000000002,
+          "mw": -0.011999999999999997,
           "coverage": 4,
           "total": 4
         },
         "triton-knoll": {
-          "mw": 102.94,
+          "mw": 639.1600000000001,
           "coverage": 2,
           "total": 2
         },
         "severn-power": {
-          "mw": 642.9,
+          "mw": 433.29999999999995,
           "coverage": 2,
           "total": 2
         },
         "sutton-bridge": {
-          "mw": 372.2,
+          "mw": 401,
           "coverage": 1,
           "total": 1
         },
         "rocksavage": {
-          "mw": -2.92,
+          "mw": -2.598,
           "coverage": 1,
           "total": 1
         },
         "damhead-creek": {
-          "mw": -1,
+          "mw": -0.93,
           "coverage": 1,
           "total": 1
         },
         "coryton": {
-          "mw": -1.89,
+          "mw": -0.852,
           "coverage": 1,
           "total": 1
         },
         "medway": {
-          "mw": -0.722,
-          "coverage": 1,
-          "total": 1
-        },
-        "little-barford": {
-          "mw": -0.96,
-          "coverage": 1,
-          "total": 1
-        },
-        "rye-house": {
-          "mw": -1.618,
-          "coverage": 1,
-          "total": 1
-        },
-        "east-anglia-one": {
-          "mw": 534.692,
-          "coverage": 2,
-          "total": 2
-        },
-        "london-array": {
-          "mw": 325.422,
-          "coverage": 4,
-          "total": 4
-        },
-        "killingholme": {
-          "mw": -1.282,
-          "coverage": 2,
-          "total": 2
-        },
-        "dogger-bank-a": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "beatrice": {
-          "mw": 59.5,
-          "coverage": 4,
-          "total": 4
-        },
-        "gwynt-y-mor": {
-          "mw": 403.28,
-          "coverage": 4,
-          "total": 4
-        },
-        "race-bank": {
-          "mw": 54.94200000000001,
-          "coverage": 2,
-          "total": 2
-        },
-        "whitelee": {
-          "mw": 181.89,
-          "coverage": 2,
-          "total": 2
-        },
-        "clyde": {
-          "mw": 296.212,
-          "coverage": 3,
-          "total": 3
-        },
-        "greater-gabbard": {
-          "mw": 180.48399999999998,
-          "coverage": 3,
-          "total": 3
-        }
-      }
-    },
-    {
-      "from": "2026-09-07T17:30:00.000Z",
-      "to": "2026-09-07T18:00:00.000Z",
-      "values": {
-        "drax": {
-          "mw": 2565.78,
-          "coverage": 4,
-          "total": 4
-        },
-        "pembroke": {
-          "mw": 0,
-          "coverage": 5,
-          "total": 5
-        },
-        "heysham": {
-          "mw": 1302.3919999999998,
-          "coverage": 4,
-          "total": 4
-        },
-        "staythorpe": {
-          "mw": 922.8,
-          "coverage": 4,
-          "total": 4
-        },
-        "dinorwig": {
-          "mw": 445.6,
-          "coverage": 6,
-          "total": 6
-        },
-        "keadby": {
-          "mw": 350.068,
-          "coverage": 2,
-          "total": 2
-        },
-        "didcot-b": {
-          "mw": 678.4,
-          "coverage": 2,
-          "total": 2
-        },
-        "grain": {
-          "mw": 616,
-          "coverage": 3,
-          "total": 3
-        },
-        "south-humber-bank": {
-          "mw": 180.8,
-          "coverage": 2,
-          "total": 2
-        },
-        "hornsea-two": {
-          "mw": 108.06200000000001,
-          "coverage": 3,
-          "total": 3
-        },
-        "connahs-quay": {
-          "mw": -16.884,
-          "coverage": 4,
-          "total": 4
-        },
-        "west-burton-b": {
-          "mw": 672.998,
-          "coverage": 3,
-          "total": 3
-        },
-        "vpi-immingham": {
-          "mw": 314.75,
-          "coverage": 1,
-          "total": 1
-        },
-        "hornsea-one": {
-          "mw": 63.768,
-          "coverage": 3,
-          "total": 3
-        },
-        "seabank": {
-          "mw": 235.268,
-          "coverage": 2,
-          "total": 2
-        },
-        "saltend": {
-          "mw": -1.03,
-          "coverage": 3,
-          "total": 3
-        },
-        "torness": {
-          "mw": 654.4879999999999,
-          "coverage": 2,
-          "total": 2
-        },
-        "sizewell-b": {
-          "mw": 1179.12,
-          "coverage": 2,
-          "total": 2
-        },
-        "hartlepool": {
-          "mw": 339.088,
-          "coverage": 2,
-          "total": 2
-        },
-        "peterhead": {
-          "mw": 0,
-          "coverage": 2,
-          "total": 2
-        },
-        "seagreen": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "walney": {
-          "mw": 644.86,
-          "coverage": 4,
-          "total": 4
-        },
-        "moray-east": {
-          "mw": -2.8,
-          "coverage": 3,
-          "total": 3
-        },
-        "spalding": {
-          "mw": 777.3,
-          "coverage": 1,
-          "total": 1
-        },
-        "langage": {
-          "mw": -1.6,
-          "coverage": 1,
-          "total": 1
-        },
-        "marchwood": {
-          "mw": 814.6,
-          "coverage": 1,
-          "total": 1
-        },
-        "carrington": {
-          "mw": 418.2,
-          "coverage": 2,
-          "total": 2
-        },
-        "moray-west": {
-          "mw": 0.028000000000000004,
-          "coverage": 4,
-          "total": 4
-        },
-        "triton-knoll": {
-          "mw": 153.82,
-          "coverage": 2,
-          "total": 2
-        },
-        "severn-power": {
-          "mw": 765.3,
-          "coverage": 2,
-          "total": 2
-        },
-        "sutton-bridge": {
-          "mw": 373.2,
-          "coverage": 1,
-          "total": 1
-        },
-        "rocksavage": {
-          "mw": -2.936,
-          "coverage": 1,
-          "total": 1
-        },
-        "damhead-creek": {
-          "mw": -1,
-          "coverage": 1,
-          "total": 1
-        },
-        "coryton": {
-          "mw": -1.848,
-          "coverage": 1,
-          "total": 1
-        },
-        "medway": {
-          "mw": -0.72,
+          "mw": -0.666,
           "coverage": 1,
           "total": 1
         },
@@ -430,1222 +189,17 @@
           "total": 1
         },
         "rye-house": {
-          "mw": -1.62,
+          "mw": -1.498,
           "coverage": 1,
           "total": 1
         },
         "east-anglia-one": {
-          "mw": 453.41,
+          "mw": 670.192,
           "coverage": 2,
           "total": 2
         },
         "london-array": {
-          "mw": 522.652,
-          "coverage": 4,
-          "total": 4
-        },
-        "killingholme": {
-          "mw": -1.282,
-          "coverage": 2,
-          "total": 2
-        },
-        "dogger-bank-a": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "beatrice": {
-          "mw": 59.58,
-          "coverage": 4,
-          "total": 4
-        },
-        "gwynt-y-mor": {
-          "mw": 471.96,
-          "coverage": 4,
-          "total": 4
-        },
-        "race-bank": {
-          "mw": 32.326,
-          "coverage": 2,
-          "total": 2
-        },
-        "whitelee": {
-          "mw": 263.558,
-          "coverage": 2,
-          "total": 2
-        },
-        "clyde": {
-          "mw": 371.994,
-          "coverage": 3,
-          "total": 3
-        },
-        "greater-gabbard": {
-          "mw": 202.022,
-          "coverage": 3,
-          "total": 3
-        }
-      }
-    },
-    {
-      "from": "2026-09-07T18:00:00.000Z",
-      "to": "2026-09-07T18:30:00.000Z",
-      "values": {
-        "drax": {
-          "mw": 2569.26,
-          "coverage": 4,
-          "total": 4
-        },
-        "pembroke": {
-          "mw": 0,
-          "coverage": 5,
-          "total": 5
-        },
-        "heysham": {
-          "mw": 1290.0480000000002,
-          "coverage": 4,
-          "total": 4
-        },
-        "staythorpe": {
-          "mw": 952.8000000000001,
-          "coverage": 4,
-          "total": 4
-        },
-        "dinorwig": {
-          "mw": 562.7,
-          "coverage": 6,
-          "total": 6
-        },
-        "keadby": {
-          "mw": 350.06,
-          "coverage": 2,
-          "total": 2
-        },
-        "didcot-b": {
-          "mw": 682.2,
-          "coverage": 2,
-          "total": 2
-        },
-        "grain": {
-          "mw": 623.4,
-          "coverage": 3,
-          "total": 3
-        },
-        "south-humber-bank": {
-          "mw": 181,
-          "coverage": 2,
-          "total": 2
-        },
-        "hornsea-two": {
-          "mw": 90.482,
-          "coverage": 3,
-          "total": 3
-        },
-        "connahs-quay": {
-          "mw": -16.758,
-          "coverage": 4,
-          "total": 4
-        },
-        "west-burton-b": {
-          "mw": 741.9939999999999,
-          "coverage": 3,
-          "total": 3
-        },
-        "vpi-immingham": {
-          "mw": 340.89,
-          "coverage": 1,
-          "total": 1
-        },
-        "hornsea-one": {
-          "mw": 33.928,
-          "coverage": 3,
-          "total": 3
-        },
-        "seabank": {
-          "mw": -7.874,
-          "coverage": 2,
-          "total": 2
-        },
-        "saltend": {
-          "mw": -1.02,
-          "coverage": 3,
-          "total": 3
-        },
-        "torness": {
-          "mw": 655.008,
-          "coverage": 2,
-          "total": 2
-        },
-        "sizewell-b": {
-          "mw": 1179.1599999999999,
-          "coverage": 2,
-          "total": 2
-        },
-        "hartlepool": {
-          "mw": 338.752,
-          "coverage": 2,
-          "total": 2
-        },
-        "peterhead": {
-          "mw": 0,
-          "coverage": 2,
-          "total": 2
-        },
-        "seagreen": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "walney": {
-          "mw": 416.32000000000005,
-          "coverage": 4,
-          "total": 4
-        },
-        "moray-east": {
-          "mw": -2.844,
-          "coverage": 3,
-          "total": 3
-        },
-        "spalding": {
-          "mw": 775.98,
-          "coverage": 1,
-          "total": 1
-        },
-        "langage": {
-          "mw": -1.2,
-          "coverage": 1,
-          "total": 1
-        },
-        "marchwood": {
-          "mw": 816.2,
-          "coverage": 1,
-          "total": 1
-        },
-        "carrington": {
-          "mw": 418.8,
-          "coverage": 2,
-          "total": 2
-        },
-        "moray-west": {
-          "mw": 0.038,
-          "coverage": 4,
-          "total": 4
-        },
-        "triton-knoll": {
-          "mw": 225.02,
-          "coverage": 2,
-          "total": 2
-        },
-        "severn-power": {
-          "mw": 772.4000000000001,
-          "coverage": 2,
-          "total": 2
-        },
-        "sutton-bridge": {
-          "mw": 373,
-          "coverage": 1,
-          "total": 1
-        },
-        "rocksavage": {
-          "mw": -2.932,
-          "coverage": 1,
-          "total": 1
-        },
-        "damhead-creek": {
-          "mw": -1,
-          "coverage": 1,
-          "total": 1
-        },
-        "coryton": {
-          "mw": -2.092,
-          "coverage": 1,
-          "total": 1
-        },
-        "medway": {
-          "mw": -0.728,
-          "coverage": 1,
-          "total": 1
-        },
-        "little-barford": {
-          "mw": -0.86,
-          "coverage": 1,
-          "total": 1
-        },
-        "rye-house": {
-          "mw": -1.536,
-          "coverage": 1,
-          "total": 1
-        },
-        "east-anglia-one": {
-          "mw": 458.15200000000004,
-          "coverage": 2,
-          "total": 2
-        },
-        "london-array": {
-          "mw": 526.682,
-          "coverage": 4,
-          "total": 4
-        },
-        "killingholme": {
-          "mw": -1.294,
-          "coverage": 2,
-          "total": 2
-        },
-        "dogger-bank-a": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "beatrice": {
-          "mw": 59.5,
-          "coverage": 4,
-          "total": 4
-        },
-        "gwynt-y-mor": {
-          "mw": 537.48,
-          "coverage": 4,
-          "total": 4
-        },
-        "race-bank": {
-          "mw": 32.724000000000004,
-          "coverage": 2,
-          "total": 2
-        },
-        "whitelee": {
-          "mw": 351.296,
-          "coverage": 2,
-          "total": 2
-        },
-        "clyde": {
-          "mw": 333.47,
-          "coverage": 3,
-          "total": 3
-        },
-        "greater-gabbard": {
-          "mw": 235.37199999999999,
-          "coverage": 3,
-          "total": 3
-        }
-      }
-    },
-    {
-      "from": "2026-09-07T18:30:00.000Z",
-      "to": "2026-09-07T19:00:00.000Z",
-      "values": {
-        "drax": {
-          "mw": 2571.54,
-          "coverage": 4,
-          "total": 4
-        },
-        "pembroke": {
-          "mw": 0,
-          "coverage": 5,
-          "total": 5
-        },
-        "heysham": {
-          "mw": 1285.576,
-          "coverage": 4,
-          "total": 4
-        },
-        "staythorpe": {
-          "mw": 831.8,
-          "coverage": 4,
-          "total": 4
-        },
-        "dinorwig": {
-          "mw": 523.8,
-          "coverage": 6,
-          "total": 6
-        },
-        "keadby": {
-          "mw": 553.906,
-          "coverage": 2,
-          "total": 2
-        },
-        "didcot-b": {
-          "mw": 657.8,
-          "coverage": 2,
-          "total": 2
-        },
-        "grain": {
-          "mw": 653.5,
-          "coverage": 3,
-          "total": 3
-        },
-        "south-humber-bank": {
-          "mw": 180.8,
-          "coverage": 2,
-          "total": 2
-        },
-        "hornsea-two": {
-          "mw": 122.142,
-          "coverage": 3,
-          "total": 3
-        },
-        "connahs-quay": {
-          "mw": -16.758,
-          "coverage": 4,
-          "total": 4
-        },
-        "west-burton-b": {
-          "mw": 757.3599999999999,
-          "coverage": 3,
-          "total": 3
-        },
-        "vpi-immingham": {
-          "mw": 351.708,
-          "coverage": 1,
-          "total": 1
-        },
-        "hornsea-one": {
-          "mw": 42.906,
-          "coverage": 3,
-          "total": 3
-        },
-        "seabank": {
-          "mw": -6.886,
-          "coverage": 2,
-          "total": 2
-        },
-        "saltend": {
-          "mw": -1.04,
-          "coverage": 3,
-          "total": 3
-        },
-        "torness": {
-          "mw": 654.192,
-          "coverage": 2,
-          "total": 2
-        },
-        "sizewell-b": {
-          "mw": 1179,
-          "coverage": 2,
-          "total": 2
-        },
-        "hartlepool": {
-          "mw": 338.944,
-          "coverage": 2,
-          "total": 2
-        },
-        "peterhead": {
-          "mw": 0,
-          "coverage": 2,
-          "total": 2
-        },
-        "seagreen": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "walney": {
-          "mw": 348.274,
-          "coverage": 4,
-          "total": 4
-        },
-        "moray-east": {
-          "mw": -2.9,
-          "coverage": 3,
-          "total": 3
-        },
-        "spalding": {
-          "mw": 781.06,
-          "coverage": 1,
-          "total": 1
-        },
-        "langage": {
-          "mw": -1.4,
-          "coverage": 1,
-          "total": 1
-        },
-        "marchwood": {
-          "mw": 820,
-          "coverage": 1,
-          "total": 1
-        },
-        "carrington": {
-          "mw": 419.6,
-          "coverage": 2,
-          "total": 2
-        },
-        "moray-west": {
-          "mw": 0.068,
-          "coverage": 4,
-          "total": 4
-        },
-        "triton-knoll": {
-          "mw": 334.82,
-          "coverage": 2,
-          "total": 2
-        },
-        "severn-power": {
-          "mw": 768.8,
-          "coverage": 2,
-          "total": 2
-        },
-        "sutton-bridge": {
-          "mw": 374,
-          "coverage": 1,
-          "total": 1
-        },
-        "rocksavage": {
-          "mw": -2.956,
-          "coverage": 1,
-          "total": 1
-        },
-        "damhead-creek": {
-          "mw": -1.01,
-          "coverage": 1,
-          "total": 1
-        },
-        "coryton": {
-          "mw": -1.854,
-          "coverage": 1,
-          "total": 1
-        },
-        "medway": {
-          "mw": -0.738,
-          "coverage": 1,
-          "total": 1
-        },
-        "little-barford": {
-          "mw": -0.86,
-          "coverage": 1,
-          "total": 1
-        },
-        "rye-house": {
-          "mw": -1.508,
-          "coverage": 1,
-          "total": 1
-        },
-        "east-anglia-one": {
-          "mw": 499.488,
-          "coverage": 2,
-          "total": 2
-        },
-        "london-array": {
-          "mw": 523.218,
-          "coverage": 4,
-          "total": 4
-        },
-        "killingholme": {
-          "mw": -1.2959999999999998,
-          "coverage": 2,
-          "total": 2
-        },
-        "dogger-bank-a": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "beatrice": {
-          "mw": 59.620000000000005,
-          "coverage": 4,
-          "total": 4
-        },
-        "gwynt-y-mor": {
-          "mw": 504.3,
-          "coverage": 4,
-          "total": 4
-        },
-        "race-bank": {
-          "mw": 39.324,
-          "coverage": 2,
-          "total": 2
-        },
-        "whitelee": {
-          "mw": 298.272,
-          "coverage": 2,
-          "total": 2
-        },
-        "clyde": {
-          "mw": 283,
-          "coverage": 3,
-          "total": 3
-        },
-        "greater-gabbard": {
-          "mw": 320.302,
-          "coverage": 3,
-          "total": 3
-        }
-      }
-    },
-    {
-      "from": "2026-09-07T19:00:00.000Z",
-      "to": "2026-09-07T19:30:00.000Z",
-      "values": {
-        "drax": {
-          "mw": 2557.3,
-          "coverage": 4,
-          "total": 4
-        },
-        "pembroke": {
-          "mw": 0,
-          "coverage": 5,
-          "total": 5
-        },
-        "heysham": {
-          "mw": 1275.984,
-          "coverage": 4,
-          "total": 4
-        },
-        "staythorpe": {
-          "mw": 613.8,
-          "coverage": 4,
-          "total": 4
-        },
-        "dinorwig": {
-          "mw": 495.7,
-          "coverage": 6,
-          "total": 6
-        },
-        "keadby": {
-          "mw": 711.414,
-          "coverage": 2,
-          "total": 2
-        },
-        "didcot-b": {
-          "mw": 689,
-          "coverage": 2,
-          "total": 2
-        },
-        "grain": {
-          "mw": 776.1,
-          "coverage": 3,
-          "total": 3
-        },
-        "south-humber-bank": {
-          "mw": 219.6,
-          "coverage": 2,
-          "total": 2
-        },
-        "hornsea-two": {
-          "mw": 180.002,
-          "coverage": 3,
-          "total": 3
-        },
-        "connahs-quay": {
-          "mw": -17.009999999999998,
-          "coverage": 4,
-          "total": 4
-        },
-        "west-burton-b": {
-          "mw": 797.944,
-          "coverage": 3,
-          "total": 3
-        },
-        "vpi-immingham": {
-          "mw": 352.43,
-          "coverage": 1,
-          "total": 1
-        },
-        "hornsea-one": {
-          "mw": 92.37599999999999,
-          "coverage": 3,
-          "total": 3
-        },
-        "seabank": {
-          "mw": -3.818,
-          "coverage": 2,
-          "total": 2
-        },
-        "saltend": {
-          "mw": -1.04,
-          "coverage": 3,
-          "total": 3
-        },
-        "torness": {
-          "mw": 654.648,
-          "coverage": 2,
-          "total": 2
-        },
-        "sizewell-b": {
-          "mw": 1179.46,
-          "coverage": 2,
-          "total": 2
-        },
-        "hartlepool": {
-          "mw": 338.552,
-          "coverage": 2,
-          "total": 2
-        },
-        "peterhead": {
-          "mw": 0,
-          "coverage": 2,
-          "total": 2
-        },
-        "seagreen": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "walney": {
-          "mw": 315.26399999999995,
-          "coverage": 4,
-          "total": 4
-        },
-        "moray-east": {
-          "mw": -2.896,
-          "coverage": 3,
-          "total": 3
-        },
-        "spalding": {
-          "mw": 595.36,
-          "coverage": 1,
-          "total": 1
-        },
-        "langage": {
-          "mw": -1.6,
-          "coverage": 1,
-          "total": 1
-        },
-        "marchwood": {
-          "mw": 824,
-          "coverage": 1,
-          "total": 1
-        },
-        "carrington": {
-          "mw": 251.2,
-          "coverage": 2,
-          "total": 2
-        },
-        "moray-west": {
-          "mw": -0.0019999999999999983,
-          "coverage": 4,
-          "total": 4
-        },
-        "triton-knoll": {
-          "mw": 369.96000000000004,
-          "coverage": 2,
-          "total": 2
-        },
-        "severn-power": {
-          "mw": 777.3,
-          "coverage": 2,
-          "total": 2
-        },
-        "sutton-bridge": {
-          "mw": 374.8,
-          "coverage": 1,
-          "total": 1
-        },
-        "rocksavage": {
-          "mw": -2.958,
-          "coverage": 1,
-          "total": 1
-        },
-        "damhead-creek": {
-          "mw": -1,
-          "coverage": 1,
-          "total": 1
-        },
-        "coryton": {
-          "mw": -1.954,
-          "coverage": 1,
-          "total": 1
-        },
-        "medway": {
-          "mw": -0.738,
-          "coverage": 1,
-          "total": 1
-        },
-        "little-barford": {
-          "mw": -0.84,
-          "coverage": 1,
-          "total": 1
-        },
-        "rye-house": {
-          "mw": -1.528,
-          "coverage": 1,
-          "total": 1
-        },
-        "east-anglia-one": {
-          "mw": 570.06,
-          "coverage": 2,
-          "total": 2
-        },
-        "london-array": {
-          "mw": 532.0540000000001,
-          "coverage": 4,
-          "total": 4
-        },
-        "killingholme": {
-          "mw": -1.282,
-          "coverage": 2,
-          "total": 2
-        },
-        "dogger-bank-a": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "beatrice": {
-          "mw": 59.540000000000006,
-          "coverage": 4,
-          "total": 4
-        },
-        "gwynt-y-mor": {
-          "mw": 344.38,
-          "coverage": 4,
-          "total": 4
-        },
-        "race-bank": {
-          "mw": 30.866,
-          "coverage": 2,
-          "total": 2
-        },
-        "whitelee": {
-          "mw": 263.322,
-          "coverage": 2,
-          "total": 2
-        },
-        "clyde": {
-          "mw": 268.438,
-          "coverage": 3,
-          "total": 3
-        },
-        "greater-gabbard": {
-          "mw": 376.612,
-          "coverage": 3,
-          "total": 3
-        }
-      }
-    },
-    {
-      "from": "2026-09-07T19:30:00.000Z",
-      "to": "2026-09-07T20:00:00.000Z",
-      "values": {
-        "drax": {
-          "mw": 2540.86,
-          "coverage": 4,
-          "total": 4
-        },
-        "pembroke": {
-          "mw": 0,
-          "coverage": 5,
-          "total": 5
-        },
-        "heysham": {
-          "mw": 1269.232,
-          "coverage": 4,
-          "total": 4
-        },
-        "staythorpe": {
-          "mw": 614,
-          "coverage": 4,
-          "total": 4
-        },
-        "dinorwig": {
-          "mw": 523.2,
-          "coverage": 6,
-          "total": 6
-        },
-        "keadby": {
-          "mw": 539.362,
-          "coverage": 2,
-          "total": 2
-        },
-        "didcot-b": {
-          "mw": 688.4,
-          "coverage": 2,
-          "total": 2
-        },
-        "grain": {
-          "mw": 773,
-          "coverage": 3,
-          "total": 3
-        },
-        "south-humber-bank": {
-          "mw": 185.6,
-          "coverage": 2,
-          "total": 2
-        },
-        "hornsea-two": {
-          "mw": 262.702,
-          "coverage": 3,
-          "total": 3
-        },
-        "connahs-quay": {
-          "mw": -17.136,
-          "coverage": 4,
-          "total": 4
-        },
-        "west-burton-b": {
-          "mw": 616.3,
-          "coverage": 3,
-          "total": 3
-        },
-        "vpi-immingham": {
-          "mw": 327.18,
-          "coverage": 1,
-          "total": 1
-        },
-        "hornsea-one": {
-          "mw": 130.16000000000003,
-          "coverage": 3,
-          "total": 3
-        },
-        "seabank": {
-          "mw": -3.688,
-          "coverage": 2,
-          "total": 2
-        },
-        "saltend": {
-          "mw": -1.05,
-          "coverage": 3,
-          "total": 3
-        },
-        "torness": {
-          "mw": 656.216,
-          "coverage": 2,
-          "total": 2
-        },
-        "sizewell-b": {
-          "mw": 1179.42,
-          "coverage": 2,
-          "total": 2
-        },
-        "hartlepool": {
-          "mw": 338.824,
-          "coverage": 2,
-          "total": 2
-        },
-        "peterhead": {
-          "mw": 0,
-          "coverage": 2,
-          "total": 2
-        },
-        "seagreen": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "walney": {
-          "mw": 291.114,
-          "coverage": 4,
-          "total": 4
-        },
-        "moray-east": {
-          "mw": -2.934,
-          "coverage": 3,
-          "total": 3
-        },
-        "spalding": {
-          "mw": 514.32,
-          "coverage": 1,
-          "total": 1
-        },
-        "langage": {
-          "mw": -1.2,
-          "coverage": 1,
-          "total": 1
-        },
-        "marchwood": {
-          "mw": 826.8,
-          "coverage": 1,
-          "total": 1
-        },
-        "carrington": {
-          "mw": 334.4,
-          "coverage": 2,
-          "total": 2
-        },
-        "moray-west": {
-          "mw": 0.018,
-          "coverage": 4,
-          "total": 4
-        },
-        "triton-knoll": {
-          "mw": 385.4,
-          "coverage": 2,
-          "total": 2
-        },
-        "severn-power": {
-          "mw": 782.9,
-          "coverage": 2,
-          "total": 2
-        },
-        "sutton-bridge": {
-          "mw": 332.8,
-          "coverage": 1,
-          "total": 1
-        },
-        "rocksavage": {
-          "mw": -2.966,
-          "coverage": 1,
-          "total": 1
-        },
-        "damhead-creek": {
-          "mw": -0.98,
-          "coverage": 1,
-          "total": 1
-        },
-        "coryton": {
-          "mw": -1.878,
-          "coverage": 1,
-          "total": 1
-        },
-        "medway": {
-          "mw": -0.748,
-          "coverage": 1,
-          "total": 1
-        },
-        "little-barford": {
-          "mw": -0.86,
-          "coverage": 1,
-          "total": 1
-        },
-        "rye-house": {
-          "mw": -1.512,
-          "coverage": 1,
-          "total": 1
-        },
-        "east-anglia-one": {
-          "mw": 659.6479999999999,
-          "coverage": 2,
-          "total": 2
-        },
-        "london-array": {
-          "mw": 441.342,
-          "coverage": 4,
-          "total": 4
-        },
-        "killingholme": {
-          "mw": -1.278,
-          "coverage": 2,
-          "total": 2
-        },
-        "dogger-bank-a": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "beatrice": {
-          "mw": 59.56,
-          "coverage": 4,
-          "total": 4
-        },
-        "gwynt-y-mor": {
-          "mw": 490.76,
-          "coverage": 4,
-          "total": 4
-        },
-        "race-bank": {
-          "mw": 60.644,
-          "coverage": 2,
-          "total": 2
-        },
-        "whitelee": {
-          "mw": 256.028,
-          "coverage": 2,
-          "total": 2
-        },
-        "clyde": {
-          "mw": 227.91400000000002,
-          "coverage": 3,
-          "total": 3
-        },
-        "greater-gabbard": {
-          "mw": 386.388,
-          "coverage": 3,
-          "total": 3
-        }
-      }
-    },
-    {
-      "from": "2026-09-07T20:00:00.000Z",
-      "to": "2026-09-07T20:30:00.000Z",
-      "values": {
-        "drax": {
-          "mw": 2551.58,
-          "coverage": 4,
-          "total": 4
-        },
-        "pembroke": {
-          "mw": 0,
-          "coverage": 5,
-          "total": 5
-        },
-        "heysham": {
-          "mw": 1257.952,
-          "coverage": 4,
-          "total": 4
-        },
-        "staythorpe": {
-          "mw": 614.2,
-          "coverage": 4,
-          "total": 4
-        },
-        "dinorwig": {
-          "mw": 297.29999999999995,
-          "coverage": 6,
-          "total": 6
-        },
-        "keadby": {
-          "mw": 351.26,
-          "coverage": 2,
-          "total": 2
-        },
-        "didcot-b": {
-          "mw": 524.6,
-          "coverage": 2,
-          "total": 2
-        },
-        "grain": {
-          "mw": 631.7,
-          "coverage": 3,
-          "total": 3
-        },
-        "south-humber-bank": {
-          "mw": 181.4,
-          "coverage": 2,
-          "total": 2
-        },
-        "hornsea-two": {
-          "mw": 423.322,
-          "coverage": 3,
-          "total": 3
-        },
-        "connahs-quay": {
-          "mw": -16.631999999999998,
-          "coverage": 4,
-          "total": 4
-        },
-        "west-burton-b": {
-          "mw": 652.232,
-          "coverage": 3,
-          "total": 3
-        },
-        "vpi-immingham": {
-          "mw": 315.448,
-          "coverage": 1,
-          "total": 1
-        },
-        "hornsea-one": {
-          "mw": 188.87599999999998,
-          "coverage": 3,
-          "total": 3
-        },
-        "seabank": {
-          "mw": -3.306,
-          "coverage": 2,
-          "total": 2
-        },
-        "saltend": {
-          "mw": -1.03,
-          "coverage": 3,
-          "total": 3
-        },
-        "torness": {
-          "mw": 653.504,
-          "coverage": 2,
-          "total": 2
-        },
-        "sizewell-b": {
-          "mw": 1179.62,
-          "coverage": 2,
-          "total": 2
-        },
-        "hartlepool": {
-          "mw": 338.976,
-          "coverage": 2,
-          "total": 2
-        },
-        "peterhead": {
-          "mw": 0,
-          "coverage": 2,
-          "total": 2
-        },
-        "seagreen": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "walney": {
-          "mw": 329.37199999999996,
-          "coverage": 4,
-          "total": 4
-        },
-        "moray-east": {
-          "mw": -2.924,
-          "coverage": 3,
-          "total": 3
-        },
-        "spalding": {
-          "mw": 437.54,
-          "coverage": 1,
-          "total": 1
-        },
-        "langage": {
-          "mw": -1.4,
-          "coverage": 1,
-          "total": 1
-        },
-        "marchwood": {
-          "mw": 823.6,
-          "coverage": 1,
-          "total": 1
-        },
-        "carrington": {
-          "mw": 418,
-          "coverage": 2,
-          "total": 2
-        },
-        "moray-west": {
-          "mw": 0.038000000000000006,
-          "coverage": 4,
-          "total": 4
-        },
-        "triton-knoll": {
-          "mw": 485.42,
-          "coverage": 2,
-          "total": 2
-        },
-        "severn-power": {
-          "mw": 670.9,
-          "coverage": 2,
-          "total": 2
-        },
-        "sutton-bridge": {
-          "mw": 330.6,
-          "coverage": 1,
-          "total": 1
-        },
-        "rocksavage": {
-          "mw": -2.938,
-          "coverage": 1,
-          "total": 1
-        },
-        "damhead-creek": {
-          "mw": -0.97,
-          "coverage": 1,
-          "total": 1
-        },
-        "coryton": {
-          "mw": -1.746,
-          "coverage": 1,
-          "total": 1
-        },
-        "medway": {
-          "mw": -0.736,
-          "coverage": 1,
-          "total": 1
-        },
-        "little-barford": {
-          "mw": -0.86,
-          "coverage": 1,
-          "total": 1
-        },
-        "rye-house": {
-          "mw": -1.482,
-          "coverage": 1,
-          "total": 1
-        },
-        "east-anglia-one": {
-          "mw": 639.706,
-          "coverage": 2,
-          "total": 2
-        },
-        "london-array": {
-          "mw": 443.60200000000003,
+          "mw": 441.96,
           "coverage": 4,
           "total": 4
         },
@@ -1660,43 +214,43 @@
           "total": 0
         },
         "beatrice": {
-          "mw": 59.53999999999999,
+          "mw": 532.02,
           "coverage": 4,
           "total": 4
         },
         "gwynt-y-mor": {
-          "mw": 470.35999999999996,
+          "mw": 469.46,
           "coverage": 4,
           "total": 4
         },
         "race-bank": {
-          "mw": 94.384,
+          "mw": 359.024,
           "coverage": 2,
           "total": 2
         },
         "whitelee": {
-          "mw": 249.28,
+          "mw": 189.386,
           "coverage": 2,
           "total": 2
         },
         "clyde": {
-          "mw": 251.5,
+          "mw": 437.786,
           "coverage": 3,
           "total": 3
         },
         "greater-gabbard": {
-          "mw": 372.698,
+          "mw": 314.27,
           "coverage": 3,
           "total": 3
         }
       }
     },
     {
-      "from": "2026-09-07T20:30:00.000Z",
-      "to": "2026-09-07T21:00:00.000Z",
+      "from": "2026-09-08T17:30:00.000Z",
+      "to": "2026-09-08T18:00:00.000Z",
       "values": {
         "drax": {
-          "mw": 2529.42,
+          "mw": 2565.52,
           "coverage": 4,
           "total": 4
         },
@@ -1706,765 +260,42 @@
           "total": 5
         },
         "heysham": {
-          "mw": 1251.864,
+          "mw": 1014.9839999999999,
           "coverage": 4,
           "total": 4
         },
         "staythorpe": {
-          "mw": 613.5999999999999,
+          "mw": 616.4000000000001,
           "coverage": 4,
           "total": 4
         },
         "dinorwig": {
-          "mw": 222.5,
+          "mw": 293.5,
           "coverage": 6,
           "total": 6
         },
         "keadby": {
-          "mw": 349.978,
+          "mw": -5.228,
           "coverage": 2,
           "total": 2
         },
         "didcot-b": {
-          "mw": 382.8,
+          "mw": 495.8,
           "coverage": 2,
           "total": 2
         },
         "grain": {
-          "mw": 496.1,
+          "mw": -7.199999999999999,
           "coverage": 3,
           "total": 3
         },
         "south-humber-bank": {
-          "mw": 181.2,
+          "mw": -1.636,
           "coverage": 2,
           "total": 2
         },
         "hornsea-two": {
-          "mw": 635.1020000000001,
-          "coverage": 3,
-          "total": 3
-        },
-        "connahs-quay": {
-          "mw": -16.758,
-          "coverage": 4,
-          "total": 4
-        },
-        "west-burton-b": {
-          "mw": 645.87,
-          "coverage": 3,
-          "total": 3
-        },
-        "vpi-immingham": {
-          "mw": 314.456,
-          "coverage": 1,
-          "total": 1
-        },
-        "hornsea-one": {
-          "mw": 292.596,
-          "coverage": 3,
-          "total": 3
-        },
-        "seabank": {
-          "mw": -3.268,
-          "coverage": 2,
-          "total": 2
-        },
-        "saltend": {
-          "mw": -1.05,
-          "coverage": 3,
-          "total": 3
-        },
-        "torness": {
-          "mw": 655.72,
-          "coverage": 2,
-          "total": 2
-        },
-        "sizewell-b": {
-          "mw": 1179.08,
-          "coverage": 2,
-          "total": 2
-        },
-        "hartlepool": {
-          "mw": 339.98400000000004,
-          "coverage": 2,
-          "total": 2
-        },
-        "peterhead": {
-          "mw": 0,
-          "coverage": 2,
-          "total": 2
-        },
-        "seagreen": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "walney": {
-          "mw": 556.75,
-          "coverage": 4,
-          "total": 4
-        },
-        "moray-east": {
-          "mw": -2.944,
-          "coverage": 3,
-          "total": 3
-        },
-        "spalding": {
-          "mw": 344.9,
-          "coverage": 1,
-          "total": 1
-        },
-        "langage": {
-          "mw": -1.2,
-          "coverage": 1,
-          "total": 1
-        },
-        "marchwood": {
-          "mw": 827.4,
-          "coverage": 1,
-          "total": 1
-        },
-        "carrington": {
-          "mw": 417.2,
-          "coverage": 2,
-          "total": 2
-        },
-        "moray-west": {
-          "mw": 0.008000000000000002,
-          "coverage": 4,
-          "total": 4
-        },
-        "triton-knoll": {
-          "mw": 399.72,
-          "coverage": 2,
-          "total": 2
-        },
-        "severn-power": {
-          "mw": 483.6,
-          "coverage": 2,
-          "total": 2
-        },
-        "sutton-bridge": {
-          "mw": 330.6,
-          "coverage": 1,
-          "total": 1
-        },
-        "rocksavage": {
-          "mw": -2.96,
-          "coverage": 1,
-          "total": 1
-        },
-        "damhead-creek": {
-          "mw": -0.97,
-          "coverage": 1,
-          "total": 1
-        },
-        "coryton": {
-          "mw": -1.874,
-          "coverage": 1,
-          "total": 1
-        },
-        "medway": {
-          "mw": -0.726,
-          "coverage": 1,
-          "total": 1
-        },
-        "little-barford": {
-          "mw": -0.76,
-          "coverage": 1,
-          "total": 1
-        },
-        "rye-house": {
-          "mw": -1.496,
-          "coverage": 1,
-          "total": 1
-        },
-        "east-anglia-one": {
-          "mw": 632.158,
-          "coverage": 2,
-          "total": 2
-        },
-        "london-array": {
-          "mw": 565.86,
-          "coverage": 4,
-          "total": 4
-        },
-        "killingholme": {
-          "mw": -1.2839999999999998,
-          "coverage": 2,
-          "total": 2
-        },
-        "dogger-bank-a": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "beatrice": {
-          "mw": 59.480000000000004,
-          "coverage": 4,
-          "total": 4
-        },
-        "gwynt-y-mor": {
-          "mw": 472.41999999999996,
-          "coverage": 4,
-          "total": 4
-        },
-        "race-bank": {
-          "mw": 99.68599999999999,
-          "coverage": 2,
-          "total": 2
-        },
-        "whitelee": {
-          "mw": 305.406,
-          "coverage": 2,
-          "total": 2
-        },
-        "clyde": {
-          "mw": 239.882,
-          "coverage": 3,
-          "total": 3
-        },
-        "greater-gabbard": {
-          "mw": 369.088,
-          "coverage": 3,
-          "total": 3
-        }
-      }
-    },
-    {
-      "from": "2026-09-07T21:00:00.000Z",
-      "to": "2026-09-07T21:30:00.000Z",
-      "values": {
-        "drax": {
-          "mw": 2511.08,
-          "coverage": 4,
-          "total": 4
-        },
-        "pembroke": {
-          "mw": 0,
-          "coverage": 5,
-          "total": 5
-        },
-        "heysham": {
-          "mw": 1243,
-          "coverage": 4,
-          "total": 4
-        },
-        "staythorpe": {
-          "mw": 614.4,
-          "coverage": 4,
-          "total": 4
-        },
-        "dinorwig": {
-          "mw": -8.1,
-          "coverage": 6,
-          "total": 6
-        },
-        "keadby": {
-          "mw": 349.986,
-          "coverage": 2,
-          "total": 2
-        },
-        "didcot-b": {
-          "mw": 383,
-          "coverage": 2,
-          "total": 2
-        },
-        "grain": {
-          "mw": 459.8,
-          "coverage": 3,
-          "total": 3
-        },
-        "south-humber-bank": {
-          "mw": 191.8,
-          "coverage": 2,
-          "total": 2
-        },
-        "hornsea-two": {
-          "mw": 828.002,
-          "coverage": 3,
-          "total": 3
-        },
-        "connahs-quay": {
-          "mw": -16.758,
-          "coverage": 4,
-          "total": 4
-        },
-        "west-burton-b": {
-          "mw": 726.348,
-          "coverage": 3,
-          "total": 3
-        },
-        "vpi-immingham": {
-          "mw": 298.08,
-          "coverage": 1,
-          "total": 1
-        },
-        "hornsea-one": {
-          "mw": 457.804,
-          "coverage": 3,
-          "total": 3
-        },
-        "seabank": {
-          "mw": -3.25,
-          "coverage": 2,
-          "total": 2
-        },
-        "saltend": {
-          "mw": -1.04,
-          "coverage": 3,
-          "total": 3
-        },
-        "torness": {
-          "mw": 653.112,
-          "coverage": 2,
-          "total": 2
-        },
-        "sizewell-b": {
-          "mw": 1179.8400000000001,
-          "coverage": 2,
-          "total": 2
-        },
-        "hartlepool": {
-          "mw": 341.096,
-          "coverage": 2,
-          "total": 2
-        },
-        "peterhead": {
-          "mw": 0,
-          "coverage": 2,
-          "total": 2
-        },
-        "seagreen": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "walney": {
-          "mw": 414.1,
-          "coverage": 4,
-          "total": 4
-        },
-        "moray-east": {
-          "mw": -2.936,
-          "coverage": 3,
-          "total": 3
-        },
-        "spalding": {
-          "mw": 384.1,
-          "coverage": 1,
-          "total": 1
-        },
-        "langage": {
-          "mw": -1.4,
-          "coverage": 1,
-          "total": 1
-        },
-        "marchwood": {
-          "mw": 525.8,
-          "coverage": 1,
-          "total": 1
-        },
-        "carrington": {
-          "mw": 379,
-          "coverage": 2,
-          "total": 2
-        },
-        "moray-west": {
-          "mw": 0.028,
-          "coverage": 4,
-          "total": 4
-        },
-        "triton-knoll": {
-          "mw": 321.78,
-          "coverage": 2,
-          "total": 2
-        },
-        "severn-power": {
-          "mw": 627.7,
-          "coverage": 2,
-          "total": 2
-        },
-        "sutton-bridge": {
-          "mw": 348.6,
-          "coverage": 1,
-          "total": 1
-        },
-        "rocksavage": {
-          "mw": -2.952,
-          "coverage": 1,
-          "total": 1
-        },
-        "damhead-creek": {
-          "mw": -0.96,
-          "coverage": 1,
-          "total": 1
-        },
-        "coryton": {
-          "mw": -1.722,
-          "coverage": 1,
-          "total": 1
-        },
-        "medway": {
-          "mw": -0.778,
-          "coverage": 1,
-          "total": 1
-        },
-        "little-barford": {
-          "mw": -0.86,
-          "coverage": 1,
-          "total": 1
-        },
-        "rye-house": {
-          "mw": -1.484,
-          "coverage": 1,
-          "total": 1
-        },
-        "east-anglia-one": {
-          "mw": 651.112,
-          "coverage": 2,
-          "total": 2
-        },
-        "london-array": {
-          "mw": 581.5920000000001,
-          "coverage": 4,
-          "total": 4
-        },
-        "killingholme": {
-          "mw": -1.294,
-          "coverage": 2,
-          "total": 2
-        },
-        "dogger-bank-a": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "beatrice": {
-          "mw": 59.56,
-          "coverage": 4,
-          "total": 4
-        },
-        "gwynt-y-mor": {
-          "mw": 500.05999999999995,
-          "coverage": 4,
-          "total": 4
-        },
-        "race-bank": {
-          "mw": 73.044,
-          "coverage": 2,
-          "total": 2
-        },
-        "whitelee": {
-          "mw": 307.578,
-          "coverage": 2,
-          "total": 2
-        },
-        "clyde": {
-          "mw": 194.678,
-          "coverage": 3,
-          "total": 3
-        },
-        "greater-gabbard": {
-          "mw": 372.398,
-          "coverage": 3,
-          "total": 3
-        }
-      }
-    },
-    {
-      "from": "2026-09-07T21:30:00.000Z",
-      "to": "2026-09-07T22:00:00.000Z",
-      "values": {
-        "drax": {
-          "mw": 2511.78,
-          "coverage": 4,
-          "total": 4
-        },
-        "pembroke": {
-          "mw": 0,
-          "coverage": 5,
-          "total": 5
-        },
-        "heysham": {
-          "mw": 1237.008,
-          "coverage": 4,
-          "total": 4
-        },
-        "staythorpe": {
-          "mw": 535.6,
-          "coverage": 4,
-          "total": 4
-        },
-        "dinorwig": {
-          "mw": -3.2,
-          "coverage": 6,
-          "total": 6
-        },
-        "keadby": {
-          "mw": 350.03000000000003,
-          "coverage": 2,
-          "total": 2
-        },
-        "didcot-b": {
-          "mw": 382.6,
-          "coverage": 2,
-          "total": 2
-        },
-        "grain": {
-          "mw": 459.9,
-          "coverage": 3,
-          "total": 3
-        },
-        "south-humber-bank": {
-          "mw": 249,
-          "coverage": 2,
-          "total": 2
-        },
-        "hornsea-two": {
-          "mw": 910.66,
-          "coverage": 3,
-          "total": 3
-        },
-        "connahs-quay": {
-          "mw": -16.884,
-          "coverage": 4,
-          "total": 4
-        },
-        "west-burton-b": {
-          "mw": 787.15,
-          "coverage": 3,
-          "total": 3
-        },
-        "vpi-immingham": {
-          "mw": 295.052,
-          "coverage": 1,
-          "total": 1
-        },
-        "hornsea-one": {
-          "mw": 556.3599999999999,
-          "coverage": 3,
-          "total": 3
-        },
-        "seabank": {
-          "mw": -3.226,
-          "coverage": 2,
-          "total": 2
-        },
-        "saltend": {
-          "mw": -1.04,
-          "coverage": 3,
-          "total": 3
-        },
-        "torness": {
-          "mw": 654.056,
-          "coverage": 2,
-          "total": 2
-        },
-        "sizewell-b": {
-          "mw": 1179.74,
-          "coverage": 2,
-          "total": 2
-        },
-        "hartlepool": {
-          "mw": 341.69599999999997,
-          "coverage": 2,
-          "total": 2
-        },
-        "peterhead": {
-          "mw": 0,
-          "coverage": 2,
-          "total": 2
-        },
-        "seagreen": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "walney": {
-          "mw": 383.99999999999994,
-          "coverage": 4,
-          "total": 4
-        },
-        "moray-east": {
-          "mw": -2.934,
-          "coverage": 3,
-          "total": 3
-        },
-        "spalding": {
-          "mw": 370.96,
-          "coverage": 1,
-          "total": 1
-        },
-        "langage": {
-          "mw": -1.4,
-          "coverage": 1,
-          "total": 1
-        },
-        "marchwood": {
-          "mw": 346.8,
-          "coverage": 1,
-          "total": 1
-        },
-        "carrington": {
-          "mw": 299.6,
-          "coverage": 2,
-          "total": 2
-        },
-        "moray-west": {
-          "mw": -0.001999999999999995,
-          "coverage": 4,
-          "total": 4
-        },
-        "triton-knoll": {
-          "mw": 207.95999999999998,
-          "coverage": 2,
-          "total": 2
-        },
-        "severn-power": {
-          "mw": 619.4,
-          "coverage": 2,
-          "total": 2
-        },
-        "sutton-bridge": {
-          "mw": 330.4,
-          "coverage": 1,
-          "total": 1
-        },
-        "rocksavage": {
-          "mw": -2.958,
-          "coverage": 1,
-          "total": 1
-        },
-        "damhead-creek": {
-          "mw": -0.94,
-          "coverage": 1,
-          "total": 1
-        },
-        "coryton": {
-          "mw": -1.798,
-          "coverage": 1,
-          "total": 1
-        },
-        "medway": {
-          "mw": -0.764,
-          "coverage": 1,
-          "total": 1
-        },
-        "little-barford": {
-          "mw": -0.84,
-          "coverage": 1,
-          "total": 1
-        },
-        "rye-house": {
-          "mw": -1.494,
-          "coverage": 1,
-          "total": 1
-        },
-        "east-anglia-one": {
-          "mw": 616.2940000000001,
-          "coverage": 2,
-          "total": 2
-        },
-        "london-array": {
-          "mw": 542.226,
-          "coverage": 4,
-          "total": 4
-        },
-        "killingholme": {
-          "mw": -1.298,
-          "coverage": 2,
-          "total": 2
-        },
-        "dogger-bank-a": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0
-        },
-        "beatrice": {
-          "mw": 59.58,
-          "coverage": 4,
-          "total": 4
-        },
-        "gwynt-y-mor": {
-          "mw": 500.70000000000005,
-          "coverage": 4,
-          "total": 4
-        },
-        "race-bank": {
-          "mw": 57.424,
-          "coverage": 2,
-          "total": 2
-        },
-        "whitelee": {
-          "mw": 256.98,
-          "coverage": 2,
-          "total": 2
-        },
-        "clyde": {
-          "mw": 201.224,
-          "coverage": 3,
-          "total": 3
-        },
-        "greater-gabbard": {
-          "mw": 380.20799999999997,
-          "coverage": 3,
-          "total": 3
-        }
-      }
-    },
-    {
-      "from": "2026-09-07T22:00:00.000Z",
-      "to": "2026-09-07T22:30:00.000Z",
-      "values": {
-        "drax": {
-          "mw": 2510.1400000000003,
-          "coverage": 4,
-          "total": 4
-        },
-        "pembroke": {
-          "mw": 0,
-          "coverage": 5,
-          "total": 5
-        },
-        "heysham": {
-          "mw": 1230.8719999999998,
-          "coverage": 4,
-          "total": 4
-        },
-        "staythorpe": {
-          "mw": 205.5,
-          "coverage": 4,
-          "total": 4
-        },
-        "dinorwig": {
-          "mw": -8.2,
-          "coverage": 6,
-          "total": 6
-        },
-        "keadby": {
-          "mw": 505.822,
-          "coverage": 2,
-          "total": 2
-        },
-        "didcot-b": {
-          "mw": 370,
-          "coverage": 2,
-          "total": 2
-        },
-        "grain": {
-          "mw": 459.70000000000005,
-          "coverage": 3,
-          "total": 3
-        },
-        "south-humber-bank": {
-          "mw": 248.8,
-          "coverage": 2,
-          "total": 2
-        },
-        "hornsea-two": {
-          "mw": 815.6220000000001,
+          "mw": 1112.1419999999998,
           "coverage": 3,
           "total": 3
         },
@@ -2474,42 +305,42 @@
           "total": 4
         },
         "west-burton-b": {
-          "mw": 816.432,
+          "mw": 651.606,
           "coverage": 3,
           "total": 3
         },
         "vpi-immingham": {
-          "mw": 287.424,
+          "mw": 312.106,
           "coverage": 1,
           "total": 1
         },
         "hornsea-one": {
-          "mw": 514.4300000000001,
+          "mw": 813.992,
           "coverage": 3,
           "total": 3
         },
         "seabank": {
-          "mw": -3.254,
+          "mw": 476,
           "coverage": 2,
           "total": 2
         },
         "saltend": {
-          "mw": -1.06,
+          "mw": -1.04,
           "coverage": 3,
           "total": 3
         },
         "torness": {
-          "mw": 653.288,
+          "mw": 656.4720000000001,
           "coverage": 2,
           "total": 2
         },
         "sizewell-b": {
-          "mw": 1179.8200000000002,
+          "mw": 1180.68,
           "coverage": 2,
           "total": 2
         },
         "hartlepool": {
-          "mw": 342.032,
+          "mw": 447.536,
           "coverage": 2,
           "total": 2
         },
@@ -2524,72 +355,72 @@
           "total": 0
         },
         "walney": {
-          "mw": 374.38000000000005,
+          "mw": 698.26,
           "coverage": 4,
           "total": 4
         },
         "moray-east": {
-          "mw": -2.91,
+          "mw": -2.898,
           "coverage": 3,
           "total": 3
         },
         "spalding": {
-          "mw": 538.22,
+          "mw": 335.3,
           "coverage": 1,
           "total": 1
         },
         "langage": {
-          "mw": -1.4,
+          "mw": -1.2,
           "coverage": 1,
           "total": 1
         },
         "marchwood": {
-          "mw": 354,
+          "mw": 722.4,
           "coverage": 1,
           "total": 1
         },
         "carrington": {
-          "mw": 105.2,
+          "mw": 226.6,
           "coverage": 2,
           "total": 2
         },
         "moray-west": {
-          "mw": -0.0019999999999999983,
+          "mw": 0.047999999999999994,
           "coverage": 4,
           "total": 4
         },
         "triton-knoll": {
-          "mw": 236.60000000000002,
+          "mw": 735.9200000000001,
           "coverage": 2,
           "total": 2
         },
         "severn-power": {
-          "mw": 614.2,
+          "mw": 433.4,
           "coverage": 2,
           "total": 2
         },
         "sutton-bridge": {
-          "mw": 330.6,
+          "mw": 400.8,
           "coverage": 1,
           "total": 1
         },
         "rocksavage": {
-          "mw": -2.966,
+          "mw": -2.604,
           "coverage": 1,
           "total": 1
         },
         "damhead-creek": {
-          "mw": -0.98,
+          "mw": -0.95,
           "coverage": 1,
           "total": 1
         },
         "coryton": {
-          "mw": -1.724,
+          "mw": -0.698,
           "coverage": 1,
           "total": 1
         },
         "medway": {
-          "mw": -0.762,
+          "mw": -0.668,
           "coverage": 1,
           "total": 1
         },
@@ -2599,17 +430,258 @@
           "total": 1
         },
         "rye-house": {
-          "mw": -1.496,
+          "mw": -1.502,
           "coverage": 1,
           "total": 1
         },
         "east-anglia-one": {
-          "mw": 581.8679999999999,
+          "mw": 651.0260000000001,
           "coverage": 2,
           "total": 2
         },
         "london-array": {
-          "mw": 485.54,
+          "mw": 531.902,
+          "coverage": 4,
+          "total": 4
+        },
+        "killingholme": {
+          "mw": -1.284,
+          "coverage": 2,
+          "total": 2
+        },
+        "dogger-bank-a": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "beatrice": {
+          "mw": 529.62,
+          "coverage": 4,
+          "total": 4
+        },
+        "gwynt-y-mor": {
+          "mw": 533.64,
+          "coverage": 4,
+          "total": 4
+        },
+        "race-bank": {
+          "mw": 386.846,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 155.028,
+          "coverage": 2,
+          "total": 2
+        },
+        "clyde": {
+          "mw": 436.72,
+          "coverage": 3,
+          "total": 3
+        },
+        "greater-gabbard": {
+          "mw": 310.096,
+          "coverage": 3,
+          "total": 3
+        }
+      }
+    },
+    {
+      "from": "2026-09-08T18:00:00.000Z",
+      "to": "2026-09-08T18:30:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2552.3599999999997,
+          "coverage": 4,
+          "total": 4
+        },
+        "pembroke": {
+          "mw": 0,
+          "coverage": 5,
+          "total": 5
+        },
+        "heysham": {
+          "mw": 1012.512,
+          "coverage": 4,
+          "total": 4
+        },
+        "staythorpe": {
+          "mw": 616.6,
+          "coverage": 4,
+          "total": 4
+        },
+        "dinorwig": {
+          "mw": 294,
+          "coverage": 6,
+          "total": 6
+        },
+        "keadby": {
+          "mw": -5.21,
+          "coverage": 2,
+          "total": 2
+        },
+        "didcot-b": {
+          "mw": 436,
+          "coverage": 2,
+          "total": 2
+        },
+        "grain": {
+          "mw": -4.7,
+          "coverage": 3,
+          "total": 3
+        },
+        "south-humber-bank": {
+          "mw": -1.612,
+          "coverage": 2,
+          "total": 2
+        },
+        "hornsea-two": {
+          "mw": 1247.282,
+          "coverage": 3,
+          "total": 3
+        },
+        "connahs-quay": {
+          "mw": -17.136,
+          "coverage": 4,
+          "total": 4
+        },
+        "west-burton-b": {
+          "mw": 607.058,
+          "coverage": 3,
+          "total": 3
+        },
+        "vpi-immingham": {
+          "mw": 313.108,
+          "coverage": 1,
+          "total": 1
+        },
+        "hornsea-one": {
+          "mw": 943.6499999999999,
+          "coverage": 3,
+          "total": 3
+        },
+        "seabank": {
+          "mw": 476.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "saltend": {
+          "mw": -1.02,
+          "coverage": 3,
+          "total": 3
+        },
+        "torness": {
+          "mw": 655.208,
+          "coverage": 2,
+          "total": 2
+        },
+        "sizewell-b": {
+          "mw": 1180.02,
+          "coverage": 2,
+          "total": 2
+        },
+        "hartlepool": {
+          "mw": 446.8,
+          "coverage": 2,
+          "total": 2
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "seagreen": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "walney": {
+          "mw": 709.58,
+          "coverage": 4,
+          "total": 4
+        },
+        "moray-east": {
+          "mw": -2.91,
+          "coverage": 3,
+          "total": 3
+        },
+        "spalding": {
+          "mw": 335.44,
+          "coverage": 1,
+          "total": 1
+        },
+        "langage": {
+          "mw": -1.6,
+          "coverage": 1,
+          "total": 1
+        },
+        "marchwood": {
+          "mw": 786.8,
+          "coverage": 1,
+          "total": 1
+        },
+        "carrington": {
+          "mw": 220.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "moray-west": {
+          "mw": 0.027999999999999997,
+          "coverage": 4,
+          "total": 4
+        },
+        "triton-knoll": {
+          "mw": 712.96,
+          "coverage": 2,
+          "total": 2
+        },
+        "severn-power": {
+          "mw": 448.4,
+          "coverage": 2,
+          "total": 2
+        },
+        "sutton-bridge": {
+          "mw": 400.6,
+          "coverage": 1,
+          "total": 1
+        },
+        "rocksavage": {
+          "mw": -2.586,
+          "coverage": 1,
+          "total": 1
+        },
+        "damhead-creek": {
+          "mw": -0.92,
+          "coverage": 1,
+          "total": 1
+        },
+        "coryton": {
+          "mw": -0.658,
+          "coverage": 1,
+          "total": 1
+        },
+        "medway": {
+          "mw": -0.738,
+          "coverage": 1,
+          "total": 1
+        },
+        "little-barford": {
+          "mw": -0.86,
+          "coverage": 1,
+          "total": 1
+        },
+        "rye-house": {
+          "mw": -1.524,
+          "coverage": 1,
+          "total": 1
+        },
+        "east-anglia-one": {
+          "mw": 626.932,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 521.4259999999999,
           "coverage": 4,
           "total": 4
         },
@@ -2624,43 +696,43 @@
           "total": 0
         },
         "beatrice": {
-          "mw": 59.540000000000006,
+          "mw": 525.5,
           "coverage": 4,
           "total": 4
         },
         "gwynt-y-mor": {
-          "mw": 508.19999999999993,
+          "mw": 542.2,
           "coverage": 4,
           "total": 4
         },
         "race-bank": {
-          "mw": 88.406,
+          "mw": 384.466,
           "coverage": 2,
           "total": 2
         },
         "whitelee": {
-          "mw": 250.616,
+          "mw": 210.176,
           "coverage": 2,
           "total": 2
         },
         "clyde": {
-          "mw": 228.476,
+          "mw": 441.998,
           "coverage": 3,
           "total": 3
         },
         "greater-gabbard": {
-          "mw": 345.824,
+          "mw": 378.99199999999996,
           "coverage": 3,
           "total": 3
         }
       }
     },
     {
-      "from": "2026-09-07T22:30:00.000Z",
-      "to": "2026-09-07T23:00:00.000Z",
+      "from": "2026-09-08T18:30:00.000Z",
+      "to": "2026-09-08T19:00:00.000Z",
       "values": {
         "drax": {
-          "mw": 2501.26,
+          "mw": 2542.58,
           "coverage": 4,
           "total": 4
         },
@@ -2670,67 +742,67 @@
           "total": 5
         },
         "heysham": {
-          "mw": 1223.128,
+          "mw": 1014.6959999999999,
           "coverage": 4,
           "total": 4
         },
         "staythorpe": {
-          "mw": 127.1,
+          "mw": 616.4,
           "coverage": 4,
           "total": 4
         },
         "dinorwig": {
-          "mw": -7.6000000000000005,
+          "mw": 293.59999999999997,
           "coverage": 6,
           "total": 6
         },
         "keadby": {
-          "mw": 714.418,
+          "mw": -5.256,
           "coverage": 2,
           "total": 2
         },
         "didcot-b": {
-          "mw": 140,
+          "mw": 500.8,
           "coverage": 2,
           "total": 2
         },
         "grain": {
-          "mw": 362.7,
+          "mw": -4.800000000000001,
           "coverage": 3,
           "total": 3
         },
         "south-humber-bank": {
-          "mw": 249.2,
+          "mw": -1.614,
           "coverage": 2,
           "total": 2
         },
         "hornsea-two": {
-          "mw": 660.662,
+          "mw": 1297.58,
           "coverage": 3,
           "total": 3
         },
         "connahs-quay": {
-          "mw": -16.631999999999998,
+          "mw": -16.884,
           "coverage": 4,
           "total": 4
         },
         "west-burton-b": {
-          "mw": 816.482,
+          "mw": 578.792,
           "coverage": 3,
           "total": 3
         },
         "vpi-immingham": {
-          "mw": 313.882,
+          "mw": 304.456,
           "coverage": 1,
           "total": 1
         },
         "hornsea-one": {
-          "mw": 365.244,
+          "mw": 1101.884,
           "coverage": 3,
           "total": 3
         },
         "seabank": {
-          "mw": -3.212,
+          "mw": 584.2,
           "coverage": 2,
           "total": 2
         },
@@ -2740,17 +812,17 @@
           "total": 3
         },
         "torness": {
-          "mw": 653.7520000000001,
+          "mw": 655.544,
           "coverage": 2,
           "total": 2
         },
         "sizewell-b": {
-          "mw": 1178.92,
+          "mw": 1179.2,
           "coverage": 2,
           "total": 2
         },
         "hartlepool": {
-          "mw": 342.488,
+          "mw": 446.216,
           "coverage": 2,
           "total": 2
         },
@@ -2765,97 +837,97 @@
           "total": 0
         },
         "walney": {
-          "mw": 346.7,
+          "mw": 708.94,
           "coverage": 4,
           "total": 4
         },
         "moray-east": {
-          "mw": -2.912,
+          "mw": -2.894,
           "coverage": 3,
           "total": 3
         },
         "spalding": {
-          "mw": 736.42,
+          "mw": 334.86,
           "coverage": 1,
           "total": 1
         },
         "langage": {
-          "mw": -1.4,
+          "mw": -1.2,
           "coverage": 1,
           "total": 1
         },
         "marchwood": {
-          "mw": 393,
+          "mw": 733.4,
           "coverage": 1,
           "total": 1
         },
         "carrington": {
-          "mw": -5.4,
+          "mw": 220.2,
           "coverage": 2,
           "total": 2
         },
         "moray-west": {
-          "mw": 0.008,
+          "mw": 0.048,
           "coverage": 4,
           "total": 4
         },
         "triton-knoll": {
-          "mw": 370.76,
+          "mw": 750.56,
           "coverage": 2,
           "total": 2
         },
         "severn-power": {
-          "mw": 762.5999999999999,
+          "mw": 679,
           "coverage": 2,
           "total": 2
         },
         "sutton-bridge": {
-          "mw": 334,
+          "mw": 399.2,
           "coverage": 1,
           "total": 1
         },
         "rocksavage": {
-          "mw": -2.96,
+          "mw": -2.238,
           "coverage": 1,
           "total": 1
         },
         "damhead-creek": {
-          "mw": -0.99,
+          "mw": -0.92,
           "coverage": 1,
           "total": 1
         },
         "coryton": {
-          "mw": -1.81,
+          "mw": -0.532,
           "coverage": 1,
           "total": 1
         },
         "medway": {
-          "mw": -0.77,
+          "mw": -0.772,
           "coverage": 1,
           "total": 1
         },
         "little-barford": {
-          "mw": -0.86,
+          "mw": -0.84,
           "coverage": 1,
           "total": 1
         },
         "rye-house": {
-          "mw": -1.494,
+          "mw": -1.528,
           "coverage": 1,
           "total": 1
         },
         "east-anglia-one": {
-          "mw": 339.448,
+          "mw": 637.434,
           "coverage": 2,
           "total": 2
         },
         "london-array": {
-          "mw": 308.03,
+          "mw": 468.668,
           "coverage": 4,
           "total": 4
         },
         "killingholme": {
-          "mw": -1.29,
+          "mw": -1.2959999999999998,
           "coverage": 2,
           "total": 2
         },
@@ -2865,32 +937,1960 @@
           "total": 0
         },
         "beatrice": {
-          "mw": 59.56,
+          "mw": 508.56000000000006,
           "coverage": 4,
           "total": 4
         },
         "gwynt-y-mor": {
-          "mw": 387.3,
+          "mw": 541.8800000000001,
           "coverage": 4,
           "total": 4
         },
         "race-bank": {
-          "mw": 125.382,
+          "mw": 393.204,
           "coverage": 2,
           "total": 2
         },
         "whitelee": {
-          "mw": 162.156,
+          "mw": 197.11200000000002,
           "coverage": 2,
           "total": 2
         },
         "clyde": {
-          "mw": 225.562,
+          "mw": 440.392,
           "coverage": 3,
           "total": 3
         },
         "greater-gabbard": {
-          "mw": 279.454,
+          "mw": 353.222,
+          "coverage": 3,
+          "total": 3
+        }
+      }
+    },
+    {
+      "from": "2026-09-08T19:00:00.000Z",
+      "to": "2026-09-08T19:30:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2544.48,
+          "coverage": 4,
+          "total": 4
+        },
+        "pembroke": {
+          "mw": 0,
+          "coverage": 5,
+          "total": 5
+        },
+        "heysham": {
+          "mw": 1010.56,
+          "coverage": 4,
+          "total": 4
+        },
+        "staythorpe": {
+          "mw": 560.3000000000001,
+          "coverage": 4,
+          "total": 4
+        },
+        "dinorwig": {
+          "mw": 293.7,
+          "coverage": 6,
+          "total": 6
+        },
+        "keadby": {
+          "mw": -5.952,
+          "coverage": 2,
+          "total": 2
+        },
+        "didcot-b": {
+          "mw": 512.6,
+          "coverage": 2,
+          "total": 2
+        },
+        "grain": {
+          "mw": -4.800000000000001,
+          "coverage": 3,
+          "total": 3
+        },
+        "south-humber-bank": {
+          "mw": -1.66,
+          "coverage": 2,
+          "total": 2
+        },
+        "hornsea-two": {
+          "mw": 1251.402,
+          "coverage": 3,
+          "total": 3
+        },
+        "connahs-quay": {
+          "mw": -16.884,
+          "coverage": 4,
+          "total": 4
+        },
+        "west-burton-b": {
+          "mw": 577.172,
+          "coverage": 3,
+          "total": 3
+        },
+        "vpi-immingham": {
+          "mw": 182.594,
+          "coverage": 1,
+          "total": 1
+        },
+        "hornsea-one": {
+          "mw": 1177.902,
+          "coverage": 3,
+          "total": 3
+        },
+        "seabank": {
+          "mw": 503.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "saltend": {
+          "mw": -1.03,
+          "coverage": 3,
+          "total": 3
+        },
+        "torness": {
+          "mw": 656.1279999999999,
+          "coverage": 2,
+          "total": 2
+        },
+        "sizewell-b": {
+          "mw": 1179.22,
+          "coverage": 2,
+          "total": 2
+        },
+        "hartlepool": {
+          "mw": 446.456,
+          "coverage": 2,
+          "total": 2
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "seagreen": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "walney": {
+          "mw": 707.86,
+          "coverage": 4,
+          "total": 4
+        },
+        "moray-east": {
+          "mw": -2.906,
+          "coverage": 3,
+          "total": 3
+        },
+        "spalding": {
+          "mw": 335.1,
+          "coverage": 1,
+          "total": 1
+        },
+        "langage": {
+          "mw": -1.4,
+          "coverage": 1,
+          "total": 1
+        },
+        "marchwood": {
+          "mw": 742.8,
+          "coverage": 1,
+          "total": 1
+        },
+        "carrington": {
+          "mw": 220.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "moray-west": {
+          "mw": 0.078,
+          "coverage": 4,
+          "total": 4
+        },
+        "triton-knoll": {
+          "mw": 753.9200000000001,
+          "coverage": 2,
+          "total": 2
+        },
+        "severn-power": {
+          "mw": 698.6,
+          "coverage": 2,
+          "total": 2
+        },
+        "sutton-bridge": {
+          "mw": 409.2,
+          "coverage": 1,
+          "total": 1
+        },
+        "rocksavage": {
+          "mw": -2.144,
+          "coverage": 1,
+          "total": 1
+        },
+        "damhead-creek": {
+          "mw": -0.94,
+          "coverage": 1,
+          "total": 1
+        },
+        "coryton": {
+          "mw": -0.492,
+          "coverage": 1,
+          "total": 1
+        },
+        "medway": {
+          "mw": -0.984,
+          "coverage": 1,
+          "total": 1
+        },
+        "little-barford": {
+          "mw": -0.96,
+          "coverage": 1,
+          "total": 1
+        },
+        "rye-house": {
+          "mw": -1.532,
+          "coverage": 1,
+          "total": 1
+        },
+        "east-anglia-one": {
+          "mw": 656.514,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 483.286,
+          "coverage": 4,
+          "total": 4
+        },
+        "killingholme": {
+          "mw": -1.28,
+          "coverage": 2,
+          "total": 2
+        },
+        "dogger-bank-a": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "beatrice": {
+          "mw": 517.62,
+          "coverage": 4,
+          "total": 4
+        },
+        "gwynt-y-mor": {
+          "mw": 540.3799999999999,
+          "coverage": 4,
+          "total": 4
+        },
+        "race-bank": {
+          "mw": 395.28599999999994,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 153.358,
+          "coverage": 2,
+          "total": 2
+        },
+        "clyde": {
+          "mw": 449.362,
+          "coverage": 3,
+          "total": 3
+        },
+        "greater-gabbard": {
+          "mw": 363.56600000000003,
+          "coverage": 3,
+          "total": 3
+        }
+      }
+    },
+    {
+      "from": "2026-09-08T19:30:00.000Z",
+      "to": "2026-09-08T20:00:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2549.7,
+          "coverage": 4,
+          "total": 4
+        },
+        "pembroke": {
+          "mw": 0,
+          "coverage": 5,
+          "total": 5
+        },
+        "heysham": {
+          "mw": 1009.856,
+          "coverage": 4,
+          "total": 4
+        },
+        "staythorpe": {
+          "mw": 325.3,
+          "coverage": 4,
+          "total": 4
+        },
+        "dinorwig": {
+          "mw": 68.9,
+          "coverage": 6,
+          "total": 6
+        },
+        "keadby": {
+          "mw": -5.2940000000000005,
+          "coverage": 2,
+          "total": 2
+        },
+        "didcot-b": {
+          "mw": 561,
+          "coverage": 2,
+          "total": 2
+        },
+        "grain": {
+          "mw": -4.7,
+          "coverage": 3,
+          "total": 3
+        },
+        "south-humber-bank": {
+          "mw": -1.682,
+          "coverage": 2,
+          "total": 2
+        },
+        "hornsea-two": {
+          "mw": 1156.02,
+          "coverage": 3,
+          "total": 3
+        },
+        "connahs-quay": {
+          "mw": -16.884,
+          "coverage": 4,
+          "total": 4
+        },
+        "west-burton-b": {
+          "mw": 492.19,
+          "coverage": 3,
+          "total": 3
+        },
+        "vpi-immingham": {
+          "mw": 179.002,
+          "coverage": 1,
+          "total": 1
+        },
+        "hornsea-one": {
+          "mw": 1189.508,
+          "coverage": 3,
+          "total": 3
+        },
+        "seabank": {
+          "mw": 473.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "saltend": {
+          "mw": -1.05,
+          "coverage": 3,
+          "total": 3
+        },
+        "torness": {
+          "mw": 654.6479999999999,
+          "coverage": 2,
+          "total": 2
+        },
+        "sizewell-b": {
+          "mw": 1179.56,
+          "coverage": 2,
+          "total": 2
+        },
+        "hartlepool": {
+          "mw": 446.20799999999997,
+          "coverage": 2,
+          "total": 2
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "seagreen": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "walney": {
+          "mw": 711.2,
+          "coverage": 4,
+          "total": 4
+        },
+        "moray-east": {
+          "mw": -2.916,
+          "coverage": 3,
+          "total": 3
+        },
+        "spalding": {
+          "mw": 335.22,
+          "coverage": 1,
+          "total": 1
+        },
+        "langage": {
+          "mw": -1.4,
+          "coverage": 1,
+          "total": 1
+        },
+        "marchwood": {
+          "mw": 792.4,
+          "coverage": 1,
+          "total": 1
+        },
+        "carrington": {
+          "mw": 220,
+          "coverage": 2,
+          "total": 2
+        },
+        "moray-west": {
+          "mw": 0.018000000000000002,
+          "coverage": 4,
+          "total": 4
+        },
+        "triton-knoll": {
+          "mw": 757.3399999999999,
+          "coverage": 2,
+          "total": 2
+        },
+        "severn-power": {
+          "mw": 680.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "sutton-bridge": {
+          "mw": 503,
+          "coverage": 1,
+          "total": 1
+        },
+        "rocksavage": {
+          "mw": -2.136,
+          "coverage": 1,
+          "total": 1
+        },
+        "damhead-creek": {
+          "mw": -0.92,
+          "coverage": 1,
+          "total": 1
+        },
+        "coryton": {
+          "mw": -0.538,
+          "coverage": 1,
+          "total": 1
+        },
+        "medway": {
+          "mw": -0.9,
+          "coverage": 1,
+          "total": 1
+        },
+        "little-barford": {
+          "mw": -0.86,
+          "coverage": 1,
+          "total": 1
+        },
+        "rye-house": {
+          "mw": -1.532,
+          "coverage": 1,
+          "total": 1
+        },
+        "east-anglia-one": {
+          "mw": 658.068,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 561.38,
+          "coverage": 4,
+          "total": 4
+        },
+        "killingholme": {
+          "mw": -1.2839999999999998,
+          "coverage": 2,
+          "total": 2
+        },
+        "dogger-bank-a": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "beatrice": {
+          "mw": 523.64,
+          "coverage": 4,
+          "total": 4
+        },
+        "gwynt-y-mor": {
+          "mw": 534.4200000000001,
+          "coverage": 4,
+          "total": 4
+        },
+        "race-bank": {
+          "mw": 399.226,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 126.15,
+          "coverage": 2,
+          "total": 2
+        },
+        "clyde": {
+          "mw": 463.898,
+          "coverage": 3,
+          "total": 3
+        },
+        "greater-gabbard": {
+          "mw": 390.87,
+          "coverage": 3,
+          "total": 3
+        }
+      }
+    },
+    {
+      "from": "2026-09-08T20:00:00.000Z",
+      "to": "2026-09-08T20:30:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2550.92,
+          "coverage": 4,
+          "total": 4
+        },
+        "pembroke": {
+          "mw": 0,
+          "coverage": 5,
+          "total": 5
+        },
+        "heysham": {
+          "mw": 1010.712,
+          "coverage": 4,
+          "total": 4
+        },
+        "staythorpe": {
+          "mw": 193.6,
+          "coverage": 4,
+          "total": 4
+        },
+        "dinorwig": {
+          "mw": 132,
+          "coverage": 6,
+          "total": 6
+        },
+        "keadby": {
+          "mw": -5.204000000000001,
+          "coverage": 2,
+          "total": 2
+        },
+        "didcot-b": {
+          "mw": 496.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "grain": {
+          "mw": -4.7,
+          "coverage": 3,
+          "total": 3
+        },
+        "south-humber-bank": {
+          "mw": -1.66,
+          "coverage": 2,
+          "total": 2
+        },
+        "hornsea-two": {
+          "mw": 1054.962,
+          "coverage": 3,
+          "total": 3
+        },
+        "connahs-quay": {
+          "mw": -16.884,
+          "coverage": 4,
+          "total": 4
+        },
+        "west-burton-b": {
+          "mw": 646.05,
+          "coverage": 3,
+          "total": 3
+        },
+        "vpi-immingham": {
+          "mw": 235.374,
+          "coverage": 1,
+          "total": 1
+        },
+        "hornsea-one": {
+          "mw": 1191.464,
+          "coverage": 3,
+          "total": 3
+        },
+        "seabank": {
+          "mw": 665.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "saltend": {
+          "mw": -1.03,
+          "coverage": 3,
+          "total": 3
+        },
+        "torness": {
+          "mw": 654.672,
+          "coverage": 2,
+          "total": 2
+        },
+        "sizewell-b": {
+          "mw": 1179.92,
+          "coverage": 2,
+          "total": 2
+        },
+        "hartlepool": {
+          "mw": 446.456,
+          "coverage": 2,
+          "total": 2
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "seagreen": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "walney": {
+          "mw": 710.9,
+          "coverage": 4,
+          "total": 4
+        },
+        "moray-east": {
+          "mw": -2.918,
+          "coverage": 3,
+          "total": 3
+        },
+        "spalding": {
+          "mw": 351.02,
+          "coverage": 1,
+          "total": 1
+        },
+        "langage": {
+          "mw": -1.2,
+          "coverage": 1,
+          "total": 1
+        },
+        "marchwood": {
+          "mw": 820.8,
+          "coverage": 1,
+          "total": 1
+        },
+        "carrington": {
+          "mw": 220.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "moray-west": {
+          "mw": 0.038000000000000006,
+          "coverage": 4,
+          "total": 4
+        },
+        "triton-knoll": {
+          "mw": 765.6600000000001,
+          "coverage": 2,
+          "total": 2
+        },
+        "severn-power": {
+          "mw": 524.7,
+          "coverage": 2,
+          "total": 2
+        },
+        "sutton-bridge": {
+          "mw": 524,
+          "coverage": 1,
+          "total": 1
+        },
+        "rocksavage": {
+          "mw": -2.128,
+          "coverage": 1,
+          "total": 1
+        },
+        "damhead-creek": {
+          "mw": -0.93,
+          "coverage": 1,
+          "total": 1
+        },
+        "coryton": {
+          "mw": -0.416,
+          "coverage": 1,
+          "total": 1
+        },
+        "medway": {
+          "mw": -0.994,
+          "coverage": 1,
+          "total": 1
+        },
+        "little-barford": {
+          "mw": -0.94,
+          "coverage": 1,
+          "total": 1
+        },
+        "rye-house": {
+          "mw": -1.516,
+          "coverage": 1,
+          "total": 1
+        },
+        "east-anglia-one": {
+          "mw": 672.146,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 589.202,
+          "coverage": 4,
+          "total": 4
+        },
+        "killingholme": {
+          "mw": -1.3119999999999998,
+          "coverage": 2,
+          "total": 2
+        },
+        "dogger-bank-a": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "beatrice": {
+          "mw": 530.02,
+          "coverage": 4,
+          "total": 4
+        },
+        "gwynt-y-mor": {
+          "mw": 538.54,
+          "coverage": 4,
+          "total": 4
+        },
+        "race-bank": {
+          "mw": 399.344,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 92.81,
+          "coverage": 2,
+          "total": 2
+        },
+        "clyde": {
+          "mw": 452.36,
+          "coverage": 3,
+          "total": 3
+        },
+        "greater-gabbard": {
+          "mw": 413.24799999999993,
+          "coverage": 3,
+          "total": 3
+        }
+      }
+    },
+    {
+      "from": "2026-09-08T20:30:00.000Z",
+      "to": "2026-09-08T21:00:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2550.6,
+          "coverage": 4,
+          "total": 4
+        },
+        "pembroke": {
+          "mw": 0,
+          "coverage": 5,
+          "total": 5
+        },
+        "heysham": {
+          "mw": 1007.3119999999999,
+          "coverage": 4,
+          "total": 4
+        },
+        "staythorpe": {
+          "mw": 125.7,
+          "coverage": 4,
+          "total": 4
+        },
+        "dinorwig": {
+          "mw": 37.3,
+          "coverage": 6,
+          "total": 6
+        },
+        "keadby": {
+          "mw": -5.262,
+          "coverage": 2,
+          "total": 2
+        },
+        "didcot-b": {
+          "mw": 431,
+          "coverage": 2,
+          "total": 2
+        },
+        "grain": {
+          "mw": -4.7,
+          "coverage": 3,
+          "total": 3
+        },
+        "south-humber-bank": {
+          "mw": -1.714,
+          "coverage": 2,
+          "total": 2
+        },
+        "hornsea-two": {
+          "mw": 1016.3620000000001,
+          "coverage": 3,
+          "total": 3
+        },
+        "connahs-quay": {
+          "mw": -17.136,
+          "coverage": 4,
+          "total": 4
+        },
+        "west-burton-b": {
+          "mw": 819.06,
+          "coverage": 3,
+          "total": 3
+        },
+        "vpi-immingham": {
+          "mw": 235.966,
+          "coverage": 1,
+          "total": 1
+        },
+        "hornsea-one": {
+          "mw": 1198.194,
+          "coverage": 3,
+          "total": 3
+        },
+        "seabank": {
+          "mw": 722.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "saltend": {
+          "mw": -1.04,
+          "coverage": 3,
+          "total": 3
+        },
+        "torness": {
+          "mw": 654.888,
+          "coverage": 2,
+          "total": 2
+        },
+        "sizewell-b": {
+          "mw": 1179.66,
+          "coverage": 2,
+          "total": 2
+        },
+        "hartlepool": {
+          "mw": 446.152,
+          "coverage": 2,
+          "total": 2
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "seagreen": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "walney": {
+          "mw": 877.04,
+          "coverage": 4,
+          "total": 4
+        },
+        "moray-east": {
+          "mw": -2.882,
+          "coverage": 3,
+          "total": 3
+        },
+        "spalding": {
+          "mw": 460.16,
+          "coverage": 1,
+          "total": 1
+        },
+        "langage": {
+          "mw": -1.6,
+          "coverage": 1,
+          "total": 1
+        },
+        "marchwood": {
+          "mw": 638,
+          "coverage": 1,
+          "total": 1
+        },
+        "carrington": {
+          "mw": 220.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "moray-west": {
+          "mw": 0.038,
+          "coverage": 4,
+          "total": 4
+        },
+        "triton-knoll": {
+          "mw": 767.6,
+          "coverage": 2,
+          "total": 2
+        },
+        "severn-power": {
+          "mw": 433.4,
+          "coverage": 2,
+          "total": 2
+        },
+        "sutton-bridge": {
+          "mw": 401.2,
+          "coverage": 1,
+          "total": 1
+        },
+        "rocksavage": {
+          "mw": -2.13,
+          "coverage": 1,
+          "total": 1
+        },
+        "damhead-creek": {
+          "mw": -0.93,
+          "coverage": 1,
+          "total": 1
+        },
+        "coryton": {
+          "mw": -0.614,
+          "coverage": 1,
+          "total": 1
+        },
+        "medway": {
+          "mw": -1.03,
+          "coverage": 1,
+          "total": 1
+        },
+        "little-barford": {
+          "mw": -0.86,
+          "coverage": 1,
+          "total": 1
+        },
+        "rye-house": {
+          "mw": -1.59,
+          "coverage": 1,
+          "total": 1
+        },
+        "east-anglia-one": {
+          "mw": 673.602,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 607.858,
+          "coverage": 4,
+          "total": 4
+        },
+        "killingholme": {
+          "mw": -1.314,
+          "coverage": 2,
+          "total": 2
+        },
+        "dogger-bank-a": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "beatrice": {
+          "mw": 527.66,
+          "coverage": 4,
+          "total": 4
+        },
+        "gwynt-y-mor": {
+          "mw": 539.3,
+          "coverage": 4,
+          "total": 4
+        },
+        "race-bank": {
+          "mw": 399.226,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 88.524,
+          "coverage": 2,
+          "total": 2
+        },
+        "clyde": {
+          "mw": 425.438,
+          "coverage": 3,
+          "total": 3
+        },
+        "greater-gabbard": {
+          "mw": 425.38,
+          "coverage": 3,
+          "total": 3
+        }
+      }
+    },
+    {
+      "from": "2026-09-08T21:00:00.000Z",
+      "to": "2026-09-08T21:30:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2541.62,
+          "coverage": 4,
+          "total": 4
+        },
+        "pembroke": {
+          "mw": 0,
+          "coverage": 5,
+          "total": 5
+        },
+        "heysham": {
+          "mw": 1010.376,
+          "coverage": 4,
+          "total": 4
+        },
+        "staythorpe": {
+          "mw": -3.3000000000000003,
+          "coverage": 4,
+          "total": 4
+        },
+        "dinorwig": {
+          "mw": -11.3,
+          "coverage": 6,
+          "total": 6
+        },
+        "keadby": {
+          "mw": -5.354,
+          "coverage": 2,
+          "total": 2
+        },
+        "didcot-b": {
+          "mw": 502.8,
+          "coverage": 2,
+          "total": 2
+        },
+        "grain": {
+          "mw": -4.800000000000001,
+          "coverage": 3,
+          "total": 3
+        },
+        "south-humber-bank": {
+          "mw": -1.678,
+          "coverage": 2,
+          "total": 2
+        },
+        "hornsea-two": {
+          "mw": 1186.44,
+          "coverage": 3,
+          "total": 3
+        },
+        "connahs-quay": {
+          "mw": -16.758,
+          "coverage": 4,
+          "total": 4
+        },
+        "west-burton-b": {
+          "mw": 755.752,
+          "coverage": 3,
+          "total": 3
+        },
+        "vpi-immingham": {
+          "mw": 247.95,
+          "coverage": 1,
+          "total": 1
+        },
+        "hornsea-one": {
+          "mw": 1197.598,
+          "coverage": 3,
+          "total": 3
+        },
+        "seabank": {
+          "mw": 726.6,
+          "coverage": 2,
+          "total": 2
+        },
+        "saltend": {
+          "mw": -1.05,
+          "coverage": 3,
+          "total": 3
+        },
+        "torness": {
+          "mw": 655.816,
+          "coverage": 2,
+          "total": 2
+        },
+        "sizewell-b": {
+          "mw": 1178.6799999999998,
+          "coverage": 2,
+          "total": 2
+        },
+        "hartlepool": {
+          "mw": 455.464,
+          "coverage": 2,
+          "total": 2
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "seagreen": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "walney": {
+          "mw": 888.22,
+          "coverage": 4,
+          "total": 4
+        },
+        "moray-east": {
+          "mw": -2.9,
+          "coverage": 3,
+          "total": 3
+        },
+        "spalding": {
+          "mw": 513.74,
+          "coverage": 1,
+          "total": 1
+        },
+        "langage": {
+          "mw": -1.4,
+          "coverage": 1,
+          "total": 1
+        },
+        "marchwood": {
+          "mw": 720.6,
+          "coverage": 1,
+          "total": 1
+        },
+        "carrington": {
+          "mw": 248.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "moray-west": {
+          "mw": 0.008000000000000004,
+          "coverage": 4,
+          "total": 4
+        },
+        "triton-knoll": {
+          "mw": 764.8399999999999,
+          "coverage": 2,
+          "total": 2
+        },
+        "severn-power": {
+          "mw": 433.4,
+          "coverage": 2,
+          "total": 2
+        },
+        "sutton-bridge": {
+          "mw": 400.6,
+          "coverage": 1,
+          "total": 1
+        },
+        "rocksavage": {
+          "mw": -2.136,
+          "coverage": 1,
+          "total": 1
+        },
+        "damhead-creek": {
+          "mw": -0.92,
+          "coverage": 1,
+          "total": 1
+        },
+        "coryton": {
+          "mw": -0.416,
+          "coverage": 1,
+          "total": 1
+        },
+        "medway": {
+          "mw": -0.964,
+          "coverage": 1,
+          "total": 1
+        },
+        "little-barford": {
+          "mw": -0.94,
+          "coverage": 1,
+          "total": 1
+        },
+        "rye-house": {
+          "mw": -1.466,
+          "coverage": 1,
+          "total": 1
+        },
+        "east-anglia-one": {
+          "mw": 673.62,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 617.396,
+          "coverage": 4,
+          "total": 4
+        },
+        "killingholme": {
+          "mw": -1.318,
+          "coverage": 2,
+          "total": 2
+        },
+        "dogger-bank-a": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "beatrice": {
+          "mw": 530.9200000000001,
+          "coverage": 4,
+          "total": 4
+        },
+        "gwynt-y-mor": {
+          "mw": 538.8,
+          "coverage": 4,
+          "total": 4
+        },
+        "race-bank": {
+          "mw": 395.246,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 67.362,
+          "coverage": 2,
+          "total": 2
+        },
+        "clyde": {
+          "mw": 397.75800000000004,
+          "coverage": 3,
+          "total": 3
+        },
+        "greater-gabbard": {
+          "mw": 421.688,
+          "coverage": 3,
+          "total": 3
+        }
+      }
+    },
+    {
+      "from": "2026-09-08T21:30:00.000Z",
+      "to": "2026-09-08T22:00:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2533.1800000000003,
+          "coverage": 4,
+          "total": 4
+        },
+        "pembroke": {
+          "mw": 0,
+          "coverage": 5,
+          "total": 5
+        },
+        "heysham": {
+          "mw": 1009.288,
+          "coverage": 4,
+          "total": 4
+        },
+        "staythorpe": {
+          "mw": -2.1,
+          "coverage": 4,
+          "total": 4
+        },
+        "dinorwig": {
+          "mw": -281,
+          "coverage": 6,
+          "total": 6
+        },
+        "keadby": {
+          "mw": -5.838,
+          "coverage": 2,
+          "total": 2
+        },
+        "didcot-b": {
+          "mw": 381.8,
+          "coverage": 2,
+          "total": 2
+        },
+        "grain": {
+          "mw": -4.800000000000001,
+          "coverage": 3,
+          "total": 3
+        },
+        "south-humber-bank": {
+          "mw": -1.682,
+          "coverage": 2,
+          "total": 2
+        },
+        "hornsea-two": {
+          "mw": 1294.922,
+          "coverage": 3,
+          "total": 3
+        },
+        "connahs-quay": {
+          "mw": -16.758,
+          "coverage": 4,
+          "total": 4
+        },
+        "west-burton-b": {
+          "mw": 316.176,
+          "coverage": 3,
+          "total": 3
+        },
+        "vpi-immingham": {
+          "mw": 229.186,
+          "coverage": 1,
+          "total": 1
+        },
+        "hornsea-one": {
+          "mw": 1197.374,
+          "coverage": 3,
+          "total": 3
+        },
+        "seabank": {
+          "mw": 714.6,
+          "coverage": 2,
+          "total": 2
+        },
+        "saltend": {
+          "mw": -1.05,
+          "coverage": 3,
+          "total": 3
+        },
+        "torness": {
+          "mw": 655.184,
+          "coverage": 2,
+          "total": 2
+        },
+        "sizewell-b": {
+          "mw": 1179.28,
+          "coverage": 2,
+          "total": 2
+        },
+        "hartlepool": {
+          "mw": 454.592,
+          "coverage": 2,
+          "total": 2
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "seagreen": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "walney": {
+          "mw": 890.0400000000001,
+          "coverage": 4,
+          "total": 4
+        },
+        "moray-east": {
+          "mw": -2.896,
+          "coverage": 3,
+          "total": 3
+        },
+        "spalding": {
+          "mw": 342.56,
+          "coverage": 1,
+          "total": 1
+        },
+        "langage": {
+          "mw": -1.2,
+          "coverage": 1,
+          "total": 1
+        },
+        "marchwood": {
+          "mw": 516.4,
+          "coverage": 1,
+          "total": 1
+        },
+        "carrington": {
+          "mw": 398.6,
+          "coverage": 2,
+          "total": 2
+        },
+        "moray-west": {
+          "mw": 0.038000000000000006,
+          "coverage": 4,
+          "total": 4
+        },
+        "triton-knoll": {
+          "mw": 770.16,
+          "coverage": 2,
+          "total": 2
+        },
+        "severn-power": {
+          "mw": 433.4,
+          "coverage": 2,
+          "total": 2
+        },
+        "sutton-bridge": {
+          "mw": 400.6,
+          "coverage": 1,
+          "total": 1
+        },
+        "rocksavage": {
+          "mw": -2.136,
+          "coverage": 1,
+          "total": 1
+        },
+        "damhead-creek": {
+          "mw": -0.94,
+          "coverage": 1,
+          "total": 1
+        },
+        "coryton": {
+          "mw": -0.536,
+          "coverage": 1,
+          "total": 1
+        },
+        "medway": {
+          "mw": -0.948,
+          "coverage": 1,
+          "total": 1
+        },
+        "little-barford": {
+          "mw": -0.96,
+          "coverage": 1,
+          "total": 1
+        },
+        "rye-house": {
+          "mw": -1.508,
+          "coverage": 1,
+          "total": 1
+        },
+        "east-anglia-one": {
+          "mw": 673.5219999999999,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 611.0260000000001,
+          "coverage": 4,
+          "total": 4
+        },
+        "killingholme": {
+          "mw": -1.302,
+          "coverage": 2,
+          "total": 2
+        },
+        "dogger-bank-a": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "beatrice": {
+          "mw": 527.88,
+          "coverage": 4,
+          "total": 4
+        },
+        "gwynt-y-mor": {
+          "mw": 533.94,
+          "coverage": 4,
+          "total": 4
+        },
+        "race-bank": {
+          "mw": 393.126,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 61.196,
+          "coverage": 2,
+          "total": 2
+        },
+        "clyde": {
+          "mw": 368.13599999999997,
+          "coverage": 3,
+          "total": 3
+        },
+        "greater-gabbard": {
+          "mw": 417.08799999999997,
+          "coverage": 3,
+          "total": 3
+        }
+      }
+    },
+    {
+      "from": "2026-09-08T22:00:00.000Z",
+      "to": "2026-09-08T22:30:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2546.7,
+          "coverage": 4,
+          "total": 4
+        },
+        "pembroke": {
+          "mw": 0,
+          "coverage": 5,
+          "total": 5
+        },
+        "heysham": {
+          "mw": 1009.76,
+          "coverage": 4,
+          "total": 4
+        },
+        "staythorpe": {
+          "mw": -1.7999999999999998,
+          "coverage": 4,
+          "total": 4
+        },
+        "dinorwig": {
+          "mw": -407.9,
+          "coverage": 6,
+          "total": 6
+        },
+        "keadby": {
+          "mw": -5.7139999999999995,
+          "coverage": 2,
+          "total": 2
+        },
+        "didcot-b": {
+          "mw": 382.4,
+          "coverage": 2,
+          "total": 2
+        },
+        "grain": {
+          "mw": -4.800000000000001,
+          "coverage": 3,
+          "total": 3
+        },
+        "south-humber-bank": {
+          "mw": -1.678,
+          "coverage": 2,
+          "total": 2
+        },
+        "hornsea-two": {
+          "mw": 1267.282,
+          "coverage": 3,
+          "total": 3
+        },
+        "connahs-quay": {
+          "mw": -16.758,
+          "coverage": 4,
+          "total": 4
+        },
+        "west-burton-b": {
+          "mw": 209.152,
+          "coverage": 3,
+          "total": 3
+        },
+        "vpi-immingham": {
+          "mw": 219.59,
+          "coverage": 1,
+          "total": 1
+        },
+        "hornsea-one": {
+          "mw": 1198.1999999999998,
+          "coverage": 3,
+          "total": 3
+        },
+        "seabank": {
+          "mw": 480.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "saltend": {
+          "mw": -1.06,
+          "coverage": 3,
+          "total": 3
+        },
+        "torness": {
+          "mw": 655.448,
+          "coverage": 2,
+          "total": 2
+        },
+        "sizewell-b": {
+          "mw": 1179.54,
+          "coverage": 2,
+          "total": 2
+        },
+        "hartlepool": {
+          "mw": 454.264,
+          "coverage": 2,
+          "total": 2
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "seagreen": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "walney": {
+          "mw": 887.76,
+          "coverage": 4,
+          "total": 4
+        },
+        "moray-east": {
+          "mw": -2.868,
+          "coverage": 3,
+          "total": 3
+        },
+        "spalding": {
+          "mw": 351.04,
+          "coverage": 1,
+          "total": 1
+        },
+        "langage": {
+          "mw": -1.4,
+          "coverage": 1,
+          "total": 1
+        },
+        "marchwood": {
+          "mw": 450,
+          "coverage": 1,
+          "total": 1
+        },
+        "carrington": {
+          "mw": 110.6,
+          "coverage": 2,
+          "total": 2
+        },
+        "moray-west": {
+          "mw": 0.028000000000000004,
+          "coverage": 4,
+          "total": 4
+        },
+        "triton-knoll": {
+          "mw": 771,
+          "coverage": 2,
+          "total": 2
+        },
+        "severn-power": {
+          "mw": 433.2,
+          "coverage": 2,
+          "total": 2
+        },
+        "sutton-bridge": {
+          "mw": 401.6,
+          "coverage": 1,
+          "total": 1
+        },
+        "rocksavage": {
+          "mw": -2.15,
+          "coverage": 1,
+          "total": 1
+        },
+        "damhead-creek": {
+          "mw": -0.95,
+          "coverage": 1,
+          "total": 1
+        },
+        "coryton": {
+          "mw": -0.436,
+          "coverage": 1,
+          "total": 1
+        },
+        "medway": {
+          "mw": -1.042,
+          "coverage": 1,
+          "total": 1
+        },
+        "little-barford": {
+          "mw": -0.96,
+          "coverage": 1,
+          "total": 1
+        },
+        "rye-house": {
+          "mw": -1.532,
+          "coverage": 1,
+          "total": 1
+        },
+        "east-anglia-one": {
+          "mw": 673.2180000000001,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 615.404,
+          "coverage": 4,
+          "total": 4
+        },
+        "killingholme": {
+          "mw": -1.254,
+          "coverage": 2,
+          "total": 2
+        },
+        "dogger-bank-a": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "beatrice": {
+          "mw": 517.6800000000001,
+          "coverage": 4,
+          "total": 4
+        },
+        "gwynt-y-mor": {
+          "mw": 537.86,
+          "coverage": 4,
+          "total": 4
+        },
+        "race-bank": {
+          "mw": 393.084,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 65.43,
+          "coverage": 2,
+          "total": 2
+        },
+        "clyde": {
+          "mw": 297.03600000000006,
+          "coverage": 3,
+          "total": 3
+        },
+        "greater-gabbard": {
+          "mw": 388.408,
+          "coverage": 3,
+          "total": 3
+        }
+      }
+    },
+    {
+      "from": "2026-09-08T22:30:00.000Z",
+      "to": "2026-09-08T23:00:00.000Z",
+      "values": {
+        "drax": {
+          "mw": 2549.42,
+          "coverage": 4,
+          "total": 4
+        },
+        "pembroke": {
+          "mw": 0,
+          "coverage": 5,
+          "total": 5
+        },
+        "heysham": {
+          "mw": 1011.744,
+          "coverage": 4,
+          "total": 4
+        },
+        "staythorpe": {
+          "mw": -2,
+          "coverage": 4,
+          "total": 4
+        },
+        "dinorwig": {
+          "mw": -824.8,
+          "coverage": 6,
+          "total": 6
+        },
+        "keadby": {
+          "mw": -5.723999999999999,
+          "coverage": 2,
+          "total": 2
+        },
+        "didcot-b": {
+          "mw": 382.4,
+          "coverage": 2,
+          "total": 2
+        },
+        "grain": {
+          "mw": -4.7,
+          "coverage": 3,
+          "total": 3
+        },
+        "south-humber-bank": {
+          "mw": -1.652,
+          "coverage": 2,
+          "total": 2
+        },
+        "hornsea-two": {
+          "mw": 1247.1,
+          "coverage": 3,
+          "total": 3
+        },
+        "connahs-quay": {
+          "mw": -16.884,
+          "coverage": 4,
+          "total": 4
+        },
+        "west-burton-b": {
+          "mw": 210.456,
+          "coverage": 3,
+          "total": 3
+        },
+        "vpi-immingham": {
+          "mw": 162.776,
+          "coverage": 1,
+          "total": 1
+        },
+        "hornsea-one": {
+          "mw": 1198.152,
+          "coverage": 3,
+          "total": 3
+        },
+        "seabank": {
+          "mw": 243.186,
+          "coverage": 2,
+          "total": 2
+        },
+        "saltend": {
+          "mw": -1.05,
+          "coverage": 3,
+          "total": 3
+        },
+        "torness": {
+          "mw": 656.2320000000001,
+          "coverage": 2,
+          "total": 2
+        },
+        "sizewell-b": {
+          "mw": 1180.54,
+          "coverage": 2,
+          "total": 2
+        },
+        "hartlepool": {
+          "mw": 450.29600000000005,
+          "coverage": 2,
+          "total": 2
+        },
+        "peterhead": {
+          "mw": 0,
+          "coverage": 2,
+          "total": 2
+        },
+        "seagreen": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "walney": {
+          "mw": 885.88,
+          "coverage": 4,
+          "total": 4
+        },
+        "moray-east": {
+          "mw": -2.866,
+          "coverage": 3,
+          "total": 3
+        },
+        "spalding": {
+          "mw": 344.64,
+          "coverage": 1,
+          "total": 1
+        },
+        "langage": {
+          "mw": -1.6,
+          "coverage": 1,
+          "total": 1
+        },
+        "marchwood": {
+          "mw": 450.2,
+          "coverage": 1,
+          "total": 1
+        },
+        "carrington": {
+          "mw": -5.8,
+          "coverage": 2,
+          "total": 2
+        },
+        "moray-west": {
+          "mw": 0.018000000000000002,
+          "coverage": 4,
+          "total": 4
+        },
+        "triton-knoll": {
+          "mw": 771.28,
+          "coverage": 2,
+          "total": 2
+        },
+        "severn-power": {
+          "mw": 433.5,
+          "coverage": 2,
+          "total": 2
+        },
+        "sutton-bridge": {
+          "mw": 401.4,
+          "coverage": 1,
+          "total": 1
+        },
+        "rocksavage": {
+          "mw": -2.14,
+          "coverage": 1,
+          "total": 1
+        },
+        "damhead-creek": {
+          "mw": -0.92,
+          "coverage": 1,
+          "total": 1
+        },
+        "coryton": {
+          "mw": -0.606,
+          "coverage": 1,
+          "total": 1
+        },
+        "medway": {
+          "mw": -1.084,
+          "coverage": 1,
+          "total": 1
+        },
+        "little-barford": {
+          "mw": -0.86,
+          "coverage": 1,
+          "total": 1
+        },
+        "rye-house": {
+          "mw": -1.498,
+          "coverage": 1,
+          "total": 1
+        },
+        "east-anglia-one": {
+          "mw": 673.412,
+          "coverage": 2,
+          "total": 2
+        },
+        "london-array": {
+          "mw": 613.098,
+          "coverage": 4,
+          "total": 4
+        },
+        "killingholme": {
+          "mw": -1.264,
+          "coverage": 2,
+          "total": 2
+        },
+        "dogger-bank-a": {
+          "mw": null,
+          "coverage": 0,
+          "total": 0
+        },
+        "beatrice": {
+          "mw": 512.68,
+          "coverage": 4,
+          "total": 4
+        },
+        "gwynt-y-mor": {
+          "mw": 538.3399999999999,
+          "coverage": 4,
+          "total": 4
+        },
+        "race-bank": {
+          "mw": 393.006,
+          "coverage": 2,
+          "total": 2
+        },
+        "whitelee": {
+          "mw": 70.27600000000001,
+          "coverage": 2,
+          "total": 2
+        },
+        "clyde": {
+          "mw": 232.07600000000002,
+          "coverage": 3,
+          "total": 3
+        },
+        "greater-gabbard": {
+          "mw": 419.044,
           "coverage": 3,
           "total": 3
         }
