@@ -98,7 +98,7 @@
     "mappingNote": "",
     "scopeNote": "",
     "canonicalId": "gb:pembroke",
-    "releaseSelection": false,
+    "releaseSelection": true,
     "sourceRefs": [
       {
         "provider": "DESNZ DUKES",
@@ -108,9 +108,9 @@
       }
     ],
     "unitMatch": {
-      "status": "legacy-unreviewed",
-      "reviewedAt": null,
-      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "status": "verified",
+      "reviewedAt": "2026-09-18",
+      "method": "Explicit DUKES site identity and named Elexon production units; capacities remain source-specific, not interchangeable.",
       "unitIds": [
         "T_PEMB-11",
         "T_PEMB-21",
@@ -119,7 +119,10 @@
         "T_PEMB-51"
       ],
       "exclusions": [],
-      "evidence": "Prior catalogue; outside focused release review"
+      "evidence": [
+        "DESNZ DUKES site GAS-000453",
+        "Elexon official BM unit registry: exact station-named production units, positive registered capacity"
+      ]
     }
   },
   {
@@ -837,7 +840,7 @@
     "mappingNote": "",
     "scopeNote": "",
     "canonicalId": "gb:sizewell-b",
-    "releaseSelection": false,
+    "releaseSelection": true,
     "sourceRefs": [
       {
         "provider": "DESNZ DUKES",
@@ -847,15 +850,18 @@
       }
     ],
     "unitMatch": {
-      "status": "legacy-unreviewed",
-      "reviewedAt": null,
-      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "status": "verified",
+      "reviewedAt": "2026-09-18",
+      "method": "Explicit DUKES site identity and named Elexon production units; capacities remain source-specific, not interchangeable.",
       "unitIds": [
         "T_SIZB-1",
         "T_SIZB-2"
       ],
       "exclusions": [],
-      "evidence": "Prior catalogue; outside focused release review"
+      "evidence": [
+        "DESNZ DUKES site NUC-000159",
+        "Elexon official BM unit registry: exact station-named production units, positive registered capacity"
+      ]
     }
   },
   {

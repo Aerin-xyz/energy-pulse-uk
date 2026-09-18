@@ -6,7 +6,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: official-grid-evidence
+  group: energy-mix-data-publisher
   cancel-in-progress: false
 jobs:
   ingest:
@@ -26,15 +26,16 @@ jobs:
           restore-keys: grid-evidence-
       - name: Ingest and validate official evidence
         run: |
-          npm run verify:assets
-          npm run ingest:grid
+          npm run verify:assets || echo "Asset verification failed; retaining explicit review state"
+          npm run ingest:grid || echo "Grid refresh failed; retaining dated evidence and failure state"
+          npm run ingest:operations || echo "PN unavailable; retaining dated notification and failure state"
           node scripts/generate-asset-snapshot.mjs
-          node --test tests/evidence-calculations.test.mjs tests/asset-readings.test.mjs
+          node --test tests/evidence-calculations.test.mjs tests/asset-readings.test.mjs tests/asset-explorer.test.mjs
       - name: Save validated cached snapshots
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/grid-evidence.json public/data/generation-assets.json public/data/asset-verification.json
+          git add public/data/grid-evidence.json public/data/generation-assets.json public/data/asset-verification.json public/data/asset-operations.json
           if ! git diff --cached --quiet; then
             git commit -m "Refresh official GB evidence cache"
             git push

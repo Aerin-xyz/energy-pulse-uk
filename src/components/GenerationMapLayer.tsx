@@ -1,3 +1,5 @@
+import {AssetOperations} from './AssetOperations';
+import {assetClusters,filterAssets} from '@/lib/assetExplorer.mjs';
 import {useEffect,useState} from 'react';
 import assets from '@/data/atlas/canonical-assets.json';
 import './generation-map.css';
@@ -12,32 +14,32 @@ export function useAssetSnapshot(enabled:boolean){
  useEffect(()=>{if(!enabled)return;const controller=new AbortController();fetch('/data/generation-assets.json',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(j=>{if(!Array.isArray(j.points))throw Error();setSnapshot(j);setError(false)}).catch(()=>{if(!controller.signal.aborted)setError(true)});return()=>controller.abort()},[enabled]);
  return {snapshot,error};
 }
-export function matchingAssets(filter:string,search:string,pilotOnly=false){
- const q=search.trim().toLocaleLowerCase();
- return assets.filter(a=>(!pilotOnly||a.releaseSelection)&&(filter==='All'||a.type===filter)&&(!q||`${a.name} ${a.type} ${a.country}`.toLocaleLowerCase().includes(q)));
+export function matchingAssets(filter:string,search:string,pilotOnly=false,extra:Record<string,unknown>={}){return filterAssets(assets,{fuel:filter,search,pilotOnly,...extra})}
+function TechnologyGlyph({type}:{type:string}){
+ const paths:Record<string,string>={
+ 'Offshore wind':'M0 0V8M0 0L-7 -3M0 0L5 -6M0 0L4 5M-8 9Q-4 6 0 9T8 9',
+ 'Onshore wind':'M0 0V9M0 0L-7 -3M0 0L5 -6M0 0L4 5',
+ Nuclear:'M-7 0C-7 -6 7 -6 7 0S-7 6 -7 0M0 -7C6 -7 6 7 0 7S-6 -7 0 -7',
+ Biomass:'M-6 6Q-9 -5 7 -8Q9 7-6 6M-6 6L3 -3',
+ Gas:'M0 -8Q9 0 5 6Q0 11 -5 6Q-9 2 -3 -4L-2 2Z',
+ 'Pumped storage':'M0 -8Q-10 3 -5 7Q0 12 5 7Q10 3 0 -8M-3 5L0 2L3 5'};
+ return <path d={paths[type]||'M-5 -5H5V5H-5Z'} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>;
 }
-export function GenerationMapLayer({filter,search,pilotOnly,selected,onSelect,snapshot}:{filter:string;search:string;pilotOnly:boolean;selected:string|null;onSelect:(id:string)=>void;snapshot:AssetSnapshot}){
- const visible=matchingAssets(filter,search,pilotOnly);
- const clusters:{x:number;y:number;members:typeof assets}[]=[];
- for(const asset of visible){
-  const x=(asset.longitude+12)*40,y=(61-asset.latitude)*63;
-  const nearby=clusters.find(c=>Math.hypot(c.x-x,c.y-y)<18);
-  if(nearby){nearby.members.push(asset);nearby.x=nearby.members.reduce((v,a)=>v+(a.longitude+12)*40,0)/nearby.members.length;nearby.y=nearby.members.reduce((v,a)=>v+(61-a.latitude)*63,0)/nearby.members.length}
-  else clusters.push({x,y,members:[asset]});
- }
- return <g className="generation-layer">{clusters.map(({x,y,members})=>{
- const grouped=members.length>1;const id=grouped?'cluster:'+members.map(a=>a.id).join(','):members[0].id;
- const a=members.find(a=>a.id===selected)||members[0];const r=snapshot.points.at(-1)?.values[a.id];const mw=a.unitMatch.status==='verified'?r?.mw:null;const known=typeof mw==='number';
- const active=selected===id||members.some(a=>a.id===selected);const radius=grouped?10:known?Math.max(4,Math.min(9,4+Math.sqrt(Math.abs(mw))/10)):4;
- const name=grouped?`${members.length} nearby sites`:a.name;
- return <g key={id} role="button" tabIndex={0} aria-label={grouped?`Inspect ${members.length} nearby generation sites: ${members.map(a=>a.name).join(', ')}`:`Inspect ${a.name} generation`} aria-pressed={active} onClick={()=>onSelect(id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(id)}}} style={{color:grouped?'#a2d5ed':colours[a.type]}} className={active||visible.length<=5?'asset-marker labelled':'asset-marker'}>
+export function GenerationMapLayer({filter,search,pilotOnly,selected,onSelect,snapshot,zoom=1,country='All GB',availability='All data'}:{filter:string;search:string;pilotOnly:boolean;selected:string|null;onSelect:(id:string)=>void;snapshot:AssetSnapshot;zoom?:number;country?:string;availability?:string}){
+ const visible=matchingAssets(filter,search,pilotOnly,{country,availability,snapshot});
+ return <g className="generation-layer">{assetClusters(visible,zoom).map(({x,y,members})=>{
+ const grouped=members.length>1,id=grouped?'cluster:'+members.map(a=>a.id).join(','):members[0].id;
+ const a=members.find(a=>a.id===selected)||members[0],r=snapshot.points.at(-1)?.values[a.id];const mw=a.unitMatch.status==='verified'?r?.mw:null,known=typeof mw==='number';
+ const active=selected===id||members.some(a=>a.id===selected),name=grouped?`${members.length} nearby sites`:a.name;
+ const radius=grouped?14:known?Math.max(12,Math.min(18,12+Math.sqrt(Math.abs(mw))/12)):12;
+ return <g key={id} transform={`translate(${x} ${y}) scale(${1/zoom})`} role="button" tabIndex={0} aria-label={grouped?`Inspect ${members.length} nearby generation sites: ${members.map(a=>a.name).join(', ')}`:`Inspect ${a.name} generation`} aria-pressed={active} onClick={()=>onSelect(id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(id)}}} style={{color:grouped?'#a2d5ed':colours[a.type]}} className={active||visible.length<=5||zoom>=3?'asset-marker labelled':'asset-marker'}>
  <title>{grouped?members.map(a=>a.name).join(' · '):`${a.name} · ${a.installedCapacityMW.toLocaleString('en-GB')} MW installed`}</title>
- {(active||visible.length<=5)&&<rect x={x-13} y={y-18} width="180" height="38" fill="transparent"/>}
- <circle cx={x} cy={y} r={grouped?13:11} fill="transparent"/>
- <circle className="asset-halo" cx={x} cy={y} r={radius+5} fill="currentColor" opacity={active?.3:.1}/>
- <circle cx={x} cy={y} r={radius} fill={grouped?'#102f40':known?'currentColor':'#102834'} stroke="currentColor" strokeWidth="1.5"/>
- {grouped?<text x={x} y={y+3.5} textAnchor="middle" className="asset-count">{members.length}</text>:<circle cx={x} cy={y} r="1.5" fill="#edfaff"/>}
- <g className="asset-marker-caption" pointerEvents="none"><text x={x+15} y={y-3} className="asset-label">{name}</text><text x={x+15} y={y+12} className="asset-value">{grouped?'Select a site':known?`${Math.round(mw).toLocaleString('en-GB')} MW metered`:'Output unavailable'}</text></g>
+ {(active||visible.length<=5||zoom>=3)&&<rect x="-22" y="-24" width="220" height="48" fill="transparent"/>}
+ <circle r="22" fill="transparent"/>
+ <circle className="asset-halo" r={radius+7} fill="currentColor" opacity={active?.3:.08}/>
+ <circle r={radius} fill="#071e2a" stroke="currentColor" strokeWidth={known?1.5:1} strokeDasharray={!known&&!grouped?'2 3':undefined}/>
+ {grouped?<text y="4" textAnchor="middle" className="asset-count">{members.length}</text>:<TechnologyGlyph type={a.type}/>}
+ <g className="asset-marker-caption" pointerEvents="none"><text x="24" y="-3" className="asset-label">{name}</text><text x="24" y="12" className="asset-value">{grouped?'Select or zoom in':known?`${Math.round(mw).toLocaleString('en-GB')} MW · dated`:'Capacity only · no output'}</text></g>
  </g>})}</g>
 }
 export function AssetEvidence({id,snapshot,error,onSelect}:{id:string;snapshot:AssetSnapshot;error:boolean;onSelect:(id:string)=>void}){
@@ -46,7 +48,7 @@ export function AssetEvidence({id,snapshot,error,onSelect}:{id:string;snapshot:A
  }
 
  const asset=assets.find(a=>a.id===id);if(!asset)return null;const latest=snapshot.points.at(-1);const rawReading=latest?.values[id];const r=asset.unitMatch.status==='verified'?rawReading:undefined;const max=Math.max(1,...snapshot.points.map(p=>Math.abs(p.values[id]?.mw??0)));
- return <div className="asset-evidence"><span className="asset-kicker" style={{color:colours[asset.type]}}>{asset.type} · metered history</span><h3>{asset.name}</h3><p className="asset-small">{asset.canonicalId} · Unit match: {asset.unitMatch.status}</p><p className="asset-output">{r?.mw!=null?`${Math.round(r.mw).toLocaleString('en-GB')} MW`:'Output unavailable'}</p>
+ return <div className="asset-evidence"><span className="asset-kicker" style={{color:colours[asset.type]}}>{asset.type} · metered history</span><h3>{asset.name}</h3><p className="asset-location">{asset.country} · {asset.latitude.toFixed(3)}° N, {Math.abs(asset.longitude).toFixed(3)}° {asset.longitude<0?'W':'E'}</p><a className="asset-permalink" href={`/?asset=${asset.id}`}>Permanent link to this asset ↗</a><p className="asset-small">{asset.canonicalId} · Unit match: {asset.unitMatch.status}</p><p className="asset-output">{r?.mw!=null?`${Math.round(r.mw).toLocaleString('en-GB')} MW`:'Output unavailable'}</p>
  {latest&&<p><strong>{assetTime(latest.from)} – {new Date(latest.to).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'})} UK</strong><br/>Half-hour average · delayed settlement data, not live.</p>}
  {snapshot.refreshError&&<p>Latest refresh failed. Previously published, dated history is retained; it has not been refreshed.</p>}
  {error&&<p>Snapshot could not be loaded. Geography remains available.</p>}
@@ -55,7 +57,8 @@ export function AssetEvidence({id,snapshot,error,onSelect}:{id:string;snapshot:A
  {asset.unitMatch.status!=="verified"&&<p className="asset-small">Catalogue retained for reference. This match is not verified for the focused release; no output is asserted.</p>}
  {asset.mappingNote&&<p className="asset-small">{asset.mappingNote}</p>}
  {asset.unitMatch.status==="verified"&&asset.units.length>0&&snapshot.points.length>0&&<><h4>Published end-of-day sample · six hours</h4><div className="asset-history" aria-hidden="true">{snapshot.points.map(p=>{const v=p.values[id]?.mw;return <span key={p.from} title={`${assetTime(p.from)}: ${v==null?'missing':v.toFixed(1)+' MW'}`} style={{height:v==null?'2px':`${Math.max(2,Math.abs(v)/max*100)}%`,background:v==null?'#57636d':v<0?'#ffa977':colours[asset.type]}}/>})}</div><details><summary>Read observations and unit mapping</summary><ul>{snapshot.points.map(p=><li key={p.from}>{assetTime(p.from)}: {p.values[id]?.mw==null?'Unavailable':`${p.values[id].mw!.toFixed(1)} MW`}</li>)}</ul><p>{asset.units.join(', ')}</p></details></>}
+ <AssetOperations units={asset.units} verified={asset.unitMatch.status==='verified'}/>
  <p className="asset-small">A site total requires every mapped unit at the same interval. Missing units are not zero. Approximate register location; offshore records may locate a project or connection area, not a surveyed footprint.</p>
- <p className="asset-small">{snapshot.verificationCheckedAt?`Registry checked ${assetTime(snapshot.verificationCheckedAt)} UK.`:'Registry verification time unavailable.'} {snapshot.checkedAt ? `Feed checked ${assetTime(snapshot.checkedAt)} UK. Updated with the daily site refresh.` : "Feed check time unavailable."}</p><div className="asset-sources">{asset.sourceRefs.filter(s=>s.provider==="DESNZ REPD").map(s=><a key={s.id} href={s.url}>REPD #{s.id} ↗</a>)}<a href={asset.capacitySource} target="_blank" rel="noreferrer">DESNZ asset register ↗</a><a href="https://bmrs.elexon.co.uk/actual-generation-output-per-generation-unit" target="_blank" rel="noreferrer">Elexon metered data ↗</a><a href={asset.geographySource} target="_blank" rel="noreferrer">Site geography ↗</a></div>
+ <p className="asset-small">{snapshot.verificationCheckedAt?`Registry checked ${assetTime(snapshot.verificationCheckedAt)} UK.`:'Registry verification time unavailable.'} {snapshot.checkedAt ? `Feed checked ${assetTime(snapshot.checkedAt)} UK. Updated by scheduled source ingestion.` : "Feed check time unavailable."}</p><div className="asset-sources">{asset.sourceRefs.filter(s=>s.provider==="DESNZ REPD").map(s=><a key={s.id} href={s.url}>REPD #{s.id} ↗</a>)}<a href={asset.capacitySource} target="_blank" rel="noreferrer">DESNZ asset register ↗</a><a href="https://bmrs.elexon.co.uk/actual-generation-output-per-generation-unit" target="_blank" rel="noreferrer">Elexon metered data ↗</a><a href={asset.geographySource} target="_blank" rel="noreferrer">Site geography ↗</a></div>
  </div>
 }

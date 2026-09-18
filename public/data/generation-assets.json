@@ -1,10 +1,10 @@
 {
-  "checkedAt": "2026-09-18T11:14:38.742Z",
+  "checkedAt": "2026-09-18T12:42:00.971Z",
   "settlementDate": "2026-09-09",
   "settlementPeriod": 48,
   "source": "Elexon B1610",
   "canonicalVersion": "gb-assets-v1",
-  "verificationCheckedAt": "2026-09-18T11:14:38.549Z",
+  "verificationCheckedAt": "2026-09-18T12:40:42.912Z",
   "verificationError": null,
   "publicationNote": "Provider row publication time unavailable; settlement run and content revision retained",
   "points": [
@@ -26,10 +26,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "076b2e22f0387c5492cfe5c871d52560f2bee0514a8832deb31692cb535250c9",
@@ -234,10 +234,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1181.3600000000001,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "3f86d26b182c96c1b5380c787c6cac9034c7cbdb0c7d869f5aed969883023f17",
@@ -639,10 +639,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "5ea20ede6badd18fad270eb9514a23ba3e94f7df91d22352c04a39b6e66331e9",
@@ -847,10 +847,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1181.56,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "176a637185133e977b1692c611dd3736bbfc574cc0899667d0f5aaee93308da3",
@@ -1252,10 +1252,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "ee9d288f1211d8b59b36ea26c2e311c7d8c9bab9556ab511a56d842f62a3f13e",
@@ -1460,10 +1460,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1180.96,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "f5d861c43601877ba99784f384dbc14cfb44d79fe7674a81e68fb6971bf54b4c",
@@ -1865,10 +1865,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "5091ad67dd77f587c011a6cf16d7aff6ee3fa790c6cbf62741b8b1e95ad31b01",
@@ -2073,10 +2073,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1180.56,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "7523cf4e50fc6572f917e830194677c91511eea9969779191c82d40a8a4be618",
@@ -2478,10 +2478,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "bbc59bb9597c3165afeedb5e94c8ff43c589dcc755450a3904edb86ac9b5eace",
@@ -2686,10 +2686,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1180.72,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "f4ff2f58a66a6718ecd529204ebf39f6d7984bc10e41a7d09b0a2131406233d0",
@@ -3091,10 +3091,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "d7709a0e1d898106bacf4d5fa0660e2b7e441806dd7384e95947b7aeccdf10f4",
@@ -3299,10 +3299,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1181.12,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "7d84f86cd6bd7c41ebeabbd9e054939c020d61fce1c806e510dba7d1a4bee611",
@@ -3704,10 +3704,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "4a738161e1ebaccef65ccdb74fb2a75404c4ec9ae1ed209a4edac78f10de4b46",
@@ -3912,10 +3912,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1181,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "a759d5e6e6fcfc5ee99fbaef2c4ceae1b25ddd2a98a19ab2d8f3250a2222cd08",
@@ -4317,10 +4317,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "65f31661d168ee16663bd921e4390cd88e76b34032ded45d4f423215f18fdd76",
@@ -4525,10 +4525,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1182.02,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "00ac0c3a76faa51f49874cf823b167798b6e39765a3265a3d81bab8ab39e463f",
@@ -4930,10 +4930,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "c066fac2a41556bca53d34686211a6f5e336f6bc404d7ec935705bd2ae84f7ad",
@@ -5138,10 +5138,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1182.1,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "41570d544ce6388e283af35749c513aa06b4f99487ae750a3e15c6c3e7eb868d",
@@ -5543,10 +5543,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "6454494aef03066a1e2aa26c9dce4526d3dfed2ce42c887f07155c7d1984328c",
@@ -5751,10 +5751,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1182.44,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "54d908c9badc2093c227f0a8536437763291395b2415d436a12e2be8318b726b",
@@ -6156,10 +6156,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "ed63b3376e3a9c819e5fe51c2c3e9b41c709d4ae31915d6a6683aeaffb2cb857",
@@ -6364,10 +6364,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1183.1599999999999,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "744b572b71d3289c2ddbd58f34aa50f941eed9b2de1829cf9d44989f2fdedb27",
@@ -6769,10 +6769,10 @@
           "publishedAt": null
         },
         "pembroke": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 0,
+          "coverage": 5,
+          "total": 5,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "858bda8b85d9bf68cb47f9c44e0e11522bb6bfe79f94c08fc4311042c178acf6",
@@ -6977,10 +6977,10 @@
           "publishedAt": null
         },
         "sizewell-b": {
-          "mw": null,
-          "coverage": 0,
-          "total": 0,
-          "matchStatus": "legacy-unreviewed",
+          "mw": 1182.62,
+          "coverage": 2,
+          "total": 2,
+          "matchStatus": "verified",
           "kind": "measured",
           "unit": "MW",
           "revision": "933ac6063dccda6b86e81abf3bb3c8193fb2b8d2d5369764ae71b131bd811f45",

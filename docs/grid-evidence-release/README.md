@@ -1,6 +1,6 @@
 # GB grid evidence — first release, 18 September 2026
 
-**Local branch only:** `feature/gb-grid-evidence-first-release`. No push, deployment, secret entry, infrastructure provisioning or live schedule activation is authorised or performed. Deployment requires the user's approval. Existing site design, map modes, interconnectors, public routes and historical exploration are retained.
+**Initial implementation checkpoint (superseded by approval below):** `feature/gb-grid-evidence-first-release`. No push, deployment, secret entry, infrastructure provisioning or live schedule activation is authorised or performed. Deployment requires the user's approval. Existing site design, map modes, interconnectors, public routes and historical exploration are retained.
 
 ## Audit and implementation decisions
 
@@ -72,3 +72,17 @@ Provider latency remains visible; cached forecasts can expire. NESO does not sup
 - Direct local ingestion succeeded for all six evidence datasets; six pilot source-identity checks passed. These are verified requests and local artifacts, not a claim that the scheduled production job is active.
 - Desktop/mobile screenshots visually reviewed, saved at `/home/aerins/.openclaw/workspace/artifacts/energy-mix-grid-evidence-2026-09-18/` (`home-desktop.png`, `home-mobile.png`, `constraints-desktop.png`, `constraints-mobile.png`).
 - No push, deployment or live workflow activation performed. Saved snapshots age honestly until ingestion runs again. Existing live site is unchanged.
+
+
+## Generation explorer release — approved 18 September, 13:35 BST
+
+User message 9276 explicitly authorises build and live deployment, including the previously prepared evidence release. It supersedes the no-deploy checkpoint above. Implementation extends the same SVG atlas rather than replacing the site or adding a globe.
+
+- Zoom (1–6×), pointer pan, keyboard-operable pan controls/reset, zoom-aware clustering and stable-size technology glyphs. Nearby sites separate on zoom; output rings use only verified dated readings.
+- Search, GB-country, technology, capacity ordering and measured-history/capacity-only filters. Deep links `/?asset=drax` open asset evidence. The 47-site catalogue remains available.
+- Reviewed default increases from six to eight: Pembroke and Sizewell B added after exact DUKES site/Elexon named production-unit review; captured official BM-unit evidence in `source-audit/expanded-pilot-bm-units.json`. Peterhead was inspected but NOT promoted: the second listed unit has zero registered production capacity and a consumption flag, so its grouping needs review.
+- Faster operational source confirmed: `https://data.elexon.co.uk/bmrs/api/v1/datasets/PN?settlementDate=YYYY-MM-DD&settlementPeriod=N&format=json`, HTTP200 and actual PN segments inspected. This is physical notification (scheduled MW), never measured output. Current GB settlement period is calculated with the existing clock-change-safe helper. Row publication time is not supplied; retrieval and SHA-256 content revision remain separate.
+- `scripts/ingest-asset-operations.mjs` fetches once per backend refresh, filters to reviewed units, caches five minutes and preserves dated last-known data on failure. Notification averages integrate linear MW ramps over the half-hour. Every unit must have contiguous complete coverage; duplicates deduplicate, conflicting overlaps/gaps suppress totals. Zero remains a valid schedule, not proof of zero measured output. No difference-to-metered curtailment calculation.
+- Source attribution uses the same verified Elexon BMRS licence. Separate purple “SCHEDULED · NOT MEASURED” panel with explicit period, source, revision, coverage and expired-state label; green metered history remains separately dated.
+- Scheduled evidence publisher and daily report publisher share a concurrency group to avoid simultaneous data commits. Failed individual sources publish explicit failure state while retaining dated evidence; numerical tests still gate publishing. The schedule is enabled only as part of this approved release.
+- Validation: 33 calculation/ingestion tests and 32 browser tests passed; TypeScript and local production build passed (156 prerendered routes). Desktop/mobile screenshots and direct pointer-drag behavior inspected. Existing Vite chunk-size advisory remains.

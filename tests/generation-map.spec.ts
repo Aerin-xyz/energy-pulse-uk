@@ -3,7 +3,7 @@ for(const width of [390,1440])test(`generation layer ${width}px: filters, eviden
  await page.setViewportSize({width,height:900});await page.goto('/');
  await page.getByRole('button',{name:'Generation',exact:true}).click();
  await expect(page.getByText('metered history, not live',{exact:true})).toBeVisible();
- await expect(page.locator('.atlas-access-list[data-layer=generation] button')).toHaveCount(6);
+ await expect(page.locator('.atlas-access-list[data-layer=generation] button')).toHaveCount(8);
  await page.getByRole('searchbox',{name:'Find a generation site'}).fill('Drax');
  await page.getByRole('button',{name:'Inspect Drax generation',exact:true}).click();
  await expect(page.getByRole('region',{name:'Selected map evidence'})).toContainText('4 / 4');
