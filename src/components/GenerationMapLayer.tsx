@@ -27,14 +27,23 @@ function TechnologyGlyph({type}:{type:string}){
 }
 export function GenerationMapLayer({filter,search,pilotOnly,selected,onSelect,snapshot,zoom=1,country='All GB',availability='All data'}:{filter:string;search:string;pilotOnly:boolean;selected:string|null;onSelect:(id:string)=>void;snapshot:AssetSnapshot;zoom?:number;country?:string;availability?:string}){
  const visible=matchingAssets(filter,search,pilotOnly,{country,availability,snapshot});
- return <g className="generation-layer">{assetClusters(visible,zoom).map(({x,y,members})=>{
+ const clusters=assetClusters(visible,zoom);const labels=new Set<string>();const boxes:{x:number;y:number;w:number;h:number}[]=[];
+ const clusterId=c=>c.members.length>1?'cluster:'+c.members.map(a=>a.id).join(','):c.members[0].id;
+ const isActive=c=>selected===clusterId(c)||c.members.some(a=>a.id===selected);
+ for(const c of [...clusters].sort((a,b)=>Number(isActive(b))-Number(isActive(a)))){
+  if(!isActive(c)&&visible.length>5&&zoom<3)continue;
+  const box={x:c.x+24/zoom,y:c.y-18/zoom,w:190/zoom,h:36/zoom};
+  const overlaps=boxes.some(b=>box.x<b.x+b.w&&box.x+box.w>b.x&&box.y<b.y+b.h&&box.y+box.h>b.y)||clusters.some(o=>o!==c&&o.x>box.x-12/zoom&&o.x<box.x+box.w&&o.y>box.y&&o.y<box.y+box.h);
+  if(isActive(c)||!overlaps){labels.add(clusterId(c));boxes.push(box)}
+ }
+ return <g className="generation-layer">{clusters.map(({x,y,members})=>{
  const grouped=members.length>1,id=grouped?'cluster:'+members.map(a=>a.id).join(','):members[0].id;
  const a=members.find(a=>a.id===selected)||members[0],r=snapshot.points.at(-1)?.values[a.id];const mw=a.unitMatch.status==='verified'?r?.mw:null,known=typeof mw==='number';
  const active=selected===id||members.some(a=>a.id===selected),name=grouped?`${members.length} nearby sites`:a.name;
  const radius=grouped?14:known?Math.max(12,Math.min(18,12+Math.sqrt(Math.abs(mw))/12)):12;
- return <g key={id} transform={`translate(${x} ${y}) scale(${1/zoom})`} role="button" tabIndex={0} aria-label={grouped?`Inspect ${members.length} nearby generation sites: ${members.map(a=>a.name).join(', ')}`:`Inspect ${a.name} generation`} aria-pressed={active} onClick={()=>onSelect(id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(id)}}} style={{color:grouped?'#a2d5ed':colours[a.type]}} className={active||visible.length<=5||zoom>=3?'asset-marker labelled':'asset-marker'}>
+ return <g key={id} transform={`translate(${x} ${y}) scale(${1/zoom})`} role="button" tabIndex={0} aria-label={grouped?`Inspect ${members.length} nearby generation sites: ${members.map(a=>a.name).join(', ')}`:`Inspect ${a.name} generation`} aria-pressed={active} onClick={()=>onSelect(id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(id)}}} style={{color:grouped?'#a2d5ed':colours[a.type]}} className={labels.has(id)?'asset-marker labelled':'asset-marker'}>
  <title>{grouped?members.map(a=>a.name).join(' · '):`${a.name} · ${a.installedCapacityMW.toLocaleString('en-GB')} MW installed`}</title>
- {(active||visible.length<=5||zoom>=3)&&<rect x="-22" y="-24" width="220" height="48" fill="transparent"/>}
+ {labels.has(id)&&<rect x="-22" y="-24" width="220" height="48" fill="transparent"/>}
  <circle r="22" fill="transparent"/>
  <circle className="asset-halo" r={radius+7} fill="currentColor" opacity={active?.3:.08}/>
  <circle r={radius} fill="#071e2a" stroke="currentColor" strokeWidth={known?1.5:1} strokeDasharray={!known&&!grouped?'2 3':undefined}/>
