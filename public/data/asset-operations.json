@@ -7,7 +7,7 @@
   "source": "Elexon physical notifications (PN)",
   "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/PN?settlementDate=2026-09-18&settlementPeriod=28&format=json",
   "attribution": "Contains BMRS data © Elexon Limited copyright and database right 2026.",
-  "checkedAt": "2026-09-18T12:40:43.476Z",
+  "checkedAt": "2026-09-18T12:48:38.416Z",
   "publishedAt": null,
   "publicationNote": "Row publication time unavailable; content revisions retained.",
   "revision": "adaf3a34a18a89d991acb4f7b6f224df065ec72786e5d8ce54c01063986cee60",
