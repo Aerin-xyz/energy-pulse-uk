@@ -1,3 +1,6 @@
+import {useGridEvidence} from '@/hooks/useGridEvidence';
+import {halfHours} from '@/lib/evidence/calculations.mjs';
+import {GridEvidenceBriefing} from "./GridEvidenceBriefing";
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
@@ -43,11 +46,13 @@ export function ElectricityObservatory() {
     const t = setInterval(() => setNow(Date.now()), 30000);
     return () => clearInterval(t);
   }, []);
-  const mix = (data?.generationMix || [])
-    .filter((x) => !["Imports", "PSH", "Pumped Storage"].includes(x.name))
+  const evidence = useGridEvidence();
+  const current = halfHours(evidence.data?.sources.FUELHH?.records||[], evidence.data?.sources.INDO?.records||[], now).at(-1);
+  const mix = (current?.generationMix || [])
+    .filter((x) => finite(x.value))
     .sort((a, b) => b.value - a.value);
   const top = mix.find(item => finite(item.value) && item.value > 0);
-  const flow = transfers(data?.interconnectors);
+  const flow = {net: current?.netImportsMW ?? null};
   const freshness = data?.dataFreshness?.sourceFreshness;
   const best = useMemo(
     () => cleanWindow(carbon.periods, duration, now),
@@ -57,70 +62,14 @@ export function ElectricityObservatory() {
     (p) => Date.parse(p.from) >= now && finite(p.intensity.forecast),
   );
   const forecastMax = Math.max(1, ...upcoming.map((p) => p.intensity.forecast));
-  const changes = useMemo(() => {
-    const rows = [...history.data]
-      .filter((r) => new Date(r.timestamp).getTime() + 30 * 60000 <= now)
-      .sort((a, b) => +new Date(a.timestamp) - +new Date(b.timestamp));
-    const end = rows.at(-1),
-      start = rows.at(-2);
-    if (
-      !end ||
-      !start ||
-      +new Date(end.timestamp) - +new Date(start.timestamp) !== 1800000
-    )
-      return null;
-    const items = ["Wind", "Gas", "Nuclear"]
-      .map((name) => {
-        const a = start.fuelMix.find((x) => x.fuelType === name),
-          b = end.fuelMix.find((x) => x.fuelType === name);
-        return a && b && finite(a.mw) && finite(b.mw) ? { name, delta: b.mw - a.mw } : null;
-      })
-      .filter(Boolean)
-      .sort((a, b) => Math.abs(b!.delta) - Math.abs(a!.delta));
-    return { items, start: start.timestamp, end: end.timestamp };
-  }, [history.data, now]);
   return (
     <div className="observatory" data-motion={motion ? "on" : "off"}>
       <CommandNavigation now={now} refresh={refetch} loading={loading} motion={motion} toggleMotion={()=>setMotion(v=>!v)}/>
       <main className="atlas-shell">
         {error && <p className="atlas-notice" role="status">Live refresh unavailable. Last known values retain their source timestamps.</p>}
         <GridCommandCentre data={data} history={history} carbon={carbon} now={now}/>
+        <GridEvidenceBriefing/>
         <section className="atlas-editorial">
-          <article>
-            <p className="atlas-eyebrow">02 / WHAT CHANGED</p>
-            <h2>The latest shift.</h2>
-            {changes ? (
-              <>
-                <p className="atlas-caption">
-                  Completed half-hours starting {time(changes.start)} →{" "}
-                  {time(changes.end)} UK. Historical feed; not a comparison with
-                  embedded-enriched live values.
-                </p>
-                <ul className="atlas-changes">
-                  {changes.items.slice(0, 3).map((c) => (
-                    <li key={c!.name}>
-                      <span>
-                        {c!.name === "Wind" ? "Measured wind" : c!.name}
-                      </span>
-                      <strong>
-                        {Math.abs(c!.delta) < 50
-                          ? "No material change"
-                          : `${c!.delta >= 0 ? "+" : "−"}${gw(Math.abs(c!.delta))} GW`}
-                      </strong>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            ) : (
-              <p>
-                Comparable completed periods are not available yet. We won’t
-                turn a missing reading into a trend.
-              </p>
-            )}
-            <a className="atlas-text-link" href="#rhythm">
-              Explore the timeline <ArrowDown size={14} />
-            </a>
-          </article>
           <article>
             <p className="atlas-eyebrow">03 / WHY IT MATTERS</p>
             <h2>
@@ -244,11 +193,11 @@ export function ElectricityObservatory() {
               PUMPED STORAGE <ArrowUpRight size={13} />
             </span>
             <strong>
-              {gw(data?.storage?.absMW)}
-              <small> GW · {data?.storage?.mode || "unavailable"}</small>
+              {gw(current?.storageMW)}
+              <small> GW · signed metered output</small>
             </strong>
             <small>
-              {sourceState(data?.storage?.timestamp, 5, now).label} · not
+              {sourceState(current?.to, 30, now).label} · not
               battery state of charge
             </small>
           </Link>
@@ -272,7 +221,7 @@ export function ElectricityObservatory() {
             </strong>
             <small>
               {
-                sourceState(freshness?.interconnectors?.timestamp, 30, now)
+                sourceState(current?.to, 30, now)
                   .label
               }{" "}
               · imports minus exports

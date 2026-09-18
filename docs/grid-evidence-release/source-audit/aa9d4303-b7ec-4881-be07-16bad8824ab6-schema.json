@@ -1,0 +1,377 @@
+{
+  "help": "https://api.neso.energy/api/3/action/help_show?name=datastore_search",
+  "success": true,
+  "result": {
+    "include_total": true,
+    "resource_id": "aa9d4303-b7ec-4881-be07-16bad8824ab6",
+    "fields": [
+      {
+        "type": "int",
+        "id": "_id"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "",
+          "title": "Date\t\t",
+          "type": "date",
+          "example": "2025-01-01\t\t",
+          "unit": ""
+        },
+        "type": "date",
+        "id": "Date"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "minimum of Actual  B4/B5 boundary constraint limit ",
+          "title": "Min of B4 B5 - Actual ",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "Min of B4 B5 - Actual"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "Actual  B6 boundary constraint limit ",
+          "title": "B6 - Actual",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "B6 - Actual"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "Actual  B6a boundary constraint limit ",
+          "title": "B6a - Actual",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "B6a - Actual"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "Actual  B7 boundary constraint limit ",
+          "title": "B7 - Actual ",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "B7 - Actual"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "Actual GMSNOW boundary constraint limit ",
+          "title": "GMSNOW - Actual",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "GMSNOW - Actual"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "Actual  LE1 boundary constraint limit ",
+          "title": "LE1 - Actual",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "LE1 - Actual"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "Actual  B9 boundary constraint limit ",
+          "title": "B9 - Actual ",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "B9 - Actual"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "Actual  DRESHEX boundary constraint limit ",
+          "title": "DRESHEX - Actual",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "DRESHEX - Actual"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "Actual  EC5 boundary constraint limit ",
+          "title": "EC5 - Actual",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "EC5 - Actual"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "Actual  B15 boundary constraint limit ",
+          "title": " B15 - Actual",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "B15 - Actual"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "Actual  SC boundary constraint limit ",
+          "title": "SC - Actual ",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "SC - Actual"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "minimum of forecasted ( YA/MT)  B4/B5 boundary constraint limit ",
+          "title": "Min of B4 B5 - Forecast",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "Min of B4 B5 - Forecast"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "forecasted ( YA/MT)  B6 boundary constraint limit ",
+          "title": "B6 - Forecast",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "B6 - Forecast"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "forecasted ( YA/MT)  B6a boundary constraint limit ",
+          "title": " B6a - Forecast",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "B6a - Forecast"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "forecasted ( YA/MT)  B7 boundary constraint limit ",
+          "title": "B7 - Forecast ",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "B7 - Forecast"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "forecasted ( YA/MT)  GMSNOW boundary constraint limit ",
+          "title": "GMSNOW - Forecast ",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "GMSNOW - Forecast"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "forecasted ( YA/MT)  LE1 boundary constraint limit ",
+          "title": "LE1 - Forecast",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "LE1 - Forecast"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "forecasted ( YA/MT)  B9 boundary constraint limit ",
+          "title": "B9 - Forecast",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "B9 - Forecast"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "forecasted ( YA/MT)  DRESHEX boundary constraint limit ",
+          "title": "DRESHEX - Forecast",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "DRESHEX - Forecast"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "forecasted ( YA/MT)  EC5 boundary constraint limit ",
+          "title": "EC5 - Forecast",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "EC5 - Forecast"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "forecasted ( YA/MT)  B15 boundary constraint limit ",
+          "title": "B15 -Forecast ",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "B15 - Forecast"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "forecasted ( YA/MT)  SC boundary constraint limit ",
+          "title": "SC-Forecast",
+          "type": "number",
+          "example": "2450",
+          "unit": "MW"
+        },
+        "type": "numeric",
+        "id": "SC - Forecast"
+      }
+    ],
+    "records_format": "objects",
+    "records": [
+      {
+        "_id": 1,
+        "Date": "2026-03-21",
+        "Min of B4 B5 - Actual": 2180,
+        "B6 - Actual": 5800,
+        "B6a - Actual": 7000,
+        "B7 - Actual": 8500,
+        "GMSNOW - Actual": 1150,
+        "LE1 - Actual": 6900,
+        "B9 - Actual": 10600,
+        "DRESHEX - Actual": 6200,
+        "EC5 - Actual": 5000,
+        "B15 - Actual": 5800,
+        "SC - Actual": 7300,
+        "Min of B4 B5 - Forecast": 2050,
+        "B6 - Forecast": 5000,
+        "B6a - Forecast": 5920,
+        "B7 - Forecast": 7700,
+        "GMSNOW - Forecast": 3400,
+        "LE1 - Forecast": 5600,
+        "B9 - Forecast": 10490,
+        "DRESHEX - Forecast": 7700,
+        "EC5 - Forecast": 5000,
+        "B15 - Forecast": 6090,
+        "SC - Forecast": 7300
+      },
+      {
+        "_id": 2,
+        "Date": "2026-03-28",
+        "Min of B4 B5 - Actual": 2100,
+        "B6 - Actual": 5800,
+        "B6a - Actual": 7000,
+        "B7 - Actual": 8300,
+        "GMSNOW - Actual": 1150,
+        "LE1 - Actual": 7300,
+        "B9 - Actual": 11000,
+        "DRESHEX - Actual": 6200,
+        "EC5 - Actual": 5000,
+        "B15 - Actual": 6250,
+        "SC - Actual": 7300,
+        "Min of B4 B5 - Forecast": 2050,
+        "B6 - Forecast": 5000,
+        "B6a - Forecast": 5680,
+        "B7 - Forecast": 7700,
+        "GMSNOW - Forecast": 3400,
+        "LE1 - Forecast": 4960,
+        "B9 - Forecast": 10090,
+        "DRESHEX - Forecast": 7760,
+        "EC5 - Forecast": 5000,
+        "B15 - Forecast": 7140,
+        "SC - Forecast": 7300
+      },
+      {
+        "_id": 3,
+        "Date": "2026-04-04",
+        "Min of B4 B5 - Actual": 2050,
+        "B6 - Actual": 5800,
+        "B6a - Actual": 8000,
+        "B7 - Actual": 6150,
+        "GMSNOW - Actual": 700,
+        "LE1 - Actual": 7150,
+        "B9 - Actual": 10600,
+        "DRESHEX - Actual": 6950,
+        "EC5 - Actual": 5000,
+        "B15 - Actual": 5450,
+        "SC - Actual": 7300,
+        "Min of B4 B5 - Forecast": 3450,
+        "B6 - Forecast": 6800,
+        "B6a - Forecast": 6083,
+        "B7 - Forecast": 7000,
+        "GMSNOW - Forecast": 2667,
+        "LE1 - Forecast": 5167,
+        "B9 - Forecast": 10167,
+        "DRESHEX - Forecast": 7600,
+        "EC5 - Forecast": 5000,
+        "B15 - Forecast": 7117,
+        "SC - Forecast": 5550
+      }
+    ],
+    "limit": 3,
+    "_links": {
+      "start": "/api/3/action/datastore_search?limit=3&resource_id=aa9d4303-b7ec-4881-be07-16bad8824ab6",
+      "next": "/api/3/action/datastore_search?offset=3&limit=3&resource_id=aa9d4303-b7ec-4881-be07-16bad8824ab6"
+    },
+    "total": 53
+  }
+}

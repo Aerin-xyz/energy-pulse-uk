@@ -1,0 +1,6 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import fs from 'node:fs/promises';import os from 'node:os';import path from 'node:path';import {spawnSync} from 'node:child_process';
+test('failed ingestion preserves original observation, revision and checked time',async()=>{
+ const dir=await fs.mkdtemp(path.join(os.tmpdir(),'energy-evidence-'));const target=path.join(dir,'snapshot.json');const prior={sources:{FUELHH:{records:[{startTime:'2026-09-01T00:00Z',generation:0}],checkedAt:'2026-09-01T01:00Z',revision:'original'}}};await fs.writeFile(target,JSON.stringify(prior));
+ const result=spawnSync(process.execPath,['--input-type=module','-e',"globalThis.fetch=async()=>{throw Error('simulated provider failure')};await import('./scripts/ingest-grid-evidence.mjs')"],{cwd:process.cwd(),env:{...process.env,GRID_EVIDENCE_TARGET:target,GRID_CACHE_DIR:path.join(dir,'cache')},encoding:'utf8'});
+ assert.equal(result.status,1);const next=JSON.parse(await fs.readFile(target));assert.equal(next.sources.FUELHH.checkedAt,prior.sources.FUELHH.checkedAt);assert.equal(next.sources.FUELHH.revision,'original');assert.equal(next.sources.FUELHH.records[0].generation,0);assert.match(next.sources.FUELHH.error,/failure/);await fs.rm(dir,{recursive:true,force:true});
+});

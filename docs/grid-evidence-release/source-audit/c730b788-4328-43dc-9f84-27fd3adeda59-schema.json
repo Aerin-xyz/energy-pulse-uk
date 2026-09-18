@@ -1,0 +1,77 @@
+{
+  "help": "https://api.neso.energy/api/3/action/help_show?name=datastore_search",
+  "success": true,
+  "result": {
+    "include_total": true,
+    "resource_id": "c730b788-4328-43dc-9f84-27fd3adeda59",
+    "fields": [
+      {
+        "type": "int",
+        "id": "_id"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "The date the constraint costs belong to.",
+          "title": "Settlement Date",
+          "type": "date",
+          "example": "2021-04-01",
+          "unit": "\tISO 8601"
+        },
+        "type": "date",
+        "id": "Settlement Date"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "The name of the constraint.",
+          "title": "Constraint Group",
+          "type": "string",
+          "example": "ESTEX",
+          "unit": ""
+        },
+        "type": "text",
+        "id": "Constraint Group"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "The daily spend in GBP for the constraint. This is an integer (rounded).",
+          "title": "Daily Cost (GBP)",
+          "type": "integer",
+          "example": "2,132,332",
+          "unit": "\u00a3"
+        },
+        "type": "int4",
+        "id": "Daily Cost (GBP)"
+      }
+    ],
+    "records_format": "objects",
+    "records": [
+      {
+        "_id": 1,
+        "Settlement Date": "2026-04-01",
+        "Constraint Group": "ESTEX",
+        "Daily Cost (GBP)": 19801
+      },
+      {
+        "_id": 2,
+        "Settlement Date": "2026-04-01",
+        "Constraint Group": "SCOTEX",
+        "Daily Cost (GBP)": 1518365
+      },
+      {
+        "_id": 3,
+        "Settlement Date": "2026-04-01",
+        "Constraint Group": "SEIMP",
+        "Daily Cost (GBP)": 0
+      }
+    ],
+    "limit": 3,
+    "_links": {
+      "start": "/api/3/action/datastore_search?limit=3&resource_id=c730b788-4328-43dc-9f84-27fd3adeda59",
+      "next": "/api/3/action/datastore_search?offset=3&limit=3&resource_id=c730b788-4328-43dc-9f84-27fd3adeda59"
+    },
+    "total": 966
+  }
+}

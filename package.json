@@ -13,8 +13,11 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:power-flow-layout": "playwright test tests/power-flow-layout.spec.ts",
-    "test:metrics": "node --test tests/grid-metrics.test.mjs tests/archive-routing.test.mjs tests/cable-readings.test.mjs tests/asset-readings.test.mjs",
-    "test:atlas": "playwright test tests/atlas.spec.ts"
+    "test:metrics": "node --test tests/grid-metrics.test.mjs tests/archive-routing.test.mjs tests/cable-readings.test.mjs tests/asset-readings.test.mjs tests/evidence-calculations.test.mjs tests/evidence-ingestion.test.mjs",
+    "test:atlas": "playwright test tests/atlas.spec.ts",
+    "ingest:grid": "node scripts/ingest-grid-evidence.mjs",
+    "build:local": "node scripts/generate-static-snapshot.mjs && vite build && node scripts/prerender-static.mjs",
+    "verify:assets": "node scripts/verify-canonical-assets.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -1,7 +1,7 @@
 import snapshot from '@/data/staticGridSnapshot.json';
 
 const items = [
-  ['Estimated demand', snapshot.display?.demand],
+  ['National demand', snapshot.display?.demand],
   ['Generation', snapshot.display?.generation],
   ['Carbon', snapshot.display?.carbonIntensity],
   ['Renewables', snapshot.display?.renewableShare],
@@ -48,7 +48,7 @@ export const StaticGridSnapshot = ({ compact = false }: StaticGridSnapshotProps)
       </div>
 
       <p className="mt-4 text-xs text-foreground/55 leading-relaxed">
-        Saved at build time, not a live reading. Demand is an estimated supply balance; generation and shares exclude imports and pumped storage. The interactive dashboard refreshes from public grid and carbon-intensity sources in the browser.
+        Saved at build time, not a live reading. Demand is Elexon INDO initial national demand. Generation and shares cover transmission-metered output, excluding embedded estimates, imports and pumped storage. The same cached evidence and calculation definitions power the homepage and briefing.
       </p>
     </section>
   );

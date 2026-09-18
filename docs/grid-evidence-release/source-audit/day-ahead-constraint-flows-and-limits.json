@@ -1,0 +1,178 @@
+{
+  "license_title": "NESO Open Data Licence",
+  "maintainer": "",
+  "relationships_as_object": [],
+  "private": false,
+  "maintainer_email": "",
+  "num_tags": 8,
+  "id": "cf3cbc92-2d5d-4c2b-bd29-e11a21070b26",
+  "metadata_created": "2019-11-05T09:54:30.463936",
+  "metadata_modified": "2026-09-17T14:51:14.673147",
+  "author": "National Grid Electricity System Operator",
+  "author_email": "",
+  "state": "active",
+  "version": "",
+  "creator_user_id": "91aeb31f-299c-46dc-b289-966044bbfdcd",
+  "type": "dataset",
+  "resources": [
+    {
+      "mimetype": "application/pdf",
+      "cache_url": null,
+      "name": "Network Diagram England & Wales",
+      "hash": "",
+      "description": "The Network Diagram for England & Wales showing the locations of the constraints contained in the constraints data. This file shows the location of the: FLOWSTH, GM+SNOW5A, HARSPNBLY, DRESHEX1, ESTEX, ESTEX3, ESTEX4, DUNSELEX, CANDUNEX, CANSELEX, NINSELEX, BOLSELEX1, SEIMPPR23 and SSHARN3 constraint groups.",
+      "metadata_modified": "2026-07-10T11:05:50.182921",
+      "cache_last_updated": null,
+      "url": "https://api.neso.energy/dataset/cf3cbc92-2d5d-4c2b-bd29-e11a21070b26/resource/bb6d6ec6-16d9-4be5-b32c-1a70c09fd871/download/ew-network-diagram-da-limit-boundaries2026.pdf",
+      "datastore_active": false,
+      "format": "PDF",
+      "package_id": "cf3cbc92-2d5d-4c2b-bd29-e11a21070b26",
+      "created": "2019-11-05T09:59:15.976787",
+      "state": "active",
+      "mimetype_inner": null,
+      "last_modified": "2026-07-10T11:05:51.346242",
+      "position": 0,
+      "revision_id": "cd436fde-1cb0-4652-9ad7-4973826f6c98",
+      "url_type": "upload",
+      "id": "bb6d6ec6-16d9-4be5-b32c-1a70c09fd871",
+      "resource_type": null,
+      "size": null
+    },
+    {
+      "cache_last_updated": null,
+      "package_id": "cf3cbc92-2d5d-4c2b-bd29-e11a21070b26",
+      "datastore_active": true,
+      "id": "38a18ec1-9e40-465d-93fb-301e80fd1352",
+      "size": null,
+      "metadata_modified": "2026-09-17T14:51:13.772416",
+      "state": "active",
+      "hash": "",
+      "description": "The data below is a snapshot of the limits and flows at relevant boundaries at day ahead stage. These flow values are calculated at Day Ahead and will not reflect any changes in the flows following the publication of this data. The boundary flows are the forecast position after Day Ahead energy scheduling has been run. \r\n\r\nPlease note that from the 22nd April 2024 the flows no longer consider expected constraint mitigation or optimisation actions. Before this date the data did consider constraint mitigation actions. This change has happened as the software used to collate this information has been updated.\r\n\r\n\r\nThe network diagrams show the constraint boundaries and arrows indicating the positive direction of power flow across each boundary. <br>\r\n\r\n\r\n\r\n\r\n",
+      "format": "CSV",
+      "mimetype_inner": null,
+      "url_type": "upload",
+      "mimetype": "text/csv",
+      "cache_url": null,
+      "name": "Day Ahead Constraint Flows and Limits",
+      "created": "2020-09-09T18:44:38.490679",
+      "url": "https://api.neso.energy/dataset/cf3cbc92-2d5d-4c2b-bd29-e11a21070b26/resource/38a18ec1-9e40-465d-93fb-301e80fd1352/download/day-ahead-constraints-limits-and-flow-output-v1.5.csv",
+      "datastore_append_or_update": false,
+      "last_modified": "2026-09-17T14:51:14.608696",
+      "position": 1,
+      "revision_id": "9d288886-f2c8-4e19-a42e-d26974ae71a2",
+      "resource_type": null
+    },
+    {
+      "mimetype": null,
+      "cache_url": null,
+      "name": "Network Diagram Scotland",
+      "hash": "",
+      "description": "The Network Diagram for Scotland showing locations of the constraints contained in the constraint data. This files shows the location of the SSE + GRMO, NKILGRMO, SCOTEX, SSE-SP2 and SSE N-S constraint groups.",
+      "metadata_modified": "2026-07-10T11:04:47.209978",
+      "cache_last_updated": null,
+      "url": "https://api.neso.energy/dataset/cf3cbc92-2d5d-4c2b-bd29-e11a21070b26/resource/3eb74046-3ffa-40c3-a541-b3cb00a44b1f/download/scotland-network-diagram-da-limit-boundaries2026.pdf",
+      "datastore_active": false,
+      "format": "PDF",
+      "package_id": "cf3cbc92-2d5d-4c2b-bd29-e11a21070b26",
+      "created": "2025-06-05T10:11:34.378369",
+      "state": "active",
+      "mimetype_inner": null,
+      "last_modified": "2026-07-10T11:04:48.337491",
+      "position": 2,
+      "revision_id": "bdfb428b-67a7-40aa-9de4-6d2887da078b",
+      "url_type": "upload",
+      "id": "3eb74046-3ffa-40c3-a541-b3cb00a44b1f",
+      "resource_type": null,
+      "size": null
+    }
+  ],
+  "num_resources": 3,
+  "tags": [
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "Constraint",
+      "id": "39c65064-4212-4fe4-94d4-d62c23031006",
+      "name": "Constraint"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "Day-Ahead",
+      "id": "af2709e5-b348-46e6-b9dd-35f69bad6322",
+      "name": "Day-Ahead"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "Diagrams",
+      "id": "911a88e3-7919-4652-8454-9527acbbca64",
+      "name": "Diagrams"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "Flow",
+      "id": "64315810-407e-49c8-b731-65d5b7f563fa",
+      "name": "Flow"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "Forecast",
+      "id": "a80fd9ab-653a-4218-bf7b-aa78ebd0c6ac",
+      "name": "Forecast"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "Limit",
+      "id": "72078b66-a07c-4e6f-9395-18d0e710059e",
+      "name": "Limit"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "Network",
+      "id": "cb9507f2-8b32-46b2-998e-5a28712a6632",
+      "name": "Network"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "Subscribable",
+      "id": "fb80a4a5-bda6-4679-9c06-4decec4a0917",
+      "name": "Subscribable"
+    }
+  ],
+  "groups": [],
+  "license_id": "ESO",
+  "relationships_as_subject": [],
+  "organization": {
+    "description": "Data on historic costs and forecast constraint volumes. Required when the system is unable to transmit power to a demand location due to transmission network congestion.",
+    "created": "2019-10-31T14:06:24.189108",
+    "title": "Constraint management",
+    "name": "constraint-management",
+    "is_organization": true,
+    "state": "active",
+    "image_url": "2024-09-30-082405.733342Constraints-management.svg",
+    "revision_id": "cf0db996-a908-4934-8257-1dc03b070b0f",
+    "type": "organization",
+    "id": "fcec3bcb-1b79-4732-b342-3799e4731a7d",
+    "approval_status": "approved"
+  },
+  "name": "day-ahead-constraint-flows-and-limits",
+  "isopen": false,
+  "url": "National Grid Electricity System Operator",
+  "notes": "A snapshot of the limits and flows at relevant boundaries at day ahead stage. These flow values are true for when the measurement was taken and will not reflect any changes in the flows following the publication of this data. The network diagrams show the constraint boundaries and arrows indicating the positive direction of power flow across each boundary.\r\n <br/><br/>\r\nNote: To optimize processing time and file size, data is limited to the past three years plus the current year. e.g., if the current year is 2026, the data file will contain records from 2023 through 2026 inclusive. Should you require access to earlier data, such as from 2019 when storage began, please contact the OpenData team, who will provide it upon request.\r\n <br/><br/>",
+  "owner_org": "fcec3bcb-1b79-4732-b342-3799e4731a7d",
+  "extras": [
+    {
+      "key": "Update Frequency",
+      "value": "Daily (Weekdays)"
+    }
+  ],
+  "license_url": "https://www.neso.energy/data-portal/ngeso-open-licence",
+  "title": "Day Ahead Constraint Flows and Limits",
+  "revision_id": "6daef965-5b9b-435f-bba6-0085cabc7514"
+}

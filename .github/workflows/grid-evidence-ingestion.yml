@@ -1,0 +1,41 @@
+name: Cached official grid evidence
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: official-grid-evidence
+  cancel-in-progress: false
+jobs:
+  ingest:
+    # Deliberately inactive until this release is approved and this repository
+    # variable is explicitly enabled. Branch creation cannot activate publishing.
+    if: github.ref == 'refs/heads/main' && vars.ENABLE_GRID_EVIDENCE_INGESTION == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/cache@v4
+        with:
+          path: .cache/grid-evidence
+          key: grid-evidence-${{ github.run_id }}
+          restore-keys: grid-evidence-
+      - name: Ingest and validate official evidence
+        run: |
+          npm run verify:assets
+          npm run ingest:grid
+          node scripts/generate-asset-snapshot.mjs
+          node --test tests/evidence-calculations.test.mjs tests/asset-readings.test.mjs
+      - name: Save validated cached snapshots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/data/grid-evidence.json public/data/generation-assets.json public/data/asset-verification.json
+          if ! git diff --cached --quiet; then
+            git commit -m "Refresh official GB evidence cache"
+            git push
+          fi

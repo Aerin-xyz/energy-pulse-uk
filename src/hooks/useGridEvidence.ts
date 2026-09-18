@@ -1,0 +1,4 @@
+import {useQuery} from '@tanstack/react-query';
+export type EvidenceSource={provider:string;datasetId:string;resourceId?:string;kind:string;unit:string;url:string;licence?:string;coverage:string;revision:string;checkedAt:string|null;resourceModifiedAt?:string|null;publishedAt?:string|null;providerSchedule?:string;refreshMinutes:number;error?:string;records:Record<string,unknown>[]};
+export type GridEvidence={schemaVersion:number;generatedAt:string;sources:Record<string,EvidenceSource>};
+export function useGridEvidence(){return useQuery<GridEvidence>({queryKey:['grid-evidence-v1'],queryFn:async({signal})=>{const r=await fetch('/data/grid-evidence.json',{signal});if(!r.ok)throw Error('Evidence snapshot unavailable');const j=await r.json();if(j.schemaVersion!==1||!j.sources)throw Error('Evidence schema unavailable');return j},staleTime:60000,refetchInterval:60000,retry:1})}

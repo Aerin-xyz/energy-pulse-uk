@@ -8,6 +8,7 @@ import { EnergyDataProvider } from "@/contexts/EnergyDataContext";
 import { HelmetProvider } from 'react-helmet-async';
 import "./styles/observatory.css";
 import Index from "./pages/Index";
+const NetworkConstraints = lazy(() => import("./pages/NetworkConstraints"));
 const Explore = lazy(() => import("./pages/Explore"));
 const GridSignalPage = lazy(() => import("./pages/GridSignalPage").then(m => ({default:m.GridSignalPage})));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -67,6 +68,7 @@ const App = () => (
           <RouteAnalytics />
           <SiteFrame><Suspense fallback={<main className="container mx-auto p-12" role="status">Loading this part of the grid…</main>}><Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/network-constraints" element={<NetworkConstraints />} />
             <Route path="/explore" element={<Explore />} />
             <Route path="/wholesale-electricity-price" element={<GridSignalPage kind="price" />} />
             <Route path="/pumped-storage" element={<GridSignalPage kind="storage" />} />

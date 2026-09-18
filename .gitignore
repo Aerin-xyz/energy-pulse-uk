@@ -27,3 +27,6 @@ dist-ssr
 .wrangler/
 test-results/
 playwright-report/
+
+# Local source ingestion cache (not publication data)
+.cache/

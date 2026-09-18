@@ -1,0 +1,2174 @@
+[
+  {
+    "id": "drax",
+    "name": "Drax",
+    "type": "Biomass",
+    "latitude": 53.73559,
+    "longitude": -0.9911,
+    "units": [
+      "T_DRAXX-1",
+      "T_DRAXX-2",
+      "T_DRAXX-3",
+      "T_DRAXX-4"
+    ],
+    "registeredCapacityMW": 2641.048,
+    "installedCapacityMW": 2580,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "BIO-000501"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:drax",
+    "releaseSelection": true,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "BIO-000501",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ REPD",
+        "id": "174",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+        "asOf": "2026-Q2"
+      },
+      {
+        "provider": "DESNZ REPD",
+        "id": "175",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+        "asOf": "2026-Q2"
+      },
+      {
+        "provider": "DESNZ REPD",
+        "id": "192",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+        "asOf": "2026-Q2"
+      },
+      {
+        "provider": "DESNZ REPD",
+        "id": "6659",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+        "asOf": "2026-Q2"
+      }
+    ],
+    "unitMatch": {
+      "status": "verified",
+      "reviewedAt": "2026-09-18",
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_DRAXX-1",
+        "T_DRAXX-2",
+        "T_DRAXX-3",
+        "T_DRAXX-4"
+      ],
+      "exclusions": [
+        "T_DRAXX-5",
+        "T_DRAXX-6"
+      ],
+      "evidence": "docs/grid-evidence-release/source-audit/repd-pilot.json"
+    }
+  },
+  {
+    "id": "pembroke",
+    "name": "Pembroke",
+    "type": "Gas",
+    "latitude": 51.66193,
+    "longitude": -4.98905,
+    "units": [
+      "T_PEMB-11",
+      "T_PEMB-21",
+      "T_PEMB-31",
+      "T_PEMB-41",
+      "T_PEMB-51"
+    ],
+    "registeredCapacityMW": 2375,
+    "installedCapacityMW": 2325,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Wales",
+    "siteCodes": [
+      "GAS-000453"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:pembroke",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000453",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_PEMB-11",
+        "T_PEMB-21",
+        "T_PEMB-31",
+        "T_PEMB-41",
+        "T_PEMB-51"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "heysham",
+    "name": "Heysham",
+    "type": "Nuclear",
+    "latitude": 54.04567,
+    "longitude": -2.89494,
+    "units": [
+      "T_HEYM11",
+      "T_HEYM12",
+      "T_HEYM27",
+      "T_HEYM28"
+    ],
+    "registeredCapacityMW": 2531.152,
+    "installedCapacityMW": 2300,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "NUC-000127",
+      "NUC-000131"
+    ],
+    "mappingNote": "",
+    "scopeNote": "Grouped site: Heysham 1, Heysham 2.",
+    "canonicalId": "gb:heysham",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "NUC-000127",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ DUKES",
+        "id": "NUC-000131",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_HEYM11",
+        "T_HEYM12",
+        "T_HEYM27",
+        "T_HEYM28"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "staythorpe",
+    "name": "Staythorpe",
+    "type": "Gas",
+    "latitude": 53.07315,
+    "longitude": -0.85887,
+    "units": [
+      "T_STAY-1",
+      "T_STAY-2",
+      "T_STAY-3",
+      "T_STAY-4"
+    ],
+    "registeredCapacityMW": 1856,
+    "installedCapacityMW": 1828,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000375"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:staythorpe",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000375",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_STAY-1",
+        "T_STAY-2",
+        "T_STAY-3",
+        "T_STAY-4"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "dinorwig",
+    "name": "Dinorwig",
+    "type": "Pumped storage",
+    "latitude": 53.11859,
+    "longitude": -4.10234,
+    "units": [
+      "T_DINO-1",
+      "T_DINO-2",
+      "T_DINO-3",
+      "T_DINO-4",
+      "T_DINO-5",
+      "T_DINO-6"
+    ],
+    "registeredCapacityMW": 1920,
+    "installedCapacityMW": 1800,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Wales",
+    "siteCodes": [
+      "HST-000128"
+    ],
+    "mappingNote": "",
+    "scopeNote": "DUKES lists 1,800 MW; Q2 REPD lists 1,728 MW. The threshold uses the DUKES installed-capacity definition.",
+    "canonicalId": "gb:dinorwig",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "HST-000128",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_DINO-1",
+        "T_DINO-2",
+        "T_DINO-3",
+        "T_DINO-4",
+        "T_DINO-5",
+        "T_DINO-6"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "keadby",
+    "name": "Keadby",
+    "type": "Gas",
+    "latitude": 53.59501,
+    "longitude": -0.74317,
+    "units": [
+      "T_KEAD-1",
+      "T_KEAD-2"
+    ],
+    "registeredCapacityMW": 1654,
+    "installedCapacityMW": 1572,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000123",
+      "GAS-001553"
+    ],
+    "mappingNote": "",
+    "scopeNote": "Grouped site: Keadby, Keadby 2.",
+    "canonicalId": "gb:keadby",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000123",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-001553",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_KEAD-1",
+        "T_KEAD-2"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "didcot-b",
+    "name": "Didcot B",
+    "type": "Gas",
+    "latitude": 51.62495,
+    "longitude": -1.26949,
+    "units": [
+      "T_DIDCB5",
+      "T_DIDCB6"
+    ],
+    "registeredCapacityMW": 1490,
+    "installedCapacityMW": 1490,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000176"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:didcot-b",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000176",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_DIDCB5",
+        "T_DIDCB6"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "grain",
+    "name": "Grain",
+    "type": "Gas",
+    "latitude": 51.44298,
+    "longitude": 0.70782,
+    "units": [
+      "T_GRAI-6",
+      "T_GRAI-7",
+      "T_GRAI-8"
+    ],
+    "registeredCapacityMW": 1404,
+    "installedCapacityMW": 1404,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000404"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:grain",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000404",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_GRAI-6",
+        "T_GRAI-7",
+        "T_GRAI-8"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "south-humber-bank",
+    "name": "South Humber Bank",
+    "type": "Gas",
+    "latitude": 53.60301,
+    "longitude": -0.14558,
+    "units": [
+      "T_SHBA-1",
+      "T_SHBA-2"
+    ],
+    "registeredCapacityMW": 1401.4,
+    "installedCapacityMW": 1400,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000169"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:south-humber-bank",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000169",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_SHBA-1",
+        "T_SHBA-2"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "hornsea-two",
+    "name": "Hornsea Two",
+    "type": "Offshore wind",
+    "latitude": 53.96,
+    "longitude": 1.53999,
+    "units": [
+      "T_HOWBO-1",
+      "T_HOWBO-2",
+      "T_HOWBO-3"
+    ],
+    "registeredCapacityMW": 1320,
+    "installedCapacityMW": 1386,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001365"
+    ],
+    "mappingNote": "",
+    "scopeNote": "DUKES lists 1,386 MW; Q2 REPD lists 1,320 MW. The threshold uses the DUKES installed-capacity definition.",
+    "canonicalId": "gb:hornsea-two",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001365",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_HOWBO-1",
+        "T_HOWBO-2",
+        "T_HOWBO-3"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "connahs-quay",
+    "name": "Connah\u2019s Quay",
+    "type": "Gas",
+    "latitude": 53.20727,
+    "longitude": -3.06633,
+    "units": [
+      "T_CNQPS-1",
+      "T_CNQPS-2",
+      "T_CNQPS-3",
+      "T_CNQPS-4"
+    ],
+    "registeredCapacityMW": 1409.162,
+    "installedCapacityMW": 1380,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Wales",
+    "siteCodes": [
+      "GAS-000162"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:connahs-quay",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000162",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_CNQPS-1",
+        "T_CNQPS-2",
+        "T_CNQPS-3",
+        "T_CNQPS-4"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "west-burton-b",
+    "name": "West Burton B",
+    "type": "Gas",
+    "latitude": 53.36272,
+    "longitude": -0.81184,
+    "units": [
+      "T_WBURB-1",
+      "T_WBURB-2",
+      "T_WBURB-3"
+    ],
+    "registeredCapacityMW": 1410,
+    "installedCapacityMW": 1332,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000502"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:west-burton-b",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000502",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_WBURB-1",
+        "T_WBURB-2",
+        "T_WBURB-3"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "vpi-immingham",
+    "name": "VPI Immingham",
+    "type": "Gas",
+    "latitude": 53.63779,
+    "longitude": -0.23675,
+    "units": [
+      "T_HUMR-1"
+    ],
+    "registeredCapacityMW": 1283,
+    "installedCapacityMW": 1252,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000249"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:vpi-immingham",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000249",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_HUMR-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "hornsea-one",
+    "name": "Hornsea One",
+    "type": "Offshore wind",
+    "latitude": 53.68154,
+    "longitude": 1.42074,
+    "units": [
+      "T_HOWAO-1",
+      "T_HOWAO-2",
+      "T_HOWAO-3"
+    ],
+    "registeredCapacityMW": 1200,
+    "installedCapacityMW": 1218,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001277"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:hornsea-one",
+    "releaseSelection": true,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001277",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ REPD",
+        "id": "2525",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+        "asOf": "2026-Q2"
+      }
+    ],
+    "unitMatch": {
+      "status": "verified",
+      "reviewedAt": "2026-09-18",
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_HOWAO-1",
+        "T_HOWAO-2",
+        "T_HOWAO-3"
+      ],
+      "exclusions": [],
+      "evidence": "docs/grid-evidence-release/source-audit/repd-pilot.json"
+    }
+  },
+  {
+    "id": "seabank",
+    "name": "Seabank",
+    "type": "Gas",
+    "latitude": 51.53912,
+    "longitude": -2.66998,
+    "units": [
+      "T_SEAB-1",
+      "T_SEAB-2"
+    ],
+    "registeredCapacityMW": 1236,
+    "installedCapacityMW": 1205,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000197"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:seabank",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000197",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_SEAB-1",
+        "T_SEAB-2"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "saltend",
+    "name": "Saltend",
+    "type": "Gas",
+    "latitude": 53.73567,
+    "longitude": -0.24337,
+    "units": [
+      "T_SCCL-1",
+      "T_SCCL-2",
+      "T_SCCL-3"
+    ],
+    "registeredCapacityMW": 1226.6,
+    "installedCapacityMW": 1200,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000198"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:saltend",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000198",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_SCCL-1",
+        "T_SCCL-2",
+        "T_SCCL-3"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "torness",
+    "name": "Torness",
+    "type": "Nuclear",
+    "latitude": 55.96822,
+    "longitude": -2.4101,
+    "units": [
+      "T_TORN-1",
+      "T_TORN-2"
+    ],
+    "registeredCapacityMW": 1352,
+    "installedCapacityMW": 1200,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Scotland",
+    "siteCodes": [
+      "NUC-000132"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:torness",
+    "releaseSelection": true,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "NUC-000132",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "verified",
+      "reviewedAt": "2026-09-18",
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_TORN-1",
+        "T_TORN-2"
+      ],
+      "exclusions": [],
+      "evidence": "docs/grid-evidence-release/source-audit/repd-pilot.json"
+    }
+  },
+  {
+    "id": "sizewell-b",
+    "name": "Sizewell B",
+    "type": "Nuclear",
+    "latitude": 52.21492,
+    "longitude": 1.61986,
+    "units": [
+      "T_SIZB-1",
+      "T_SIZB-2"
+    ],
+    "registeredCapacityMW": 1286.92,
+    "installedCapacityMW": 1198,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "NUC-000159"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:sizewell-b",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "NUC-000159",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_SIZB-1",
+        "T_SIZB-2"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "hartlepool",
+    "name": "Hartlepool",
+    "type": "Nuclear",
+    "latitude": 54.67212,
+    "longitude": -1.19912,
+    "units": [
+      "T_HRTL-1",
+      "T_HRTL-2"
+    ],
+    "registeredCapacityMW": 1240,
+    "installedCapacityMW": 1185,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "NUC-000126"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:hartlepool",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "NUC-000126",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_HRTL-1",
+        "T_HRTL-2"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "peterhead",
+    "name": "Peterhead",
+    "type": "Gas",
+    "latitude": 57.47791,
+    "longitude": -1.78837,
+    "units": [
+      "T_PEHE-1",
+      "T_PEHE-2"
+    ],
+    "registeredCapacityMW": 1200,
+    "installedCapacityMW": 1180,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Scotland",
+    "siteCodes": [
+      "GAS-000120"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:peterhead",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000120",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_PEHE-1",
+        "T_PEHE-2"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "seagreen",
+    "name": "Seagreen",
+    "type": "Offshore wind",
+    "latitude": 56.63551,
+    "longitude": -1.92662,
+    "units": [],
+    "registeredCapacityMW": null,
+    "installedCapacityMW": 1075,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "Scotland",
+    "siteCodes": [
+      "WOF-001523"
+    ],
+    "mappingNote": "Unit grouping remains unverified. Capacity and location are shown without an inferred generation total.",
+    "scopeNote": "",
+    "canonicalId": "gb:seagreen",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001523",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "ambiguous",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "walney",
+    "name": "Walney",
+    "type": "Offshore wind",
+    "latitude": 54.08999,
+    "longitude": -3.74001,
+    "units": [
+      "T_WLNYW-1",
+      "T_WLNYO-2",
+      "T_WLNYO-3",
+      "T_WLNYO-4"
+    ],
+    "registeredCapacityMW": 1025.6,
+    "installedCapacityMW": 1026.2,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-000407",
+      "WOF-001139",
+      "WOF-001259",
+      "WOF-001280"
+    ],
+    "mappingNote": "",
+    "scopeNote": "Grouped site: Walney 01, Walney 03, Walney 04, Walney 02.",
+    "canonicalId": "gb:walney",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-000407",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001139",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001259",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001280",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_WLNYW-1",
+        "T_WLNYO-2",
+        "T_WLNYO-3",
+        "T_WLNYO-4"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "moray-east",
+    "name": "Moray East",
+    "type": "Offshore wind",
+    "latitude": 57.96732,
+    "longitude": -2.79054,
+    "units": [
+      "T_MOWEO-1",
+      "T_MOWEO-2",
+      "T_MOWEO-3"
+    ],
+    "registeredCapacityMW": 900,
+    "installedCapacityMW": 950,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "Scotland",
+    "siteCodes": [
+      "WOF-001390"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:moray-east",
+    "releaseSelection": true,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001390",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ REPD",
+        "id": "2534",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+        "asOf": "2026-Q2"
+      }
+    ],
+    "unitMatch": {
+      "status": "verified",
+      "reviewedAt": "2026-09-18",
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_MOWEO-1",
+        "T_MOWEO-2",
+        "T_MOWEO-3"
+      ],
+      "exclusions": [],
+      "evidence": "docs/grid-evidence-release/source-audit/repd-pilot.json"
+    }
+  },
+  {
+    "id": "spalding",
+    "name": "Spalding",
+    "type": "Gas",
+    "latitude": 52.80721,
+    "longitude": -0.13335,
+    "units": [
+      "T_SPLN-1"
+    ],
+    "registeredCapacityMW": 950,
+    "installedCapacityMW": 950,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000250"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:spalding",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000250",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_SPLN-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "langage",
+    "name": "Langage",
+    "type": "Gas",
+    "latitude": 50.38822,
+    "longitude": -4.01176,
+    "units": [
+      "T_LAGA-1"
+    ],
+    "registeredCapacityMW": 905,
+    "installedCapacityMW": 905,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000376"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:langage",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000376",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_LAGA-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "marchwood",
+    "name": "Marchwood",
+    "type": "Gas",
+    "latitude": 50.89798,
+    "longitude": -1.4375,
+    "units": [
+      "T_MRWD-1"
+    ],
+    "registeredCapacityMW": 920,
+    "installedCapacityMW": 898,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000354"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:marchwood",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000354",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_MRWD-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "carrington",
+    "name": "Carrington",
+    "type": "Gas",
+    "latitude": 53.43343,
+    "longitude": -2.40354,
+    "units": [
+      "T_CARR-1",
+      "T_CARR-2"
+    ],
+    "registeredCapacityMW": 940,
+    "installedCapacityMW": 884,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000941"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:carrington",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000941",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_CARR-1",
+        "T_CARR-2"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "moray-west",
+    "name": "Moray West",
+    "type": "Offshore wind",
+    "latitude": 58.06989,
+    "longitude": -3.31307,
+    "units": [
+      "T_MOWWO-1",
+      "T_MOWWO-2",
+      "T_MOWWO-3",
+      "T_MOWWO-4"
+    ],
+    "registeredCapacityMW": 860,
+    "installedCapacityMW": 882,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "Scotland",
+    "siteCodes": [
+      "WOF-001644"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:moray-west",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001644",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_MOWWO-1",
+        "T_MOWWO-2",
+        "T_MOWWO-3",
+        "T_MOWWO-4"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "triton-knoll",
+    "name": "Triton Knoll",
+    "type": "Offshore wind",
+    "latitude": 53.21227,
+    "longitude": 0.86164,
+    "units": [
+      "T_TKNEW-1",
+      "T_TKNWW-1"
+    ],
+    "registeredCapacityMW": 824,
+    "installedCapacityMW": 857,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001290"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:triton-knoll",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001290",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_TKNEW-1",
+        "T_TKNWW-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "severn-power",
+    "name": "Severn Power",
+    "type": "Gas",
+    "latitude": 51.54777,
+    "longitude": -2.97518,
+    "units": [
+      "T_SVRP-10",
+      "T_SVRP-20"
+    ],
+    "registeredCapacityMW": 850,
+    "installedCapacityMW": 850,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Wales",
+    "siteCodes": [
+      "GAS-000377"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:severn-power",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000377",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_SVRP-10",
+        "T_SVRP-20"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "sutton-bridge",
+    "name": "Sutton Bridge",
+    "type": "Gas",
+    "latitude": 52.75718,
+    "longitude": 0.19314,
+    "units": [
+      "T_SUTB-1"
+    ],
+    "registeredCapacityMW": 850,
+    "installedCapacityMW": 819,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000185"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:sutton-bridge",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000185",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_SUTB-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "rocksavage",
+    "name": "Rocksavage",
+    "type": "Gas",
+    "latitude": 53.3157,
+    "longitude": -2.72679,
+    "units": [
+      "T_ROCK-1"
+    ],
+    "registeredCapacityMW": 810,
+    "installedCapacityMW": 810,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000178"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:rocksavage",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000178",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_ROCK-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "damhead-creek",
+    "name": "Damhead Creek",
+    "type": "Gas",
+    "latitude": 51.42523,
+    "longitude": 0.60149,
+    "units": [
+      "T_DAMC-1"
+    ],
+    "registeredCapacityMW": 820,
+    "installedCapacityMW": 805,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000195"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:damhead-creek",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000195",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_DAMC-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "coryton",
+    "name": "Coryton",
+    "type": "Gas",
+    "latitude": 51.51237,
+    "longitude": 0.50536,
+    "units": [
+      "T_COSO-1"
+    ],
+    "registeredCapacityMW": 856.186,
+    "installedCapacityMW": 800,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000222"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:coryton",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000222",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_COSO-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "medway",
+    "name": "Medway",
+    "type": "Gas",
+    "latitude": 51.43972,
+    "longitude": 0.68976,
+    "units": [
+      "T_MEDP-1"
+    ],
+    "registeredCapacityMW": 750,
+    "installedCapacityMW": 755,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000152"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:medway",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000152",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_MEDP-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "little-barford",
+    "name": "Little Barford",
+    "type": "Gas",
+    "latitude": 52.20371,
+    "longitude": -0.26835,
+    "units": [
+      "T_LBAR-1"
+    ],
+    "registeredCapacityMW": 750,
+    "installedCapacityMW": 735,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000151"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:little-barford",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000151",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_LBAR-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "rye-house",
+    "name": "Rye House",
+    "type": "Gas",
+    "latitude": 51.76268,
+    "longitude": 0.00862,
+    "units": [
+      "T_RYHPS-1"
+    ],
+    "registeredCapacityMW": 720.98,
+    "installedCapacityMW": 715,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000138"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:rye-house",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000138",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_RYHPS-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "east-anglia-one",
+    "name": "East Anglia One",
+    "type": "Offshore wind",
+    "latitude": 52.13744,
+    "longitude": 2.1709,
+    "units": [
+      "T_EAAO-1",
+      "T_EAAO-2"
+    ],
+    "registeredCapacityMW": 725,
+    "installedCapacityMW": 714,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001278"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:east-anglia-one",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001278",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_EAAO-1",
+        "T_EAAO-2"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "london-array",
+    "name": "London Array",
+    "type": "Offshore wind",
+    "latitude": 51.62168,
+    "longitude": 1.49583,
+    "units": [
+      "T_LARYW-1",
+      "T_LARYW-2",
+      "T_LARYW-3",
+      "T_LARYW-4"
+    ],
+    "registeredCapacityMW": 704.099,
+    "installedCapacityMW": 630,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-000504"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:london-array",
+    "releaseSelection": true,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-000504",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ REPD",
+        "id": "2511",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+        "asOf": "2026-Q2"
+      }
+    ],
+    "unitMatch": {
+      "status": "verified",
+      "reviewedAt": "2026-09-18",
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_LARYW-1",
+        "T_LARYW-2",
+        "T_LARYW-3",
+        "T_LARYW-4"
+      ],
+      "exclusions": [],
+      "evidence": "docs/grid-evidence-release/source-audit/repd-pilot.json"
+    }
+  },
+  {
+    "id": "killingholme",
+    "name": "Killingholme",
+    "type": "Gas",
+    "latitude": 53.66181,
+    "longitude": -0.23514,
+    "units": [
+      "T_KILLPG-1",
+      "T_KILLPG-2"
+    ],
+    "registeredCapacityMW": 627,
+    "installedCapacityMW": 619,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "GAS-000136"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:killingholme",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "GAS-000136",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_KILLPG-1",
+        "T_KILLPG-2"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "dogger-bank-a",
+    "name": "Dogger Bank A",
+    "type": "Offshore wind",
+    "latitude": 54.81601,
+    "longitude": 0.64418,
+    "units": [],
+    "registeredCapacityMW": null,
+    "installedCapacityMW": 616,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001577"
+    ],
+    "mappingNote": "Commissioning-stage units are not yet mapped to the published installed portion. No output total is inferred.",
+    "scopeNote": "616 MW installed in the May register; not the full planned project capacity.",
+    "canonicalId": "gb:dogger-bank-a",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001577",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "ambiguous",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "beatrice",
+    "name": "Beatrice",
+    "type": "Offshore wind",
+    "latitude": 58.08823,
+    "longitude": -2.95016,
+    "units": [
+      "T_BEATO-1",
+      "T_BEATO-2",
+      "T_BEATO-3",
+      "T_BEATO-4"
+    ],
+    "registeredCapacityMW": 681.526,
+    "installedCapacityMW": 588,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "Scotland",
+    "siteCodes": [
+      "WOF-001261"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:beatrice",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001261",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_BEATO-1",
+        "T_BEATO-2",
+        "T_BEATO-3",
+        "T_BEATO-4"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "gwynt-y-mor",
+    "name": "Gwynt y M\u00f4r",
+    "type": "Offshore wind",
+    "latitude": 53.454,
+    "longitude": -3.62665,
+    "units": [
+      "T_GYMR-15",
+      "T_GYMR-17",
+      "T_GYMR-26",
+      "T_GYMR-28"
+    ],
+    "registeredCapacityMW": 592,
+    "installedCapacityMW": 576,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "Wales",
+    "siteCodes": [
+      "WOF-000508"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:gwynt-y-mor",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-000508",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_GYMR-15",
+        "T_GYMR-17",
+        "T_GYMR-26",
+        "T_GYMR-28"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "race-bank",
+    "name": "Race Bank",
+    "type": "Offshore wind",
+    "latitude": 53.13597,
+    "longitude": 0.58917,
+    "units": [
+      "T_RCBKO-1",
+      "T_RCBKO-2"
+    ],
+    "registeredCapacityMW": 574,
+    "installedCapacityMW": 573,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-001256"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:race-bank",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-001256",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_RCBKO-1",
+        "T_RCBKO-2"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "whitelee",
+    "name": "Whitelee",
+    "type": "Onshore wind",
+    "latitude": 55.68121,
+    "longitude": -4.27906,
+    "units": [
+      "T_WHILW-1",
+      "T_WHILW-2"
+    ],
+    "registeredCapacityMW": 515,
+    "installedCapacityMW": 539.02,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Scotland",
+    "siteCodes": [
+      "WON-000321",
+      "WON-000471"
+    ],
+    "mappingNote": "",
+    "scopeNote": "Grouped site: Whitelee I, Whitelee II.",
+    "canonicalId": "gb:whitelee",
+    "releaseSelection": true,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WON-000321",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WON-000471",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ REPD",
+        "id": "3489",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+        "asOf": "2026-Q2"
+      },
+      {
+        "provider": "DESNZ REPD",
+        "id": "3981",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+        "asOf": "2026-Q2"
+      },
+      {
+        "provider": "DESNZ REPD",
+        "id": "2757",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+        "asOf": "2026-Q2"
+      }
+    ],
+    "unitMatch": {
+      "status": "verified",
+      "reviewedAt": "2026-09-18",
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_WHILW-1",
+        "T_WHILW-2"
+      ],
+      "exclusions": [],
+      "evidence": "docs/grid-evidence-release/source-audit/repd-pilot.json"
+    }
+  },
+  {
+    "id": "clyde",
+    "name": "Clyde",
+    "type": "Onshore wind",
+    "latitude": 55.44163,
+    "longitude": -3.54273,
+    "units": [
+      "T_CLDSW-1",
+      "T_CLDCW-1",
+      "T_CLDNW-1"
+    ],
+    "registeredCapacityMW": 550,
+    "installedCapacityMW": 522.4,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "country": "Scotland",
+    "siteCodes": [
+      "WON-000419",
+      "WON-000425",
+      "WON-000476"
+    ],
+    "mappingNote": "",
+    "scopeNote": "Grouped site: Clyde Windfarm (South), Clyde Windfarm (Central), Clyde Windfarm (North).",
+    "canonicalId": "gb:clyde",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WON-000419",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WON-000425",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      },
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WON-000476",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_CLDSW-1",
+        "T_CLDCW-1",
+        "T_CLDNW-1"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  },
+  {
+    "id": "greater-gabbard",
+    "name": "Greater Gabbard",
+    "type": "Offshore wind",
+    "latitude": 51.91764,
+    "longitude": 1.92842,
+    "units": [
+      "T_GRGBW-1",
+      "T_GRGBW-2",
+      "T_GRGBW-3"
+    ],
+    "registeredCapacityMW": 539,
+    "installedCapacityMW": 504,
+    "capacitySource": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+    "capacityAsOf": "2026-05-31",
+    "geographySource": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
+    "country": "England",
+    "siteCodes": [
+      "WOF-000406"
+    ],
+    "mappingNote": "",
+    "scopeNote": "",
+    "canonicalId": "gb:greater-gabbard",
+    "releaseSelection": false,
+    "sourceRefs": [
+      {
+        "provider": "DESNZ DUKES",
+        "id": "WOF-000406",
+        "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
+        "asOf": "2026-05-31"
+      }
+    ],
+    "unitMatch": {
+      "status": "legacy-unreviewed",
+      "reviewedAt": null,
+      "method": "Explicit site-to-unit review; identifiers and exclusions retained. No fuzzy name or capacity matching.",
+      "unitIds": [
+        "T_GRGBW-1",
+        "T_GRGBW-2",
+        "T_GRGBW-3"
+      ],
+      "exclusions": [],
+      "evidence": "Prior catalogue; outside focused release review"
+    }
+  }
+]

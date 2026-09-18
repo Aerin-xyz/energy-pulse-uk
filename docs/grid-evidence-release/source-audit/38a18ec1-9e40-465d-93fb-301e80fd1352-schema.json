@@ -1,0 +1,92 @@
+{
+  "help": "https://api.neso.energy/api/3/action/help_show?name=datastore_search",
+  "success": true,
+  "result": {
+    "include_total": true,
+    "resource_id": "38a18ec1-9e40-465d-93fb-301e80fd1352",
+    "fields": [
+      {
+        "type": "int",
+        "id": "_id"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "The geographical area in which the constraint occurred. Each group has its own unique code, which relates to the network diagram linked above. The ten most important boundaries are included in this data file. ",
+          "title": "Constraint Group",
+          "type": "string",
+          "example": "ESTEX",
+          "unit": ""
+        },
+        "type": "text",
+        "id": "Constraint Group"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "The date and time for the given limit and flow through the constraint boundary. This is given in a MM/DD/YYYY HH:MM format. The flow and limit for each constraint group is given for a day, before moving onto the next day. Data is given on a settlement period (half hourly) basis. ",
+          "title": "Date (GMT/BST)",
+          "type": "datetime",
+          "example": "2019-01-10T03:30:00",
+          "unit": ""
+        },
+        "type": "timestamp",
+        "id": "Date_ Time GMT_BST"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "The maximum amount of power that can flow through a constraint boundary. ",
+          "title": "Limit (MW)",
+          "type": "integer",
+          "example": "5450",
+          "unit": "MW"
+        },
+        "type": "int4",
+        "id": "Limit_MW"
+      },
+      {
+        "info": {
+          "comment": "",
+          "description": "A snapshot of the power flows across a number of important constraint boundaries at day ahead. This power flow forecast is created based on the next day\u2019s wind forecast, generation dispatch and demand forecast and is modelled using power system software. ",
+          "title": "Flow",
+          "type": "number",
+          "example": "",
+          "unit": ""
+        },
+        "type": "numeric",
+        "id": "Flow_MW"
+      }
+    ],
+    "records_format": "objects",
+    "records": [
+      {
+        "_id": 1,
+        "Constraint Group": "ESTEX",
+        "Date_ Time GMT_BST": "2023-01-01T00:00:00",
+        "Limit_MW": 3950,
+        "Flow_MW": 894
+      },
+      {
+        "_id": 2,
+        "Constraint Group": "ESTEX",
+        "Date_ Time GMT_BST": "2023-01-01T00:30:00",
+        "Limit_MW": 3950,
+        "Flow_MW": 919
+      },
+      {
+        "_id": 3,
+        "Constraint Group": "ESTEX",
+        "Date_ Time GMT_BST": "2023-01-01T01:00:00",
+        "Limit_MW": 3950,
+        "Flow_MW": 927
+      }
+    ],
+    "limit": 3,
+    "_links": {
+      "start": "/api/3/action/datastore_search?limit=3&resource_id=38a18ec1-9e40-465d-93fb-301e80fd1352",
+      "next": "/api/3/action/datastore_search?offset=3&limit=3&resource_id=38a18ec1-9e40-465d-93fb-301e80fd1352"
+    },
+    "total": 717009
+  }
+}

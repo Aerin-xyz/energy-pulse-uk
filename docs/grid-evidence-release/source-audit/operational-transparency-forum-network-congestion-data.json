@@ -1,0 +1,103 @@
+{
+  "license_title": "NESO Open Data Licence",
+  "maintainer": "",
+  "relationships_as_object": [],
+  "private": false,
+  "maintainer_email": "",
+  "num_tags": 4,
+  "id": "a30dacc7-af6e-465b-ad96-eb2383376ac9",
+  "metadata_created": "2026-06-19T15:14:44.821152",
+  "metadata_modified": "2026-09-16T11:56:05.604513",
+  "author": "",
+  "author_email": "",
+  "state": "active",
+  "version": "",
+  "creator_user_id": "1abec7e0-65fd-477f-aa48-e8b358e810af",
+  "type": "dataset",
+  "resources": [
+    {
+      "mimetype": null,
+      "cache_url": null,
+      "name": "Network congestion Forecast and Actual data",
+      "hash": "",
+      "description": "This dataset presents weekly constraint limits (MW) for major transmission boundaries, spanning a rolling six-month window forward and backward from the published date.",
+      "metadata_modified": "2026-09-16T11:56:04.982797",
+      "cache_last_updated": null,
+      "url": "https://api.neso.energy/dataset/a30dacc7-af6e-465b-ad96-eb2383376ac9/resource/aa9d4303-b7ec-4881-be07-16bad8824ab6/download/otf_constraint_data_16-09-2026.csv",
+      "datastore_active": true,
+      "format": "CSV",
+      "package_id": "a30dacc7-af6e-465b-ad96-eb2383376ac9",
+      "created": "2026-06-19T15:15:15.595567",
+      "state": "active",
+      "mimetype_inner": null,
+      "last_modified": "2026-09-16T11:56:05.551970",
+      "position": 0,
+      "revision_id": "435130b4-5b23-4c3f-bab6-c8c1fdfa35ac",
+      "url_type": "upload",
+      "id": "aa9d4303-b7ec-4881-be07-16bad8824ab6",
+      "resource_type": null,
+      "size": null
+    }
+  ],
+  "num_resources": 1,
+  "tags": [
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "Forecast",
+      "id": "a80fd9ab-653a-4218-bf7b-aa78ebd0c6ac",
+      "name": "Forecast"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "OTF",
+      "id": "78d5119b-ae6b-4feb-afc6-29a072dfc618",
+      "name": "OTF"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "Subscribable",
+      "id": "fb80a4a5-bda6-4679-9c06-4decec4a0917",
+      "name": "Subscribable"
+    },
+    {
+      "vocabulary_id": null,
+      "state": "active",
+      "display_name": "Year-ahead",
+      "id": "dad231e5-f64a-40b5-a3bc-c33ba390d48b",
+      "name": "Year-ahead"
+    }
+  ],
+  "groups": [],
+  "license_id": "ESO",
+  "relationships_as_subject": [],
+  "organization": {
+    "description": "Data on historic costs and forecast constraint volumes. Required when the system is unable to transmit power to a demand location due to transmission network congestion.",
+    "created": "2019-10-31T14:06:24.189108",
+    "title": "Constraint management",
+    "name": "constraint-management",
+    "is_organization": true,
+    "state": "active",
+    "image_url": "2024-09-30-082405.733342Constraints-management.svg",
+    "revision_id": "cf0db996-a908-4934-8257-1dc03b070b0f",
+    "type": "organization",
+    "id": "fcec3bcb-1b79-4732-b342-3799e4731a7d",
+    "approval_status": "approved"
+  },
+  "name": "operational-transparency-forum-network-congestion-data",
+  "isopen": false,
+  "url": "",
+  "notes": "This dataset presents weekly constraint limits (MW) for major transmission boundaries, spanning a rolling six-month window forward and backward as presented in OTF.",
+  "owner_org": "fcec3bcb-1b79-4732-b342-3799e4731a7d",
+  "extras": [
+    {
+      "key": "Update frequency",
+      "value": "Weekly"
+    }
+  ],
+  "license_url": "https://www.neso.energy/data-portal/ngeso-open-licence",
+  "title": "Operational Transparency Forum - Network congestion data",
+  "revision_id": "bf6b119e-53f9-4cc1-ba23-e1eb58e53a03"
+}
