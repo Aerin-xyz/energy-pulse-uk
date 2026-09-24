@@ -5,3 +5,8 @@
 .asset-operations{margin:20px 0;padding:14px;background:linear-gradient(120deg,#192740,#0d2430);border:1px solid #3e4c6d;border-radius:8px}.asset-operations .asset-kicker{color:#c7bbff}.asset-operations h4{margin:6px 0;font-size:13px}.asset-operations>strong{display:block;font-size:23px;color:#e3ddff}.asset-operations p{font-size:11px}.asset-revision{overflow-wrap:anywhere}.asset-permalink:focus-visible{outline:2px solid #6ee1f2}
 
 .observatory .cc-grid .atlas-stage.expanded{background:radial-gradient(ellipse at 45% 35%,#092737,#03121c 75%);isolation:isolate}
+.asset-refine{grid-template-columns:repeat(4,minmax(0,1fr))}.asset-catalogue-footnote{padding:8px 14px;font-size:10px;color:#91b0bf;line-height:1.6}.asset-catalogue-footnote button{padding:8px 12px;border:1px solid #34596a;border-radius:6px;color:#bdeef9;background:#0d2937;margin-bottom:5px}.asset-catalogue-footnote a{text-decoration:underline}.asset-catalogue-footnote p{margin:5px 0}@media(max-width:600px){.asset-refine{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.asset-data-badge{display:block;color:#91c8cd;font-size:9px;margin-top:4px}.asset-catalogue-footnote{max-width:100%;overflow-wrap:anywhere}
+.cc-grid .atlas-access-list[data-layer=generation]{grid-auto-rows:minmax(82px,auto);gap:6px;max-height:220px}
+.cc-grid .atlas-access-list[data-layer=generation] button{height:auto;min-height:82px;padding:9px;gap:4px;justify-content:flex-start;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
+.cc-grid .atlas-access-list[data-layer=generation] button strong,.cc-grid .atlas-access-list[data-layer=generation] button small{font-size:10px;line-height:1.4}

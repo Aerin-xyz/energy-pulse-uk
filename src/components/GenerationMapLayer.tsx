@@ -1,10 +1,11 @@
+import {useGenerationCatalogue} from '@/hooks/useGenerationCatalogue';
 import {AssetOperations} from './AssetOperations';
-import {assetClusters,filterAssets} from '@/lib/assetExplorer.mjs';
+import {assetClusters,filterAssets,capacityText} from '@/lib/assetExplorer.mjs';
 import {useEffect,useState} from 'react';
-import assets from '@/data/atlas/canonical-assets.json';
+import seedAssets from '@/data/atlas/canonical-assets.json';
 import './generation-map.css';
-export {assets};
-const colours:Record<string,string>={'Offshore wind':'#39d9ef','Onshore wind':'#54dfb1',Nuclear:'#b5a1ff',Biomass:'#b2e378',Gas:'#ffbc73','Pumped storage':'#7aa9ff'};
+
+const colours:Record<string,string>={'Offshore wind':'#39d9ef','Onshore wind':'#54dfb1',Nuclear:'#b5a1ff',Biomass:'#b2e378',Gas:'#ffbc73','Pumped storage':'#7aa9ff',Solar:'#f7cf62',Hydro:'#4fbdf3',Biogas:'#9ac881','Energy from waste':'#ec9bbd',Marine:'#53cecd',Geothermal:'#db9c82','Oil / other thermal':'#adb6c3'};
 type Reading={mw:number|null;coverage:number;total:number};
 type Point={from:string;to:string;values:Record<string,Reading>};
 export type AssetSnapshot={checkedAt:string|null;verificationCheckedAt?:string;refreshError?:string;points:Point[]};
@@ -14,10 +15,12 @@ export function useAssetSnapshot(enabled:boolean){
  useEffect(()=>{if(!enabled)return;const controller=new AbortController();fetch('/data/generation-assets.json',{signal:controller.signal}).then(r=>{if(!r.ok)throw Error();return r.json()}).then(j=>{if(!Array.isArray(j.points))throw Error();setSnapshot(j);setError(false)}).catch(()=>{if(!controller.signal.aborted)setError(true)});return()=>controller.abort()},[enabled]);
  return {snapshot,error};
 }
-export function matchingAssets(filter:string,search:string,pilotOnly=false,extra:Record<string,unknown>={}){return filterAssets(assets,{fuel:filter,search,pilotOnly,...extra})}
+export function matchingAssets(filter:string,search:string,pilotOnly=false,extra:Record<string,unknown>={}){return filterAssets(extra.assets||seedAssets,{fuel:filter,search,pilotOnly,...extra})}
 function TechnologyGlyph({type}:{type:string}){
  const paths:Record<string,string>={
  'Offshore wind':'M0 0V8M0 0L-7 -3M0 0L5 -6M0 0L4 5M-8 9Q-4 6 0 9T8 9',
+ Solar:'M-7 -5H7L9 5H-9ZM-3 -5L-4 5M3 -5L4 5M-8 0H8M0 5V9M-4 9H4',
+ Hydro:'M0 -9Q-10 2 -5 7Q0 11 5 7Q10 2 0 -9',
  'Onshore wind':'M0 0V9M0 0L-7 -3M0 0L5 -6M0 0L4 5',
  Nuclear:'M-7 0C-7 -6 7 -6 7 0S-7 6 -7 0M0 -7C6 -7 6 7 0 7S-6 -7 0 -7',
  Biomass:'M-6 6Q-9 -5 7 -8Q9 7-6 6M-6 6L3 -3',
@@ -25,8 +28,9 @@ function TechnologyGlyph({type}:{type:string}){
  'Pumped storage':'M0 -8Q-10 3 -5 7Q0 12 5 7Q10 3 0 -8M-3 5L0 2L3 5'};
  return <path d={paths[type]||'M-5 -5H5V5H-5Z'} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>;
 }
-export function GenerationMapLayer({filter,search,pilotOnly,selected,onSelect,snapshot,zoom=1,country='All GB',availability='All data'}:{filter:string;search:string;pilotOnly:boolean;selected:string|null;onSelect:(id:string)=>void;snapshot:AssetSnapshot;zoom?:number;country?:string;availability?:string}){
- const visible=matchingAssets(filter,search,pilotOnly,{country,availability,snapshot});
+export function GenerationMapLayer({filter,search,pilotOnly,selected,onSelect,snapshot,zoom=1,country='All GB',availability='All data',minCapacity=0,viewport,operations}:{filter:string;search:string;pilotOnly:boolean;selected:string|null;onSelect:(id:string)=>void;snapshot:AssetSnapshot;zoom?:number;country?:string;availability?:string;minCapacity?:number;viewport?:{cx:number;cy:number;w:number;h:number};operations?:any}){
+ const {assets}=useGenerationCatalogue();
+ const visible=matchingAssets(filter,search,pilotOnly,{assets,country,availability,snapshot,minCapacity,operations}).filter(a=>!viewport||Math.abs((a.longitude+12)*40-viewport.cx)<viewport.w/2+30/zoom&&Math.abs((61-a.latitude)*63-viewport.cy)<viewport.h/2+30/zoom);
  const clusters=assetClusters(visible,zoom);const labels=new Set<string>();const boxes:{x:number;y:number;w:number;h:number}[]=[];
  const clusterId=c=>c.members.length>1?'cluster:'+c.members.map(a=>a.id).join(','):c.members[0].id;
  const isActive=c=>selected===clusterId(c)||c.members.some(a=>a.id===selected);
@@ -41,8 +45,8 @@ export function GenerationMapLayer({filter,search,pilotOnly,selected,onSelect,sn
  const a=members.find(a=>a.id===selected)||members[0],r=snapshot.points.at(-1)?.values[a.id];const mw=a.unitMatch.status==='verified'?r?.mw:null,known=typeof mw==='number';
  const active=selected===id||members.some(a=>a.id===selected),name=grouped?`${members.length} nearby sites`:a.name;
  const radius=grouped?14:known?Math.max(12,Math.min(18,12+Math.sqrt(Math.abs(mw))/12)):12;
- return <g key={id} transform={`translate(${x} ${y}) scale(${1/zoom})`} role="button" tabIndex={0} aria-label={grouped?`Inspect ${members.length} nearby generation sites: ${members.map(a=>a.name).join(', ')}`:`Inspect ${a.name} generation`} aria-pressed={active} onClick={()=>onSelect(id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(id)}}} style={{color:grouped?'#a2d5ed':colours[a.type]}} className={labels.has(id)?'asset-marker labelled':'asset-marker'}>
- <title>{grouped?members.map(a=>a.name).join(' · '):`${a.name} · ${a.installedCapacityMW.toLocaleString('en-GB')} MW installed`}</title>
+ return <g key={id} transform={`translate(${x} ${y}) scale(${1/zoom})`} role="button" tabIndex={0} aria-label={grouped?`Inspect ${members.length} nearby generation sites: ${members.slice(0,5).map(a=>a.name).join(', ')+(members.length>5?` and ${members.length-5} more`:'')}`:`Inspect ${a.name} generation`} aria-pressed={active} onClick={()=>onSelect(id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(id)}}} style={{color:grouped?'#a2d5ed':colours[a.type]}} className={labels.has(id)?'asset-marker labelled':'asset-marker'}>
+ <title>{grouped?members.map(a=>a.name).join(' · '):`${a.name} · ${capacityText(a.installedCapacityMW)} installed`}</title>
  {labels.has(id)&&<rect x="-22" y="-24" width="220" height="48" fill="transparent"/>}
  <circle r="22" fill="transparent"/>
  <circle className="asset-halo" r={radius+7} fill="currentColor" opacity={active?.3:.08}/>
@@ -52,22 +56,23 @@ export function GenerationMapLayer({filter,search,pilotOnly,selected,onSelect,sn
  </g>})}</g>
 }
 export function AssetEvidence({id,snapshot,error,onSelect}:{id:string;snapshot:AssetSnapshot;error:boolean;onSelect:(id:string)=>void}){
+ const {assets}=useGenerationCatalogue();
  if(id.startsWith('cluster:')){
-  const ids=id.slice(8).split(',');return <div className="asset-evidence"><span className="asset-kicker">Nearby generation sites</span><h3>Choose a site</h3><p>Grouped for map readability. Each site keeps its own capacity and readings.</p><div className="asset-cluster-list">{assets.filter(a=>ids.includes(a.id)).map(a=><button key={a.id} onClick={()=>onSelect(a.id)}><span>{a.name}<small>{a.type}</small></span><strong>{a.installedCapacityMW.toLocaleString('en-GB')} MW<small>installed</small></strong></button>)}</div></div>
+  const ids=id.slice(8).split(',');return <div className="asset-evidence"><span className="asset-kicker">Nearby generation sites</span><h3>Choose a site</h3><p>Grouped for map readability. Each site keeps its own capacity and readings.</p><div className="asset-cluster-list">{assets.filter(a=>ids.includes(a.id)).map(a=><button key={a.id} onClick={()=>onSelect(a.id)}><span>{a.name}<small>{a.type}</small></span><strong>{capacityText(a.installedCapacityMW)}<small>installed</small></strong></button>)}</div></div>
  }
 
  const asset=assets.find(a=>a.id===id);if(!asset)return null;const latest=snapshot.points.at(-1);const rawReading=latest?.values[id];const r=asset.unitMatch.status==='verified'?rawReading:undefined;const max=Math.max(1,...snapshot.points.map(p=>Math.abs(p.values[id]?.mw??0)));
- return <div className="asset-evidence"><span className="asset-kicker" style={{color:colours[asset.type]}}>{asset.type} · metered history</span><h3>{asset.name}</h3><p className="asset-location">{asset.country} · {asset.latitude.toFixed(3)}° N, {Math.abs(asset.longitude).toFixed(3)}° {asset.longitude<0?'W':'E'}</p><a className="asset-permalink" href={`/?asset=${asset.id}`}>Permanent link to this asset ↗</a><p className="asset-small">{asset.canonicalId} · Unit match: {asset.unitMatch.status}</p><p className="asset-output">{r?.mw!=null?`${Math.round(r.mw).toLocaleString('en-GB')} MW`:'Output unavailable'}</p>
- {latest&&<p><strong>{assetTime(latest.from)} – {new Date(latest.to).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'})} UK</strong><br/>Half-hour average · delayed settlement data, not live.</p>}
+ return <div className="asset-evidence"><span className="asset-kicker" style={{color:colours[asset.type]}}>{asset.type} · {asset.unitMatch.status==='verified'?'metered history':'capacity & location'}</span><h3>{asset.name}</h3><p className="asset-location">{asset.country} · {asset.latitude.toFixed(3)}° N, {Math.abs(asset.longitude).toFixed(3)}° {asset.longitude<0?'W':'E'}</p><a className="asset-permalink" href={`/?asset=${asset.id}`}>Permanent link to this asset ↗</a><p className="asset-small">{asset.operationalStatus||'Operational in source register'} · {asset.operator||'Operator not supplied'}</p><p className="asset-small">{asset.canonicalId} · Unit match: {asset.unitMatch.status}</p><p className="asset-output">{r?.mw!=null?`${Math.round(r.mw).toLocaleString('en-GB')} MW`:'Output unavailable'}</p>
+ {latest&&asset.unitMatch.status==='verified'&&<p><strong>{assetTime(latest.from)} – {new Date(latest.to).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'})} UK</strong><br/>Half-hour average · delayed settlement data, not live.</p>}
  {snapshot.refreshError&&<p>Latest refresh failed. Previously published, dated history is retained; it has not been refreshed.</p>}
  {error&&<p>Snapshot could not be loaded. Geography remains available.</p>}
- <dl><div><dt>Installed site capacity</dt><dd>{asset.installedCapacityMW.toLocaleString('en-GB')} MW</dd></div><div><dt>Metered unit coverage</dt><dd>{asset.units.length ? `${r?.coverage??0} / ${asset.units.length}` : "Not mapped"}</dd></div></dl>
- <p className="asset-small">Installed capacity: DESNZ May 2026 register. This determines the above-500 MW inclusion threshold, not current output or available capacity. {asset.scopeNote} {asset.type==='Pumped storage'?'Storage is not primary generation; signed readings are retained.':''}</p>
- {asset.unitMatch.status!=="verified"&&<p className="asset-small">Catalogue retained for reference. This match is not verified for the focused release; no output is asserted.</p>}
+ <dl><div><dt>Installed site capacity</dt><dd>{capacityText(asset.installedCapacityMW)}</dd></div><div><dt>Measured unit coverage</dt><dd>{asset.units.length ? `${r?.coverage??0} / ${asset.units.length}` : "Not mapped"}</dd></div></dl>
+ <p className="asset-small">Installed capacity: {asset.registryAsOf||asset.capacityAsOf}. Not current output or available capacity. {asset.scopeNote} {asset.type==='Pumped storage'?'Storage is not primary generation; signed readings are retained.':''}</p>
+ {asset.unitMatch.status!=="verified"&&<p className="asset-small">Location and capacity are available. No verified generating-unit output is linked; this does not mean the site generates zero.</p>}
  {asset.mappingNote&&<p className="asset-small">{asset.mappingNote}</p>}
  {asset.unitMatch.status==="verified"&&asset.units.length>0&&snapshot.points.length>0&&<><h4>Published end-of-day sample · six hours</h4><div className="asset-history" aria-hidden="true">{snapshot.points.map(p=>{const v=p.values[id]?.mw;return <span key={p.from} title={`${assetTime(p.from)}: ${v==null?'missing':v.toFixed(1)+' MW'}`} style={{height:v==null?'2px':`${Math.max(2,Math.abs(v)/max*100)}%`,background:v==null?'#57636d':v<0?'#ffa977':colours[asset.type]}}/>})}</div><details><summary>Read observations and unit mapping</summary><ul>{snapshot.points.map(p=><li key={p.from}>{assetTime(p.from)}: {p.values[id]?.mw==null?'Unavailable':`${p.values[id].mw!.toFixed(1)} MW`}</li>)}</ul><p>{asset.units.join(', ')}</p></details></>}
  <AssetOperations units={asset.units} verified={asset.unitMatch.status==='verified'}/>
  <p className="asset-small">A site total requires every mapped unit at the same interval. Missing units are not zero. Approximate register location; offshore records may locate a project or connection area, not a surveyed footprint.</p>
- <p className="asset-small">{snapshot.verificationCheckedAt?`Registry checked ${assetTime(snapshot.verificationCheckedAt)} UK.`:'Registry verification time unavailable.'} {snapshot.checkedAt ? `Feed checked ${assetTime(snapshot.checkedAt)} UK. Updated by scheduled source ingestion.` : "Feed check time unavailable."}</p><div className="asset-sources">{asset.sourceRefs.filter(s=>s.provider==="DESNZ REPD").map(s=><a key={s.id} href={s.url}>REPD #{s.id} ↗</a>)}<a href={asset.capacitySource} target="_blank" rel="noreferrer">DESNZ asset register ↗</a><a href="https://bmrs.elexon.co.uk/actual-generation-output-per-generation-unit" target="_blank" rel="noreferrer">Elexon metered data ↗</a><a href={asset.geographySource} target="_blank" rel="noreferrer">Site geography ↗</a></div>
+ <p className="asset-small">{asset.unitMatch.status==="verified" && <>{snapshot.verificationCheckedAt?`Registry checked ${assetTime(snapshot.verificationCheckedAt)} UK.`:'Registry verification time unavailable.'} {snapshot.checkedAt ? `Feed checked ${assetTime(snapshot.checkedAt)} UK. Updated by scheduled source ingestion.` : "Feed check time unavailable."}</>}</p><div className="asset-sources">{asset.sourceRefs.filter(s=>s.provider==="DESNZ REPD").map(s=><a key={s.id} href={s.url}>REPD #{s.id} ↗</a>)}<a href={asset.capacitySource} target="_blank" rel="noreferrer">Capacity source ↗</a><a href="https://bmrs.elexon.co.uk/actual-generation-output-per-generation-unit" target="_blank" rel="noreferrer">Elexon metered data ↗</a><a href={asset.geographySource} target="_blank" rel="noreferrer">Site geography ↗</a></div>
  </div>
 }

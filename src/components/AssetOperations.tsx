@@ -1,7 +1,9 @@
 import {useQuery} from '@tanstack/react-query';
 import {scheduledSite} from '@/lib/assetExplorer.mjs';
+export function useAssetOperations(enabled=true){ return useQuery({queryKey:['asset-operations'],enabled,queryFn:async()=>{const r=await fetch('/data/asset-operations.json');if(!r.ok)throw Error('Unavailable');return r.json()},staleTime:60000,refetchInterval:60000,retry:1});
+}
 export function AssetOperations({units,verified}:{units:string[];verified:boolean}){
- const query=useQuery({queryKey:['asset-operations'],enabled:verified,queryFn:async()=>{const r=await fetch('/data/asset-operations.json');if(!r.ok)throw Error('Unavailable');return r.json()},staleTime:60000,refetchInterval:60000,retry:1});
+ const query=useAssetOperations(verified);
  if(!verified)return null;
  const data=query.data,reading=scheduledSite(data?.records||[],units,data?.from,data?.to),expired=!data?.to||Date.parse(data.to)<=Date.now();
  const time=(s:string)=>new Date(s).toLocaleString('en-GB',{timeZone:'Europe/London',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});

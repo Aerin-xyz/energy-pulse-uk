@@ -1,5 +1,7 @@
-import {assetView} from '@/lib/assetExplorer.mjs';
-import {assets, GenerationMapLayer, AssetEvidence, useAssetSnapshot, assetTime, matchingAssets} from './GenerationMapLayer';
+import {useGenerationCatalogue} from '@/hooks/useGenerationCatalogue';
+import {useAssetOperations} from './AssetOperations';
+import {assetView,capacityText,assetEvidenceLabel} from '@/lib/assetExplorer.mjs';
+import {GenerationMapLayer, AssetEvidence, useAssetSnapshot, assetTime, matchingAssets} from './GenerationMapLayer';
 import { useEffect, useRef, useState } from "react";
 import { ArrowUpRight, Layers, Maximize2, X } from "lucide-react";
 import { cables } from "@/data/atlas/interconnectors";
@@ -64,12 +66,17 @@ export function GridAtlas({
   flowTime?: string;
   now: number;
 }) {
-  const [mode, setMode] = useState<"cables" | "connections" | "carbon" | "generation">(assets.some(a=>a.id===new URLSearchParams(location.search).get("asset"))?"generation":"cables");
+  const [mode, setMode] = useState<"cables" | "connections" | "carbon" | "generation">(new URLSearchParams(location.search).has("asset")?"generation":"cables");
+  const catalogue=useGenerationCatalogue(mode==='generation');
+  const assets=catalogue.assets;
+  const operations=useAssetOperations(mode==='generation');
   const cableFeed = useCableFlows();
   const [assetFilter,setAssetFilter]=useState("All");
   const [assetSearch,setAssetSearch]=useState("");
   const linkedAsset=assets.find(a=>a.id===new URLSearchParams(location.search).get('asset'));
-  const [pilotOnly,setPilotOnly]=useState(!linkedAsset||linkedAsset.releaseSelection);
+  const [pilotOnly,setPilotOnly]=useState(false);
+  const [minCapacity,setMinCapacity]=useState(0);
+  const [listLimit,setListLimit]=useState(60);
   const [assetCountry,setAssetCountry]=useState('All GB');
   const [assetAvailability,setAssetAvailability]=useState('All data');
   const [assetSort,setAssetSort]=useState('name');
@@ -78,7 +85,9 @@ export function GridAtlas({
   const zoom=(factor:number)=>setViewport(v=>assetView(v.cx,v.cy,v.zoom*factor));
   const pan=(x:number,y:number)=>setViewport(v=>assetView(v.cx+x*v.w*.25,v.cy+y*v.h*.25,v.zoom));
   const {snapshot:assetSnapshot,error:assetError}=useAssetSnapshot(mode === "generation");
-  const [selected, setSelected] = useState<string | null>(linkedAsset?.id||null);
+  const [selected, setSelected] = useState<string | null>(new URLSearchParams(location.search).get('asset'));
+  useEffect(()=>{setListLimit(60)},[assetSearch,assetFilter,assetCountry,assetAvailability,minCapacity,pilotOnly]);
+  useEffect(()=>{const id=new URLSearchParams(location.search).get('asset'),a=assets.find(a=>a.id===id);if(a)setViewport(assetView((a.longitude+12)*40,(61-a.latitude)*63,3));},[assets]);
   const [expanded, setExpanded] = useState(false);
   const stageRef = useRef<HTMLElement>(null);
   const expandRef = useRef<HTMLButtonElement>(null);
@@ -151,12 +160,13 @@ export function GridAtlas({
           ))}
         </div>
       </div>
-      {mode === "generation" && <div className="asset-controls"><p>{pilotOnly ? `${assets.filter(a=>a.releaseSelection).length} reviewed GB sites` : `${assets.length} catalogue sites · matches may be unreviewed`} · <strong>metered history, not live</strong></p><button className="asset-scope" aria-pressed={!pilotOnly} onClick={()=>{setPilotOnly(!pilotOnly);setSelected(null)}}>{pilotOnly?"Show existing 47-site catalogue":"Return to reviewed selection"}</button><label className="asset-search"><span>Find a generation site</span><input type="search" placeholder="Search sites, fuels or countries" value={assetSearch} onChange={e=>{setAssetSearch(e.target.value);setSelected(null)}}/></label><div aria-label="Generation type">{["All",...new Set(assets.map(a=>a.type))].map(t=><button key={t} aria-pressed={assetFilter===t} onClick={()=>{setAssetFilter(t);setSelected(null)}}>{t}</button>)}</div></div>}
+      {mode === "generation" && <div className="asset-controls"><p>{pilotOnly ? `${assets.filter(a=>a.releaseSelection).length} reviewed GB sites` : `${assets.length.toLocaleString()} operational GB register entries`} · <strong>metered history, not live</strong></p><button className="asset-scope" aria-pressed={pilotOnly} onClick={()=>{setPilotOnly(!pilotOnly);setSelected(null)}}>{pilotOnly?"Show all operational assets":"Reviewed sites only"}</button><label className="asset-search"><span>Find a generation site</span><input type="search" placeholder="Search sites, fuels or countries" value={assetSearch} onChange={e=>{setAssetSearch(e.target.value);setSelected(null)}}/></label><div aria-label="Generation type">{["All",...new Set(assets.map(a=>a.type))].map(t=><button key={t} aria-pressed={assetFilter===t} onClick={()=>{setAssetFilter(t);setSelected(null)}}>{t}</button>)}</div></div>}
       {mode==='generation'&&<><div className="asset-refine">
         <label>Geography<select aria-label="Asset geography" value={assetCountry} onChange={e=>{setAssetCountry(e.target.value);setSelected(null)}}>{['All GB','England','Scotland','Wales'].map(c=><option key={c}>{c}</option>)}</select></label>
-        <label>Evidence<select aria-label="Asset data availability" value={assetAvailability} onChange={e=>{setAssetAvailability(e.target.value);setSelected(null)}}>{['All data','Metered history','Capacity only'].map(c=><option key={c}>{c}</option>)}</select></label>
+        <label>Evidence<select aria-label="Asset data availability" value={assetAvailability} onChange={e=>{setAssetAvailability(e.target.value);setSelected(null)}}>{['All data','Metered history','Notified schedule','Capacity only'].map(c=><option key={c}>{c}</option>)}</select></label>
+        <label>Capacity<select aria-label="Minimum asset capacity" value={minCapacity} onChange={e=>{setMinCapacity(Number(e.target.value));setSelected(null)}}><option value={0}>All capacities</option><option value={1}>Above 1 MW</option><option value={10}>Above 10 MW</option><option value={100}>Above 100 MW</option><option value={500}>Above 500 MW</option></select></label>
         <label>Order<select aria-label="Asset order" value={assetSort} onChange={e=>setAssetSort(e.target.value)}><option value="name">Name</option><option value="capacity">Capacity</option></select></label>
-      </div><div className="asset-navigation" aria-label="Generation map navigation"><button onClick={()=>zoom(1.5)} disabled={viewport.zoom>=6} aria-label="Zoom in on generation assets">+</button><button onClick={()=>zoom(1/1.5)} disabled={viewport.zoom<=1} aria-label="Zoom out of generation assets">−</button><button onClick={()=>setViewport(assetView())}>Reset GB view</button><span>{viewport.zoom.toFixed(1)}×</span><button onClick={()=>pan(-1,0)} aria-label="Pan west">←</button><button onClick={()=>pan(0,-1)} aria-label="Pan north">↑</button><button onClick={()=>pan(0,1)} aria-label="Pan south">↓</button><button onClick={()=>pan(1,0)} aria-label="Pan east">→</button></div><p className="asset-legend">Solid rings: dated measured output · dotted rings: capacity only. Drag to explore; zoom separates nearby sites.</p></>}
+      </div><div className="asset-navigation" aria-label="Generation map navigation"><button onClick={()=>zoom(1.5)} disabled={viewport.zoom>=32} aria-label="Zoom in on generation assets">+</button><button onClick={()=>zoom(1/1.5)} disabled={viewport.zoom<=1} aria-label="Zoom out of generation assets">−</button><button onClick={()=>setViewport(assetView())}>Reset GB view</button><span>{viewport.zoom.toFixed(1)}×</span><button onClick={()=>pan(-1,0)} aria-label="Pan west">←</button><button onClick={()=>pan(0,-1)} aria-label="Pan north">↑</button><button onClick={()=>pan(0,1)} aria-label="Pan south">↓</button><button onClick={()=>pan(1,0)} aria-label="Pan east">→</button></div><p className="asset-legend">Solid rings: dated measured output · dotted rings: capacity only. Drag to explore; zoom separates nearby sites.</p></>}
       <svg
         className={mode==='generation'?'atlas-map asset-navigable':'atlas-map'}
         onPointerDown={e=>{if(mode!=='generation')return;const scale=e.currentTarget.getScreenCTM()?.a||1;drag.current={x:e.clientX,y:e.clientY,cx:viewport.cx,cy:viewport.cy,scale,moved:false}}}
@@ -169,7 +179,7 @@ export function GridAtlas({
         aria-labelledby="atlas-map-title atlas-map-desc"
       >
         <title id="atlas-map-title">
-          {mode === "generation" ? "Great Britain generation sites above 500 MW installed" : "Great Britain and its electricity connections"}
+          {mode === "generation" ? "Operational Great Britain generation assets" : "Great Britain and its electricity connections"}
         </title>
         <desc id="atlas-map-desc">
           Geographic country outlines. Connection lines are schematic, not
@@ -372,7 +382,7 @@ export function GridAtlas({
               </g>
             );
           })}
-        {mode === "generation" && <GenerationMapLayer filter={assetFilter} search={assetSearch} pilotOnly={pilotOnly} selected={selected} onSelect={setSelected} snapshot={assetSnapshot} zoom={viewport.zoom} country={assetCountry} availability={assetAvailability}/>}
+        {mode === "generation" && <GenerationMapLayer filter={assetFilter} search={assetSearch} pilotOnly={pilotOnly} selected={selected} onSelect={setSelected} snapshot={assetSnapshot} zoom={viewport.zoom} country={assetCountry} availability={assetAvailability} minCapacity={minCapacity} viewport={viewport} operations={operations.data}/>}
       </svg>
       <div className="atlas-map-note">
         <span className="atlas-dot" />{" "}
@@ -398,7 +408,7 @@ export function GridAtlas({
           {mode === "generation" ? "Asset register" : "Check a postcode"} <ArrowUpRight size={13} />
         </a>
       </div>
-      {mode === "generation" && <p className="asset-results" role="status">{matchingAssets(assetFilter,assetSearch,pilotOnly,{country:assetCountry,availability:assetAvailability,snapshot:assetSnapshot,sort:assetSort}).length} sites shown · May 2026 installed-capacity register · numbered markers group nearby sites{matchingAssets(assetFilter,assetSearch,pilotOnly,{country:assetCountry,availability:assetAvailability,snapshot:assetSnapshot,sort:assetSort}).length===0 ? ". No matching sites; try another search or fuel." : ""}</p>}
+      {mode === "generation" && <p className="asset-results" role="status">{matchingAssets(assetFilter,assetSearch,pilotOnly,{assets,country:assetCountry,availability:assetAvailability,snapshot:assetSnapshot,operations:operations.data,minCapacity,sort:assetSort}).length} matching register entries · REPD renewables & DUKES stations · numbered markers group nearby entries{matchingAssets(assetFilter,assetSearch,pilotOnly,{assets,country:assetCountry,availability:assetAvailability,snapshot:assetSnapshot,operations:operations.data,minCapacity,sort:assetSort}).length===0 ? ". No matching sites; try another search or fuel." : ""}</p>}
       <div
         className="atlas-access-list"
         data-layer={mode}
@@ -406,7 +416,7 @@ export function GridAtlas({
           mode === "generation" ? "Select a generation asset" : mode === "cables" ? "Select a cable" : mode === "connections" ? "Select a connection" : "Select a region"
         }
       >
-        {mode === "generation" ? matchingAssets(assetFilter,assetSearch,pilotOnly,{country:assetCountry,availability:assetAvailability,snapshot:assetSnapshot,sort:assetSort}).map(a=><button key={a.id} aria-pressed={selected===a.id} onClick={()=>{setSelected(a.id);setViewport(assetView((a.longitude+12)*40,(61-a.latitude)*63,Math.max(2,viewport.zoom)))}}><span>{a.name}</span><strong>{a.installedCapacityMW.toLocaleString("en-GB")} MW · {a.type}</strong></button>) : mode === "cables" ? cables.map(c=>{const r=cableReadings(cableFeed.rows,c.code,now);return <button key={c.id} aria-label={c.name} onClick={()=>setSelected(c.id)} aria-pressed={selected===c.id}><span>{c.name}</span><strong>{r.mw===null?"Unavailable":`${Math.abs(r.mw)} MW ${r.mw>0?"in":r.mw<0?"out":"zero"}`}</strong></button>}) : mode === "connections"
+        {mode === "generation" ? matchingAssets(assetFilter,assetSearch,pilotOnly,{assets,country:assetCountry,availability:assetAvailability,snapshot:assetSnapshot,operations:operations.data,minCapacity,sort:assetSort}).slice(0,listLimit).map(a=><button key={a.id} aria-pressed={selected===a.id} onClick={()=>{setSelected(a.id);setViewport(assetView((a.longitude+12)*40,(61-a.latitude)*63,Math.max(2,viewport.zoom)))}}><span>{a.name}</span><strong>{capacityText(a.installedCapacityMW)} · {a.type}</strong><small className="asset-data-badge">{assetEvidenceLabel(a,assetSnapshot,operations.data)}</small></button>) : mode === "cables" ? cables.map(c=>{const r=cableReadings(cableFeed.rows,c.code,now);return <button key={c.id} aria-label={c.name} onClick={()=>setSelected(c.id)} aria-pressed={selected===c.id}><span>{c.name}</span><strong>{r.mw===null?"Unavailable":`${Math.abs(r.mw)} MW ${r.mw>0?"in":r.mw<0?"out":"zero"}`}</strong></button>}) : mode === "connections"
           ? grouped.map((g) => (
               <button
                 key={g.country}
@@ -427,6 +437,7 @@ export function GridAtlas({
               </button>
             ))}
       </div>
+      {mode==='generation'&&<div className="asset-catalogue-footnote">{matchingAssets(assetFilter,assetSearch,pilotOnly,{assets,country:assetCountry,availability:assetAvailability,snapshot:assetSnapshot,operations:operations.data,minCapacity}).length>listLimit&&<button onClick={()=>setListLimit(n=>n+60)}>Show 60 more results</button>}<p>{catalogue.isFetching?'Loading the official catalogue…':catalogue.isError?'Wider catalogue unavailable; retained curated entries shown.':catalogue.data?.metadata.coverage}</p><p>{catalogue.data?.metadata.retrievedAt && <>Register retrieved {new Date(catalogue.data.metadata.retrievedAt).toLocaleDateString("en-GB")}. </>}Contains public sector information licensed under the Open Government Licence v3.0. <a href="/data/operational-assets.json">Source register & provenance ↗</a></p></div>}
       {selected && (
         <div
           className="atlas-map-detail"

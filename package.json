@@ -13,12 +13,13 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "test:power-flow-layout": "playwright test tests/power-flow-layout.spec.ts",
-    "test:metrics": "node --test tests/grid-metrics.test.mjs tests/archive-routing.test.mjs tests/cable-readings.test.mjs tests/asset-readings.test.mjs tests/evidence-calculations.test.mjs tests/evidence-ingestion.test.mjs tests/asset-explorer.test.mjs",
+    "test:metrics": "node --test tests/grid-metrics.test.mjs tests/archive-routing.test.mjs tests/cable-readings.test.mjs tests/asset-readings.test.mjs tests/evidence-calculations.test.mjs tests/evidence-ingestion.test.mjs tests/asset-explorer.test.mjs tests/operational-assets.test.mjs",
     "test:atlas": "playwright test tests/atlas.spec.ts",
     "ingest:grid": "node scripts/ingest-grid-evidence.mjs",
     "build:local": "node scripts/generate-static-snapshot.mjs && vite build && node scripts/prerender-static.mjs",
     "verify:assets": "node scripts/verify-canonical-assets.mjs",
-    "ingest:operations": "node scripts/ingest-asset-operations.mjs"
+    "ingest:operations": "node scripts/ingest-asset-operations.mjs",
+    "ingest:catalogue": "node scripts/ingest-operational-assets.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -59,6 +60,7 @@
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
     "next-themes": "^0.3.0",
+    "proj4": "^2.22.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
     "react-dom": "^18.3.1",
