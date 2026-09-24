@@ -32,7 +32,7 @@ jobs:
           npm run ingest:grid || echo "Grid refresh failed; retaining dated evidence and failure state"
           npm run ingest:operations || echo "PN unavailable; retaining dated notification and failure state"
           node scripts/generate-asset-snapshot.mjs
-          node --test tests/evidence-calculations.test.mjs tests/asset-readings.test.mjs tests/asset-explorer.test.mjs
+          node --test tests/evidence-calculations.test.mjs tests/asset-readings.test.mjs tests/asset-explorer.test.mjs tests/notification-feed.test.mjs
       - name: Save validated cached snapshots
         run: |
           git config user.name "github-actions[bot]"

@@ -10,3 +10,5 @@
 .cc-grid .atlas-access-list[data-layer=generation]{grid-auto-rows:minmax(82px,auto);gap:6px;max-height:220px}
 .cc-grid .atlas-access-list[data-layer=generation] button{height:auto;min-height:82px;padding:9px;gap:4px;justify-content:flex-start;font-size:11px;line-height:1.4;overflow-wrap:anywhere}
 .cc-grid .atlas-access-list[data-layer=generation] button strong,.cc-grid .atlas-access-list[data-layer=generation] button small{font-size:10px;line-height:1.4}
+
+.notification-map-summary{display:flex;align-items:center;gap:12px;padding:8px 16px;color:#a6c4ce;font-size:11px;flex-wrap:wrap}.notification-map-summary button{border:1px solid #27728a;border-radius:18px;padding:7px 12px;color:#70e7ed;background:#092333;font-size:12px}.asset-operations{border:1px solid #286a7e;border-radius:12px;background:linear-gradient(125deg,#0b2c3b,#0b1829);padding:14px;margin:12px 0}.asset-operations strong{color:#73e5e9;font-size:28px}

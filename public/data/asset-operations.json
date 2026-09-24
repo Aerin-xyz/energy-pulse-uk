@@ -1,23 +1,1716 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "kind": "scheduled",
   "unit": "MW",
-  "from": "2026-09-24T12:00:00.000Z",
-  "to": "2026-09-24T12:30:00.000Z",
-  "source": "Elexon physical notifications (PN)",
-  "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/PN?settlementDate=2026-09-24&settlementPeriod=27&format=json",
-  "attribution": "Contains BMRS data © Elexon Limited copyright and database right 2026.",
-  "checkedAt": "2026-09-24T12:18:31.713Z",
+  "from": "2026-09-24T17:00:00.000Z",
+  "to": "2026-09-24T17:30:00.000Z",
+  "checkedAt": "2026-09-24T17:25:44.292Z",
   "publishedAt": null,
-  "publicationNote": "Row publication time unavailable; content revisions retained.",
-  "revision": "4d9d5bd0dadd90d331eea5890d6cb5f4ce9fbb638c77b50c1584d9dbfdda5efa",
+  "source": "Elexon physical notifications (PN)",
+  "attribution": "Contains BMRS data © Elexon Limited copyright and database right 2026.",
+  "publicationNote": "Row publication time unavailable. checkedAt is retrieval time, not publication time.",
+  "mappings": [
+    {
+      "id": "drax",
+      "name": "Drax",
+      "status": "verified",
+      "units": [
+        "T_DRAXX-1",
+        "T_DRAXX-2",
+        "T_DRAXX-3",
+        "T_DRAXX-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "pembroke",
+      "name": "Pembroke",
+      "status": "verified",
+      "units": [
+        "T_PEMB-11",
+        "T_PEMB-21",
+        "T_PEMB-31",
+        "T_PEMB-41",
+        "T_PEMB-51"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "heysham",
+      "name": "Heysham",
+      "status": "verified",
+      "units": [
+        "T_HEYM11",
+        "T_HEYM12",
+        "T_HEYM27",
+        "T_HEYM28"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "staythorpe",
+      "name": "Staythorpe",
+      "status": "verified",
+      "units": [
+        "T_STAY-1",
+        "T_STAY-2",
+        "T_STAY-3",
+        "T_STAY-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "dinorwig",
+      "name": "Dinorwig",
+      "status": "verified",
+      "units": [
+        "T_DINO-1",
+        "T_DINO-2",
+        "T_DINO-3",
+        "T_DINO-4",
+        "T_DINO-5",
+        "T_DINO-6"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "keadby",
+      "name": "Keadby",
+      "status": "verified",
+      "units": [
+        "T_KEAD-1",
+        "T_KEAD-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "didcot-b",
+      "name": "Didcot B",
+      "status": "verified",
+      "units": [
+        "T_DIDCB5",
+        "T_DIDCB6"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "grain",
+      "name": "Grain",
+      "status": "verified",
+      "units": [
+        "T_GRAI-6",
+        "T_GRAI-7",
+        "T_GRAI-8"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "south-humber-bank",
+      "name": "South Humber Bank",
+      "status": "verified",
+      "units": [
+        "T_SHBA-1",
+        "T_SHBA-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "hornsea-two",
+      "name": "Hornsea Two",
+      "status": "verified",
+      "units": [
+        "T_HOWBO-1",
+        "T_HOWBO-2",
+        "T_HOWBO-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "connahs-quay",
+      "name": "Connah’s Quay",
+      "status": "verified",
+      "units": [
+        "T_CNQPS-1",
+        "T_CNQPS-2",
+        "T_CNQPS-3",
+        "T_CNQPS-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "west-burton-b",
+      "name": "West Burton B",
+      "status": "verified",
+      "units": [
+        "T_WBURB-1",
+        "T_WBURB-2",
+        "T_WBURB-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "vpi-immingham",
+      "name": "VPI Immingham",
+      "status": "verified",
+      "units": [
+        "T_HUMR-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "hornsea-one",
+      "name": "Hornsea One",
+      "status": "verified",
+      "units": [
+        "T_HOWAO-1",
+        "T_HOWAO-2",
+        "T_HOWAO-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "seabank",
+      "name": "Seabank",
+      "status": "verified",
+      "units": [
+        "T_SEAB-1",
+        "T_SEAB-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "saltend",
+      "name": "Saltend",
+      "status": "verified",
+      "units": [
+        "T_SCCL-1",
+        "T_SCCL-2",
+        "T_SCCL-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "torness",
+      "name": "Torness",
+      "status": "verified",
+      "units": [
+        "T_TORN-1",
+        "T_TORN-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "sizewell-b",
+      "name": "Sizewell B",
+      "status": "verified",
+      "units": [
+        "T_SIZB-1",
+        "T_SIZB-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "hartlepool",
+      "name": "Hartlepool",
+      "status": "verified",
+      "units": [
+        "T_HRTL-1",
+        "T_HRTL-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "peterhead",
+      "name": "Peterhead",
+      "status": "verified",
+      "units": [
+        "T_PEHE-1",
+        "T_PEHE-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "seagreen",
+      "name": "Seagreen",
+      "status": "review-required",
+      "units": [],
+      "note": "Six registered Seagreen units; phase boundaries and current grouping require reconciliation before a total is asserted."
+    },
+    {
+      "id": "walney",
+      "name": "Walney",
+      "status": "verified",
+      "units": [
+        "T_WLNYW-1",
+        "T_WLNYO-2",
+        "T_WLNYO-3",
+        "T_WLNYO-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "moray-east",
+      "name": "Moray East",
+      "status": "verified",
+      "units": [
+        "T_MOWEO-1",
+        "T_MOWEO-2",
+        "T_MOWEO-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "spalding",
+      "name": "Spalding",
+      "status": "verified",
+      "units": [
+        "T_SPLN-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "langage",
+      "name": "Langage",
+      "status": "verified",
+      "units": [
+        "T_LAGA-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "marchwood",
+      "name": "Marchwood",
+      "status": "verified",
+      "units": [
+        "T_MRWD-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "carrington",
+      "name": "Carrington",
+      "status": "verified",
+      "units": [
+        "T_CARR-1",
+        "T_CARR-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "moray-west",
+      "name": "Moray West",
+      "status": "verified",
+      "units": [
+        "T_MOWWO-1",
+        "T_MOWWO-2",
+        "T_MOWWO-3",
+        "T_MOWWO-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "triton-knoll",
+      "name": "Triton Knoll",
+      "status": "verified",
+      "units": [
+        "T_TKNEW-1",
+        "T_TKNWW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "severn-power",
+      "name": "Severn Power",
+      "status": "verified",
+      "units": [
+        "T_SVRP-10",
+        "T_SVRP-20"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "sutton-bridge",
+      "name": "Sutton Bridge",
+      "status": "verified",
+      "units": [
+        "T_SUTB-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "rocksavage",
+      "name": "Rocksavage",
+      "status": "verified",
+      "units": [
+        "T_ROCK-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "damhead-creek",
+      "name": "Damhead Creek",
+      "status": "verified",
+      "units": [
+        "T_DAMC-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "coryton",
+      "name": "Coryton",
+      "status": "verified",
+      "units": [
+        "T_COSO-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "medway",
+      "name": "Medway",
+      "status": "verified",
+      "units": [
+        "T_MEDP-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "little-barford",
+      "name": "Little Barford",
+      "status": "verified",
+      "units": [
+        "T_LBAR-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "rye-house",
+      "name": "Rye House",
+      "status": "verified",
+      "units": [
+        "T_RYHPS-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "east-anglia-one",
+      "name": "East Anglia One",
+      "status": "verified",
+      "units": [
+        "T_EAAO-1",
+        "T_EAAO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "london-array",
+      "name": "London Array",
+      "status": "verified",
+      "units": [
+        "T_LARYW-1",
+        "T_LARYW-2",
+        "T_LARYW-3",
+        "T_LARYW-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "killingholme",
+      "name": "Killingholme",
+      "status": "verified",
+      "units": [
+        "T_KILLPG-1",
+        "T_KILLPG-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "dogger-bank-a",
+      "name": "Dogger Bank A",
+      "status": "review-required",
+      "units": [],
+      "note": "Commissioning units and partially installed register capacity require reconciliation."
+    },
+    {
+      "id": "beatrice",
+      "name": "Beatrice",
+      "status": "verified",
+      "units": [
+        "T_BEATO-1",
+        "T_BEATO-2",
+        "T_BEATO-3",
+        "T_BEATO-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "gwynt-y-mor",
+      "name": "Gwynt y Môr",
+      "status": "verified",
+      "units": [
+        "T_GYMR-15",
+        "T_GYMR-17",
+        "T_GYMR-26",
+        "T_GYMR-28"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "race-bank",
+      "name": "Race Bank",
+      "status": "verified",
+      "units": [
+        "T_RCBKO-1",
+        "T_RCBKO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "whitelee",
+      "name": "Whitelee",
+      "status": "verified",
+      "units": [
+        "T_WHILW-1",
+        "T_WHILW-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "clyde",
+      "name": "Clyde",
+      "status": "verified",
+      "units": [
+        "T_CLDSW-1",
+        "T_CLDCW-1",
+        "T_CLDNW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "greater-gabbard",
+      "name": "Greater Gabbard",
+      "status": "verified",
+      "units": [
+        "T_GRGBW-1",
+        "T_GRGBW-2",
+        "T_GRGBW-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-115",
+      "name": "Lynemouth Power Station",
+      "status": "verified",
+      "units": [
+        "E_LYNE1",
+        "E_LYNE2",
+        "E_LYNE3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2490",
+      "name": "Gunfleet Sands Offshore Wind Scheme",
+      "status": "verified",
+      "units": [
+        "T_GNFSW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2499",
+      "name": "Thanet ",
+      "status": "verified",
+      "units": [
+        "T_THNTO-1",
+        "T_THNTO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2509",
+      "name": "Ormonde Offshore",
+      "status": "verified",
+      "units": [
+        "T_OMNDW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2512",
+      "name": "Sheringham Shoal ",
+      "status": "verified",
+      "units": [
+        "T_SHRSW-1",
+        "T_SHRSW-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2513",
+      "name": "Centrica (Lincs)",
+      "status": "verified",
+      "units": [
+        "T_LNCSW-1",
+        "T_LNCSW-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2519",
+      "name": "West of Duddon Sands",
+      "status": "verified",
+      "units": [
+        "T_WDNSO-1",
+        "T_WDNSO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2520",
+      "name": "Rampion Offshore Wind Farm (Hastings Zone)",
+      "status": "verified",
+      "units": [
+        "T_RMPNO-1",
+        "T_RMPNO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2522",
+      "name": "Neart na Gaoithe",
+      "status": "verified",
+      "units": [
+        "T_NNGAO-1",
+        "T_NNGAO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2526",
+      "name": "Galloper Wind Farm",
+      "status": "verified",
+      "units": [
+        "T_GANW-11",
+        "T_GANW-22",
+        "T_GANW-13",
+        "T_GANW-24"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2538",
+      "name": "Dudgeon East ",
+      "status": "verified",
+      "units": [
+        "T_DDGNO-1",
+        "T_DDGNO-2",
+        "T_DDGNO-3",
+        "T_DDGNO-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2539",
+      "name": "Burbo Bank Extension (Burbo Bank 2)",
+      "status": "verified",
+      "units": [
+        "T_BRBEO-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2544",
+      "name": "Humber Gateway A",
+      "status": "verified",
+      "units": [
+        "T_HMGTO-1",
+        "T_HMGTO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-2545",
+      "name": "Westermost Rough A",
+      "status": "verified",
+      "units": [
+        "T_WTMSO-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-3109",
+      "name": "Hadyard Hill",
+      "status": "verified",
+      "units": [
+        "T_HADHW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-3116",
+      "name": "Black Law",
+      "status": "review-required",
+      "units": [],
+      "note": "Black Law base and extension unit scopes need reconciliation with this REPD record."
+    },
+    {
+      "id": "repd-3258",
+      "name": "Arecleoch Windfarm",
+      "status": "verified",
+      "units": [
+        "T_ARCHW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-3440",
+      "name": "Crystal Rig Wind Farm Phase 2a",
+      "status": "review-required",
+      "units": [],
+      "note": "Crystal Rig II unit scope versus REPD Phase 2a is ambiguous."
+    },
+    {
+      "id": "repd-4028",
+      "name": "Griffin Wind farm",
+      "status": "verified",
+      "units": [
+        "T_GRIFW-1",
+        "T_GRIFW-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-4059",
+      "name": "Fallago Rig",
+      "status": "verified",
+      "units": [
+        "T_FALGW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-4119",
+      "name": "Harestanes",
+      "status": "verified",
+      "units": [
+        "T_HRSTW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-4244",
+      "name": "Dorenell Wind Farm (Previously Site A and B Scaut Hill)",
+      "status": "verified",
+      "units": [
+        "T_DOREW-1",
+        "T_DOREW-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-4386",
+      "name": "Kilgallioch wind farm",
+      "status": "review-required",
+      "units": [],
+      "note": "Kilgallioch second unit/extension scope requires review."
+    },
+    {
+      "id": "repd-4586",
+      "name": "South Kyle Wind Farm",
+      "status": "verified",
+      "units": [
+        "T_SOKYW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-4595",
+      "name": "Pen Y Cymoedd",
+      "status": "verified",
+      "units": [
+        "T_PNYCW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-4597",
+      "name": "Stronelairg Wind Farm",
+      "status": "verified",
+      "units": [
+        "T_STLGW-1",
+        "T_STLGW-2",
+        "T_STLGW-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-4640",
+      "name": "Bhlaraidh (previously Balmacaan)",
+      "status": "verified",
+      "units": [
+        "T_BHLAW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-6502",
+      "name": "Cleve Hill Solar Project",
+      "status": "verified",
+      "units": [
+        "T_CLVHS-1",
+        "T_CLVHS-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-6828",
+      "name": "Viking Wind Farm ",
+      "status": "verified",
+      "units": [
+        "T_VKNGW-1",
+        "T_VKNGW-2",
+        "T_VKNGW-3",
+        "T_VKNGW-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-6840",
+      "name": "Ffestiniog",
+      "status": "verified",
+      "units": [
+        "T_FFES-1",
+        "T_FFES-2",
+        "T_FFES-3",
+        "T_FFES-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "repd-6841",
+      "name": "Cruachan",
+      "status": "review-required",
+      "units": [],
+      "note": "Cruachan unit codes need independent station-identity evidence."
+    },
+    {
+      "id": "repd-6842",
+      "name": "Foyers",
+      "status": "verified",
+      "units": [
+        "T_FOYE-1",
+        "T_FOYE-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "dukes-oil-000168",
+      "name": "Indian Queens Power Ltd",
+      "status": "verified",
+      "units": [
+        "T_INDQ-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "dukes-gas-001280",
+      "name": "Spalding Expansion OCGT ",
+      "status": "verified",
+      "units": [
+        "T_SEEL-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "dukes-gas-000153",
+      "name": "Fellside CHP",
+      "status": "review-required",
+      "units": [],
+      "note": "No unambiguous Fellside production-unit match established."
+    },
+    {
+      "id": "dukes-gas-000170",
+      "name": "Kings Lynn",
+      "status": "verified",
+      "units": [
+        "E_KLYN-A-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "dukes-gas-000212",
+      "name": "Great Yarmouth",
+      "status": "verified",
+      "units": [
+        "E_GYAR-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "dukes-oil-000124",
+      "name": "Cowes",
+      "status": "verified",
+      "units": [
+        "E_COWE1",
+        "E_COWE2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "dukes-gas-000026",
+      "name": "Wilton International",
+      "status": "review-required",
+      "units": [],
+      "note": "Wilton industrial complex versus this register entry has uncertain generating scope."
+    },
+    {
+      "id": "dukes-gas-000179",
+      "name": "Cottam Development Centre",
+      "status": "review-required",
+      "units": [],
+      "note": "Cottam Development Centre unit code needs independent identity evidence."
+    },
+    {
+      "id": "dukes-gas-000186",
+      "name": "Enfield",
+      "status": "verified",
+      "units": [
+        "T_EECL-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "dukes-oil-000119",
+      "name": "Taylors Lane",
+      "status": "review-required",
+      "units": [],
+      "note": "No unambiguous current Taylors Lane production-unit match established."
+    },
+    {
+      "id": "dukes-gas-000196",
+      "name": "Shoreham",
+      "status": "verified",
+      "units": [
+        "E_SHOS-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "dukes-xxx-001661",
+      "name": "VPI Immingham B",
+      "status": "verified",
+      "units": [
+        "T_HUMR-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity."
+    },
+    {
+      "id": "dukes-gas-000144",
+      "name": "Peterborough Power Station",
+      "status": "review-required",
+      "units": [],
+      "note": "Peterborough main and additional unit scopes require reconciliation."
+    }
+  ],
   "records": [
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 71,
+      "levelTo": 64,
+      "nationalGridBmUnit": "BEATO-1",
+      "bmUnit": "T_BEATO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 100,
+      "levelTo": 97,
+      "nationalGridBmUnit": "BEATO-2",
+      "bmUnit": "T_BEATO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 143,
+      "levelTo": 129,
+      "nationalGridBmUnit": "BEATO-3",
+      "bmUnit": "T_BEATO-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 136,
+      "levelTo": 122,
+      "nationalGridBmUnit": "BEATO-4",
+      "bmUnit": "T_BEATO-4"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 162,
+      "levelTo": 160,
+      "nationalGridBmUnit": "CLDCW-1",
+      "bmUnit": "T_CLDCW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 159,
+      "levelTo": 160,
+      "nationalGridBmUnit": "CLDNW-1",
+      "bmUnit": "T_CLDNW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 105,
+      "levelTo": 102,
+      "nationalGridBmUnit": "CLDSW-1",
+      "bmUnit": "T_CLDSW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 4,
+      "levelTo": 6,
+      "nationalGridBmUnit": "GRGBW-1",
+      "bmUnit": "T_GRGBW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 4,
+      "levelTo": 6,
+      "nationalGridBmUnit": "GRGBW-2",
+      "bmUnit": "T_GRGBW-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 3,
+      "levelTo": 4,
+      "nationalGridBmUnit": "GRGBW-3",
+      "bmUnit": "T_GRGBW-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 42,
+      "levelTo": 40,
+      "nationalGridBmUnit": "GRIFW-1",
+      "bmUnit": "T_GRIFW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 38,
+      "levelTo": 36,
+      "nationalGridBmUnit": "GRIFW-2",
+      "bmUnit": "T_GRIFW-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 817,
+      "levelTo": 821,
+      "nationalGridBmUnit": "KEAD-2",
+      "bmUnit": "T_KEAD-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 432,
+      "levelTo": 434,
+      "nationalGridBmUnit": "PEMB-21",
+      "bmUnit": "T_PEMB-21"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 418,
+      "levelTo": 420,
+      "nationalGridBmUnit": "PEMB-31",
+      "bmUnit": "T_PEMB-31"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 420,
+      "levelTo": 422,
+      "nationalGridBmUnit": "PEMB-41",
+      "bmUnit": "T_PEMB-41"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 416,
+      "levelTo": 418,
+      "nationalGridBmUnit": "PEMB-51",
+      "bmUnit": "T_PEMB-51"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 792,
+      "levelTo": 797,
+      "nationalGridBmUnit": "SPLN-1",
+      "bmUnit": "T_SPLN-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 67,
+      "levelTo": 66,
+      "nationalGridBmUnit": "STLGW-1",
+      "bmUnit": "T_STLGW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 79,
+      "levelTo": 77,
+      "nationalGridBmUnit": "STLGW-2",
+      "bmUnit": "T_STLGW-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 69,
+      "levelTo": 68,
+      "nationalGridBmUnit": "STLGW-3",
+      "bmUnit": "T_STLGW-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 409,
+      "levelTo": 411,
+      "nationalGridBmUnit": "WBURB-2",
+      "bmUnit": "T_WBURB-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:29:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 409,
+      "levelTo": 411,
+      "nationalGridBmUnit": "WBURB-3",
+      "bmUnit": "T_WBURB-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:28:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 108,
+      "levelTo": 100,
+      "nationalGridBmUnit": "BEATO-2",
+      "bmUnit": "T_BEATO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:15:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 30,
+      "levelTo": 30,
+      "nationalGridBmUnit": "OMNDO-1",
+      "bmUnit": "T_OMNDW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:15:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 31,
+      "levelTo": 31,
+      "nationalGridBmUnit": "PNYCW-1",
+      "bmUnit": "T_PNYCW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:15:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 133,
+      "levelTo": 133,
+      "nationalGridBmUnit": "SOKYW-1",
+      "bmUnit": "T_SOKYW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:15:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 1,
+      "levelTo": 1,
+      "nationalGridBmUnit": "THNTO-1",
+      "bmUnit": "T_THNTO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:15:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 1,
+      "levelTo": 1,
+      "nationalGridBmUnit": "THNTO-2",
+      "bmUnit": "T_THNTO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:01:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 685,
+      "levelTo": 685,
+      "nationalGridBmUnit": "HUMR-1",
+      "bmUnit": "T_HUMR-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "COWE1",
+      "bmUnit": "E_COWE1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "COWE2",
+      "bmUnit": "E_COWE2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "GYAR-1",
+      "bmUnit": "E_GYAR-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "KLYN-A-1",
+      "bmUnit": "E_KLYN-A-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 129,
+      "levelTo": 129,
+      "nationalGridBmUnit": "LNMTH-1",
+      "bmUnit": "E_LYNE1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 124,
+      "levelTo": 124,
+      "nationalGridBmUnit": "LNMTH-2",
+      "bmUnit": "E_LYNE2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 124,
+      "levelTo": 124,
+      "nationalGridBmUnit": "LNMTH-3",
+      "bmUnit": "E_LYNE3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "SHOS-1",
+      "bmUnit": "E_SHOS-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "ARCHW-1",
+      "bmUnit": "T_ARCHW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 71,
+      "levelTo": 71,
+      "nationalGridBmUnit": "BEATO-1",
+      "bmUnit": "T_BEATO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:28:00Z",
+      "levelFrom": 108,
+      "levelTo": 108,
+      "nationalGridBmUnit": "BEATO-2",
+      "bmUnit": "T_BEATO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 143,
+      "levelTo": 143,
+      "nationalGridBmUnit": "BEATO-3",
+      "bmUnit": "T_BEATO-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 136,
+      "levelTo": 136,
+      "nationalGridBmUnit": "BEATO-4",
+      "bmUnit": "T_BEATO-4"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 75,
+      "levelTo": 75,
+      "nationalGridBmUnit": "BHLAW-1",
+      "bmUnit": "T_BHLAW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 25,
+      "levelTo": 33,
+      "nationalGridBmUnit": "BRBEO-1",
+      "bmUnit": "T_BRBEO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "CARR-1",
+      "bmUnit": "T_CARR-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "CARR-2",
+      "bmUnit": "T_CARR-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 162,
+      "levelTo": 162,
+      "nationalGridBmUnit": "CLDCW-1",
+      "bmUnit": "T_CLDCW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 159,
+      "levelTo": 159,
+      "nationalGridBmUnit": "CLDNW-1",
+      "bmUnit": "T_CLDNW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 105,
+      "levelTo": 105,
+      "nationalGridBmUnit": "CLDSW-1",
+      "bmUnit": "T_CLDSW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 4,
+      "levelTo": 4,
+      "nationalGridBmUnit": "CLVHS-1",
+      "bmUnit": "T_CLVHS-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 9,
+      "levelTo": 9,
+      "nationalGridBmUnit": "CLVHS-2",
+      "bmUnit": "T_CLVHS-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "CNQPS-1",
+      "bmUnit": "T_CNQPS-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "CNQPS-2",
+      "bmUnit": "T_CNQPS-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 327,
+      "levelTo": 327,
+      "nationalGridBmUnit": "CNQPS-3",
+      "bmUnit": "T_CNQPS-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "CNQPS-4",
+      "bmUnit": "T_CNQPS-4"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "COSO-1",
+      "bmUnit": "T_COSO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "DAMC-1",
+      "bmUnit": "T_DAMC-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 41,
+      "levelTo": 41,
+      "nationalGridBmUnit": "DDGNO-1",
+      "bmUnit": "T_DDGNO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 43,
+      "levelTo": 43,
+      "nationalGridBmUnit": "DDGNO-2",
+      "bmUnit": "T_DDGNO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 38,
+      "levelTo": 38,
+      "nationalGridBmUnit": "DDGNO-3",
+      "bmUnit": "T_DDGNO-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 40,
+      "levelTo": 40,
+      "nationalGridBmUnit": "DDGNO-4",
+      "bmUnit": "T_DDGNO-4"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "DIDCB5",
+      "bmUnit": "T_DIDCB5"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "DIDCB6",
+      "bmUnit": "T_DIDCB6"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "DINO-1",
+      "bmUnit": "T_DINO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "DINO-2",
+      "bmUnit": "T_DINO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "DINO-3",
+      "bmUnit": "T_DINO-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 300,
+      "levelTo": 300,
+      "nationalGridBmUnit": "DINO-4",
+      "bmUnit": "T_DINO-4"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "DINO-5",
+      "bmUnit": "T_DINO-5"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "DINO-6",
+      "bmUnit": "T_DINO-6"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 96,
+      "levelTo": 96,
+      "nationalGridBmUnit": "DOREW-1",
+      "bmUnit": "T_DOREW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 78,
+      "levelTo": 79,
+      "nationalGridBmUnit": "DOREW-2",
+      "bmUnit": "T_DOREW-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
       "levelFrom": 660,
       "levelTo": 660,
       "nationalGridBmUnit": "DRAXX-1",
@@ -26,9 +1719,9 @@
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
       "levelFrom": 560,
       "levelTo": 560,
       "nationalGridBmUnit": "DRAXX-2",
@@ -37,9 +1730,9 @@
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
       "levelFrom": 645,
       "levelTo": 645,
       "nationalGridBmUnit": "DRAXX-3",
@@ -48,9 +1741,9 @@
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
       "levelFrom": 645,
       "levelTo": 645,
       "nationalGridBmUnit": "DRAXX-4",
@@ -59,108 +1752,669 @@
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 6,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 10,
       "levelTo": 10,
+      "nationalGridBmUnit": "EAAO-1",
+      "bmUnit": "T_EAAO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 10,
+      "levelTo": 10,
+      "nationalGridBmUnit": "EAAO-2",
+      "bmUnit": "T_EAAO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 410,
+      "levelTo": 410,
+      "nationalGridBmUnit": "EECL-1",
+      "bmUnit": "T_EECL-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 115,
+      "levelTo": 118,
+      "nationalGridBmUnit": "FALGW-1",
+      "bmUnit": "T_FALGW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 90,
+      "levelTo": 90,
+      "nationalGridBmUnit": "FFES-1",
+      "bmUnit": "T_FFES-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 90,
+      "levelTo": 90,
+      "nationalGridBmUnit": "FFES-2",
+      "bmUnit": "T_FFES-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "FFES-3",
+      "bmUnit": "T_FFES-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "FFES-4",
+      "bmUnit": "T_FFES-4"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "FOYE-1",
+      "bmUnit": "T_FOYE-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 150,
+      "levelTo": 150,
+      "nationalGridBmUnit": "FOYE-2",
+      "bmUnit": "T_FOYE-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 4,
+      "levelTo": 4,
+      "nationalGridBmUnit": "GAOFO-1",
+      "bmUnit": "T_GANW-11"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 4,
+      "levelTo": 4,
+      "nationalGridBmUnit": "GAOFO-3",
+      "bmUnit": "T_GANW-13"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 4,
+      "levelTo": 4,
+      "nationalGridBmUnit": "GAOFO-2",
+      "bmUnit": "T_GANW-22"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 4,
+      "levelTo": 4,
+      "nationalGridBmUnit": "GAOFO-4",
+      "bmUnit": "T_GANW-24"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 11,
+      "levelTo": 14,
+      "nationalGridBmUnit": "GNFSW-1",
+      "bmUnit": "T_GNFSW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 395,
+      "levelTo": 395,
+      "nationalGridBmUnit": "GRAI-6",
+      "bmUnit": "T_GRAI-6"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 410,
+      "levelTo": 410,
+      "nationalGridBmUnit": "GRAI-7",
+      "bmUnit": "T_GRAI-7"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "GRAI-8",
+      "bmUnit": "T_GRAI-8"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 4,
+      "levelTo": 4,
+      "nationalGridBmUnit": "GRGBW-1",
+      "bmUnit": "T_GRGBW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 4,
+      "levelTo": 4,
+      "nationalGridBmUnit": "GRGBW-2",
+      "bmUnit": "T_GRGBW-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 3,
+      "levelTo": 3,
+      "nationalGridBmUnit": "GRGBW-3",
+      "bmUnit": "T_GRGBW-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 42,
+      "levelTo": 42,
+      "nationalGridBmUnit": "GRIFW-1",
+      "bmUnit": "T_GRIFW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 38,
+      "levelTo": 38,
+      "nationalGridBmUnit": "GRIFW-2",
+      "bmUnit": "T_GRIFW-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 7,
+      "levelTo": 7,
+      "nationalGridBmUnit": "GYMRO-15",
+      "bmUnit": "T_GYMR-15"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 14,
+      "levelTo": 14,
+      "nationalGridBmUnit": "GYMRO-17",
+      "bmUnit": "T_GYMR-17"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 8,
+      "levelTo": 8,
+      "nationalGridBmUnit": "GYMRO-26",
+      "bmUnit": "T_GYMR-26"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 11,
+      "levelTo": 11,
+      "nationalGridBmUnit": "GYMRO-28",
+      "bmUnit": "T_GYMR-28"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "HADHW-1",
+      "bmUnit": "T_HADHW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "HEYM11",
+      "bmUnit": "T_HEYM11"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 394,
+      "levelTo": 394,
+      "nationalGridBmUnit": "HEYM12",
+      "bmUnit": "T_HEYM12"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 546,
+      "levelTo": 546,
+      "nationalGridBmUnit": "HEYM27",
+      "bmUnit": "T_HEYM27"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "HEYM28",
+      "bmUnit": "T_HEYM28"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 44,
+      "levelTo": 44,
+      "nationalGridBmUnit": "HMGTO-1",
+      "bmUnit": "T_HMGTO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 40,
+      "levelTo": 40,
+      "nationalGridBmUnit": "HMGTO-2",
+      "bmUnit": "T_HMGTO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 91,
+      "levelTo": 121,
       "nationalGridBmUnit": "HOWAO-1",
       "bmUnit": "T_HOWAO-1"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 6,
-      "levelTo": 10,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 91,
+      "levelTo": 121,
       "nationalGridBmUnit": "HOWAO-2",
       "bmUnit": "T_HOWAO-2"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 6,
-      "levelTo": 10,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 91,
+      "levelTo": 121,
       "nationalGridBmUnit": "HOWAO-3",
       "bmUnit": "T_HOWAO-3"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 1,
-      "levelTo": 1,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 115,
+      "levelTo": 144,
+      "nationalGridBmUnit": "HOWBO-1",
+      "bmUnit": "T_HOWBO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 115,
+      "levelTo": 144,
+      "nationalGridBmUnit": "HOWBO-2",
+      "bmUnit": "T_HOWBO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 115,
+      "levelTo": 144,
+      "nationalGridBmUnit": "HOWBO-3",
+      "bmUnit": "T_HOWBO-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 52,
+      "levelTo": 52,
+      "nationalGridBmUnit": "HRSTW-1",
+      "bmUnit": "T_HRSTW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 580,
+      "levelTo": 580,
+      "nationalGridBmUnit": "HRTL-1",
+      "bmUnit": "T_HRTL-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "HRTL-2",
+      "bmUnit": "T_HRTL-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:01:00Z",
+      "levelFrom": 683,
+      "levelTo": 685,
+      "nationalGridBmUnit": "HUMR-1",
+      "bmUnit": "T_HUMR-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "INDQ-1",
+      "bmUnit": "T_INDQ-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "KEAD-1",
+      "bmUnit": "T_KEAD-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 817,
+      "levelTo": 817,
+      "nationalGridBmUnit": "KEAD-2",
+      "bmUnit": "T_KEAD-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "KILLPG-1",
+      "bmUnit": "T_KILLPG-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "KILLPG-2",
+      "bmUnit": "T_KILLPG-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "LAGA-1",
+      "bmUnit": "T_LAGA-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 11,
+      "levelTo": 11,
       "nationalGridBmUnit": "LARYO-1",
       "bmUnit": "T_LARYW-1"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 1,
-      "levelTo": 1,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 12,
+      "levelTo": 12,
       "nationalGridBmUnit": "LARYO-2",
       "bmUnit": "T_LARYW-2"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 1,
-      "levelTo": 1,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 12,
+      "levelTo": 12,
       "nationalGridBmUnit": "LARYO-3",
       "bmUnit": "T_LARYW-3"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 1,
-      "levelTo": 1,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 13,
+      "levelTo": 13,
       "nationalGridBmUnit": "LARYO-4",
       "bmUnit": "T_LARYW-4"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 249,
-      "levelTo": 249,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "LBAR-1",
+      "bmUnit": "T_LBAR-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 13,
+      "levelTo": 17,
+      "nationalGridBmUnit": "LNCSO-1",
+      "bmUnit": "T_LNCSW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 14,
+      "levelTo": 18,
+      "nationalGridBmUnit": "LNCSO-2",
+      "bmUnit": "T_LNCSW-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "MEDP-1",
+      "bmUnit": "T_MEDP-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 199,
+      "levelTo": 199,
       "nationalGridBmUnit": "MOWEO-1",
       "bmUnit": "T_MOWEO-1"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 235,
-      "levelTo": 235,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 191,
+      "levelTo": 191,
       "nationalGridBmUnit": "MOWEO-2",
       "bmUnit": "T_MOWEO-2"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
       "levelFrom": 0,
       "levelTo": 0,
       "nationalGridBmUnit": "MOWEO-3",
@@ -169,64 +2423,361 @@
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 153,
+      "levelTo": 153,
+      "nationalGridBmUnit": "MOWWO-1",
+      "bmUnit": "T_MOWWO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 144,
+      "levelTo": 144,
+      "nationalGridBmUnit": "MOWWO-2",
+      "bmUnit": "T_MOWWO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 96,
+      "levelTo": 96,
+      "nationalGridBmUnit": "MOWWO-3",
+      "bmUnit": "T_MOWWO-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 175,
+      "levelTo": 175,
+      "nationalGridBmUnit": "MOWWO-4",
+      "bmUnit": "T_MOWWO-4"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 831,
+      "levelTo": 831,
+      "nationalGridBmUnit": "MRWD-1",
+      "bmUnit": "T_MRWD-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 89,
+      "levelTo": 88,
+      "nationalGridBmUnit": "NNGAO-1",
+      "bmUnit": "T_NNGAO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 91,
+      "levelTo": 89,
+      "nationalGridBmUnit": "NNGAO-2",
+      "bmUnit": "T_NNGAO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:15:00Z",
+      "levelFrom": 28,
+      "levelTo": 28,
+      "nationalGridBmUnit": "OMNDO-1",
+      "bmUnit": "T_OMNDW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
       "levelFrom": 0,
       "levelTo": 0,
+      "nationalGridBmUnit": "PEHE-1",
+      "bmUnit": "T_PEHE-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "PEHE-2",
+      "bmUnit": "T_PEHE-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 428,
+      "levelTo": 428,
       "nationalGridBmUnit": "PEMB-11",
       "bmUnit": "T_PEMB-11"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 0,
-      "levelTo": 0,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 432,
+      "levelTo": 432,
       "nationalGridBmUnit": "PEMB-21",
       "bmUnit": "T_PEMB-21"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 0,
-      "levelTo": 0,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 418,
+      "levelTo": 418,
       "nationalGridBmUnit": "PEMB-31",
       "bmUnit": "T_PEMB-31"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 0,
-      "levelTo": 0,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 420,
+      "levelTo": 420,
       "nationalGridBmUnit": "PEMB-41",
       "bmUnit": "T_PEMB-41"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 0,
-      "levelTo": 0,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 416,
+      "levelTo": 416,
       "nationalGridBmUnit": "PEMB-51",
       "bmUnit": "T_PEMB-51"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:15:00Z",
+      "levelFrom": 26,
+      "levelTo": 26,
+      "nationalGridBmUnit": "PNYCW-1",
+      "bmUnit": "T_PNYCW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 23,
+      "levelTo": 31,
+      "nationalGridBmUnit": "RCBKO-1",
+      "bmUnit": "T_RCBKO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 23,
+      "levelTo": 31,
+      "nationalGridBmUnit": "RCBKO-2",
+      "bmUnit": "T_RCBKO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 14,
+      "levelTo": 14,
+      "nationalGridBmUnit": "RMPNO-1",
+      "bmUnit": "T_RMPNO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 17,
+      "levelTo": 17,
+      "nationalGridBmUnit": "RMPNO-2",
+      "bmUnit": "T_RMPNO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "ROCK-1",
+      "bmUnit": "T_ROCK-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "RYHPS-1",
+      "bmUnit": "T_RYHPS-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "SCCL-1",
+      "bmUnit": "T_SCCL-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "SCCL-2",
+      "bmUnit": "T_SCCL-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "SCCL-3",
+      "bmUnit": "T_SCCL-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "SEAB-1",
+      "bmUnit": "T_SEAB-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "SEAB-2",
+      "bmUnit": "T_SEAB-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "SEEL-1",
+      "bmUnit": "T_SEEL-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "SHBA-1",
+      "bmUnit": "T_SHBA-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "SHBA-2",
+      "bmUnit": "T_SHBA-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 23,
+      "levelTo": 23,
+      "nationalGridBmUnit": "SHRSO-1",
+      "bmUnit": "T_SHRSW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 39,
+      "levelTo": 39,
+      "nationalGridBmUnit": "SHRSO-2",
+      "bmUnit": "T_SHRSW-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
       "levelFrom": 595,
       "levelTo": 595,
       "nationalGridBmUnit": "SIZB-1",
@@ -235,9 +2786,9 @@
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
       "levelFrom": 593,
       "levelTo": 593,
       "nationalGridBmUnit": "SIZB-2",
@@ -246,9 +2797,185 @@
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:15:00Z",
+      "levelFrom": 135,
+      "levelTo": 135,
+      "nationalGridBmUnit": "SOKYW-1",
+      "bmUnit": "T_SOKYW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 792,
+      "levelTo": 792,
+      "nationalGridBmUnit": "SPLN-1",
+      "bmUnit": "T_SPLN-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "STAY-1",
+      "bmUnit": "T_STAY-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "STAY-2",
+      "bmUnit": "T_STAY-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "STAY-3",
+      "bmUnit": "T_STAY-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "STAY-4",
+      "bmUnit": "T_STAY-4"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 67,
+      "levelTo": 67,
+      "nationalGridBmUnit": "STLGW-1",
+      "bmUnit": "T_STLGW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 79,
+      "levelTo": 79,
+      "nationalGridBmUnit": "STLGW-2",
+      "bmUnit": "T_STLGW-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 69,
+      "levelTo": 69,
+      "nationalGridBmUnit": "STLGW-3",
+      "bmUnit": "T_STLGW-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 380,
+      "levelTo": 380,
+      "nationalGridBmUnit": "SUTB-1",
+      "bmUnit": "T_SUTB-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "SVRP-10",
+      "bmUnit": "T_SVRP-10"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 0,
+      "levelTo": 0,
+      "nationalGridBmUnit": "SVRP-20",
+      "bmUnit": "T_SVRP-20"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:15:00Z",
+      "levelFrom": 1,
+      "levelTo": 1,
+      "nationalGridBmUnit": "THNTO-1",
+      "bmUnit": "T_THNTO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:15:00Z",
+      "levelFrom": 1,
+      "levelTo": 1,
+      "nationalGridBmUnit": "THNTO-2",
+      "bmUnit": "T_THNTO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 50,
+      "levelTo": 50,
+      "nationalGridBmUnit": "TKNEW-1",
+      "bmUnit": "T_TKNEW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 45,
+      "levelTo": 45,
+      "nationalGridBmUnit": "TKNWW-1",
+      "bmUnit": "T_TKNWW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
       "levelFrom": 650,
       "levelTo": 650,
       "nationalGridBmUnit": "TORN-1",
@@ -257,9 +2984,9 @@
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
       "levelFrom": 655,
       "levelTo": 655,
       "nationalGridBmUnit": "TORN-2",
@@ -268,24 +2995,182 @@
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 127,
-      "levelTo": 127,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 110,
+      "levelTo": 110,
+      "nationalGridBmUnit": "VKNGW-1",
+      "bmUnit": "T_VKNGW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 109,
+      "levelTo": 109,
+      "nationalGridBmUnit": "VKNGW-2",
+      "bmUnit": "T_VKNGW-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 104,
+      "levelTo": 104,
+      "nationalGridBmUnit": "VKNGW-3",
+      "bmUnit": "T_VKNGW-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 106,
+      "levelTo": 106,
+      "nationalGridBmUnit": "VKNGW-4",
+      "bmUnit": "T_VKNGW-4"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 375,
+      "levelTo": 375,
+      "nationalGridBmUnit": "WBURB-1",
+      "bmUnit": "T_WBURB-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 409,
+      "levelTo": 409,
+      "nationalGridBmUnit": "WBURB-2",
+      "bmUnit": "T_WBURB-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:29:00Z",
+      "levelFrom": 409,
+      "levelTo": 409,
+      "nationalGridBmUnit": "WBURB-3",
+      "bmUnit": "T_WBURB-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 45,
+      "levelTo": 45,
+      "nationalGridBmUnit": "WDNSO-1",
+      "bmUnit": "T_WDNSO-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 47,
+      "levelTo": 47,
+      "nationalGridBmUnit": "WDNSO-2",
+      "bmUnit": "T_WDNSO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 173,
+      "levelTo": 173,
       "nationalGridBmUnit": "WHILW-1",
       "bmUnit": "T_WHILW-1"
     },
     {
       "dataset": "PN",
       "settlementDate": "2026-09-24",
-      "settlementPeriod": 27,
-      "timeFrom": "2026-09-24T12:00:00Z",
-      "timeTo": "2026-09-24T12:30:00Z",
-      "levelFrom": 61,
-      "levelTo": 61,
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 89,
+      "levelTo": 89,
       "nationalGridBmUnit": "WHILW-2",
       "bmUnit": "T_WHILW-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 82,
+      "levelTo": 89,
+      "nationalGridBmUnit": "WLNYO-2",
+      "bmUnit": "T_WLNYO-2"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 287,
+      "levelTo": 290,
+      "nationalGridBmUnit": "WLNYO-3",
+      "bmUnit": "T_WLNYO-3"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 196,
+      "levelTo": 216,
+      "nationalGridBmUnit": "WLNYO-4",
+      "bmUnit": "T_WLNYO-4"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 44,
+      "levelTo": 45,
+      "nationalGridBmUnit": "WLNYW-1",
+      "bmUnit": "T_WLNYW-1"
+    },
+    {
+      "dataset": "PN",
+      "settlementDate": "2026-09-24",
+      "settlementPeriod": 37,
+      "timeFrom": "2026-09-24T17:00:00Z",
+      "timeTo": "2026-09-24T17:30:00Z",
+      "levelFrom": 99,
+      "levelTo": 104,
+      "nationalGridBmUnit": "WTMSO-1",
+      "bmUnit": "T_WTMSO-1"
     }
-  ]
+  ],
+  "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/PN?settlementDate=2026-09-24&settlementPeriod=37&format=json",
+  "revision": "6955217383e1d3bd8a1e0bfc88bbfb0902a45aba6f3613aa6b14a21067ef67e6",
+  "mappingReviewedAt": "2026-09-24T17:20:24.270161+00:00",
+  "registryCheckedAt": "2026-09-24T17:21:21.808Z"
 }

@@ -9,5 +9,5 @@ for(const width of [390,1440])test(`asset explorer navigation and filters ${widt
  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
 });
 test('asset deep link opens reviewed evidence and separates scheduled and metered numbers',async({page})=>{
- await page.goto('/?asset=drax');const detail=page.getByRole('region',{name:'Selected map evidence'});await expect(detail).toContainText('Drax');await expect(detail).toContainText('Notified operating plan');await expect(detail).toContainText('SCHEDULED · NOT MEASURED');await expect(detail.getByRole('link',{name:'Permanent link to this asset'})).toHaveAttribute('href','/?asset=drax');
+ await page.goto('/?asset=drax');const detail=page.getByRole('region',{name:'Selected map evidence'});await expect(detail).toContainText('Drax');await expect(detail).toContainText('Notified output');await expect(detail).toContainText('SCHEDULED · NOT MEASURED');await expect(detail.getByRole('link',{name:'Permanent link to this asset'})).toHaveAttribute('href','/?asset=drax');
 });

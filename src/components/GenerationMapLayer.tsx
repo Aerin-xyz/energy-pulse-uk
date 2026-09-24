@@ -1,3 +1,4 @@
+import {notificationReading} from '@/lib/notificationFeed.mjs';
 import {useGenerationCatalogue} from '@/hooks/useGenerationCatalogue';
 import {AssetOperations} from './AssetOperations';
 import {assetClusters,filterAssets,capacityText} from '@/lib/assetExplorer.mjs';
@@ -42,7 +43,7 @@ export function GenerationMapLayer({filter,search,pilotOnly,selected,onSelect,sn
  }
  return <g className="generation-layer">{clusters.map(({x,y,members})=>{
  const grouped=members.length>1,id=grouped?'cluster:'+members.map(a=>a.id).join(','):members[0].id;
- const a=members.find(a=>a.id===selected)||members[0],r=snapshot.points.at(-1)?.values[a.id];const mw=a.unitMatch.status==='verified'?r?.mw:null,known=typeof mw==='number';
+ const a=members.find(a=>a.id===selected)||members[0],r=snapshot.points.at(-1)?.values[a.id];const n=notificationReading(a,operations);const notified=n.current&&n.mw!==null;const mw=notified?n.mw:a.unitMatch.status==='verified'?r?.mw:null,known=typeof mw==='number';
  const active=selected===id||members.some(a=>a.id===selected),name=grouped?`${members.length} nearby sites`:a.name;
  const radius=grouped?(zoom<2?5:14):known?Math.max(12,Math.min(18,12+Math.sqrt(Math.abs(mw))/12)):12;
  return <g key={id} transform={`translate(${x} ${y}) scale(${1/zoom})`} role="button" tabIndex={0} aria-label={grouped?`Inspect ${members.length} nearby generation sites: ${members.slice(0,5).map(a=>a.name).join(', ')+(members.length>5?` and ${members.length-5} more`:'')}`:`Inspect ${a.name} generation`} aria-pressed={active} onClick={()=>onSelect(id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(id)}}} style={{color:grouped?'#e6bd62':colours[a.type]}} className={(labels.has(id)?'asset-marker labelled':'asset-marker')+(grouped&&zoom<2?' compact-cluster':'')}>
@@ -52,7 +53,7 @@ export function GenerationMapLayer({filter,search,pilotOnly,selected,onSelect,sn
  <circle className="asset-halo" r={radius+7} fill="currentColor" opacity={active?.3:.08}/>
  <circle r={radius} fill="#071e2a" stroke="currentColor" strokeWidth={known?1.5:1} strokeDasharray={!known&&!grouped?'2 3':undefined}/>
  {grouped?<text y="4" textAnchor="middle" className="asset-count">{members.length}</text>:<TechnologyGlyph type={a.type}/>}
- <g className="asset-marker-caption" pointerEvents="none"><text x="24" y="-3" className="asset-label">{name}</text><text x="24" y="12" className="asset-value">{grouped?'Select or zoom in':known?`${Math.round(mw).toLocaleString('en-GB')} MW · dated`:'Capacity only · no output'}</text></g>
+ <g className="asset-marker-caption" pointerEvents="none"><text x="24" y="-3" className="asset-label">{name}</text><text x="24" y="12" className="asset-value">{grouped?'Select or zoom in':known?`${Math.round(mw).toLocaleString('en-GB')} MW · ${notified?'notified':'dated'}`:'Capacity only · no output'}</text></g>
  </g>})}</g>
 }
 export function AssetEvidence({id,snapshot,error,onSelect}:{id:string;snapshot:AssetSnapshot;error:boolean;onSelect:(id:string)=>void}){
@@ -62,16 +63,16 @@ export function AssetEvidence({id,snapshot,error,onSelect}:{id:string;snapshot:A
  }
 
  const asset=assets.find(a=>a.id===id);if(!asset)return null;const latest=snapshot.points.at(-1);const rawReading=latest?.values[id];const r=asset.unitMatch.status==='verified'?rawReading:undefined;const max=Math.max(1,...snapshot.points.map(p=>Math.abs(p.values[id]?.mw??0)));
- return <div className="asset-evidence"><span className="asset-kicker" style={{color:colours[asset.type]}}>{asset.type} · {asset.unitMatch.status==='verified'?'metered history':'capacity & location'}</span><h3>{asset.name}</h3><p className="asset-location">{asset.country} · {asset.latitude.toFixed(3)}° N, {Math.abs(asset.longitude).toFixed(3)}° {asset.longitude<0?'W':'E'}</p><a className="asset-permalink" href={`/?asset=${asset.id}`}>Permanent link to this asset ↗</a><p className="asset-small">{asset.operationalStatus||'Operational in source register'} · {asset.operator||'Operator not supplied'}</p><p className="asset-small">{asset.canonicalId} · Unit match: {asset.unitMatch.status}</p><p className="asset-output">{r?.mw!=null?`${Math.round(r.mw).toLocaleString('en-GB')} MW`:'Output unavailable'}</p>
+ return <div className="asset-evidence"><span className="asset-kicker" style={{color:colours[asset.type]}}>{asset.type} · {asset.unitMatch.status==='verified'?'metered history':'generation evidence'}</span><h3>{asset.name}</h3><p className="asset-location">{asset.country} · {asset.latitude.toFixed(3)}° N, {Math.abs(asset.longitude).toFixed(3)}° {asset.longitude<0?'W':'E'}</p><a className="asset-permalink" href={`/?asset=${asset.id}`}>Permanent link to this asset ↗</a><p className="asset-small">{asset.operationalStatus||'Operational in source register'} · {asset.operator||'Operator not supplied'}</p><p className="asset-small">{asset.canonicalId} · Metered unit match: {asset.unitMatch.status}</p><AssetOperations asset={asset}/><h4>Last measured output</h4><p className="asset-output">{r?.mw!=null?`${Math.round(r.mw).toLocaleString('en-GB')} MW`:'Output unavailable'}</p>
  {latest&&asset.unitMatch.status==='verified'&&<p><strong>{assetTime(latest.from)} – {new Date(latest.to).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'})} UK</strong><br/>Half-hour average · delayed settlement data, not live.</p>}
  {snapshot.refreshError&&<p>Latest refresh failed. Previously published, dated history is retained; it has not been refreshed.</p>}
  {error&&<p>Snapshot could not be loaded. Geography remains available.</p>}
  <dl><div><dt>Installed site capacity</dt><dd>{capacityText(asset.installedCapacityMW)}</dd></div><div><dt>Measured unit coverage</dt><dd>{asset.units.length ? `${r?.coverage??0} / ${asset.units.length}` : "Not mapped"}</dd></div></dl>
  <p className="asset-small">Installed capacity: {asset.registryAsOf||asset.capacityAsOf}. Not current output or available capacity. {asset.scopeNote} {asset.type==='Pumped storage'?'Storage is not primary generation; signed readings are retained.':''}</p>
- {asset.unitMatch.status!=="verified"&&<p className="asset-small">Location and capacity are available. No verified generating-unit output is linked; this does not mean the site generates zero.</p>}
+ {asset.unitMatch.status!=="verified"&&<p className="asset-small">Location and capacity are available. No verified measured-output history is linked; any notified plan is shown separately. This does not mean the site generates zero.</p>}
  {asset.mappingNote&&<p className="asset-small">{asset.mappingNote}</p>}
  {asset.unitMatch.status==="verified"&&asset.units.length>0&&snapshot.points.length>0&&<><h4>Published end-of-day sample · six hours</h4><div className="asset-history" aria-hidden="true">{snapshot.points.map(p=>{const v=p.values[id]?.mw;return <span key={p.from} title={`${assetTime(p.from)}: ${v==null?'missing':v.toFixed(1)+' MW'}`} style={{height:v==null?'2px':`${Math.max(2,Math.abs(v)/max*100)}%`,background:v==null?'#57636d':v<0?'#ffa977':colours[asset.type]}}/>})}</div><details><summary>Read observations and unit mapping</summary><ul>{snapshot.points.map(p=><li key={p.from}>{assetTime(p.from)}: {p.values[id]?.mw==null?'Unavailable':`${p.values[id].mw!.toFixed(1)} MW`}</li>)}</ul><p>{asset.units.join(', ')}</p></details></>}
- <AssetOperations units={asset.units} verified={asset.unitMatch.status==='verified'}/>
+ 
  <p className="asset-small">A site total requires every mapped unit at the same interval. Missing units are not zero. Approximate register location; offshore records may locate a project or connection area, not a surveyed footprint.</p>
  <p className="asset-small">{asset.unitMatch.status==="verified" && <>{snapshot.verificationCheckedAt?`Registry checked ${assetTime(snapshot.verificationCheckedAt)} UK.`:'Registry verification time unavailable.'} {snapshot.checkedAt ? `Feed checked ${assetTime(snapshot.checkedAt)} UK. Updated by scheduled source ingestion.` : "Feed check time unavailable."}</>}</p><div className="asset-sources">{asset.sourceRefs.filter(s=>s.provider==="DESNZ REPD").map(s=><a key={s.id} href={s.url}>REPD #{s.id} ↗</a>)}<a href={asset.capacitySource} target="_blank" rel="noreferrer">Capacity source ↗</a><a href="https://bmrs.elexon.co.uk/actual-generation-output-per-generation-unit" target="_blank" rel="noreferrer">Elexon metered data ↗</a><a href={asset.geographySource} target="_blank" rel="noreferrer">Site geography ↗</a></div>
  </div>

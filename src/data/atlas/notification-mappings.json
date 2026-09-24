@@ -1,0 +1,3538 @@
+{
+  "reviewedAt": "2026-09-24T17:20:24.270161+00:00",
+  "thresholdMW": 100,
+  "basis": "Strictly above 100 MW installed capacity in the operational GB catalogue; notification matches do not upgrade metered-history verification. No fuzzy name matching at runtime.",
+  "registryURL": "https://data.elexon.co.uk/bmrs/api/v1/reference/bmunits/all?format=json",
+  "entries": [
+    {
+      "id": "drax",
+      "name": "Drax",
+      "capacityMW": 2580,
+      "status": "verified",
+      "units": [
+        "T_DRAXX-1",
+        "T_DRAXX-2",
+        "T_DRAXX-3",
+        "T_DRAXX-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "BIO-000501"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "174"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "175"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "192"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "6659"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_DRAXX-1",
+          "nationalGridBmUnit": "DRAXX-1",
+          "bmUnitName": "T_DRAXX-1",
+          "leadPartyName": "Drax Power Ltd",
+          "fuelType": "BIOMASS",
+          "fpnFlag": true,
+          "generationCapacity": "665.248"
+        },
+        {
+          "elexonBmUnit": "T_DRAXX-2",
+          "nationalGridBmUnit": "DRAXX-2",
+          "bmUnitName": "T_DRAXX-2",
+          "leadPartyName": "Drax Power Ltd",
+          "fuelType": "BIOMASS",
+          "fpnFlag": true,
+          "generationCapacity": "669.400"
+        },
+        {
+          "elexonBmUnit": "T_DRAXX-3",
+          "nationalGridBmUnit": "DRAXX-3",
+          "bmUnitName": "T_DRAXX-3",
+          "leadPartyName": "Drax Power Ltd",
+          "fuelType": "BIOMASS",
+          "fpnFlag": true,
+          "generationCapacity": "661.400"
+        },
+        {
+          "elexonBmUnit": "T_DRAXX-4",
+          "nationalGridBmUnit": "DRAXX-4",
+          "bmUnitName": "T_DRAXX-4",
+          "leadPartyName": "Drax Power Ltd",
+          "fuelType": "BIOMASS",
+          "fpnFlag": true,
+          "generationCapacity": "645.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "pembroke",
+      "name": "Pembroke",
+      "capacityMW": 2325,
+      "status": "verified",
+      "units": [
+        "T_PEMB-11",
+        "T_PEMB-21",
+        "T_PEMB-31",
+        "T_PEMB-41",
+        "T_PEMB-51"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000453"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_PEMB-11",
+          "nationalGridBmUnit": "PEMB-11",
+          "bmUnitName": "Pembroke Unit 11",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "475.000"
+        },
+        {
+          "elexonBmUnit": "T_PEMB-21",
+          "nationalGridBmUnit": "PEMB-21",
+          "bmUnitName": "Pembroke Unit 21",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "475.000"
+        },
+        {
+          "elexonBmUnit": "T_PEMB-31",
+          "nationalGridBmUnit": "PEMB-31",
+          "bmUnitName": "Pembroke Unit 31",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "475.000"
+        },
+        {
+          "elexonBmUnit": "T_PEMB-41",
+          "nationalGridBmUnit": "PEMB-41",
+          "bmUnitName": "Pembroke Unit 41",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "475.000"
+        },
+        {
+          "elexonBmUnit": "T_PEMB-51",
+          "nationalGridBmUnit": "PEMB-51",
+          "bmUnitName": "Pembroke Unit 51",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "475.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "heysham",
+      "name": "Heysham",
+      "capacityMW": 2300,
+      "status": "verified",
+      "units": [
+        "T_HEYM11",
+        "T_HEYM12",
+        "T_HEYM27",
+        "T_HEYM28"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "NUC-000127"
+        },
+        {
+          "provider": "DESNZ DUKES",
+          "id": "NUC-000131"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_HEYM11",
+          "nationalGridBmUnit": "HEYM11",
+          "bmUnitName": "Heysham 1 Generator 1",
+          "leadPartyName": "EDF Energy Nuclear Generation",
+          "fuelType": "NUCLEAR",
+          "fpnFlag": true,
+          "generationCapacity": "610.000"
+        },
+        {
+          "elexonBmUnit": "T_HEYM12",
+          "nationalGridBmUnit": "HEYM12",
+          "bmUnitName": "Heysham 1 Generator 2",
+          "leadPartyName": "EDF Energy Nuclear Generation",
+          "fuelType": "NUCLEAR",
+          "fpnFlag": true,
+          "generationCapacity": "585.000"
+        },
+        {
+          "elexonBmUnit": "T_HEYM27",
+          "nationalGridBmUnit": "HEYM27",
+          "bmUnitName": "Heysham 2 Generator 7",
+          "leadPartyName": "EDF Energy Nuclear Generation",
+          "fuelType": "NUCLEAR",
+          "fpnFlag": true,
+          "generationCapacity": "660.000"
+        },
+        {
+          "elexonBmUnit": "T_HEYM28",
+          "nationalGridBmUnit": "HEYM28",
+          "bmUnitName": "Heysham 2 Generator 8",
+          "leadPartyName": "EDF Energy Nuclear Generation",
+          "fuelType": "NUCLEAR",
+          "fpnFlag": true,
+          "generationCapacity": "676.152"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "staythorpe",
+      "name": "Staythorpe",
+      "capacityMW": 1828,
+      "status": "verified",
+      "units": [
+        "T_STAY-1",
+        "T_STAY-2",
+        "T_STAY-3",
+        "T_STAY-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000375"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_STAY-1",
+          "nationalGridBmUnit": "STAY-1",
+          "bmUnitName": "Staythorpe Unit 1",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "464.000"
+        },
+        {
+          "elexonBmUnit": "T_STAY-2",
+          "nationalGridBmUnit": "STAY-2",
+          "bmUnitName": "Staythorpe Unit 2",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "464.000"
+        },
+        {
+          "elexonBmUnit": "T_STAY-3",
+          "nationalGridBmUnit": "STAY-3",
+          "bmUnitName": "Staythorpe Unit 3",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "464.000"
+        },
+        {
+          "elexonBmUnit": "T_STAY-4",
+          "nationalGridBmUnit": "STAY-4",
+          "bmUnitName": "Staythorpe Unit 4",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "464.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "dinorwig",
+      "name": "Dinorwig",
+      "capacityMW": 1800,
+      "status": "verified",
+      "units": [
+        "T_DINO-1",
+        "T_DINO-2",
+        "T_DINO-3",
+        "T_DINO-4",
+        "T_DINO-5",
+        "T_DINO-6"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "HST-000128"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "6839"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_DINO-1",
+          "nationalGridBmUnit": "DINO-1",
+          "bmUnitName": "Dinorwig 1",
+          "leadPartyName": "First Hydro Company",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "320.000"
+        },
+        {
+          "elexonBmUnit": "T_DINO-2",
+          "nationalGridBmUnit": "DINO-2",
+          "bmUnitName": "Dinorwig 2",
+          "leadPartyName": "First Hydro Company",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "320.000"
+        },
+        {
+          "elexonBmUnit": "T_DINO-3",
+          "nationalGridBmUnit": "DINO-3",
+          "bmUnitName": "Dinorwig 3",
+          "leadPartyName": "First Hydro Company",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "320.000"
+        },
+        {
+          "elexonBmUnit": "T_DINO-4",
+          "nationalGridBmUnit": "DINO-4",
+          "bmUnitName": "Dinorwig 4",
+          "leadPartyName": "First Hydro Company",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "320.000"
+        },
+        {
+          "elexonBmUnit": "T_DINO-5",
+          "nationalGridBmUnit": "DINO-5",
+          "bmUnitName": "Dinorwig 5",
+          "leadPartyName": "First Hydro Company",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "320.000"
+        },
+        {
+          "elexonBmUnit": "T_DINO-6",
+          "nationalGridBmUnit": "DINO-6",
+          "bmUnitName": "Dinorwig 6",
+          "leadPartyName": "First Hydro Company",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "320.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "keadby",
+      "name": "Keadby",
+      "capacityMW": 1572,
+      "status": "verified",
+      "units": [
+        "T_KEAD-1",
+        "T_KEAD-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000123"
+        },
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-001553"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_KEAD-1",
+          "nationalGridBmUnit": "KEAD-1",
+          "bmUnitName": "KGL CCGT 1",
+          "leadPartyName": "Keadby Generation Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "764.000"
+        },
+        {
+          "elexonBmUnit": "T_KEAD-2",
+          "nationalGridBmUnit": "KEAD-2",
+          "bmUnitName": "Keadby-2 Main",
+          "leadPartyName": "Keadby Generation Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "890.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "didcot-b",
+      "name": "Didcot B",
+      "capacityMW": 1490,
+      "status": "verified",
+      "units": [
+        "T_DIDCB5",
+        "T_DIDCB6"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000176"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_DIDCB5",
+          "nationalGridBmUnit": "DIDCB5",
+          "bmUnitName": "Didcot B main unit 5",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "770.000"
+        },
+        {
+          "elexonBmUnit": "T_DIDCB6",
+          "nationalGridBmUnit": "DIDCB6",
+          "bmUnitName": "Didcot B main unit 6",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "720.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "grain",
+      "name": "Grain",
+      "capacityMW": 1404,
+      "status": "verified",
+      "units": [
+        "T_GRAI-6",
+        "T_GRAI-7",
+        "T_GRAI-8"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000404"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_GRAI-6",
+          "nationalGridBmUnit": "GRAI-6",
+          "bmUnitName": "T_GRAI-6",
+          "leadPartyName": "Uniper UK Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "468.000"
+        },
+        {
+          "elexonBmUnit": "T_GRAI-7",
+          "nationalGridBmUnit": "GRAI-7",
+          "bmUnitName": "T_GRAI-7",
+          "leadPartyName": "Uniper UK Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "468.000"
+        },
+        {
+          "elexonBmUnit": "T_GRAI-8",
+          "nationalGridBmUnit": "GRAI-8",
+          "bmUnitName": "T_GRAI-8",
+          "leadPartyName": "Uniper UK Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "468.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "south-humber-bank",
+      "name": "South Humber Bank",
+      "capacityMW": 1400,
+      "status": "verified",
+      "units": [
+        "T_SHBA-1",
+        "T_SHBA-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000169"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_SHBA-1",
+          "nationalGridBmUnit": "SHBA-1",
+          "bmUnitName": "SOUTH HUMBER BANK P/S PHASE 1",
+          "leadPartyName": "EP UK INVESTMENTS LIMITED",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "821.400"
+        },
+        {
+          "elexonBmUnit": "T_SHBA-2",
+          "nationalGridBmUnit": "SHBA-2",
+          "bmUnitName": "SOUTH HUMBER BANK P/S PHASE 2",
+          "leadPartyName": "EP UK INVESTMENTS LIMITED",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "580.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "hornsea-two",
+      "name": "Hornsea Two",
+      "capacityMW": 1386,
+      "status": "verified",
+      "units": [
+        "T_HOWBO-1",
+        "T_HOWBO-2",
+        "T_HOWBO-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001365"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2502"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_HOWBO-1",
+          "nationalGridBmUnit": "HOWBO-1",
+          "bmUnitName": "HORNSEA_WF_2A",
+          "leadPartyName": "Breesea Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "440.000"
+        },
+        {
+          "elexonBmUnit": "T_HOWBO-2",
+          "nationalGridBmUnit": "HOWBO-2",
+          "bmUnitName": "HORNSEA_WF_2B",
+          "leadPartyName": "Sonningmay Wind Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "440.000"
+        },
+        {
+          "elexonBmUnit": "T_HOWBO-3",
+          "nationalGridBmUnit": "HOWBO-3",
+          "bmUnitName": "HORNSEA_WF_2C",
+          "leadPartyName": "Soundmark Wind Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "440.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "connahs-quay",
+      "name": "Connah\u2019s Quay",
+      "capacityMW": 1380,
+      "status": "verified",
+      "units": [
+        "T_CNQPS-1",
+        "T_CNQPS-2",
+        "T_CNQPS-3",
+        "T_CNQPS-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000162"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_CNQPS-1",
+          "nationalGridBmUnit": "CNQPS-1",
+          "bmUnitName": "T_CNQPS-1",
+          "leadPartyName": "Uniper UK Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "351.162"
+        },
+        {
+          "elexonBmUnit": "T_CNQPS-2",
+          "nationalGridBmUnit": "CNQPS-2",
+          "bmUnitName": "T_CNQPS-2",
+          "leadPartyName": "Uniper UK Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "352.000"
+        },
+        {
+          "elexonBmUnit": "T_CNQPS-3",
+          "nationalGridBmUnit": "CNQPS-3",
+          "bmUnitName": "T_CNQPS-3",
+          "leadPartyName": "Uniper UK Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "350.000"
+        },
+        {
+          "elexonBmUnit": "T_CNQPS-4",
+          "nationalGridBmUnit": "CNQPS-4",
+          "bmUnitName": "T_CNQPS-4",
+          "leadPartyName": "Uniper UK Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "356.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "west-burton-b",
+      "name": "West Burton B",
+      "capacityMW": 1332,
+      "status": "verified",
+      "units": [
+        "T_WBURB-1",
+        "T_WBURB-2",
+        "T_WBURB-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000502"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_WBURB-1",
+          "nationalGridBmUnit": "WBURB-1",
+          "bmUnitName": "West Burton B Unit 1",
+          "leadPartyName": "West Burton B Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "470.000"
+        },
+        {
+          "elexonBmUnit": "T_WBURB-2",
+          "nationalGridBmUnit": "WBURB-2",
+          "bmUnitName": "West Burton B Unit 2",
+          "leadPartyName": "West Burton B Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "470.000"
+        },
+        {
+          "elexonBmUnit": "T_WBURB-3",
+          "nationalGridBmUnit": "WBURB-3",
+          "bmUnitName": "West Burton B Unit 3",
+          "leadPartyName": "West Burton B Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "470.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "vpi-immingham",
+      "name": "VPI Immingham",
+      "capacityMW": 1252,
+      "status": "verified",
+      "units": [
+        "T_HUMR-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000249"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_HUMR-1",
+          "nationalGridBmUnit": "HUMR-1",
+          "bmUnitName": "HUMR-1",
+          "leadPartyName": "VPI Immingham LLP",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "1283.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "hornsea-one",
+      "name": "Hornsea One",
+      "capacityMW": 1218,
+      "status": "verified",
+      "units": [
+        "T_HOWAO-1",
+        "T_HOWAO-2",
+        "T_HOWAO-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001277"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2525"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_HOWAO-1",
+          "nationalGridBmUnit": "HOWAO-1",
+          "bmUnitName": "HORNSEA_1A",
+          "leadPartyName": "Hornsea 1 Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "400.000"
+        },
+        {
+          "elexonBmUnit": "T_HOWAO-2",
+          "nationalGridBmUnit": "HOWAO-2",
+          "bmUnitName": "HORNSEA_1B",
+          "leadPartyName": "Hornsea 1 Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "400.000"
+        },
+        {
+          "elexonBmUnit": "T_HOWAO-3",
+          "nationalGridBmUnit": "HOWAO-3",
+          "bmUnitName": "HORNSEA_1C",
+          "leadPartyName": "Hornsea 1 Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "400.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "seabank",
+      "name": "Seabank",
+      "capacityMW": 1205,
+      "status": "verified",
+      "units": [
+        "T_SEAB-1",
+        "T_SEAB-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000197"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_SEAB-1",
+          "nationalGridBmUnit": "SEAB-1",
+          "bmUnitName": "Seabank Power Module",
+          "leadPartyName": "Seabank Power Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "830.000"
+        },
+        {
+          "elexonBmUnit": "T_SEAB-2",
+          "nationalGridBmUnit": "SEAB-2",
+          "bmUnitName": "Seabank Power Module 2",
+          "leadPartyName": "Seabank Power Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "406.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "saltend",
+      "name": "Saltend",
+      "capacityMW": 1200,
+      "status": "verified",
+      "units": [
+        "T_SCCL-1",
+        "T_SCCL-2",
+        "T_SCCL-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000198"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_SCCL-1",
+          "nationalGridBmUnit": "SCCL-1",
+          "bmUnitName": "Unit 1",
+          "leadPartyName": "SCCL",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "408.200"
+        },
+        {
+          "elexonBmUnit": "T_SCCL-2",
+          "nationalGridBmUnit": "SCCL-2",
+          "bmUnitName": "Unit 2",
+          "leadPartyName": "SCCL",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "409.100"
+        },
+        {
+          "elexonBmUnit": "T_SCCL-3",
+          "nationalGridBmUnit": "SCCL-3",
+          "bmUnitName": "Unit 3",
+          "leadPartyName": "SCCL",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "409.300"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "torness",
+      "name": "Torness",
+      "capacityMW": 1200,
+      "status": "verified",
+      "units": [
+        "T_TORN-1",
+        "T_TORN-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "NUC-000132"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_TORN-1",
+          "nationalGridBmUnit": "TORN-1",
+          "bmUnitName": "Torness Generator 1",
+          "leadPartyName": "EDF Energy Nuclear Generation",
+          "fuelType": "NUCLEAR",
+          "fpnFlag": true,
+          "generationCapacity": "652.000"
+        },
+        {
+          "elexonBmUnit": "T_TORN-2",
+          "nationalGridBmUnit": "TORN-2",
+          "bmUnitName": "Torness Generator 2",
+          "leadPartyName": "EDF Energy Nuclear Generation",
+          "fuelType": "NUCLEAR",
+          "fpnFlag": true,
+          "generationCapacity": "700.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "sizewell-b",
+      "name": "Sizewell B",
+      "capacityMW": 1198,
+      "status": "verified",
+      "units": [
+        "T_SIZB-1",
+        "T_SIZB-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "NUC-000159"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_SIZB-1",
+          "nationalGridBmUnit": "SIZB-1",
+          "bmUnitName": "Sizewell B Genrator 1",
+          "leadPartyName": "EDF Energy Nuclear Generation",
+          "fuelType": "NUCLEAR",
+          "fpnFlag": true,
+          "generationCapacity": "656.920"
+        },
+        {
+          "elexonBmUnit": "T_SIZB-2",
+          "nationalGridBmUnit": "SIZB-2",
+          "bmUnitName": "Sizewell B Genrator 2",
+          "leadPartyName": "EDF Energy Nuclear Generation",
+          "fuelType": "NUCLEAR",
+          "fpnFlag": true,
+          "generationCapacity": "630.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "hartlepool",
+      "name": "Hartlepool",
+      "capacityMW": 1185,
+      "status": "verified",
+      "units": [
+        "T_HRTL-1",
+        "T_HRTL-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "NUC-000126"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_HRTL-1",
+          "nationalGridBmUnit": "HRTL-1",
+          "bmUnitName": "Hartlepool Generator 1",
+          "leadPartyName": "EDF Energy Nuclear Generation",
+          "fuelType": "NUCLEAR",
+          "fpnFlag": true,
+          "generationCapacity": "620.000"
+        },
+        {
+          "elexonBmUnit": "T_HRTL-2",
+          "nationalGridBmUnit": "HRTL-2",
+          "bmUnitName": "Hartlepool Generator 2",
+          "leadPartyName": "EDF Energy Nuclear Generation",
+          "fuelType": "NUCLEAR",
+          "fpnFlag": true,
+          "generationCapacity": "620.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "peterhead",
+      "name": "Peterhead",
+      "capacityMW": 1180,
+      "status": "verified",
+      "units": [
+        "T_PEHE-1",
+        "T_PEHE-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000120"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_PEHE-1",
+          "nationalGridBmUnit": "PEHE-1",
+          "bmUnitName": "Peterhead Block 1",
+          "leadPartyName": "SSE Thermal Generation",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "1200.000"
+        },
+        {
+          "elexonBmUnit": "T_PEHE-2",
+          "nationalGridBmUnit": "PEHE-2",
+          "bmUnitName": "Peterhead Unit 2",
+          "leadPartyName": "SSE Thermal Generation",
+          "fuelType": null,
+          "fpnFlag": true,
+          "generationCapacity": "0.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "seagreen",
+      "name": "Seagreen",
+      "capacityMW": 1075,
+      "status": "review-required",
+      "units": [],
+      "note": "Six registered Seagreen units; phase boundaries and current grouping require reconciliation before a total is asserted.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001523"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2540"
+        }
+      ],
+      "registryEvidence": [],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "walney",
+      "name": "Walney",
+      "capacityMW": 1026.2,
+      "status": "verified",
+      "units": [
+        "T_WLNYW-1",
+        "T_WLNYO-2",
+        "T_WLNYO-3",
+        "T_WLNYO-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-000407"
+        },
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001139"
+        },
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001259"
+        },
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001280"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2500"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2506"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2533"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_WLNYW-1",
+          "nationalGridBmUnit": "WLNYW-1",
+          "bmUnitName": "WALNEY_1",
+          "leadPartyName": "Walney Offshore Windfarms Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "182.000"
+        },
+        {
+          "elexonBmUnit": "T_WLNYO-2",
+          "nationalGridBmUnit": "WLNYO-2",
+          "bmUnitName": "WALNEY_2",
+          "leadPartyName": "Walney Offshore Windfarms Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "183.600"
+        },
+        {
+          "elexonBmUnit": "T_WLNYO-3",
+          "nationalGridBmUnit": "WLNYO-3",
+          "bmUnitName": "WALNEY_3",
+          "leadPartyName": "Walney Extension Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "330.000"
+        },
+        {
+          "elexonBmUnit": "T_WLNYO-4",
+          "nationalGridBmUnit": "WLNYO-4",
+          "bmUnitName": "WALNEY_4",
+          "leadPartyName": "Walney Extension Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "330.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "moray-east",
+      "name": "Moray East",
+      "capacityMW": 950,
+      "status": "verified",
+      "units": [
+        "T_MOWEO-1",
+        "T_MOWEO-2",
+        "T_MOWEO-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001390"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2534"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_MOWEO-1",
+          "nationalGridBmUnit": "MOWEO-1",
+          "bmUnitName": "Moray East OWF1",
+          "leadPartyName": "Moray Offshore Wind East Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "300.000"
+        },
+        {
+          "elexonBmUnit": "T_MOWEO-2",
+          "nationalGridBmUnit": "MOWEO-2",
+          "bmUnitName": "Moray East OWF2",
+          "leadPartyName": "Moray Offshore Wind East Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "300.000"
+        },
+        {
+          "elexonBmUnit": "T_MOWEO-3",
+          "nationalGridBmUnit": "MOWEO-3",
+          "bmUnitName": "Moray East OWF3",
+          "leadPartyName": "Moray Offshore Wind East Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "300.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "spalding",
+      "name": "Spalding",
+      "capacityMW": 950,
+      "status": "verified",
+      "units": [
+        "T_SPLN-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000250"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_SPLN-1",
+          "nationalGridBmUnit": "SPLN-1",
+          "bmUnitName": "Spalding Power Station",
+          "leadPartyName": "Spalding Energy Company Ltd",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "950.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "langage",
+      "name": "Langage",
+      "capacityMW": 905,
+      "status": "verified",
+      "units": [
+        "T_LAGA-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000376"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_LAGA-1",
+          "nationalGridBmUnit": "LAGA-1",
+          "bmUnitName": "Langage Power Station",
+          "leadPartyName": "EP UK INVESTMENTS LIMITED",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "905.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "marchwood",
+      "name": "Marchwood",
+      "capacityMW": 898,
+      "status": "verified",
+      "units": [
+        "T_MRWD-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000354"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_MRWD-1",
+          "nationalGridBmUnit": "MRWD-1",
+          "bmUnitName": "Marchwood Power Ltd",
+          "leadPartyName": "Marchwood Power Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "920.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "carrington",
+      "name": "Carrington",
+      "capacityMW": 884,
+      "status": "verified",
+      "units": [
+        "T_CARR-1",
+        "T_CARR-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000941"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_CARR-1",
+          "nationalGridBmUnit": "CARR-1",
+          "bmUnitName": "Carrington Power Ltd - Unit 1",
+          "leadPartyName": "Carrington Power Ltd",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "470.000"
+        },
+        {
+          "elexonBmUnit": "T_CARR-2",
+          "nationalGridBmUnit": "CARR-2",
+          "bmUnitName": "Carrington Power Ltd - Unit 2",
+          "leadPartyName": "Carrington Power Ltd",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "470.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "moray-west",
+      "name": "Moray West",
+      "capacityMW": 882,
+      "status": "verified",
+      "units": [
+        "T_MOWWO-1",
+        "T_MOWWO-2",
+        "T_MOWWO-3",
+        "T_MOWWO-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001644"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "6158"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_MOWWO-1",
+          "nationalGridBmUnit": "MOWWO-1",
+          "bmUnitName": "Moray West OWF1",
+          "leadPartyName": "Moray Offshore Wind West Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "215.000"
+        },
+        {
+          "elexonBmUnit": "T_MOWWO-2",
+          "nationalGridBmUnit": "MOWWO-2",
+          "bmUnitName": "Moray West OWF2",
+          "leadPartyName": "Moray Offshore Wind West Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "215.000"
+        },
+        {
+          "elexonBmUnit": "T_MOWWO-3",
+          "nationalGridBmUnit": "MOWWO-3",
+          "bmUnitName": "Moray West OWF3",
+          "leadPartyName": "Moray Offshore Wind West Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "143.000"
+        },
+        {
+          "elexonBmUnit": "T_MOWWO-4",
+          "nationalGridBmUnit": "MOWWO-4",
+          "bmUnitName": "Moray West OWF4",
+          "leadPartyName": "Moray Offshore Wind West Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "287.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "triton-knoll",
+      "name": "Triton Knoll",
+      "capacityMW": 857,
+      "status": "verified",
+      "units": [
+        "T_TKNEW-1",
+        "T_TKNWW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001290"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2532"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_TKNEW-1",
+          "nationalGridBmUnit": "TKNEW-1",
+          "bmUnitName": "Triton Knoll OSP East 1",
+          "leadPartyName": "Triton Knoll Offshore Wind",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "412.000"
+        },
+        {
+          "elexonBmUnit": "T_TKNWW-1",
+          "nationalGridBmUnit": "TKNWW-1",
+          "bmUnitName": "Triton Knoll OSP west 1",
+          "leadPartyName": "Triton Knoll Offshore Wind",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "412.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "severn-power",
+      "name": "Severn Power",
+      "capacityMW": 850,
+      "status": "verified",
+      "units": [
+        "T_SVRP-10",
+        "T_SVRP-20"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000377"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_SVRP-10",
+          "nationalGridBmUnit": "SVRP-10",
+          "bmUnitName": "Dong Energy Severn Power Ut 10",
+          "leadPartyName": "Severn Power Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "425.000"
+        },
+        {
+          "elexonBmUnit": "T_SVRP-20",
+          "nationalGridBmUnit": "SVRP-20",
+          "bmUnitName": "Dong Energy Severn Power Ut 20",
+          "leadPartyName": "Severn Power Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "425.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "sutton-bridge",
+      "name": "Sutton Bridge",
+      "capacityMW": 819,
+      "status": "verified",
+      "units": [
+        "T_SUTB-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000185"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_SUTB-1",
+          "nationalGridBmUnit": "SUTB-1",
+          "bmUnitName": "BMUid for Sutton Bridge Power",
+          "leadPartyName": "SUTTON BRIDGE POWER GENERATION",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "850.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "rocksavage",
+      "name": "Rocksavage",
+      "capacityMW": 810,
+      "status": "verified",
+      "units": [
+        "T_ROCK-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000178"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_ROCK-1",
+          "nationalGridBmUnit": "ROCK-1",
+          "bmUnitName": "Rocksavage Power Station",
+          "leadPartyName": "Rocksavage Power Company Ltd",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "810.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "damhead-creek",
+      "name": "Damhead Creek",
+      "capacityMW": 805,
+      "status": "verified",
+      "units": [
+        "T_DAMC-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000195"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_DAMC-1",
+          "nationalGridBmUnit": "DAMC-1",
+          "bmUnitName": "Damhead Creek Ltd.",
+          "leadPartyName": "VPI Power Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "820.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "coryton",
+      "name": "Coryton",
+      "capacityMW": 800,
+      "status": "verified",
+      "units": [
+        "T_COSO-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000222"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_COSO-1",
+          "nationalGridBmUnit": "COSO-1",
+          "bmUnitName": "Coryton Power Station",
+          "leadPartyName": "Coryton Energy Company Ltd",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "856.186"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "medway",
+      "name": "Medway",
+      "capacityMW": 755,
+      "status": "verified",
+      "units": [
+        "T_MEDP-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000152"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_MEDP-1",
+          "nationalGridBmUnit": "MEDP-1",
+          "bmUnitName": "Medway Power",
+          "leadPartyName": "Medway Power Ltd",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "750.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "little-barford",
+      "name": "Little Barford",
+      "capacityMW": 735,
+      "status": "verified",
+      "units": [
+        "T_LBAR-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000151"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_LBAR-1",
+          "nationalGridBmUnit": "LBAR-1",
+          "bmUnitName": "Little Barford main unit 1",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "750.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "rye-house",
+      "name": "Rye House",
+      "capacityMW": 715,
+      "status": "verified",
+      "units": [
+        "T_RYHPS-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000138"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_RYHPS-1",
+          "nationalGridBmUnit": "RYHPS-1",
+          "bmUnitName": "T_RYHPS-1",
+          "leadPartyName": "VPI Power Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "720.980"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "east-anglia-one",
+      "name": "East Anglia One",
+      "capacityMW": 714,
+      "status": "verified",
+      "units": [
+        "T_EAAO-1",
+        "T_EAAO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001278"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2524"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_EAAO-1",
+          "nationalGridBmUnit": "EAAO-1",
+          "bmUnitName": "East Anglia One Offshore 1",
+          "leadPartyName": "East Anglia One Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "358.000"
+        },
+        {
+          "elexonBmUnit": "T_EAAO-2",
+          "nationalGridBmUnit": "EAAO-2",
+          "bmUnitName": "East Anglia One Offshore 2",
+          "leadPartyName": "East Anglia One Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "367.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "london-array",
+      "name": "London Array",
+      "capacityMW": 630,
+      "status": "verified",
+      "units": [
+        "T_LARYW-1",
+        "T_LARYW-2",
+        "T_LARYW-3",
+        "T_LARYW-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-000504"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2511"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_LARYW-1",
+          "nationalGridBmUnit": "LARYO-1",
+          "bmUnitName": "London Array BMU1",
+          "leadPartyName": "London Array Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "171.000"
+        },
+        {
+          "elexonBmUnit": "T_LARYW-2",
+          "nationalGridBmUnit": "LARYO-2",
+          "bmUnitName": "London Array BMU2",
+          "leadPartyName": "London Array Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "171.000"
+        },
+        {
+          "elexonBmUnit": "T_LARYW-3",
+          "nationalGridBmUnit": "LARYO-3",
+          "bmUnitName": "London Array BMU3",
+          "leadPartyName": "London Array Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "171.000"
+        },
+        {
+          "elexonBmUnit": "T_LARYW-4",
+          "nationalGridBmUnit": "LARYO-4",
+          "bmUnitName": "London Array BMU4",
+          "leadPartyName": "London Array Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "191.099"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "killingholme",
+      "name": "Killingholme",
+      "capacityMW": 619,
+      "status": "verified",
+      "units": [
+        "T_KILLPG-1",
+        "T_KILLPG-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000136"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_KILLPG-1",
+          "nationalGridBmUnit": "KILLPG-1",
+          "bmUnitName": "T_KILLPG-1",
+          "leadPartyName": "Uniper UK Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "311.000"
+        },
+        {
+          "elexonBmUnit": "T_KILLPG-2",
+          "nationalGridBmUnit": "KILLPG-2",
+          "bmUnitName": "T_KILLPG-2",
+          "leadPartyName": "Uniper UK Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "316.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "dogger-bank-a",
+      "name": "Dogger Bank A",
+      "capacityMW": 616,
+      "status": "review-required",
+      "units": [],
+      "note": "Commissioning units and partially installed register capacity require reconciliation.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001577"
+        }
+      ],
+      "registryEvidence": [],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "beatrice",
+      "name": "Beatrice",
+      "capacityMW": 588,
+      "status": "verified",
+      "units": [
+        "T_BEATO-1",
+        "T_BEATO-2",
+        "T_BEATO-3",
+        "T_BEATO-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001261"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2521"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_BEATO-1",
+          "nationalGridBmUnit": "BEATO-1",
+          "bmUnitName": "Beatrice Offshore WF 1",
+          "leadPartyName": "Beatrice Offshore Windfarm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "184.000"
+        },
+        {
+          "elexonBmUnit": "T_BEATO-2",
+          "nationalGridBmUnit": "BEATO-2",
+          "bmUnitName": "Beatrice Offshore WF 2",
+          "leadPartyName": "Beatrice Offshore Windfarm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "166.000"
+        },
+        {
+          "elexonBmUnit": "T_BEATO-3",
+          "nationalGridBmUnit": "BEATO-3",
+          "bmUnitName": "Beatrice Offshore WF 3",
+          "leadPartyName": "Beatrice Offshore Windfarm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "166.000"
+        },
+        {
+          "elexonBmUnit": "T_BEATO-4",
+          "nationalGridBmUnit": "BEATO-4",
+          "bmUnitName": "Beatrice Offshore WF 4",
+          "leadPartyName": "Beatrice Offshore Windfarm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "165.526"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "gwynt-y-mor",
+      "name": "Gwynt y M\u00f4r",
+      "capacityMW": 576,
+      "status": "verified",
+      "units": [
+        "T_GYMR-15",
+        "T_GYMR-17",
+        "T_GYMR-26",
+        "T_GYMR-28"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-000508"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2543"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_GYMR-15",
+          "nationalGridBmUnit": "GYMRO-15",
+          "bmUnitName": "GyM OSPE 15",
+          "leadPartyName": "Gwynt y Mor Offshore Wind Farm",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "148.000"
+        },
+        {
+          "elexonBmUnit": "T_GYMR-17",
+          "nationalGridBmUnit": "GYMRO-17",
+          "bmUnitName": "GyM OSPE 17",
+          "leadPartyName": "Gwynt y Mor Offshore Wind Farm",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "148.000"
+        },
+        {
+          "elexonBmUnit": "T_GYMR-26",
+          "nationalGridBmUnit": "GYMRO-26",
+          "bmUnitName": "GyM OSPW 26",
+          "leadPartyName": "Gwynt y Mor Offshore Wind Farm",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "148.000"
+        },
+        {
+          "elexonBmUnit": "T_GYMR-28",
+          "nationalGridBmUnit": "GYMRO-28",
+          "bmUnitName": "GyM OSPW 28",
+          "leadPartyName": "Gwynt y Mor Offshore Wind Farm",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "148.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "race-bank",
+      "name": "Race Bank",
+      "capacityMW": 573,
+      "status": "verified",
+      "units": [
+        "T_RCBKO-1",
+        "T_RCBKO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-001256"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2515"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "6501"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_RCBKO-1",
+          "nationalGridBmUnit": "RCBKO-1",
+          "bmUnitName": "RACE_BANK_Z01",
+          "leadPartyName": "Race Bank Wind Farm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "284.000"
+        },
+        {
+          "elexonBmUnit": "T_RCBKO-2",
+          "nationalGridBmUnit": "RCBKO-2",
+          "bmUnitName": "RACE_BANK_Z02",
+          "leadPartyName": "Race Bank Wind Farm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "290.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "whitelee",
+      "name": "Whitelee",
+      "capacityMW": 539.02,
+      "status": "verified",
+      "units": [
+        "T_WHILW-1",
+        "T_WHILW-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WON-000321"
+        },
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WON-000471"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "3489"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "3981"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2757"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_WHILW-1",
+          "nationalGridBmUnit": "WHILW-1",
+          "bmUnitName": "T_WHILW-1",
+          "leadPartyName": "SP Renewables (UK) Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "309.000"
+        },
+        {
+          "elexonBmUnit": "T_WHILW-2",
+          "nationalGridBmUnit": "WHILW-2",
+          "bmUnitName": "Whitelee Extension",
+          "leadPartyName": "SP Renewables (UK) Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "206.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "clyde",
+      "name": "Clyde",
+      "capacityMW": 522.4,
+      "status": "verified",
+      "units": [
+        "T_CLDSW-1",
+        "T_CLDCW-1",
+        "T_CLDNW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WON-000419"
+        },
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WON-000425"
+        },
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WON-000476"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "4011"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "4178"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_CLDSW-1",
+          "nationalGridBmUnit": "CLDSW-1",
+          "bmUnitName": "Clyde South",
+          "leadPartyName": "Clyde Windfarm (Scotland) Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "150.000"
+        },
+        {
+          "elexonBmUnit": "T_CLDCW-1",
+          "nationalGridBmUnit": "CLDCW-1",
+          "bmUnitName": "Clyde Central",
+          "leadPartyName": "Clyde Windfarm (Scotland) Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "200.000"
+        },
+        {
+          "elexonBmUnit": "T_CLDNW-1",
+          "nationalGridBmUnit": "CLDNW-1",
+          "bmUnitName": "Clyde North",
+          "leadPartyName": "Clyde Windfarm (Scotland) Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "200.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "greater-gabbard",
+      "name": "Greater Gabbard",
+      "capacityMW": 504,
+      "status": "verified",
+      "units": [
+        "T_GRGBW-1",
+        "T_GRGBW-2",
+        "T_GRGBW-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "WOF-000406"
+        },
+        {
+          "provider": "DESNZ REPD",
+          "id": "2510"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_GRGBW-1",
+          "nationalGridBmUnit": "GRGBW-1",
+          "bmUnitName": "Greater Gabbard Module 1",
+          "leadPartyName": "Greater Gabbard Offshore Winds",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "205.000"
+        },
+        {
+          "elexonBmUnit": "T_GRGBW-2",
+          "nationalGridBmUnit": "GRGBW-2",
+          "bmUnitName": "Greater Gabbard Module 2",
+          "leadPartyName": "Greater Gabbard Offshore Winds",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "167.000"
+        },
+        {
+          "elexonBmUnit": "T_GRGBW-3",
+          "nationalGridBmUnit": "GRGBW-3",
+          "bmUnitName": "Greater Gabbard Module 3",
+          "leadPartyName": "Greater Gabbard Offshore Winds",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "167.000"
+        }
+      ],
+      "mappingEvidence": "Existing documented station group in docs/generation-evidence-2026-09-15/README.md"
+    },
+    {
+      "id": "repd-115",
+      "name": "Lynemouth Power Station",
+      "capacityMW": 420,
+      "status": "verified",
+      "units": [
+        "E_LYNE1",
+        "E_LYNE2",
+        "E_LYNE3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "115"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "E_LYNE1",
+          "nationalGridBmUnit": "LNMTH-1",
+          "bmUnitName": "LYNEMOUTH GENERATOR 1",
+          "leadPartyName": "EP UK INVESTMENTS LIMITED",
+          "fuelType": "BIOMASS",
+          "fpnFlag": true,
+          "generationCapacity": "140.000"
+        },
+        {
+          "elexonBmUnit": "E_LYNE2",
+          "nationalGridBmUnit": "LNMTH-2",
+          "bmUnitName": "LYNEMOUTH GENERATOR 2",
+          "leadPartyName": "EP UK INVESTMENTS LIMITED",
+          "fuelType": "BIOMASS",
+          "fpnFlag": true,
+          "generationCapacity": "140.000"
+        },
+        {
+          "elexonBmUnit": "E_LYNE3",
+          "nationalGridBmUnit": "LNMTH-3",
+          "bmUnitName": "LYNEMOUTH GENERATOR 3",
+          "leadPartyName": "EP UK INVESTMENTS LIMITED",
+          "fuelType": "BIOMASS",
+          "fpnFlag": true,
+          "generationCapacity": "140.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2490",
+      "name": "Gunfleet Sands Offshore Wind Scheme",
+      "capacityMW": 108,
+      "status": "verified",
+      "units": [
+        "T_GNFSW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2490"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_GNFSW-1",
+          "nationalGridBmUnit": "GNFSW-1",
+          "bmUnitName": "Gunfleet Sands 1",
+          "leadPartyName": "Gunfleet Sands Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "108.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2499",
+      "name": "Thanet\u00a0",
+      "capacityMW": 300,
+      "status": "verified",
+      "units": [
+        "T_THNTO-1",
+        "T_THNTO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2499"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_THNTO-1",
+          "nationalGridBmUnit": "THNTO-1",
+          "bmUnitName": "Thanet Offshore Wind Limited 1",
+          "leadPartyName": "Thanet Offshore Wind Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "287.699"
+        },
+        {
+          "elexonBmUnit": "T_THNTO-2",
+          "nationalGridBmUnit": "THNTO-2",
+          "bmUnitName": "Thanet Offshore Wind Limited 2",
+          "leadPartyName": "Thanet Offshore Wind Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "230.159"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2509",
+      "name": "Ormonde Offshore",
+      "capacityMW": 150,
+      "status": "verified",
+      "units": [
+        "T_OMNDW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2509"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_OMNDW-1",
+          "nationalGridBmUnit": "OMNDO-1",
+          "bmUnitName": "Ormonde Energy Limited 1",
+          "leadPartyName": "Ormonde Energy Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "150.760"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2512",
+      "name": "Sheringham Shoal\u00a0",
+      "capacityMW": 317,
+      "status": "verified",
+      "units": [
+        "T_SHRSW-1",
+        "T_SHRSW-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2512"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_SHRSW-1",
+          "nationalGridBmUnit": "SHRSO-1",
+          "bmUnitName": "Sheringham Shoal Unit 1",
+          "leadPartyName": "Scira Offshore Energy Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "158.400"
+        },
+        {
+          "elexonBmUnit": "T_SHRSW-2",
+          "nationalGridBmUnit": "SHRSO-2",
+          "bmUnitName": "Sheringham Shoal Unit 2",
+          "leadPartyName": "Scira Offshore Energy Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "158.400"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2513",
+      "name": "Centrica (Lincs)",
+      "capacityMW": 270,
+      "status": "verified",
+      "units": [
+        "T_LNCSW-1",
+        "T_LNCSW-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2513"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_LNCSW-1",
+          "nationalGridBmUnit": "LNCSO-1",
+          "bmUnitName": "Lincs wind farm offshore BMU1",
+          "leadPartyName": "Lincs Wind Farm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "150.000"
+        },
+        {
+          "elexonBmUnit": "T_LNCSW-2",
+          "nationalGridBmUnit": "LNCSO-2",
+          "bmUnitName": "Lincs wind farm offshore BMU2",
+          "leadPartyName": "Lincs Wind Farm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "150.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2519",
+      "name": "West of Duddon Sands",
+      "capacityMW": 389,
+      "status": "verified",
+      "units": [
+        "T_WDNSO-1",
+        "T_WDNSO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2519"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_WDNSO-1",
+          "nationalGridBmUnit": "WDNSO-1",
+          "bmUnitName": "West of Duddon Sands Offshore1",
+          "leadPartyName": "Morecambe Wind Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "197.000"
+        },
+        {
+          "elexonBmUnit": "T_WDNSO-2",
+          "nationalGridBmUnit": "WDNSO-2",
+          "bmUnitName": "West of Duddon Sands Offshore2",
+          "leadPartyName": "Morecambe Wind Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "201.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2520",
+      "name": "Rampion Offshore Wind Farm (Hastings Zone)",
+      "capacityMW": 400,
+      "status": "verified",
+      "units": [
+        "T_RMPNO-1",
+        "T_RMPNO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2520"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_RMPNO-1",
+          "nationalGridBmUnit": "RMPNO-1",
+          "bmUnitName": "Rampion Offshore Wind BMU 1",
+          "leadPartyName": "Rampion Offshore Windfarm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "200.100"
+        },
+        {
+          "elexonBmUnit": "T_RMPNO-2",
+          "nationalGridBmUnit": "RMPNO-2",
+          "bmUnitName": "Rampion Offshore Wind BMU 2",
+          "leadPartyName": "Rampion Offshore Windfarm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "200.100"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2522",
+      "name": "Neart na Gaoithe",
+      "capacityMW": 450,
+      "status": "verified",
+      "units": [
+        "T_NNGAO-1",
+        "T_NNGAO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2522"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_NNGAO-1",
+          "nationalGridBmUnit": "NNGAO-1",
+          "bmUnitName": "Neart Na Gaiothe WF 1",
+          "leadPartyName": "Neart Na Gaoithe Offshore Wind",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "224.000"
+        },
+        {
+          "elexonBmUnit": "T_NNGAO-2",
+          "nationalGridBmUnit": "NNGAO-2",
+          "bmUnitName": "Neart Na Gaiothe WF 2",
+          "leadPartyName": "Neart Na Gaoithe Offshore Wind",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "224.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2526",
+      "name": "Galloper Wind Farm",
+      "capacityMW": 353,
+      "status": "verified",
+      "units": [
+        "T_GANW-11",
+        "T_GANW-22",
+        "T_GANW-13",
+        "T_GANW-24"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2526"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_GANW-11",
+          "nationalGridBmUnit": "GAOFO-1",
+          "bmUnitName": "Galloper OSP 11",
+          "leadPartyName": "Galloper Offshore WindFarm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "88.000"
+        },
+        {
+          "elexonBmUnit": "T_GANW-22",
+          "nationalGridBmUnit": "GAOFO-2",
+          "bmUnitName": "Galloper OSP 22",
+          "leadPartyName": "Galloper Offshore WindFarm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "385.820"
+        },
+        {
+          "elexonBmUnit": "T_GANW-13",
+          "nationalGridBmUnit": "GAOFO-3",
+          "bmUnitName": "Galloper OSP 13",
+          "leadPartyName": "Galloper Offshore WindFarm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "88.000"
+        },
+        {
+          "elexonBmUnit": "T_GANW-24",
+          "nationalGridBmUnit": "GAOFO-4",
+          "bmUnitName": "Galloper OSP 24",
+          "leadPartyName": "Galloper Offshore WindFarm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "88.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2538",
+      "name": "Dudgeon East\u00a0",
+      "capacityMW": 402,
+      "status": "verified",
+      "units": [
+        "T_DDGNO-1",
+        "T_DDGNO-2",
+        "T_DDGNO-3",
+        "T_DDGNO-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2538"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_DDGNO-1",
+          "nationalGridBmUnit": "DDGNO-1",
+          "bmUnitName": "Dudgeon Generator BMU 1",
+          "leadPartyName": "Dudgeon Offshore Wind Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "108.000"
+        },
+        {
+          "elexonBmUnit": "T_DDGNO-2",
+          "nationalGridBmUnit": "DDGNO-2",
+          "bmUnitName": "Dudgeon Generator BMU 2",
+          "leadPartyName": "Dudgeon Offshore Wind Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "90.000"
+        },
+        {
+          "elexonBmUnit": "T_DDGNO-3",
+          "nationalGridBmUnit": "DDGNO-3",
+          "bmUnitName": "Dudgeon Generator BMU 3",
+          "leadPartyName": "Dudgeon Offshore Wind Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "102.000"
+        },
+        {
+          "elexonBmUnit": "T_DDGNO-4",
+          "nationalGridBmUnit": "DDGNO-4",
+          "bmUnitName": "Dudgeon Generator BMU 4",
+          "leadPartyName": "Dudgeon Offshore Wind Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "102.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2539",
+      "name": "Burbo Bank Extension (Burbo Bank 2)",
+      "capacityMW": 258,
+      "status": "verified",
+      "units": [
+        "T_BRBEO-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2539"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_BRBEO-1",
+          "nationalGridBmUnit": "BRBEO-1",
+          "bmUnitName": "BURBO_EXTENSION",
+          "leadPartyName": "Burbo Extension Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "257.700"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2544",
+      "name": "Humber Gateway A",
+      "capacityMW": 219,
+      "status": "verified",
+      "units": [
+        "T_HMGTO-1",
+        "T_HMGTO-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2544"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_HMGTO-1",
+          "nationalGridBmUnit": "HMGTO-1",
+          "bmUnitName": "Humber Offshore Wind Farm BMU1",
+          "leadPartyName": "RWE Renewables UK Humber Wind",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "108.000"
+        },
+        {
+          "elexonBmUnit": "T_HMGTO-2",
+          "nationalGridBmUnit": "HMGTO-2",
+          "bmUnitName": "Humber Offshore Wind Farm BMU2",
+          "leadPartyName": "RWE Renewables UK Humber Wind",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "111.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-2545",
+      "name": "Westermost Rough A",
+      "capacityMW": 210,
+      "status": "verified",
+      "units": [
+        "T_WTMSO-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "2545"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_WTMSO-1",
+          "nationalGridBmUnit": "WTMSO-1",
+          "bmUnitName": "WESTERMOST_ROUGH",
+          "leadPartyName": "Westermost Rough Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "205.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-3109",
+      "name": "Hadyard Hill",
+      "capacityMW": 120,
+      "status": "verified",
+      "units": [
+        "T_HADHW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "3109"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_HADHW-1",
+          "nationalGridBmUnit": "HADHW-1",
+          "bmUnitName": "Hadyard Hill Wind Farm",
+          "leadPartyName": "SSE Renewables Wind Farms",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "130.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-3116",
+      "name": "Black Law",
+      "capacityMW": 124,
+      "status": "review-required",
+      "units": [],
+      "note": "Black Law base and extension unit scopes need reconciliation with this REPD record.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "3116"
+        }
+      ],
+      "registryEvidence": [],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-3258",
+      "name": "Arecleoch Windfarm",
+      "capacityMW": 120,
+      "status": "verified",
+      "units": [
+        "T_ARCHW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "3258"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_ARCHW-1",
+          "nationalGridBmUnit": "ARCHW-1",
+          "bmUnitName": "Arecleoch",
+          "leadPartyName": "SP Renewables (UK) Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "114.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-3440",
+      "name": "Crystal Rig Wind Farm Phase 2a",
+      "capacityMW": 138,
+      "status": "review-required",
+      "units": [],
+      "note": "Crystal Rig II unit scope versus REPD Phase 2a is ambiguous.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "3440"
+        }
+      ],
+      "registryEvidence": [],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-4028",
+      "name": "Griffin Wind farm",
+      "capacityMW": 156,
+      "status": "verified",
+      "units": [
+        "T_GRIFW-1",
+        "T_GRIFW-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "4028"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_GRIFW-1",
+          "nationalGridBmUnit": "GRIFW-1",
+          "bmUnitName": "Griffin Wind Farm 1",
+          "leadPartyName": "Griffin Wind Farm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "102.000"
+        },
+        {
+          "elexonBmUnit": "T_GRIFW-2",
+          "nationalGridBmUnit": "GRIFW-2",
+          "bmUnitName": "Griffin Wind Farm 2",
+          "leadPartyName": "Griffin Wind Farm Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "104.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-4059",
+      "name": "Fallago Rig",
+      "capacityMW": 144,
+      "status": "verified",
+      "units": [
+        "T_FALGW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "4059"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_FALGW-1",
+          "nationalGridBmUnit": "FALGW-1",
+          "bmUnitName": "Fallago Rig Wind Farm",
+          "leadPartyName": "Fallago Rig Wind Farm Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "144.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-4119",
+      "name": "Harestanes",
+      "capacityMW": 136,
+      "status": "verified",
+      "units": [
+        "T_HRSTW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "4119"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_HRSTW-1",
+          "nationalGridBmUnit": "HRSTW-1",
+          "bmUnitName": "Harestanes",
+          "leadPartyName": "SP Renewables (UK) Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "142.300"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-4244",
+      "name": "Dorenell Wind Farm (Previously Site A and B Scaut Hill)",
+      "capacityMW": 177,
+      "status": "verified",
+      "units": [
+        "T_DOREW-1",
+        "T_DOREW-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "4244"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_DOREW-1",
+          "nationalGridBmUnit": "DOREW-1",
+          "bmUnitName": "Dorenell Wind Farm One",
+          "leadPartyName": "Dorenell Windfarm Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "114.000"
+        },
+        {
+          "elexonBmUnit": "T_DOREW-2",
+          "nationalGridBmUnit": "DOREW-2",
+          "bmUnitName": "Dorenell Wind Farm Two",
+          "leadPartyName": "Dorenell Windfarm Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "114.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-4386",
+      "name": "Kilgallioch wind farm",
+      "capacityMW": 239,
+      "status": "review-required",
+      "units": [],
+      "note": "Kilgallioch second unit/extension scope requires review.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "4386"
+        }
+      ],
+      "registryEvidence": [],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-4586",
+      "name": "South Kyle Wind Farm",
+      "capacityMW": 240,
+      "status": "verified",
+      "units": [
+        "T_SOKYW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "4586"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_SOKYW-1",
+          "nationalGridBmUnit": "SOKYW-1",
+          "bmUnitName": "South Kyle Wind Farm",
+          "leadPartyName": "South Kyle Wind Farm Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "426.916"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-4595",
+      "name": "Pen Y Cymoedd",
+      "capacityMW": 228,
+      "status": "verified",
+      "units": [
+        "T_PNYCW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "4595"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_PNYCW-1",
+          "nationalGridBmUnit": "PNYCW-1",
+          "bmUnitName": "PNYCW-1 Export",
+          "leadPartyName": "Pen y Cymoedd Wind Farm LTD",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "228.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-4597",
+      "name": "Stronelairg Wind Farm",
+      "capacityMW": 227.7,
+      "status": "verified",
+      "units": [
+        "T_STLGW-1",
+        "T_STLGW-2",
+        "T_STLGW-3"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "4597"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_STLGW-1",
+          "nationalGridBmUnit": "STLGW-1",
+          "bmUnitName": "Stronelairg Windfarm 1",
+          "leadPartyName": "Stronelairg Windfarm Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "108.000"
+        },
+        {
+          "elexonBmUnit": "T_STLGW-2",
+          "nationalGridBmUnit": "STLGW-2",
+          "bmUnitName": "Stronelairg Windfarm 2",
+          "leadPartyName": "Stronelairg Windfarm Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "108.000"
+        },
+        {
+          "elexonBmUnit": "T_STLGW-3",
+          "nationalGridBmUnit": "STLGW-3",
+          "bmUnitName": "Stronelairg Windfarm 3",
+          "leadPartyName": "Stronelairg Windfarm Limited",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "108.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-4640",
+      "name": "Bhlaraidh (previously Balmacaan)",
+      "capacityMW": 110,
+      "status": "verified",
+      "units": [
+        "T_BHLAW-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "4640"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_BHLAW-1",
+          "nationalGridBmUnit": "BHLAW-1",
+          "bmUnitName": "Bhlaraidh Windfarm 1",
+          "leadPartyName": "SSE Generation Ltd",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "108.112"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-6502",
+      "name": "Cleve Hill Solar Project",
+      "capacityMW": 373,
+      "status": "verified",
+      "units": [
+        "T_CLVHS-1",
+        "T_CLVHS-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "6502"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_CLVHS-1",
+          "nationalGridBmUnit": "CLVHS-1",
+          "bmUnitName": "Cleve Hill Solar 1",
+          "leadPartyName": "Cleve Hill Solar Park",
+          "fuelType": "OTHER",
+          "fpnFlag": true,
+          "generationCapacity": "112.000"
+        },
+        {
+          "elexonBmUnit": "T_CLVHS-2",
+          "nationalGridBmUnit": "CLVHS-2",
+          "bmUnitName": "Cleve Hill Solar 2",
+          "leadPartyName": "Cleve Hill Solar Park",
+          "fuelType": "OTHER",
+          "fpnFlag": true,
+          "generationCapacity": "205.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-6828",
+      "name": "Viking Wind Farm ",
+      "capacityMW": 443,
+      "status": "verified",
+      "units": [
+        "T_VKNGW-1",
+        "T_VKNGW-2",
+        "T_VKNGW-3",
+        "T_VKNGW-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "6828"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_VKNGW-1",
+          "nationalGridBmUnit": "VKNGW-1",
+          "bmUnitName": "Viking Energy Windfarm BMU-1",
+          "leadPartyName": "Viking Energy Wind Farm LLP",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "121.800"
+        },
+        {
+          "elexonBmUnit": "T_VKNGW-2",
+          "nationalGridBmUnit": "VKNGW-2",
+          "bmUnitName": "Viking Energy Windfarm BMU-2",
+          "leadPartyName": "Viking Energy Wind Farm LLP",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "121.800"
+        },
+        {
+          "elexonBmUnit": "T_VKNGW-3",
+          "nationalGridBmUnit": "VKNGW-3",
+          "bmUnitName": "Viking Energy Windfarm BMU-3",
+          "leadPartyName": "Viking Energy Wind Farm LLP",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "121.800"
+        },
+        {
+          "elexonBmUnit": "T_VKNGW-4",
+          "nationalGridBmUnit": "VKNGW-4",
+          "bmUnitName": "Viking Energy Windfarm BMU-4",
+          "leadPartyName": "Viking Energy Wind Farm LLP",
+          "fuelType": "WIND",
+          "fpnFlag": true,
+          "generationCapacity": "121.800"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-6840",
+      "name": "Ffestiniog",
+      "capacityMW": 360,
+      "status": "verified",
+      "units": [
+        "T_FFES-1",
+        "T_FFES-2",
+        "T_FFES-3",
+        "T_FFES-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "6840"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_FFES-1",
+          "nationalGridBmUnit": "FFES-1",
+          "bmUnitName": "Ffestioniog 1",
+          "leadPartyName": "First Hydro Company",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "91.033"
+        },
+        {
+          "elexonBmUnit": "T_FFES-2",
+          "nationalGridBmUnit": "FFES-2",
+          "bmUnitName": "Ffestioniog 2",
+          "leadPartyName": "First Hydro Company",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "91.875"
+        },
+        {
+          "elexonBmUnit": "T_FFES-3",
+          "nationalGridBmUnit": "FFES-3",
+          "bmUnitName": "Ffestioniog 3",
+          "leadPartyName": "First Hydro Company",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "90.922"
+        },
+        {
+          "elexonBmUnit": "T_FFES-4",
+          "nationalGridBmUnit": "FFES-4",
+          "bmUnitName": "Ffestioniog 4",
+          "leadPartyName": "First Hydro Company",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "90.920"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-6841",
+      "name": "Cruachan",
+      "capacityMW": 440,
+      "status": "review-required",
+      "units": [],
+      "note": "Cruachan unit codes need independent station-identity evidence.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "6841"
+        }
+      ],
+      "registryEvidence": [],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "repd-6842",
+      "name": "Foyers",
+      "capacityMW": 300,
+      "status": "verified",
+      "units": [
+        "T_FOYE-1",
+        "T_FOYE-2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ REPD",
+          "id": "6842"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_FOYE-1",
+          "nationalGridBmUnit": "FOYE-1",
+          "bmUnitName": "Foyers G1",
+          "leadPartyName": "SSE Generation Ltd",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "160.000"
+        },
+        {
+          "elexonBmUnit": "T_FOYE-2",
+          "nationalGridBmUnit": "FOYE-2",
+          "bmUnitName": "Foyers G2",
+          "leadPartyName": "SSE Generation Ltd",
+          "fuelType": "PS",
+          "fpnFlag": true,
+          "generationCapacity": "160.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-oil-000168",
+      "name": "Indian Queens Power Ltd",
+      "capacityMW": 140,
+      "status": "verified",
+      "units": [
+        "T_INDQ-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "OIL-000168"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_INDQ-1",
+          "nationalGridBmUnit": "INDQ-1",
+          "bmUnitName": "Gas Turbine",
+          "leadPartyName": "Indian Queens Power Ltd",
+          "fuelType": "OCGT",
+          "fpnFlag": true,
+          "generationCapacity": "140.080"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-gas-001280",
+      "name": "Spalding Expansion OCGT ",
+      "capacityMW": 299,
+      "status": "verified",
+      "units": [
+        "T_SEEL-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-001280"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_SEEL-1",
+          "nationalGridBmUnit": "SEEL-1",
+          "bmUnitName": "Spalding Energy Expansion Ltd",
+          "leadPartyName": "Spalding Energy Expansion Ltd",
+          "fuelType": "OCGT",
+          "fpnFlag": true,
+          "generationCapacity": "300.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-gas-000153",
+      "name": "Fellside CHP",
+      "capacityMW": 105,
+      "status": "review-required",
+      "units": [],
+      "note": "No unambiguous Fellside production-unit match established.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000153"
+        }
+      ],
+      "registryEvidence": [],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-gas-000170",
+      "name": "Kings Lynn",
+      "capacityMW": 395,
+      "status": "verified",
+      "units": [
+        "E_KLYN-A-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000170"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "E_KLYN-A-1",
+          "nationalGridBmUnit": "KLYN-A-1",
+          "bmUnitName": "Kings Lynn A",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "392.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-gas-000212",
+      "name": "Great Yarmouth",
+      "capacityMW": 420,
+      "status": "verified",
+      "units": [
+        "E_GYAR-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000212"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "E_GYAR-1",
+          "nationalGridBmUnit": "GYAR-1",
+          "bmUnitName": "Great Yarmouth Power Limited",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "420.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-oil-000124",
+      "name": "Cowes",
+      "capacityMW": 140,
+      "status": "verified",
+      "units": [
+        "E_COWE1",
+        "E_COWE2"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "OIL-000124"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "E_COWE1",
+          "nationalGridBmUnit": "COWE1",
+          "bmUnitName": "Cowes Main Unit 1",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "OCGT",
+          "fpnFlag": true,
+          "generationCapacity": "70.000"
+        },
+        {
+          "elexonBmUnit": "E_COWE2",
+          "nationalGridBmUnit": "COWE2",
+          "bmUnitName": "Cowes Main Unit 2",
+          "leadPartyName": "RWE Generation UK plc",
+          "fuelType": "OCGT",
+          "fpnFlag": true,
+          "generationCapacity": "70.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-gas-000026",
+      "name": "Wilton International",
+      "capacityMW": 120,
+      "status": "review-required",
+      "units": [],
+      "note": "Wilton industrial complex versus this register entry has uncertain generating scope.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000026"
+        }
+      ],
+      "registryEvidence": [],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-gas-000179",
+      "name": "Cottam Development Centre",
+      "capacityMW": 445,
+      "status": "review-required",
+      "units": [],
+      "note": "Cottam Development Centre unit code needs independent identity evidence.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000179"
+        }
+      ],
+      "registryEvidence": [],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-gas-000186",
+      "name": "Enfield",
+      "capacityMW": 408,
+      "status": "verified",
+      "units": [
+        "T_EECL-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000186"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_EECL-1",
+          "nationalGridBmUnit": "EECL-1",
+          "bmUnitName": "Enfield Energy Centre Ltd BMU1",
+          "leadPartyName": "Uniper UK Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "444.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-oil-000119",
+      "name": "Taylors Lane",
+      "capacityMW": 144,
+      "status": "review-required",
+      "units": [],
+      "note": "No unambiguous current Taylors Lane production-unit match established.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "OIL-000119"
+        }
+      ],
+      "registryEvidence": [],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-gas-000196",
+      "name": "Shoreham",
+      "capacityMW": 420,
+      "status": "verified",
+      "units": [
+        "E_SHOS-1"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000196"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "E_SHOS-1",
+          "nationalGridBmUnit": "SHOS-1",
+          "bmUnitName": "Shoreham Power Station",
+          "leadPartyName": "VPI Power Limited",
+          "fuelType": "CCGT",
+          "fpnFlag": true,
+          "generationCapacity": "460.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-xxx-001661",
+      "name": "VPI Immingham B",
+      "capacityMW": 299,
+      "status": "verified",
+      "units": [
+        "T_HUMR-4"
+      ],
+      "note": "Explicit generating-unit group. Excludes separately registered demand, batteries and auxiliary plant. Registered capacity is not installed site capacity.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "XXX-001661"
+        }
+      ],
+      "registryEvidence": [
+        {
+          "elexonBmUnit": "T_HUMR-4",
+          "nationalGridBmUnit": "T_HUMR-4",
+          "bmUnitName": "T_HUMR-4",
+          "leadPartyName": "VPI Immingham B Limited",
+          "fuelType": null,
+          "fpnFlag": true,
+          "generationCapacity": "299.000"
+        }
+      ],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    },
+    {
+      "id": "dukes-gas-000144",
+      "name": "Peterborough Power Station",
+      "capacityMW": 245,
+      "status": "review-required",
+      "units": [],
+      "note": "Peterborough main and additional unit scopes require reconciliation.",
+      "sourceIds": [
+        {
+          "provider": "DESNZ DUKES",
+          "id": "GAS-000144"
+        }
+      ],
+      "registryEvidence": [],
+      "mappingEvidence": "Named generating units/operator in Elexon reference register cross-checked against named operational source record."
+    }
+  ]
+}
