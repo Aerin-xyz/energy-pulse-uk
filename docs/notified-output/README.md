@@ -23,3 +23,6 @@ Current notified MW appears on individual map captions and result rows. A quick 
 
 ## Verification
 37 existing calculation/ingestion tests plus four new notification contract tests; 43 browser tests passed. TypeScript, production build and Cloudflare functions compilation passed. Local Cloudflare endpoint returned HTTP 200, all 92 mapping decisions and 205 current-period PN segments. Live acceptance recorded after release.
+
+## Live acceptance
+Release merge `0308f20` deployed successfully to Cloudflare Pages. GitHub scheduled evidence run `36034315372` and daily refresh `36034276860` succeeded. Public API returned 92 decisions, 81 validated groups and 80 complete current-period readings. Live Cleve Hill and Seagreen checked at 390px and 1440px: notified output versus unavailable state correct, no horizontal overflow or application errors. Screenshots saved outside the repository at `../artifacts/energy-mix-notified-output-2026-09-24/`. Seven focused UI checks passed again after the final scope-control styling. The separate earlier monthly geography-refresh upstream timeout is unchanged and unrelated to PN availability.
