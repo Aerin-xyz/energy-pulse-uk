@@ -1,3 +1,4 @@
+import {NetworkBackdrop,useNetworkGeography} from './NetworkBackdrop';
 import {useGenerationCatalogue} from '@/hooks/useGenerationCatalogue';
 import {useAssetOperations} from './AssetOperations';
 import {assetView,capacityText,assetEvidenceLabel} from '@/lib/assetExplorer.mjs';
@@ -52,6 +53,7 @@ const centres: Record<number, number[]> = {
   14: [0.7, 51.1],
 };
 export function GridAtlas({
+  summary,
   flows,
   regions,
   regionFrom,
@@ -59,6 +61,7 @@ export function GridAtlas({
   flowTime,
   now,
 }: {
+  summary?: React.ReactNode;
   flows: Flow[];
   regions: CarbonRegion[];
   regionFrom: string;
@@ -66,11 +69,13 @@ export function GridAtlas({
   flowTime?: string;
   now: number;
 }) {
-  const [mode, setMode] = useState<"cables" | "connections" | "carbon" | "generation">(new URLSearchParams(location.search).has("asset")?"generation":"cables");
+  const [mode, setMode] = useState<"cables" | "connections" | "carbon" | "generation">("generation");
   const catalogue=useGenerationCatalogue(mode==='generation');
   const assets=catalogue.assets;
   const operations=useAssetOperations(mode==='generation');
   const cableFeed = useCableFlows();
+  const network=useNetworkGeography();
+  const [showNetwork,setShowNetwork]=useState(true);
   const [assetFilter,setAssetFilter]=useState("All");
   const [assetSearch,setAssetSearch]=useState("");
   const linkedAsset=assets.find(a=>a.id===new URLSearchParams(location.search).get('asset'));
@@ -82,6 +87,8 @@ export function GridAtlas({
   const [assetSort,setAssetSort]=useState('name');
   const [viewport,setViewport]=useState(()=>linkedAsset?assetView((linkedAsset.longitude+12)*40,(61-linkedAsset.latitude)*63,3):assetView());
   const drag=useRef<{x:number;y:number;cx:number;cy:number;scale:number;moved:boolean}|null>(null);
+  const touches=useRef(new Map<number,{x:number;y:number}>());
+  const pinch=useRef<{distance:number;zoom:number}|null>(null);
   const zoom=(factor:number)=>setViewport(v=>assetView(v.cx,v.cy,v.zoom*factor));
   const pan=(x:number,y:number)=>setViewport(v=>assetView(v.cx+x*v.w*.25,v.cy+y*v.h*.25,v.zoom));
   const {snapshot:assetSnapshot,error:assetError}=useAssetSnapshot(mode === "generation");
@@ -124,17 +131,19 @@ export function GridAtlas({
   return (
     <section
       ref={stageRef}
-      className={expanded ? "atlas-stage expanded" : "atlas-stage"}
+      className={expanded ? "atlas-stage immersive-atlas expanded" : "atlas-stage immersive-atlas"}
+      id="grid-map"
       role={expanded ? "dialog" : undefined}
       aria-modal={expanded ? true : undefined}
       aria-label="Great Britain electricity atlas"
       onKeyDown={(e) => {
         if (e.key === "Escape") {
+          const drawer=stageRef.current?.querySelector<HTMLDetailsElement>(".map-filter-drawer[open]");if(drawer){drawer.open=false;drawer.querySelector("summary")?.focus();e.preventDefault();return;}
           if (selected) { setSelected(null); expandRef.current?.focus(); }
           else setExpanded(false);
         }
         if (expanded && e.key === 'Tab') {
-          const nodes = Array.from(stageRef.current?.querySelectorAll<HTMLElement>('button, input, select, a[href], [tabindex="0"]') || []).filter(el => el.getClientRects().length);
+          const nodes = Array.from(stageRef.current?.querySelectorAll<HTMLElement>('button, input, select, summary, a[href], [tabindex="0"]') || []).filter(el => el.getClientRects().length);
           const first=nodes[0], last=nodes[nodes.length-1];
           if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
           if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
@@ -160,19 +169,23 @@ export function GridAtlas({
           ))}
         </div>
       </div>
-      {mode === "generation" && <div className="asset-controls"><p>{pilotOnly ? `${assets.filter(a=>a.releaseSelection).length} reviewed GB sites` : `${assets.length.toLocaleString()} operational GB register entries`} · <strong>metered history, not live</strong></p><button className="asset-scope" aria-pressed={pilotOnly} onClick={()=>{setPilotOnly(!pilotOnly);setSelected(null)}}>{pilotOnly?"Show all operational assets":"Reviewed sites only"}</button><label className="asset-search"><span>Find a generation site</span><input type="search" placeholder="Search sites, fuels or countries" value={assetSearch} onChange={e=>{setAssetSearch(e.target.value);setSelected(null)}}/></label><div aria-label="Generation type">{["All",...new Set(assets.map(a=>a.type))].map(t=><button key={t} aria-pressed={assetFilter===t} onClick={()=>{setAssetFilter(t);setSelected(null)}}>{t}</button>)}</div></div>}
+      {mode==='generation'&&<div className="map-search-row"><label className="asset-search"><span>Find a generation site</span><input type="search" placeholder="Find a wind farm, power station or place…" value={assetSearch} onChange={e=>{setAssetSearch(e.target.value);setSelected(null)}}/></label><details className="map-filter-drawer"><summary>Filters & layers</summary><div className="map-filter-content">      {mode === "generation" && <div className="asset-controls"><p>{pilotOnly ? `${assets.filter(a=>a.releaseSelection).length} reviewed GB sites` : `${assets.length.toLocaleString()} operational GB register entries`} · <strong>metered history, not live</strong></p><button className="asset-scope" aria-pressed={pilotOnly} onClick={()=>{setPilotOnly(!pilotOnly);setSelected(null)}}>{pilotOnly?"Show all operational assets":"Reviewed sites only"}</button><div aria-label="Generation type">{["All",...new Set(assets.map(a=>a.type))].map(t=><button key={t} aria-pressed={assetFilter===t} onClick={()=>{setAssetFilter(t);setSelected(null)}}>{t}</button>)}</div></div>}
       {mode==='generation'&&<><div className="asset-refine">
         <label>Geography<select aria-label="Asset geography" value={assetCountry} onChange={e=>{setAssetCountry(e.target.value);setSelected(null)}}>{['All GB','England','Scotland','Wales'].map(c=><option key={c}>{c}</option>)}</select></label>
         <label>Evidence<select aria-label="Asset data availability" value={assetAvailability} onChange={e=>{setAssetAvailability(e.target.value);setSelected(null)}}>{['All data','Metered history','Notified schedule','Capacity only'].map(c=><option key={c}>{c}</option>)}</select></label>
         <label>Capacity<select aria-label="Minimum asset capacity" value={minCapacity} onChange={e=>{setMinCapacity(Number(e.target.value));setSelected(null)}}><option value={0}>All capacities</option><option value={1}>Above 1 MW</option><option value={10}>Above 10 MW</option><option value={100}>Above 100 MW</option><option value={500}>Above 500 MW</option></select></label>
         <label>Order<select aria-label="Asset order" value={assetSort} onChange={e=>setAssetSort(e.target.value)}><option value="name">Name</option><option value="capacity">Capacity</option></select></label>
-      </div><div className="asset-navigation" aria-label="Generation map navigation"><button onClick={()=>zoom(1.5)} disabled={viewport.zoom>=32} aria-label="Zoom in on generation assets">+</button><button onClick={()=>zoom(1/1.5)} disabled={viewport.zoom<=1} aria-label="Zoom out of generation assets">−</button><button onClick={()=>setViewport(assetView())}>Reset GB view</button><span>{viewport.zoom.toFixed(1)}×</span><button onClick={()=>pan(-1,0)} aria-label="Pan west">←</button><button onClick={()=>pan(0,-1)} aria-label="Pan north">↑</button><button onClick={()=>pan(0,1)} aria-label="Pan south">↓</button><button onClick={()=>pan(1,0)} aria-label="Pan east">→</button></div><p className="asset-legend">Solid rings: dated measured output · dotted rings: capacity only. Drag to explore; zoom separates nearby sites.</p></>}
+      </div><p className="asset-legend">Solid rings: dated measured output · dotted rings: capacity only. Drag to explore; zoom separates nearby sites.</p></>}
+<button className="map-filter-close" onClick={e=>e.currentTarget.closest("details")?.removeAttribute("open")}>Show map</button></div></details></div>}
+      <div className="map-canvas">
+      <div className="network-key"><button aria-pressed={showNetwork} onClick={()=>setShowNetwork(v=>!v)}>Network backdrop {showNetwork?'on':'off'}</button>{showNetwork&&<><span><i className="key-400"/>400 kV</span><span><i className="key-275"/>275 kV</span><span><i className="key-132"/>132 kV · Scotland</span><span><i className="key-site"/>Generation sites / groups</span><span><i className="key-cable"/>Interconnectors · schematic</span><small>{network.isError?'Network geography unavailable':'Mapped infrastructure · not live flows'}</small></>}</div>
+      {mode==='generation'&&<div className="asset-navigation" aria-label="Generation map navigation"><button onClick={()=>zoom(1.5)} disabled={viewport.zoom>=32} aria-label="Zoom in on generation assets">+</button><button onClick={()=>zoom(1/1.5)} disabled={viewport.zoom<=1} aria-label="Zoom out of generation assets">−</button><button onClick={()=>setViewport(assetView())}>Reset GB view</button><span>{viewport.zoom.toFixed(1)}×</span><button onClick={()=>pan(-1,0)} aria-label="Pan west">←</button><button onClick={()=>pan(0,-1)} aria-label="Pan north">↑</button><button onClick={()=>pan(0,1)} aria-label="Pan south">↓</button><button onClick={()=>pan(1,0)} aria-label="Pan east">→</button></div>}
       <svg
         className={mode==='generation'?'atlas-map asset-navigable':'atlas-map'}
-        onPointerDown={e=>{if(mode!=='generation')return;const scale=e.currentTarget.getScreenCTM()?.a||1;drag.current={x:e.clientX,y:e.clientY,cx:viewport.cx,cy:viewport.cy,scale,moved:false}}}
-        onPointerMove={e=>{const d=drag.current;if(!d||mode!=='generation')return;if(Math.hypot(e.clientX-d.x,e.clientY-d.y)>5){d.moved=true;e.currentTarget.setPointerCapture(e.pointerId);setViewport(assetView(d.cx-(e.clientX-d.x)/d.scale,d.cy-(e.clientY-d.y)/d.scale,viewport.zoom))}}}
-        onPointerUp={()=>{setTimeout(()=>{drag.current=null},0)}}
-        onPointerCancel={()=>{drag.current=null}}
+        onPointerDown={e=>{if(mode!=='generation')return;touches.current.set(e.pointerId,{x:e.clientX,y:e.clientY});if(touches.current.size===2){const [a,b]=[...touches.current.values()];pinch.current={distance:Math.hypot(a.x-b.x,a.y-b.y),zoom:viewport.zoom};e.currentTarget.setPointerCapture(e.pointerId);return;}const scale=e.currentTarget.getScreenCTM()?.a||1;drag.current={x:e.clientX,y:e.clientY,cx:viewport.cx,cy:viewport.cy,scale,moved:false}}}
+        onPointerMove={e=>{if(touches.current.has(e.pointerId))touches.current.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pinch.current&&touches.current.size===2){const [a,b]=[...touches.current.values()],p=pinch.current;setViewport(v=>assetView(v.cx,v.cy,p.zoom*Math.hypot(a.x-b.x,a.y-b.y)/Math.max(1,p.distance)));if(drag.current)drag.current.moved=true;return;}const d=drag.current;if(!d||mode!=='generation')return;if(Math.hypot(e.clientX-d.x,e.clientY-d.y)>5){d.moved=true;e.currentTarget.setPointerCapture(e.pointerId);setViewport(assetView(d.cx-(e.clientX-d.x)/d.scale,d.cy-(e.clientY-d.y)/d.scale,viewport.zoom))}}}
+        onPointerUp={e=>{touches.current.delete(e.pointerId);pinch.current=null;setTimeout(()=>{drag.current=null},0)}}
+        onPointerCancel={e=>{touches.current.delete(e.pointerId);pinch.current=null;drag.current=null}}
         onClickCapture={e=>{if(drag.current?.moved){e.preventDefault();e.stopPropagation()}}}
         viewBox={mode === "generation" ? `${viewport.cx-viewport.w/2} ${viewport.cy-viewport.h/2} ${viewport.w} ${viewport.h}` : mode === "cables" ? "65 55 855 755" : "65 55 825 720"}
         role="group"
@@ -233,6 +246,7 @@ export function GridAtlas({
           />
         ))}
         {countries.filter(c=>c.name==='United Kingdom').map(c=><path key="terrain" d={c.path} fill="url(#atlas-terrain)" pointerEvents="none" aria-hidden="true"/>)}
+        {showNetwork&&<NetworkBackdrop data={network.data} zoom={mode==="generation"?viewport.zoom:1}/>}
         <text
           x="150"
           y="235"
@@ -382,8 +396,11 @@ export function GridAtlas({
               </g>
             );
           })}
+        {mode === "generation" && <g className="generation-cable-context"><CableMapLayer rows={cableFeed.rows} now={now} selected={null} select={id=>{setMode("cables");setSelected(id)}}/></g>}
         {mode === "generation" && <GenerationMapLayer filter={assetFilter} search={assetSearch} pilotOnly={pilotOnly} selected={selected} onSelect={setSelected} snapshot={assetSnapshot} zoom={viewport.zoom} country={assetCountry} availability={assetAvailability} minCapacity={minCapacity} viewport={viewport} operations={operations.data}/>}
       </svg>
+      </div>
+      {summary}
       <div className="atlas-map-note">
         <span className="atlas-dot" />{" "}
         {mode === "generation" ? `Elexon metered snapshot · ${assetSnapshot.points.length ? assetTime(assetSnapshot.points.at(-1)!.from)+" UK" : "Output unavailable"} · approximate sites` : mode === "cables" ? "Elexon · mint imports / violet exports · approximate terminals & schematic paths" : mode === "connections"
@@ -408,6 +425,7 @@ export function GridAtlas({
           {mode === "generation" ? "Asset register" : "Check a postcode"} <ArrowUpRight size={13} />
         </a>
       </div>
+      <details className="map-results-drawer" open={assetSearch.length>0||undefined}><summary>Browse sites & source evidence</summary>
       {mode === "generation" && <p className="asset-results" role="status">{matchingAssets(assetFilter,assetSearch,pilotOnly,{assets,country:assetCountry,availability:assetAvailability,snapshot:assetSnapshot,operations:operations.data,minCapacity,sort:assetSort}).length} matching register entries · REPD renewables & DUKES stations · numbered markers group nearby entries{matchingAssets(assetFilter,assetSearch,pilotOnly,{assets,country:assetCountry,availability:assetAvailability,snapshot:assetSnapshot,operations:operations.data,minCapacity,sort:assetSort}).length===0 ? ". No matching sites; try another search or fuel." : ""}</p>}
       <div
         className="atlas-access-list"
@@ -438,6 +456,7 @@ export function GridAtlas({
             ))}
       </div>
       {mode==='generation'&&<div className="asset-catalogue-footnote">{matchingAssets(assetFilter,assetSearch,pilotOnly,{assets,country:assetCountry,availability:assetAvailability,snapshot:assetSnapshot,operations:operations.data,minCapacity}).length>listLimit&&<button onClick={()=>setListLimit(n=>n+60)}>Show 60 more results</button>}<p>{catalogue.isFetching?'Loading the official catalogue…':catalogue.isError?'Wider catalogue unavailable; retained curated entries shown.':catalogue.data?.metadata.coverage}</p><p>{catalogue.data?.metadata.retrievedAt && <>Register retrieved {new Date(catalogue.data.metadata.retrievedAt).toLocaleDateString("en-GB")}. </>}Contains public sector information licensed under the Open Government Licence v3.0. <a href="/data/operational-assets.json">Source register & provenance ↗</a></p></div>}
+      <p className="network-attribution">Network geography © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a> · ODbL · community mapped, incomplete. <a href="/data/network-geography.json">Download geometry & provenance</a>{network.data?.asOf && <> · snapshot {new Date(network.data.asOf).toLocaleDateString("en-GB")}</>}</p></details>
       {selected && (
         <div
           className="atlas-map-detail"

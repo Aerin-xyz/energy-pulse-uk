@@ -4,6 +4,7 @@ import {GridEvidenceBriefing} from "./GridEvidenceBriefing";
 import { lazy, Suspense, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
+  Home, Map, BarChart3, Lightbulb,
   ArrowDown,
   ArrowRight,
   ArrowUpRight,
@@ -14,6 +15,7 @@ import { useCarbonOutlook } from "@/hooks/useCarbonOutlook";
 
 import { CommandNavigation, GridCommandCentre } from "./GridCommandCentre";
 import "@/styles/command-centre.css";
+import "@/styles/immersive-map.css";
 const HistoricalGenerationChart = lazy(() =>
   import("./HistoricalGenerationChart").then((m) => ({
     default: m.HistoricalGenerationChart,
@@ -65,6 +67,7 @@ export function ElectricityObservatory() {
   return (
     <div className="observatory" data-motion={motion ? "on" : "off"}>
       <CommandNavigation now={now} refresh={refetch} loading={loading} motion={motion} toggleMotion={()=>setMotion(v=>!v)}/>
+      <nav className="map-mobile-nav" aria-label="Quick navigation"><Link to="/"><Home/><span>Home</span></Link><a href="#grid-map"><Map/><span>Map</span></a><Link to="/data"><BarChart3/><span>Data</span></Link><Link to="/reports"><Lightbulb/><span>Insights</span></Link></nav>
       <main className="atlas-shell">
         {error && <p className="atlas-notice" role="status">Live refresh unavailable. Last known values retain their source timestamps.</p>}
         <GridCommandCentre data={data} history={history} carbon={carbon} now={now}/>

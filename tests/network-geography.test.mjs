@@ -1,0 +1,3 @@
+import{test}from'node:test';import assert from'node:assert/strict';import fs from'node:fs';
+const data=JSON.parse(fs.readFileSync('public/data/network-geography.json'));
+test('network snapshot is attributed, dated static geography with source identities',()=>{assert.match(data.licence,/odbl/);assert.ok(Date.parse(data.asOf));assert.ok(data.lines.length>1000);assert.ok(data.substations.length>100);assert.equal(new Set(data.lines.map(l=>l.id)).size,data.lines.length);for(const l of data.lines){assert.match(l.id,/^way\//);assert.ok([132000,275000,400000].includes(l.voltage));assert.match(l.path,/^M/);assert.ok(!/NaN|undefined/.test(l.path));assert.equal(l.flow,undefined)}assert.match(data.coverage,/Not live flows/)});

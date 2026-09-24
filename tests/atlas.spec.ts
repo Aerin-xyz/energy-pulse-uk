@@ -51,9 +51,11 @@ for (const width of [390, 768, 1440])
   test(`atlas readable and interactive at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 });
     await page.goto("/");
+  await page.getByRole("button",{name:"Cables",exact:true}).click();
+  await page.locator(".map-results-drawer > summary").click();
     await expect(
       page.getByRole("heading", {
-        name: "Grid Command Centre",
+        name: "Britain’s electricity. Live, explained.",
       }),
     ).toBeVisible();
     await expect(page.locator(".cc-summary")).toContainText("36.9");
@@ -109,6 +111,8 @@ test("unavailable readings do not invent a trend or forecast", async ({
     route.fulfill({ json: { data: [] } }),
   );
   await page.goto("/");
+  await page.getByRole("button",{name:"Cables",exact:true}).click();
+  await page.locator(".map-results-drawer > summary").click();
   await expect(page.locator(".atlas-outlook")).toContainText(
     "No complete future window",
   );
@@ -120,6 +124,8 @@ test("unavailable readings do not invent a trend or forecast", async ({
 test("reduced motion hides flow travellers", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
+  await page.getByRole("button",{name:"Cables",exact:true}).click();
+  await page.locator(".map-results-drawer > summary").click();
   await expect(page.locator(".cc-summary")).toContainText("36.9");
   expect(await page.locator(".atlas-traveller:visible").count()).toBe(0);
 });
@@ -143,7 +149,7 @@ test("archived HTML and current snapshot have correct canonical meaning without 
 });
 
 test('expanded map is a keyboard-dismissable modal and restores focus',async({page})=>{
- await page.goto('/');
+ await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();await page.locator('.map-results-drawer > summary').click();
  await page.getByRole('button',{name:'Expand map',exact:true}).click();
  await expect(page.getByRole('dialog',{name:'Great Britain electricity atlas'})).toBeVisible();
  await expect(page.getByRole('button',{name:'Close expanded map'})).toBeFocused();
@@ -153,7 +159,7 @@ test('expanded map is a keyboard-dismissable modal and restores focus',async({pa
 });
 
 test('ambient motion can be paused independently of live readings', async ({page})=>{
- await page.goto('/');
+ await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();await page.locator('.map-results-drawer > summary').click();
  await expect(page.locator('.cc-summary')).toContainText('36.9');
  await page.getByRole('button',{name:'Pause ambient motion'}).click();
  await expect(page.locator('.observatory')).toHaveAttribute('data-motion','off');
@@ -168,7 +174,7 @@ test('cable layer keeps French readings separate and shows signed evidence',asyn
  await page.clock.setFixedTime(new Date('2026-09-14T20:32:00Z'));
  const cables=JSON.parse(readFileSync(new URL('./fixtures/cable-flows.json',import.meta.url),'utf8'));
  await page.route('**/data/grid-evidence.json',route=>route.fulfill({json:{...evidenceFixture,sources:{...evidenceFixture.sources,FUELINST:{records:cables.data}}}}));
- await page.goto('/');
+ await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();await page.locator('.map-results-drawer > summary').click();
  await expect(page.locator('.cable-map-layer')).toContainText('603 MW ← GB');
  await page.getByRole('button',{name:'ElecLink',exact:true}).click();
  await expect(page.getByRole('region',{name:'Selected map evidence'})).toContainText('603 MW · exporting from GB');
@@ -183,7 +189,7 @@ test('delayed cable readings are stationary and unavailable is not zero',async({
  const cables=JSON.parse(readFileSync(new URL('./fixtures/cable-flows.json',import.meta.url),'utf8'));
  cables.data=cables.data.filter(r=>r.fuelType!=='INTELEC');
  await page.route('**/data/grid-evidence.json',route=>route.fulfill({json:{...evidenceFixture,sources:{...evidenceFixture.sources,FUELINST:{records:cables.data}}}}));
- await page.goto('/');
+ await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();await page.locator('.map-results-drawer > summary').click();
  await expect(page.locator('.cable-map-layer')).toContainText('delayed');
  expect(await page.locator('.cable-map-layer .atlas-traveller').count()).toBe(0);
  await page.getByRole('button',{name:'ElecLink',exact:true}).click();

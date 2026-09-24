@@ -1,0 +1,19 @@
+# Map-first visual release — 24 September 2026
+
+## Experience
+The supplied mobile reference guides composition, not data values or invented telemetry. Generation becomes the entry view. Full-width geography, quieter national-scale asset groups, detailed technology markers on zoom, search, collapsible filters, source/results disclosure, side-panel evidence on desktop and a bottom sheet on mobile. Existing 2,884-entry catalogue, reviewed Elexon mappings, cable/regional views and all other routes remain available. Real generation/demand/carbon values and fuel shares come from the existing shared calculations. No invented day-on-day percentages. Mobile quick navigation, pinch zoom, drag, explicit zoom/reset, keyboard controls, reduced motion and the existing pause control are retained.
+
+## Network backdrop
+7,923 OSM line sections and 285 tagged high-voltage substations after GB coastline filtering. Includes mapped 400/275 kV overhead lines and partial Scottish 132 kV context. Exact voltage tags only; incomplete and not operator-verified. OSM source identifiers remain in the downloadable database. Projected geometry is display-simplified; no topological connections, measured flows, limits or availability are inferred. No lines are fabricated to connect nearby assets. Existing international cables use their existing, explicitly schematic routes and freshness-gated Elexon flows, independently of the static background.
+
+Initial source snapshot: 24 September 2026. Network raw imports were fetched using Overpass with a meaningful identifying User-Agent. Four bounded queries are reproducible in scripts/fetch-network-geography.py. scripts/build-network-geography.mjs filters against the existing Natural Earth GB polygons (excluding NI), projects, validates and packages the background. Monthly backend workflow shares the existing publisher lock and retains published geography if fetching/building fails. Browser requests only the cached 1.2 MB JSON; drawing batches line sections into three SVG voltage paths rather than thousands of DOM nodes.
+
+## Licence / provenance
+© OpenStreetMap contributors. ODbL 1.0 applies to the adapted network database, available at /data/network-geography.json with source IDs, date, coverage and licence. Attribution and download are available in the map's source disclosure. OSM licence: https://www.openstreetmap.org/copyright .
+The National Grid geometry mirror inspected on ArcGIS (item cbb153a877d94155bb8cb65664f03bc9) limits reuse to emergency/land-use planning and prohibits commercial use; it was not incorporated. Official REPD/DUKES/Elexon/NESO sources remain unchanged for assets, readings and constraints.
+
+## Limitations
+Not a full network inventory, survey-grade map or live transmission-flow monitor. Offshore register positions can locate project/connection areas. Static infrastructure glows are styling, not activity signals. No asset curtailment or connection inference. Numbers retain source-specific freshness and measurement scope. The image's terrain photography and illustrative dense connections are not recreated as fabricated real infrastructure.
+
+## Verification
+38 calculation/register/geography checks passed (37 existing + one geography contract). All 40 browser cases passed across the regression run and the corrected exact-name assertion rerun: legacy routes, cables, archive, missing readings, mobile detail-sheet dismissal, filters, network failure, network toggle and native two-finger touch events. TypeScript app check and production build passed. Phone (390 px) and desktop (1440 px) screenshots were visually reviewed. The initial browser regression exposed filter overlay/stacking problems, now corrected. A test-server lifecycle collision was isolated from application failures before the final acceptance run.

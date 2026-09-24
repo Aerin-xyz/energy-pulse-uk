@@ -12,7 +12,7 @@ export function assetClusters(assets,zoom=1){
  for(const a of assets){const x=(a.longitude+12)*40,y=(61-a.latitude)*63,key=Math.floor(x/cell)+':'+Math.floor(y/cell);const g=groups.get(key);if(g){g.sumX+=x;g.sumY+=y;g.members.push(a)}else groups.set(key,{sumX:x,sumY:y,members:[a]});}
  return [...groups.values()].map(g=>({x:g.sumX/g.members.length,y:g.sumY/g.members.length,members:g.members}));
 }
-export function assetView(cx=415,cy=350,zoom=1){const z=Math.max(1,Math.min(32,zoom)),w=620/z,h=850/z;return {zoom:z,cx:Math.max(65+w/2,Math.min(920-w/2,cx)),cy:Math.max(-75+h/2,Math.min(810-h/2,cy)),w,h};}
+export function assetView(cx=415,cy=350,zoom=1){const z=Math.max(1,Math.min(32,zoom)),w=500/z,h=800/z;return {zoom:z,cx:Math.max(65+w/2,Math.min(920-w/2,cx)),cy:Math.max(-75+h/2,Math.min(810-h/2,cy)),w,h};}
 export const capacityText=value=>Number.isFinite(value)?value.toLocaleString('en-GB')+' MW':'Capacity unavailable';
 // PN is scheduled MW, never actual generation. Require contiguous full-period
 // coverage for every verified production unit; reject conflicting overlaps.

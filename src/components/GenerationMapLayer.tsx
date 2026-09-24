@@ -44,8 +44,8 @@ export function GenerationMapLayer({filter,search,pilotOnly,selected,onSelect,sn
  const grouped=members.length>1,id=grouped?'cluster:'+members.map(a=>a.id).join(','):members[0].id;
  const a=members.find(a=>a.id===selected)||members[0],r=snapshot.points.at(-1)?.values[a.id];const mw=a.unitMatch.status==='verified'?r?.mw:null,known=typeof mw==='number';
  const active=selected===id||members.some(a=>a.id===selected),name=grouped?`${members.length} nearby sites`:a.name;
- const radius=grouped?14:known?Math.max(12,Math.min(18,12+Math.sqrt(Math.abs(mw))/12)):12;
- return <g key={id} transform={`translate(${x} ${y}) scale(${1/zoom})`} role="button" tabIndex={0} aria-label={grouped?`Inspect ${members.length} nearby generation sites: ${members.slice(0,5).map(a=>a.name).join(', ')+(members.length>5?` and ${members.length-5} more`:'')}`:`Inspect ${a.name} generation`} aria-pressed={active} onClick={()=>onSelect(id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(id)}}} style={{color:grouped?'#a2d5ed':colours[a.type]}} className={labels.has(id)?'asset-marker labelled':'asset-marker'}>
+ const radius=grouped?(zoom<2?5:14):known?Math.max(12,Math.min(18,12+Math.sqrt(Math.abs(mw))/12)):12;
+ return <g key={id} transform={`translate(${x} ${y}) scale(${1/zoom})`} role="button" tabIndex={0} aria-label={grouped?`Inspect ${members.length} nearby generation sites: ${members.slice(0,5).map(a=>a.name).join(', ')+(members.length>5?` and ${members.length-5} more`:'')}`:`Inspect ${a.name} generation`} aria-pressed={active} onClick={()=>onSelect(id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(id)}}} style={{color:grouped?'#e6bd62':colours[a.type]}} className={(labels.has(id)?'asset-marker labelled':'asset-marker')+(grouped&&zoom<2?' compact-cluster':'')}>
  <title>{grouped?members.map(a=>a.name).join(' · '):`${a.name} · ${capacityText(a.installedCapacityMW)} installed`}</title>
  {labels.has(id)&&<rect x="-22" y="-24" width="220" height="48" fill="transparent"/>}
  <circle r="22" fill="transparent"/>
