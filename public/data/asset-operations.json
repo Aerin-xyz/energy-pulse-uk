@@ -4,7 +4,7 @@
   "unit": "MW",
   "from": "2026-09-24T17:00:00.000Z",
   "to": "2026-09-24T17:30:00.000Z",
-  "checkedAt": "2026-09-24T17:25:44.292Z",
+  "checkedAt": "2026-09-24T17:27:06.910Z",
   "publishedAt": null,
   "source": "Elexon physical notifications (PN)",
   "attribution": "Contains BMRS data © Elexon Limited copyright and database right 2026.",
@@ -3172,5 +3172,5 @@
   "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/PN?settlementDate=2026-09-24&settlementPeriod=37&format=json",
   "revision": "6955217383e1d3bd8a1e0bfc88bbfb0902a45aba6f3613aa6b14a21067ef67e6",
   "mappingReviewedAt": "2026-09-24T17:20:24.270161+00:00",
-  "registryCheckedAt": "2026-09-24T17:21:21.808Z"
+  "registryCheckedAt": "2026-09-24T17:27:06.739Z"
 }
