@@ -7364,5 +7364,7 @@
         }
       }
     }
-  ]
+  ],
+  "refreshError": "No metered snapshot published within 14 days",
+  "lastAttemptAt": "2026-09-26T23:29:11.536Z"
 }
