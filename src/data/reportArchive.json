@@ -1,5 +1,85 @@
 [
   {
+    "slug": "/reports/weekly/2026-09-26",
+    "date": "2026-09-26",
+    "title": "UK Electricity Mix Weekly Report: Saturday 26 September",
+    "period": "Sunday 20 September to Friday 25 September",
+    "intro": "A measured weekly report for EnergyMix.info using the available 7-day historical generation feed for Sunday 20 September to Friday 25 September.",
+    "summary": "The week from Sunday 20 September to Friday 25 September averaged about 25.8 GW of measured generation, with renewables averaging 39.3% of measured output. The strongest renewable day in the available data was Sunday 20 September, when wind, solar and hydro together averaged 60.7% of measured generation. Gas was highest on Tuesday 22 September and lowest on Sunday 20 September.",
+    "takeaway": "For flexible electricity use, the cleanest opportunities are likely to appear when wind is strong, gas is low and demand is not at a peak. This is the foundation for future EV-charging guidance, clean-electricity alerts and weekly newsletter summaries.",
+    "metrics": [
+      [
+        "Average measured generation",
+        "~25.8 GW across available settlement-period aggregates"
+      ],
+      [
+        "Average renewable share",
+        "39.3%"
+      ],
+      [
+        "Highest renewable share",
+        "60.7% on Sunday 20 September"
+      ],
+      [
+        "Highest average wind output",
+        "~11.4 GW on Sunday 20 September"
+      ],
+      [
+        "Highest average solar output",
+        "~3.6 GW on Sunday 20 September"
+      ],
+      [
+        "Highest average gas output",
+        "~12.2 GW on Tuesday 22 September"
+      ]
+    ],
+    "drivers": [
+      "Renewables were strongest on Sunday 20 September, when wind, solar and hydro averaged 60.7% of measured generation.",
+      "Wind was the largest swing factor in the available feed, peaking at about 11.4 GW average output on Sunday 20 September.",
+      "Solar was strongest on Sunday 20 September, averaging about 3.6 GW across settlement periods after embedded-solar backfill where needed.",
+      "Gas averaged about 8.4 GW across the period, rising highest on Tuesday 22 September and falling lowest on Sunday 20 September.",
+      "Measured generation was highest on Wednesday 23 September, at roughly 26.8 GW average output."
+    ],
+    "cleanestPeriods": [
+      {
+        "title": "Best low-carbon proxy: Sunday 20 September",
+        "body": "Historical carbon-intensity aggregates are not yet part of this weekly report feed, so EnergyMix.info uses renewable share and gas output as cautious proxies. Sunday 20 September had the strongest renewable share at 60.7%."
+      },
+      {
+        "title": "Lowest gas proxy: Sunday 20 September",
+        "body": "Gas generation averaged about 4.5 GW on Sunday 20 September. Lower gas periods are often cleaner, but the report does not yet claim this was the lowest-carbon period without historical carbon-intensity validation."
+      }
+    ],
+    "higherCarbonPeriods": [
+      {
+        "title": "Highest gas proxy: Tuesday 22 September",
+        "body": "Gas averaged about 12.2 GW on Tuesday 22 September. Gas-heavy periods are usually higher-carbon, but this is labelled as a proxy until historical carbon-intensity highs/lows are added to the report feed."
+      }
+    ],
+    "highlights": [
+      {
+        "label": "Wind",
+        "value": "Highest average wind output was about 11.4 GW on Sunday 20 September."
+      },
+      {
+        "label": "Solar",
+        "value": "Highest average solar output was about 3.6 GW on Sunday 20 September."
+      },
+      {
+        "label": "Gas",
+        "value": "Highest average gas output was about 12.2 GW on Tuesday 22 September; lowest was about 4.5 GW on Sunday 20 September."
+      }
+    ],
+    "methodologyNote": "This report is generated from the available 7-day historical generation feed and validated against external public data. Carbon-intensity highs/lows and interconnector summaries should be treated as future additions unless they are present as validated historical aggregates.",
+    "archiveProvenance": {
+      "archivedAt": "2026-09-26T11:49:12.272Z",
+      "definition": "historical-measured-v1",
+      "timeBasis": "UTC",
+      "validationStatus": "warning",
+      "coverage": "available completed reporting days"
+    }
+  },
+  {
     "slug": "/reports/weekly/2026-09-25",
     "date": "2026-09-25",
     "title": "UK Electricity Mix Weekly Report: Friday 25 September",
