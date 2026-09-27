@@ -1,3 +1,4 @@
+import {browse,closeAllPanels,evidence} from './atlas-review-helpers';
 import { readFileSync } from "node:fs";
 import { test, expect } from "@playwright/test";
 const snapshot = JSON.parse(
@@ -53,13 +54,13 @@ for (const width of [390, 768, 1440])
     await page.setViewportSize({ width, height: 1000 });
     await page.goto("/");
   await page.getByRole("button",{name:"Cables",exact:true}).click();
-  await page.locator(".map-results-drawer > summary").click();
+
     await expect(
       page.getByRole("heading", {
         name: "Britain’s electricity. Live, explained.",
       }),
     ).toBeVisible();
-    await expect(page.locator(".cc-summary")).toContainText("36.9");
+    await expect(page.locator(".map-total")).toContainText("36.9");
     await expect(page.locator(".atlas-signals")).toContainText("0.9");
     await expect(page.locator(".atlas-outlook")).toContainText(
       "Lowest average forecast",
@@ -68,25 +69,25 @@ for (const width of [390, 768, 1440])
       await page.evaluate(() => document.documentElement.scrollWidth),
     ).toBeLessThanOrEqual(width);
     await page.getByRole("button", { name: "Connections", exact: true }).click();
-    await page.getByRole("button", { name: "France", exact: true }).click();
+    await browse(page);await page.getByRole("button", { name: "France", exact: true }).click();
     await expect(
-      page.getByRole("region", { name: "Selected map evidence" }),
+      evidence(page),
     ).toContainText("IFA / IFA2 / ElecLink");
     await page.keyboard.press("Escape");
     await expect(
-      page.getByRole("region", { name: "Selected map evidence" }),
+      evidence(page),
     ).toHaveCount(0);
-    await page
+    await closeAllPanels(page);await page
       .getByRole("button", { name: "Regional carbon", exact: true })
       .click();
-    await page
+    await browse(page);await page
       .getByRole("button", { name: "North Scotland · 20g", exact: true })
       .click();
     await expect(
-      page.getByRole("region", { name: "Selected map evidence" }),
+      evidence(page),
     ).toContainText("forecast");
     await page.getByRole("button", { name: "Close map detail" }).click();
-    await page.getByRole("button", { name: "%", exact: true }).click();
+    await closeAllPanels(page);await page.getByRole("button", { name: "%", exact: true }).click();
     await expect(page.locator(".atlas-fuel").first()).toContainText("54.2");
   });
 test("old report dates retain their report and unknown dates are not substituted", async ({
@@ -113,7 +114,7 @@ test("unavailable readings do not invent a trend or forecast", async ({
   );
   await page.goto("/");
   await page.getByRole("button",{name:"Cables",exact:true}).click();
-  await page.locator(".map-results-drawer > summary").click();
+
   await expect(page.locator(".atlas-outlook")).toContainText(
     "No complete future window",
   );
@@ -126,8 +127,8 @@ test("reduced motion hides flow travellers", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto("/");
   await page.getByRole("button",{name:"Cables",exact:true}).click();
-  await page.locator(".map-results-drawer > summary").click();
-  await expect(page.locator(".cc-summary")).toContainText("36.9");
+
+  await expect(page.locator(".map-total")).toContainText("36.9");
   expect(await page.locator(".atlas-traveller:visible").count()).toBe(0);
 });
 test("archived HTML and current snapshot have correct canonical meaning without JavaScript", async ({
@@ -135,13 +136,13 @@ test("archived HTML and current snapshot have correct canonical meaning without 
 }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto("http://127.0.0.1:4173/reports/weekly/2026-05-11/");
+  await page.goto("http://127.0.0.1:4175/reports/weekly/2026-05-11/");
   await expect(page.locator("h1")).toContainText("11 May");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     "href",
     "https://energymix.info/reports/weekly/2026-05-11/",
   );
-  await page.goto("http://127.0.0.1:4173/");
+  await page.goto("http://127.0.0.1:4175/");
   await expect(page.locator("body")).toContainText(
     "National demand (INDO)",
   );
@@ -150,7 +151,7 @@ test("archived HTML and current snapshot have correct canonical meaning without 
 });
 
 test('expanded map is a keyboard-dismissable modal and restores focus',async({page})=>{
- await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();await page.locator('.map-results-drawer > summary').click();
+ await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();
  await page.getByRole('button',{name:'Expand map',exact:true}).click();
  await expect(page.getByRole('dialog',{name:'Great Britain electricity atlas'})).toBeVisible();
  await expect(page.getByRole('button',{name:'Close expanded map'})).toBeFocused();
@@ -160,13 +161,13 @@ test('expanded map is a keyboard-dismissable modal and restores focus',async({pa
 });
 
 test('ambient motion can be paused independently of live readings', async ({page})=>{
- await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();await page.locator('.map-results-drawer > summary').click();
- await expect(page.locator('.cc-summary')).toContainText('36.9');
+ await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();
+ await expect(page.locator('.map-total')).toContainText('36.9');
  await page.getByRole('button',{name:'Pause ambient motion'}).click();
  await expect(page.locator('.observatory')).toHaveAttribute('data-motion','off');
  expect(await page.locator('.atlas-traveller:visible').count()).toBe(0);
  expect(await page.locator('.cc-orb').evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
- await expect(page.locator('.cc-summary')).toContainText('36.9');
+ await expect(page.locator('.map-total')).toContainText('36.9');
  await page.getByRole('button',{name:'Enable ambient motion'}).click();
  await expect(page.locator('.observatory')).toHaveAttribute('data-motion','on');
 });
@@ -175,24 +176,24 @@ test('cable layer keeps French readings separate and shows signed evidence',asyn
  await page.clock.setFixedTime(new Date('2026-09-14T20:32:00Z'));
  const cables=JSON.parse(readFileSync(new URL('./fixtures/cable-flows.json',import.meta.url),'utf8'));
  await page.route('**/api/grid-evidence*',route=>route.fulfill({json:{...evidenceFixture,sources:{...evidenceFixture.sources,FUELINST:{records:cables.data}}}}));
- await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();await page.locator('.map-results-drawer > summary').click();
+ await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();
  await expect(page.locator('.cable-map-layer')).toContainText('603 MW ← GB');
- await page.getByRole('button',{name:'ElecLink',exact:true}).click();
- await expect(page.getByRole('region',{name:'Selected map evidence'})).toContainText('603 MW · exporting from GB');
+ await browse(page);await page.getByRole('button',{name:'ElecLink',exact:true}).click();
+ await expect(evidence(page)).toContainText('603 MW · exporting from GB');
  await expect(page.locator('.cable-facts')).toContainText('60.3%');
  await expect(page.locator('.cable-history')).toBeVisible();
  await page.getByRole('button',{name:'Close map detail'}).click();
  await page.getByRole('button',{name:'BritNed',exact:true}).click();
- await expect(page.getByRole('region',{name:'Selected map evidence'})).toContainText('zero measured flow');
+ await expect(evidence(page)).toContainText('zero measured flow');
 });
 test('delayed cable readings are stationary and unavailable is not zero',async({page})=>{
  await page.clock.setFixedTime(new Date('2026-09-14T22:00:00Z'));
  const cables=JSON.parse(readFileSync(new URL('./fixtures/cable-flows.json',import.meta.url),'utf8'));
  cables.data=cables.data.filter(r=>r.fuelType!=='INTELEC');
  await page.route('**/api/grid-evidence*',route=>route.fulfill({json:{...evidenceFixture,sources:{...evidenceFixture.sources,FUELINST:{records:cables.data}}}}));
- await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();await page.locator('.map-results-drawer > summary').click();
+ await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();
  await expect(page.locator('.cable-map-layer')).toContainText('delayed');
  expect(await page.locator('.cable-map-layer .atlas-traveller').count()).toBe(0);
- await page.getByRole('button',{name:'ElecLink',exact:true}).click();
- await expect(page.getByRole('region',{name:'Selected map evidence'})).toContainText('Reading unavailable');
+ await browse(page);await page.getByRole('button',{name:'ElecLink',exact:true}).click();
+ await expect(evidence(page)).toContainText('Reading unavailable');
 });

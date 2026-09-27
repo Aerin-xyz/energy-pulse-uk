@@ -1,3 +1,4 @@
+import {FUEL_COLOURS} from '@/lib/atlasPresentation.mjs';
 import {notificationReading} from '@/lib/notificationFeed.mjs';
 import {useGenerationCatalogue} from '@/hooks/useGenerationCatalogue';
 import {AssetOperations} from './AssetOperations';
@@ -6,7 +7,7 @@ import {useEffect,useState} from 'react';
 import seedAssets from '@/data/atlas/canonical-assets.json';
 import './generation-map.css';
 
-const colours:Record<string,string>={'Offshore wind':'#39d9ef','Onshore wind':'#54dfb1',Nuclear:'#b5a1ff',Biomass:'#b2e378',Gas:'#ffbc73','Pumped storage':'#7aa9ff',Solar:'#f7cf62',Hydro:'#4fbdf3',Biogas:'#9ac881','Energy from waste':'#ec9bbd',Marine:'#53cecd',Geothermal:'#db9c82','Oil / other thermal':'#adb6c3'};
+const colours:Record<string,string>=FUEL_COLOURS;
 type Reading={mw:number|null;coverage:number;total:number};
 type Point={from:string;to:string;values:Record<string,Reading>};
 export type AssetSnapshot={checkedAt:string|null;verificationCheckedAt?:string;refreshError?:string;points:Point[]};
@@ -29,24 +30,24 @@ function TechnologyGlyph({type}:{type:string}){
  'Pumped storage':'M0 -8Q-10 3 -5 7Q0 12 5 7Q10 3 0 -8M-3 5L0 2L3 5'};
  return <path d={paths[type]||'M-5 -5H5V5H-5Z'} fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>;
 }
-export function GenerationMapLayer({filter,search,pilotOnly,selected,onSelect,snapshot,zoom=1,country='All GB',availability='All data',minCapacity=0,viewport,operations}:{filter:string;search:string;pilotOnly:boolean;selected:string|null;onSelect:(id:string)=>void;snapshot:AssetSnapshot;zoom?:number;country?:string;availability?:string;minCapacity?:number;viewport?:{cx:number;cy:number;w:number;h:number};operations?:any}){
+export function GenerationMapLayer({markerScale=1,filter,search,pilotOnly,selected,onSelect,snapshot,zoom=1,country='All GB',availability='All data',minCapacity=0,viewport,operations}:{markerScale?:number;filter:string;search:string;pilotOnly:boolean;selected:string|null;onSelect:(id:string)=>void;snapshot:AssetSnapshot;zoom?:number;country?:string;availability?:string;minCapacity?:number;viewport?:{cx:number;cy:number;w:number;h:number};operations?:any}){
  const {assets}=useGenerationCatalogue();
  const visible=matchingAssets(filter,search,pilotOnly,{assets,country,availability,snapshot,minCapacity,operations}).filter(a=>!viewport||Math.abs((a.longitude+12)*40-viewport.cx)<viewport.w/2+30/zoom&&Math.abs((61-a.latitude)*63-viewport.cy)<viewport.h/2+30/zoom);
- const clusters=assetClusters(visible,zoom);const labels=new Set<string>();const boxes:{x:number;y:number;w:number;h:number}[]=[];
+ const clusters=assetClusters(visible,zoom,44*markerScale);const labels=new Set<string>();const boxes:{x:number;y:number;w:number;h:number}[]=[];
  const clusterId=c=>c.members.length>1?'cluster:'+c.members.map(a=>a.id).join(','):c.members[0].id;
  const isActive=c=>selected===clusterId(c)||c.members.some(a=>a.id===selected);
  for(const c of [...clusters].sort((a,b)=>Number(isActive(b))-Number(isActive(a)))){
   if(!isActive(c)&&visible.length>5&&zoom<3)continue;
-  const box={x:c.x+24/zoom,y:c.y-18/zoom,w:190/zoom,h:36/zoom};
-  const overlaps=boxes.some(b=>box.x<b.x+b.w&&box.x+box.w>b.x&&box.y<b.y+b.h&&box.y+box.h>b.y)||clusters.some(o=>o!==c&&o.x>box.x-12/zoom&&o.x<box.x+box.w&&o.y>box.y&&o.y<box.y+box.h);
+  const scale=markerScale/zoom;const box={x:c.x+24*scale,y:c.y-18*scale,w:190*scale,h:40*scale};
+  const overlaps=boxes.some(b=>box.x<b.x+b.w&&box.x+box.w>b.x&&box.y<b.y+b.h&&box.y+box.h>b.y)||clusters.some(o=>o!==c&&o.x>box.x-12*scale&&o.x<box.x+box.w&&o.y>box.y&&o.y<box.y+box.h);
   if(isActive(c)||!overlaps){labels.add(clusterId(c));boxes.push(box)}
  }
  return <g className="generation-layer">{clusters.map(({x,y,members})=>{
  const grouped=members.length>1,id=grouped?'cluster:'+members.map(a=>a.id).join(','):members[0].id;
  const a=members.find(a=>a.id===selected)||members[0],r=snapshot.points.at(-1)?.values[a.id];const n=notificationReading(a,operations);const notified=n.current&&n.mw!==null;const mw=notified?n.mw:a.unitMatch.status==='verified'?r?.mw:null,known=typeof mw==='number';
  const active=selected===id||members.some(a=>a.id===selected),name=grouped?`${members.length} nearby sites`:a.name;
- const radius=grouped?(zoom<2?5:14):known?Math.max(12,Math.min(18,12+Math.sqrt(Math.abs(mw))/12)):12;
- return <g key={id} transform={`translate(${x} ${y}) scale(${1/zoom})`} role="button" tabIndex={0} aria-label={grouped?`Inspect ${members.length} nearby generation sites: ${members.slice(0,5).map(a=>a.name).join(', ')+(members.length>5?` and ${members.length-5} more`:'')}`:`Inspect ${a.name} generation`} aria-pressed={active} onClick={()=>onSelect(id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(id)}}} style={{color:grouped?'#e6bd62':colours[a.type]}} className={(labels.has(id)?'asset-marker labelled':'asset-marker')+(grouped&&zoom<2?' compact-cluster':'')}>
+ const radius=grouped?14:known?Math.max(12,Math.min(18,12+Math.sqrt(Math.abs(mw))/12)):12;
+ return <g key={id} transform={`translate(${x} ${y}) scale(${markerScale/zoom})`} role="button" data-asset-id={id} tabIndex={0} aria-label={grouped?`Inspect ${members.length} nearby generation sites: ${members.slice(0,5).map(a=>a.name).join(', ')+(members.length>5?` and ${members.length-5} more`:'')}`:`Inspect ${a.name} generation`} aria-pressed={active} onClick={()=>onSelect(id)} onKeyDown={e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();onSelect(id)}}} style={{color:grouped?'#e6bd62':colours[a.type]}} className={(labels.has(id)?'asset-marker labelled':'asset-marker')+(grouped&&zoom<2?' compact-cluster':'')}>
  <title>{grouped?members.map(a=>a.name).join(' · '):`${a.name} · ${capacityText(a.installedCapacityMW)} installed`}</title>
  {labels.has(id)&&<rect x="-22" y="-24" width="220" height="48" fill="transparent"/>}
  <circle r="22" fill="transparent"/>

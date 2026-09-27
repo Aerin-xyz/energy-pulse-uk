@@ -1,0 +1,134 @@
+{
+  "at": "2026-09-27T20:18:24.003Z",
+  "engine": "Chromium + axe-core; automated subset, not WCAG conformance certification",
+  "results": [
+    {
+      "width": 390,
+      "state": "map",
+      "violations": [],
+      "manualReview": [
+        {
+          "id": "aria-prohibited-attr",
+          "count": 4
+        },
+        {
+          "id": "color-contrast",
+          "count": 217
+        }
+      ],
+      "passes": 30
+    },
+    {
+      "width": 390,
+      "state": "filters",
+      "violations": [],
+      "manualReview": [
+        {
+          "id": "aria-prohibited-attr",
+          "count": 5
+        },
+        {
+          "id": "color-contrast",
+          "count": 246
+        }
+      ],
+      "passes": 34
+    },
+    {
+      "width": 390,
+      "state": "search",
+      "violations": [],
+      "manualReview": [
+        {
+          "id": "aria-prohibited-attr",
+          "count": 5
+        },
+        {
+          "id": "color-contrast",
+          "count": 222
+        }
+      ],
+      "passes": 35
+    },
+    {
+      "width": 390,
+      "state": "detail",
+      "violations": [],
+      "manualReview": [
+        {
+          "id": "aria-prohibited-attr",
+          "count": 4
+        },
+        {
+          "id": "color-contrast",
+          "count": 224
+        }
+      ],
+      "passes": 36
+    },
+    {
+      "width": 1366,
+      "state": "map",
+      "violations": [],
+      "manualReview": [
+        {
+          "id": "aria-prohibited-attr",
+          "count": 4
+        },
+        {
+          "id": "color-contrast",
+          "count": 228
+        }
+      ],
+      "passes": 31
+    },
+    {
+      "width": 1366,
+      "state": "filters",
+      "violations": [],
+      "manualReview": [
+        {
+          "id": "aria-prohibited-attr",
+          "count": 5
+        },
+        {
+          "id": "color-contrast",
+          "count": 270
+        }
+      ],
+      "passes": 35
+    },
+    {
+      "width": 1366,
+      "state": "search",
+      "violations": [],
+      "manualReview": [
+        {
+          "id": "aria-prohibited-attr",
+          "count": 5
+        },
+        {
+          "id": "color-contrast",
+          "count": 251
+        }
+      ],
+      "passes": 35
+    },
+    {
+      "width": 1366,
+      "state": "detail",
+      "violations": [],
+      "manualReview": [
+        {
+          "id": "aria-prohibited-attr",
+          "count": 4
+        },
+        {
+          "id": "color-contrast",
+          "count": 257
+        }
+      ],
+      "passes": 37
+    }
+  ]
+}

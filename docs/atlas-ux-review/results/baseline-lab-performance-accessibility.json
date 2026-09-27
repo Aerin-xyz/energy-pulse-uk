@@ -1,0 +1,263 @@
+{
+  "url": "http://127.0.0.1:4176",
+  "at": "2026-09-27T20:20:35.493Z",
+  "conditions": {
+    "viewport": "390×844",
+    "cpu": "4× slowdown",
+    "network": "150ms latency, 1.6Mbps download, 0.75Mbps upload",
+    "runs": 3,
+    "fieldData": false,
+    "note": "Lab Event Timing durations are not field INP/p75. One scripted search interaction per run."
+  },
+  "runs": [
+    {
+      "run": 1,
+      "mapReadyMs": 25003.399999976158,
+      "lcp": 2016,
+      "cls": 0,
+      "events": [
+        {
+          "duration": 40,
+          "type": "pointerdown"
+        },
+        {
+          "duration": 40,
+          "type": "pointerup"
+        },
+        {
+          "duration": 40,
+          "type": "click"
+        },
+        {
+          "duration": 176,
+          "type": "keydown"
+        },
+        {
+          "duration": 176,
+          "type": "keypress"
+        },
+        {
+          "duration": 88,
+          "type": "keyup"
+        },
+        {
+          "duration": 88,
+          "type": "keydown"
+        },
+        {
+          "duration": 88,
+          "type": "keypress"
+        },
+        {
+          "duration": 64,
+          "type": "keyup"
+        },
+        {
+          "duration": 56,
+          "type": "keydown"
+        },
+        {
+          "duration": 56,
+          "type": "keypress"
+        },
+        {
+          "duration": 56,
+          "type": "keyup"
+        },
+        {
+          "duration": 56,
+          "type": "keydown"
+        },
+        {
+          "duration": 56,
+          "type": "keypress"
+        }
+      ],
+      "longTasks": [
+        419,
+        65,
+        71,
+        68,
+        74,
+        310,
+        238,
+        83,
+        81
+      ],
+      "resources": 3559944
+    },
+    {
+      "run": 2,
+      "mapReadyMs": 24961.299999952316,
+      "lcp": 2004,
+      "cls": 0,
+      "events": [
+        {
+          "duration": 24,
+          "type": "pointerdown"
+        },
+        {
+          "duration": 24,
+          "type": "pointerup"
+        },
+        {
+          "duration": 24,
+          "type": "click"
+        },
+        {
+          "duration": 192,
+          "type": "keydown"
+        },
+        {
+          "duration": 192,
+          "type": "keypress"
+        },
+        {
+          "duration": 104,
+          "type": "keyup"
+        },
+        {
+          "duration": 96,
+          "type": "keydown"
+        },
+        {
+          "duration": 96,
+          "type": "keypress"
+        },
+        {
+          "duration": 56,
+          "type": "keyup"
+        },
+        {
+          "duration": 56,
+          "type": "keydown"
+        },
+        {
+          "duration": 56,
+          "type": "keypress"
+        },
+        {
+          "duration": 56,
+          "type": "keydown"
+        },
+        {
+          "duration": 56,
+          "type": "keypress"
+        },
+        {
+          "duration": 16,
+          "type": "keyup"
+        }
+      ],
+      "longTasks": [
+        396,
+        71,
+        71,
+        68,
+        50,
+        84,
+        299,
+        256,
+        80,
+        95
+      ],
+      "resources": 3559944
+    },
+    {
+      "run": 3,
+      "mapReadyMs": 24962.30000001192,
+      "lcp": 2004,
+      "cls": 0,
+      "events": [
+        {
+          "duration": 40,
+          "type": "pointerdown"
+        },
+        {
+          "duration": 40,
+          "type": "pointerup"
+        },
+        {
+          "duration": 40,
+          "type": "click"
+        },
+        {
+          "duration": 176,
+          "type": "keydown"
+        },
+        {
+          "duration": 176,
+          "type": "keypress"
+        },
+        {
+          "duration": 112,
+          "type": "keyup"
+        },
+        {
+          "duration": 112,
+          "type": "keydown"
+        },
+        {
+          "duration": 112,
+          "type": "keypress"
+        },
+        {
+          "duration": 64,
+          "type": "keyup"
+        },
+        {
+          "duration": 56,
+          "type": "keydown"
+        },
+        {
+          "duration": 56,
+          "type": "keypress"
+        },
+        {
+          "duration": 56,
+          "type": "keyup"
+        },
+        {
+          "duration": 56,
+          "type": "keydown"
+        },
+        {
+          "duration": 56,
+          "type": "keypress"
+        },
+        {
+          "duration": 16,
+          "type": "keyup"
+        }
+      ],
+      "longTasks": [
+        387,
+        73,
+        63,
+        59,
+        51,
+        75,
+        282,
+        241,
+        85,
+        78,
+        50
+      ],
+      "resources": 3559944
+    }
+  ],
+  "axe": {
+    "violations": [],
+    "incomplete": [
+      {
+        "id": "aria-prohibited-attr",
+        "count": 3
+      },
+      {
+        "id": "color-contrast",
+        "count": 258
+      }
+    ],
+    "passes": 35
+  }
+}

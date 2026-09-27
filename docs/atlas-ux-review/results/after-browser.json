@@ -1,0 +1,304 @@
+{
+  "report": [
+    {
+      "width": 360,
+      "height": 800,
+      "base": "http://127.0.0.1:4175",
+      "at": "2026-09-27T20:18:27.893Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 220,
+        "cls": 0,
+        "longTasks": [
+          100,
+          55,
+          82,
+          96
+        ]
+      },
+      "scrollWidth": 360,
+      "viewport": 360,
+      "domNodes": 2287,
+      "smallLabels": [
+        {
+          "text": "Reset GB view",
+          "size": "0px"
+        }
+      ],
+      "smallTargets": [],
+      "resources": 7936962,
+      "search": {
+        "input": {
+          "x": 17,
+          "y": 298,
+          "width": 326,
+          "height": 44
+        },
+        "result": {
+          "x": 17,
+          "y": 382.28125,
+          "width": 326,
+          "height": 93.671875
+        },
+        "resultInViewport": true
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "base": "http://127.0.0.1:4175",
+      "at": "2026-09-27T20:18:31.231Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 220,
+        "cls": 0,
+        "longTasks": [
+          93,
+          108,
+          83
+        ]
+      },
+      "scrollWidth": 390,
+      "viewport": 390,
+      "domNodes": 2297,
+      "smallLabels": [
+        {
+          "text": "Reset GB view",
+          "size": "0px"
+        }
+      ],
+      "smallTargets": [],
+      "resources": 7936962,
+      "search": {
+        "input": {
+          "x": 17,
+          "y": 308.5625,
+          "width": 356,
+          "height": 44
+        },
+        "result": {
+          "x": 17,
+          "y": 392.84375,
+          "width": 356,
+          "height": 93.671875
+        },
+        "resultInViewport": true
+      }
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "base": "http://127.0.0.1:4175",
+      "at": "2026-09-27T20:18:35.384Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 236,
+        "cls": 0,
+        "longTasks": [
+          111,
+          59,
+          79,
+          72
+        ]
+      },
+      "scrollWidth": 430,
+      "viewport": 430,
+      "domNodes": 2369,
+      "smallLabels": [
+        {
+          "text": "Reset GB view",
+          "size": "0px"
+        }
+      ],
+      "smallTargets": [],
+      "resources": 7936962,
+      "search": {
+        "input": {
+          "x": 17,
+          "y": 329.6875,
+          "width": 396,
+          "height": 44
+        },
+        "result": {
+          "x": 17,
+          "y": 413.96875,
+          "width": 396,
+          "height": 93.671875
+        },
+        "resultInViewport": true
+      }
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "base": "http://127.0.0.1:4175",
+      "at": "2026-09-27T20:18:38.770Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 188,
+        "cls": 0.02254925901070237,
+        "longTasks": [
+          66,
+          81,
+          63,
+          103
+        ]
+      },
+      "scrollWidth": 768,
+      "viewport": 768,
+      "domNodes": 2496,
+      "smallLabels": [
+        {
+          "text": "Reset GB view",
+          "size": "0px"
+        }
+      ],
+      "smallTargets": [],
+      "resources": 7936962,
+      "search": {
+        "input": {
+          "x": 17,
+          "y": 355.765625,
+          "width": 734,
+          "height": 44
+        },
+        "result": {
+          "x": 17,
+          "y": 419.90625,
+          "width": 734,
+          "height": 93.671875
+        },
+        "resultInViewport": true
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "base": "http://127.0.0.1:4175",
+      "at": "2026-09-27T20:18:42.080Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 256,
+        "cls": 0.0021920468979565637,
+        "longTasks": [
+          79,
+          54,
+          68,
+          111
+        ]
+      },
+      "scrollWidth": 1366,
+      "viewport": 1366,
+      "domNodes": 2278,
+      "smallLabels": [
+        {
+          "text": "Reset GB view",
+          "size": "0px"
+        }
+      ],
+      "smallTargets": [],
+      "resources": 7936962,
+      "search": {
+        "input": {
+          "x": 192,
+          "y": 267.265625,
+          "width": 486,
+          "height": 46
+        },
+        "result": {
+          "x": 1002,
+          "y": 448.546875,
+          "width": 327,
+          "height": 93.671875
+        },
+        "resultInViewport": true
+      }
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "base": "http://127.0.0.1:4175",
+      "at": "2026-09-27T20:18:45.476Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 212,
+        "cls": 0.0021837636085792825,
+        "longTasks": [
+          82,
+          65,
+          89
+        ]
+      },
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "domNodes": 2503,
+      "smallLabels": [
+        {
+          "text": "Reset GB view",
+          "size": "0px"
+        }
+      ],
+      "smallTargets": [],
+      "resources": 7936962,
+      "search": {
+        "input": {
+          "x": 192,
+          "y": 269.390625,
+          "width": 560,
+          "height": 46
+        },
+        "result": {
+          "x": 1076,
+          "y": 450.671875,
+          "width": 327,
+          "height": 93.671875
+        },
+        "resultInViewport": true
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "base": "http://127.0.0.1:4175",
+      "at": "2026-09-27T20:18:49.003Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 288,
+        "cls": 0.05148191234211863,
+        "longTasks": [
+          86,
+          53,
+          158
+        ]
+      },
+      "scrollWidth": 1920,
+      "viewport": 1920,
+      "domNodes": 2672,
+      "smallLabels": [
+        {
+          "text": "Reset GB view",
+          "size": "0px"
+        }
+      ],
+      "smallTargets": [],
+      "resources": 7936962,
+      "search": {
+        "input": {
+          "x": 192,
+          "y": 269.390625,
+          "width": 600,
+          "height": 46
+        },
+        "result": {
+          "x": 1556,
+          "y": 450.671875,
+          "width": 327,
+          "height": 93.671875
+        },
+        "resultInViewport": true
+      }
+    }
+  ],
+  "webkit": "Launch unavailable: browserType.launch: \n╔══════════════════════════════════════════════════════╗\n║ Host system is missing dependencies to run browsers. ║\n║ Missing libraries:                                   ║\n║     libgtk-4.so.1                                    ║\n║     libgraphene-1.0.so.0                             ║\n║     libxslt.so.1                                     ║\n║     libevent-2.1.so.7                                ║\n║     libgstallocators-1.0.so.0                        ║\n║     libgstapp-1.0.so.0                               ║\n║     libgstpbutils-1.0.so.0                           ║\n║     libgstaudio-1.0.so.0                             ║\n║     libgsttag-1.0.so.0                               ║\n║     libgstvideo-1.0.so.0                             ║\n║     libgstgl-1.0.so.0                                ║\n║     libgstcodecparsers-1.0.so.0                      ║\n║     libgstfft-1.0.so.0                               ║\n║     libflite.so.1                                    ║\n║     libflite_usenglish.so.1                          ║\n║     libflite_cmu_grapheme_lang.so.1                  ║\n║     libflite_cmu_grapheme_lex.so.1                   ║\n║     libflite_cmu_indic_lang.so.1                     ║\n║     libflite_cmu_indic_lex.so.1                      ║\n║     libflite_cmulex.so.1                             ║\n║     libflite_cmu_time_awb.so.1                       ║\n║     libflite_cmu_us_awb.so.1                         ║\n║     libflite_cmu_us_kal16.so.1                       ║\n║     libflite_cmu_us_kal.so.1                         ║\n║     libflite_cmu_us_rms.so.1          ",
+  "notes": "Chromium lab snapshots, not real-device/field measurements. Unthrottled, one run per viewport."
+}

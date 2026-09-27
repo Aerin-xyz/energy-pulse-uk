@@ -1,3 +1,4 @@
+import {chartQuantity,FUEL_COLOURS} from '@/lib/atlasPresentation.mjs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -36,6 +37,8 @@ interface HistoricalDataPoint {
   solarMatched?: boolean;
 }
 
+// Legacy API field names mw/totalMW contain MWh in the daily endpoint, not MW.
+// Keep that transport schema; explicit energy basis is applied at the chart boundary.
 interface DailyDataPoint {
   settlementDate: string;
   settlementPeriod: number;
@@ -84,7 +87,7 @@ interface HistoricalGenerationChartProps {
   onFetchForecastData?: () => void;
 }
 
-const CustomTooltip = ({ active, payload, label, showForecast }: any) => {
+const CustomTooltip = ({ active, payload, label, showForecast, basis }: {active?:boolean;payload?:any[];label?:any;showForecast?:boolean;basis:'power'|'energy'}) => {
   if (active && payload && payload.length) {
     // Handle both timestamp (number) and day name (string)
     let timestamp: Date;
@@ -105,21 +108,21 @@ const CustomTooltip = ({ active, payload, label, showForecast }: any) => {
       ['windForecast', 'solarForecast'].includes(item.dataKey)
     );
     
-    const total = actualPayload.reduce((sum: number, item: any) => sum + (item.value || 0), 0);
+    const total = actualPayload.reduce((sum: number, item: any) => sum + (typeof item.value === 'number' && Number.isFinite(item.value) ? item.value : NaN), 0);
     const isForecastOnly = payload[0]?.payload?.isForecastOnly;
     
     return (
-      <div className="glass-morphism border-primary/30 rounded-lg p-3 shadow-lg max-w-xs glow-cyan">
+      <div className="history-value-tooltip glass-morphism border-primary/30 rounded-lg p-3 shadow-lg max-w-xs glow-cyan">
         <p className="text-muted-foreground text-xs mb-2">
-          {timestamp.toLocaleDateString()} {timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+          {timestamp.toLocaleDateString('en-GB',{timeZone:'Europe/London'})} {timestamp.toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' })}
           {isForecastOnly && <span className="ml-1 text-primary">(Forecast)</span>}
         </p>
         {!isForecastOnly && (
-          <p className="font-bold text-sm mb-2">Total: {formatGWh(total / 1000, 1)}</p>
+          <p className="font-bold text-sm mb-2">Total: {chartQuantity(total, basis)}</p>
         )}
         <div className="space-y-1">
           {actualPayload
-            .filter((entry: any) => entry.value > 0)
+            .filter((entry: any) => Number.isFinite(entry.value))
             .sort((a: any, b: any) => b.value - a.value)
             .map((entry: any, index: number) => (
               <div key={index} className="flex items-center justify-between gap-2">
@@ -131,7 +134,7 @@ const CustomTooltip = ({ active, payload, label, showForecast }: any) => {
                   <span className="text-xs">{entry.dataKey}</span>
                 </div>
                 <span className="text-xs font-medium">
-                  {formatGWh(entry.value / 1000, 1)}
+                  {chartQuantity(entry.value, basis)}
                 </span>
               </div>
             ))}
@@ -142,7 +145,7 @@ const CustomTooltip = ({ active, payload, label, showForecast }: any) => {
             <p className="text-xs text-muted-foreground mb-1">Forecast:</p>
             <div className="space-y-1">
               {forecastPayload
-                .filter((entry: any) => entry.value != null && entry.value > 0)
+                .filter((entry: any) => entry.value != null && Number.isFinite(entry.value))
                 .map((entry: any, index: number) => (
                   <div key={index} className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-1">
@@ -158,7 +161,7 @@ const CustomTooltip = ({ active, payload, label, showForecast }: any) => {
                       </span>
                     </div>
                     <span className="text-xs font-medium text-primary">
-                      {formatGWh(entry.value / 1000, 1)}
+                      {chartQuantity(entry.value, basis)}
                     </span>
                   </div>
                 ))}
@@ -170,6 +173,13 @@ const CustomTooltip = ({ active, payload, label, showForecast }: any) => {
   }
   return null;
 };
+
+// The native selector is the same evidence path for keyboard, touch and screen-reader users.
+function ValueInspector({rows,fuels,basis}:{rows:any[];fuels:string[];basis:'power'|'energy'}){
+ const [index,setIndex]=useState(0);const row=rows[Math.min(index,rows.length-1)];if(!row)return null;
+ const payload=fuels.map(key=>({dataKey:key,value:row[key],color:FUEL_COLOURS[key]||'#a2b4c4',payload:row}));
+ return <details className="chart-data-inspector"><summary>Inspect values without hovering</summary><label>Reporting period<select aria-label={basis==='power'?'Inspect power period':'Inspect daily energy'} value={Math.min(index,rows.length-1)} onChange={e=>setIndex(Number(e.target.value))}>{rows.map((r,i)=><option key={i} value={i}>{new Date(r.timestamp).toLocaleString('en-GB',{timeZone:'Europe/London',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})} UK</option>)}</select></label><CustomTooltip active payload={payload} label={row.timestamp} basis={basis}/></details>
+}
 
 export const HistoricalGenerationChart = ({ 
   data, 
@@ -225,7 +235,7 @@ export const HistoricalGenerationChart = ({
   const chartData = data.map(point => {
     const chartPoint: any = {
       timestamp: point.timestamp.getTime(),
-      time: point.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      time: point.timestamp.toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' }),
       total: point.totalMW
     };
     
@@ -260,7 +270,7 @@ export const HistoricalGenerationChart = ({
       if (forecastTime > lastHistoricalTime) {
         forecastOnlyPoints.push({
           timestamp: forecastTime,
-          time: new Date(forecastTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          time: new Date(forecastTime).toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' }),
           windForecast: f.windForecastMW,
           solarForecast: f.solarForecastMW,
           isForecastOnly: true
@@ -298,7 +308,7 @@ export const HistoricalGenerationChart = ({
 
   const formatXAxisTick = (tickItem: number) => {
     const date = new Date(tickItem);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return date.toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' });
   };
 
   // Prepare table data for latest periods (last 12 periods = 6 hours)
@@ -354,7 +364,7 @@ export const HistoricalGenerationChart = ({
           <div className="flex items-center gap-2">
             {lastUpdated && (
               <Badge variant="outline" className="text-xs">
-                Updated {lastUpdated.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                Updated {lastUpdated.toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' })}
               </Badge>
             )}
           </div>
@@ -363,14 +373,15 @@ export const HistoricalGenerationChart = ({
       <CardContent className="px-2 md:px-6 pt-0">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList>
-            <TabsTrigger value="chart">Last 24 hours</TabsTrigger>
-            <TabsTrigger value="weekly">Weekly View</TabsTrigger>
+            <TabsTrigger value="chart">Last 24 hours · GW</TabsTrigger>
+            <TabsTrigger value="weekly">Daily energy · GWh</TabsTrigger>
           </TabsList>
           
           <TabsContent value="chart" className="mt-4">
-            <div className="h-80 w-full">
+            <ValueInspector rows={chartData} fuels={sortedFuelTypes} basis="power"/>
+            <p className="chart-inspection-hint">Tap or click a point, or open the value inspector for keyboard and touch access. Forecasts are labelled separately.</p><div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <ComposedChart data={combinedChartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                <ComposedChart accessibilityLayer data={combinedChartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                   <XAxis 
                     dataKey="timestamp"
@@ -384,7 +395,7 @@ export const HistoricalGenerationChart = ({
                     tickFormatter={(value) => `${(value / 1000).toFixed(0)}GW`}
                     tick={{ fontSize: 12 }}
                   />
-                  <Tooltip content={<CustomTooltip showForecast={showForecast} />} />
+                  <Tooltip trigger="click" content={<CustomTooltip basis="power" showForecast={showForecast} />} />
                   <Legend 
                     wrapperStyle={{ fontSize: '12px' }}
                     iconType="rect"
@@ -396,8 +407,8 @@ export const HistoricalGenerationChart = ({
                       type="monotone"
                       dataKey={fuelType}
                       stackId="1"
-                      stroke={fuelColors[fuelType]}
-                      fill={fuelColors[fuelType]}
+                      stroke={FUEL_COLOURS[fuelType]||fuelColors[fuelType]}
+                      fill={FUEL_COLOURS[fuelType]||fuelColors[fuelType]}
                       fillOpacity={0.8}
                       strokeWidth={1}
                     />
@@ -409,24 +420,24 @@ export const HistoricalGenerationChart = ({
                       <Line
                         type="monotone"
                         dataKey="windForecast"
-                        stroke="hsl(var(--energy-wind))"
+                        stroke={FUEL_COLOURS.Wind}
                         strokeWidth={2}
                         strokeDasharray="8 4"
                         dot={false}
                         name="Wind Forecast"
                         legendType="none"
-                        connectNulls
+                        connectNulls={false}
                       />
                       <Line
                         type="monotone"
                         dataKey="solarForecast"
-                        stroke="hsl(var(--energy-solar))"
+                        stroke={FUEL_COLOURS.Solar}
                         strokeWidth={2}
                         strokeDasharray="4 2"
                         dot={false}
                         name="Solar Forecast"
                         legendType="none"
-                        connectNulls
+                        connectNulls={false}
                       />
                     </>
                   )}
@@ -437,6 +448,7 @@ export const HistoricalGenerationChart = ({
           
 
           <TabsContent value="weekly" className="mt-4">
+            <ValueInspector rows={weeklyChartData} fuels={sortedWeeklyFuelTypes} basis="energy"/>
             {weeklyError ? (
               <div className="text-center py-8">
                 <div className="bg-destructive/10 border border-destructive/20 rounded-lg p-4 max-w-md mx-auto">
@@ -457,9 +469,9 @@ export const HistoricalGenerationChart = ({
             ) : (
               <div className="space-y-6">
                 {/* Weekly Bar Chart */}
-                <div className="h-80 w-full">
+                <p className="chart-inspection-hint">Tap or click a point, or open the value inspector for keyboard and touch access. Forecasts are labelled separately.</p><div className="h-80 w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={weeklyChartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
+                    <BarChart accessibilityLayer data={weeklyChartData} margin={{ top: 5, right: 10, left: 0, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
                       <XAxis 
                         dataKey="day"
@@ -469,7 +481,7 @@ export const HistoricalGenerationChart = ({
                          tickFormatter={(value) => `${(value / 1000).toFixed(0)}GWh`}
                          tick={{ fontSize: 12 }}
                        />
-                      <Tooltip content={<CustomTooltip />} />
+                      <Tooltip trigger="click" content={<CustomTooltip basis="energy" />} />
                       <Legend 
                         wrapperStyle={{ fontSize: '12px' }}
                         iconType="rect"
@@ -480,8 +492,8 @@ export const HistoricalGenerationChart = ({
                           key={fuelType}
                           dataKey={fuelType}
                           stackId="1"
-                          fill={weeklyFuelColors[fuelType]}
-                          stroke={weeklyFuelColors[fuelType]}
+                          fill={FUEL_COLOURS[fuelType]||weeklyFuelColors[fuelType]}
+                          stroke={FUEL_COLOURS[fuelType]||weeklyFuelColors[fuelType]}
                           strokeWidth={0.5}
                         />
                       ))}
