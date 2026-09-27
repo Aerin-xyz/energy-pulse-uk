@@ -41,7 +41,7 @@ test.beforeEach(async ({ page }) => {
       },
     }),
   );
-  await page.route("**/api/grid-evidence",route=>route.fulfill({json:evidenceFixture}));
+  await page.route("**/api/grid-evidence*",route=>route.fulfill({json:evidenceFixture}));
   await page.route("**/api/history", (route) =>
     route.fulfill({
       json: { data: [], totalPeriods: 0, meta: { periods: 0 } },
@@ -104,7 +104,7 @@ test("old report dates retain their report and unknown dates are not substituted
 test("unavailable readings do not invent a trend or forecast", async ({
   page,
 }) => {
-  await page.route("**/api/grid-evidence", route=>route.fulfill({json:{schemaVersion:1,sources:{}}}));
+  await page.route("**/api/grid-evidence*", route=>route.fulfill({json:{schemaVersion:1,sources:{}}}));
   await page.route("**/api/energy-data", (route) =>
     route.fulfill({ status: 503, json: { error: "Unavailable" } }),
   );
@@ -174,7 +174,7 @@ test('ambient motion can be paused independently of live readings', async ({page
 test('cable layer keeps French readings separate and shows signed evidence',async({page})=>{
  await page.clock.setFixedTime(new Date('2026-09-14T20:32:00Z'));
  const cables=JSON.parse(readFileSync(new URL('./fixtures/cable-flows.json',import.meta.url),'utf8'));
- await page.route('**/api/grid-evidence',route=>route.fulfill({json:{...evidenceFixture,sources:{...evidenceFixture.sources,FUELINST:{records:cables.data}}}}));
+ await page.route('**/api/grid-evidence*',route=>route.fulfill({json:{...evidenceFixture,sources:{...evidenceFixture.sources,FUELINST:{records:cables.data}}}}));
  await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();await page.locator('.map-results-drawer > summary').click();
  await expect(page.locator('.cable-map-layer')).toContainText('603 MW ← GB');
  await page.getByRole('button',{name:'ElecLink',exact:true}).click();
@@ -189,7 +189,7 @@ test('delayed cable readings are stationary and unavailable is not zero',async({
  await page.clock.setFixedTime(new Date('2026-09-14T22:00:00Z'));
  const cables=JSON.parse(readFileSync(new URL('./fixtures/cable-flows.json',import.meta.url),'utf8'));
  cables.data=cables.data.filter(r=>r.fuelType!=='INTELEC');
- await page.route('**/api/grid-evidence',route=>route.fulfill({json:{...evidenceFixture,sources:{...evidenceFixture.sources,FUELINST:{records:cables.data}}}}));
+ await page.route('**/api/grid-evidence*',route=>route.fulfill({json:{...evidenceFixture,sources:{...evidenceFixture.sources,FUELINST:{records:cables.data}}}}));
  await page.goto('/');await page.getByRole('button',{name:'Cables',exact:true}).click();await page.locator('.map-results-drawer > summary').click();
  await expect(page.locator('.cable-map-layer')).toContainText('delayed');
  expect(await page.locator('.cable-map-layer .atlas-traveller').count()).toBe(0);

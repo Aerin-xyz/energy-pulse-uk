@@ -6,10 +6,21 @@ test('static reading routes do not request energy, history or Supabase',async({p
 test('one shared refresh cadence and no hidden-tab polling',async({page})=>{
  await page.clock.install({time:new Date('2026-09-27T16:40:00Z')});let calls=0;
  await page.route('**/api/energy-data',r=>{calls++;return r.fulfill({status:503,json:{error:'offline'}})});
- await page.route('**/api/grid-evidence',r=>r.fulfill({json:{schemaVersion:1,sources:{}}}));
+ await page.route('**/api/grid-evidence*',r=>r.fulfill({json:{schemaVersion:1,sources:{}}}));
  await page.route('**/api/history',r=>r.fulfill({json:{data:[],totalPeriods:0,lastUpdated:'2026-09-27T16:30:00Z'}}));
  await page.goto('/');await expect.poll(()=>calls).toBe(1);
- await page.clock.fastForward(120000);expect(calls).toBe(1);
+ await page.clock.fastForward(110000);expect(calls).toBe(1);
  await page.evaluate(()=>Object.defineProperty(document,'hidden',{configurable:true,get:()=>true}));
  await page.clock.fastForward(600000);expect(calls).toBe(1);
+});
+test('already-open national view refreshes in shared publication window and resumes after hiding',async({page})=>{
+ await page.clock.install({time:new Date('2026-09-27T16:40:00Z')});let calls=0;
+ await page.route('**/api/grid-evidence*',r=>{calls++;return r.fulfill({json:{schemaVersion:1,sources:{}}})});
+ await page.goto('/');await expect.poll(()=>calls).toBe(1);
+ await page.clock.runFor(119000);expect(calls).toBe(1);
+ await page.clock.runFor(32000);await expect.poll(()=>calls).toBe(2);
+ await page.evaluate(()=>{Object.defineProperty(document,'visibilityState',{configurable:true,get:()=> 'hidden'});Object.defineProperty(document,'hidden',{configurable:true,get:()=>true});document.dispatchEvent(new Event('visibilitychange',{bubbles:true}))});
+ await page.clock.runFor(300000);expect(calls).toBe(2);
+ await page.evaluate(()=>{Object.defineProperty(document,'visibilityState',{configurable:true,get:()=> 'visible'});Object.defineProperty(document,'hidden',{configurable:true,get:()=>false});document.dispatchEvent(new Event('visibilitychange',{bubbles:true}))});
+ await expect.poll(()=>calls).toBe(3);
 });

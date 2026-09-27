@@ -1,3 +1,4 @@
+import {nextBrowserRefresh} from '../lib/refreshTiming.mjs';
 import {useLocation} from 'react-router-dom';
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
@@ -306,9 +307,9 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
         
         // Calculate next update times
         const now = new Date();
-        const nextHigh = new Date(now.getTime() + 5 * 60 * 1000); // shared refresh
-        const nextMid = new Date(now.getTime() + 5 * 60 * 1000); // 5 minutes
-        const nextFull = new Date(now.getTime() + 5 * 60 * 1000); // shared refresh
+        const nextHigh = new Date(nextBrowserRefresh(now.getTime())); // shared refresh
+        const nextMid = new Date(nextBrowserRefresh(now.getTime())); // 5 minutes
+        const nextFull = new Date(nextBrowserRefresh(now.getTime())); // shared refresh
         
         setNextHighFreqAt(nextHigh);
         setNextMidFreqAt(nextMid);
@@ -398,9 +399,12 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
     if(!enabled)return;
     const refresh=()=>{if(!document.hidden)void refreshRef.current('full',false)};
     refresh();
-    const timer=setInterval(refresh,5*60*1000);
+    const jitter=Math.random()*30000;
+    let timer:ReturnType<typeof setTimeout>;
+    const schedule=()=>{timer=setTimeout(()=>{refresh();schedule()},nextBrowserRefresh(Date.now(),jitter)-Date.now())};
+    schedule();
     document.addEventListener('visibilitychange',refresh);
-    return ()=>{clearInterval(timer);document.removeEventListener('visibilitychange',refresh)};
+    return ()=>{clearTimeout(timer);document.removeEventListener('visibilitychange',refresh)};
   },[enabled]);
 
   const value: EnergyDataContextValue = {

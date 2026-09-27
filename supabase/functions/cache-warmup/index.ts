@@ -16,19 +16,7 @@ Deno.serve(async req=>{
   const prior=cached?.find(r=>r.cache_key===NATIONAL_KEY);let enrichment:any=cached?.find(r=>r.cache_key===ENERGY_KEY)?.data||{};
   const sources:Record<string,any>={};
   const get=async(url:string)=>{const r=await fetch(url,{signal:AbortSignal.timeout(20000),headers:{Accept:'application/json'}});if(!r.ok)throw Error(`Source HTTP ${r.status}`);return r.json()};
-  await Promise.all([
-   ...['FUELHH','INDO','FUELINST'].map(async code=>{
-    const end=Math.floor(now/300000)*300000;
-    const url='https://data.elexon.co.uk/bmrs/api/v1/datasets/'+code+'?'+new URLSearchParams({publishDateTimeFrom:new Date(end-6*3600000).toISOString(),publishDateTimeTo:new Date(end).toISOString(),format:'json'});
-    try {
-     const body=await get(url);const records=compactRows(code,body.data,now);
-     const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(records)));
-     if(code!=='FUELINST'){const rows=records.map((r:any)=>({source:code,start_time:r.startTime,series:code==='INDO'?'demand':r.fuelType,published_at:r.publishTime,value_mw:code==='INDO'?r.demand:r.generation}));const {error}=await db.from('grid_observations').upsert(rows,{onConflict:'source,start_time,series,published_at',ignoreDuplicates:true});if(error)throw Error('Canonical observation write failed');}
-     const revision=Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
-     sources[code]={provider:'Elexon',datasetId:code,url,attribution:'Contains BMRS data © Elexon Limited copyright and database right 2026.',licence:'https://www.elexon.co.uk/bsc/operations-settlement/bsc-central-services/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/',coverage:code==='INDO'?'GB initial national demand':'GB transmission-metered; excludes embedded estimates',kind:'measured',unit:'MW',refreshMinutes:5,providerSchedule:code==='FUELINST'?'5-minute observations':'Half-hourly observations; subject to publication delay',checkedAt:at,revision,publishedAt:null,records};outcomes[code]='ok';
-    }catch(e){sources[code]=retainedSource(prior?.data?.sources?.[code],e instanceof Error?e.message:'Source failed',at);outcomes[code]='retained';}
-   }),
-   (async()=>{
+  const enrichmentTask=(async()=>{
     // One enrichment call per cycle, not high/mid/full plus historical warmup.
     try {
      const r=await fetch(Deno.env.get('SUPABASE_URL')+'/functions/v1/energy-data?updateType=full',{signal:AbortSignal.timeout(90000)});
@@ -36,9 +24,26 @@ Deno.serve(async req=>{
      if(!data.lastUpdated||!data.dataFreshness)throw Error('Invalid enrichment schema');
      enrichment=truthfulFreshness(data);outcomes.enrichment='ok';
     }catch{outcomes.enrichment='retained';}
-   })()
+   })();
+  await Promise.all([
+   ...['FUELHH','INDO','FUELINST'].map(async code=>{
+    const end=now;
+    const url='https://data.elexon.co.uk/bmrs/api/v1/datasets/'+code+'?'+new URLSearchParams({publishDateTimeFrom:new Date(end-6*3600000).toISOString(),publishDateTimeTo:new Date(end).toISOString(),format:'json'});
+    try {
+     const body=await get(url);const records=compactRows(code,body.data,now);
+     const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(records)));
+     if(code!=='FUELINST'){const rows=records.map((r:any)=>({source:code,start_time:r.startTime,series:code==='INDO'?'demand':r.fuelType,published_at:r.publishTime,value_mw:code==='INDO'?r.demand:r.generation}));const {error}=await db.from('grid_observations').upsert(rows,{onConflict:'source,start_time,series,published_at',ignoreDuplicates:true});if(error)throw Error('Canonical observation write failed');}
+     const receivedAt=new Date().toISOString();
+     const newestObservationAt=records.map((r:any)=>r.startTime).filter(Boolean).sort().at(-1)||null;
+     const previous=prior?.data?.sources?.[code];
+     const firstSeenAt=previous?.newestObservationAt===newestObservationAt?(previous.firstSeenAt||receivedAt):receivedAt;
+     const revision=Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');
+     sources[code]={provider:'Elexon',datasetId:code,url,attribution:'Contains BMRS data © Elexon Limited copyright and database right 2026.',licence:'https://www.elexon.co.uk/bsc/operations-settlement/bsc-central-services/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/',coverage:code==='INDO'?'GB initial national demand':'GB transmission-metered; excludes embedded estimates',kind:'measured',unit:'MW',refreshMinutes:5,providerSchedule:code==='FUELINST'?'5-minute observations':'Half-hourly observations; subject to publication delay',checkedAt:at,revision,publishedAt:records.map((r:any)=>r.publishTime).filter(Boolean).sort().at(-1)||null,newestObservationAt,firstSeenAt,receivedAt,records};outcomes[code]='ok';
+    }catch(e){sources[code]=retainedSource(prior?.data?.sources?.[code],e instanceof Error?e.message:'Source failed',at);outcomes[code]='retained';}
+   }),
+
   ]);
-  if(Object.values(sources).some((s:any)=>s.checkedAt)){
+  const publish=async()=>{if(Object.values(sources).some((s:any)=>s.checkedAt)){
    const generatedAt=new Date().toISOString();
    const national={schemaVersion:1,definitionVersion:'gb-evidence-v1',generatedAt,sources};
    const energy=canonicalEnergy(national,enrichment);
@@ -46,6 +51,10 @@ Deno.serve(async req=>{
    const {error}=await db.from('api_cache').upsert([{cache_key:NATIONAL_KEY,data:national},{cache_key:ENERGY_KEY,data:energy}].map(row=>({...row,updated_at:generatedAt,expires_at:new Date(Date.now()+48*3600000).toISOString()})),{onConflict:'cache_key'});
    if(error)throw Error('Snapshot publication failed');
   }
+  };
+  await publish();
+  await enrichmentTask;
+  await publish();
   const status=Object.values(outcomes).every(s=>s==='ok')?'succeeded':'partial';
   const {error}=await db.from('energy_ingestion_state').update({completed_at:new Date().toISOString(),lease_until:new Date().toISOString(),status,details:outcomes}).eq('name','national').eq('owner',owner);if(error)throw Error('Completion recording failed');
   console.log(JSON.stringify({event:'ingestion-complete',status,sources:outcomes}));
