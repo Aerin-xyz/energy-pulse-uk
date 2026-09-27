@@ -57,6 +57,6 @@ export function nearLiveGeneration(records,now=Date.now()) {
  return {source:'Elexon FUELINST',kind:'measured',resolution:'five-minute snapshot',observedAt:at,
   publicationTimes:[...new Set(latest.map(r=>r.publishTime))],generationMix,
   generationMW:total(latest,DOMESTIC),renewableMW:total(latest,['WIND','NPSHYD','BIOMASS']),
-  complete:missing.length===0,missing,coverage:'GB transmission-metered generation; excludes embedded estimates, storage and imports',
+  complete:missing.length===0,missing,coverage:'GB transmission-metered generation; excludes embedded estimates, pumped storage and imports; Other may include battery output',
   freshness:sourceState(at,5,now)};
 }

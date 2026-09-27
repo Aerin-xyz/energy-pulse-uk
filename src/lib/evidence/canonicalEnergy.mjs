@@ -17,7 +17,7 @@ export function canonicalEnergy(grid,enrichment={},now=Date.now()) {
   storage:{label:'Signed pumped storage',source:'Elexon FUELHH',timestamp:Number.isFinite(current.storageMW)?current.to:null,cadenceMinutes:30,status:sourceStatus(Number.isFinite(current.storageMW)?current.to:null,30,now)}
  }};
  return {...enrichment,generationMix,interconnectors,demandBreakdown:null,totalGenerationMW:current.generationMW,totalDemandMW:current.demandMW,
-  nearLiveGeneration:nearLiveGeneration(grid.sources?.FUELINST?.records||[],now),definitionVersion:'gb-evidence-v1',coverage:'GB transmission-metered generation; excludes embedded estimates, imports and storage',
+  nearLiveGeneration:nearLiveGeneration(grid.sources?.FUELINST?.records||[],now),definitionVersion:'gb-evidence-v1',coverage:'GB transmission-metered generation; excludes embedded estimates, imports and pumped storage; Other may include battery output',
   lastUpdated:grid.generatedAt,observedAt:current.to,publicationTimes:current.publicationTimes,
   asOf:{endISO:current.to,percentageSum:current.generationMW>0?100:null},
   storage:Number.isFinite(current.storageMW)?{netMW:current.storageMW,absMW:Math.abs(current.storageMW),mode:current.storageMW>0?'generating':current.storageMW<0?'charging':'idle',label:'Signed metered pumped-storage output',timestamp:current.to,source:'Elexon FUELHH'}:null,
