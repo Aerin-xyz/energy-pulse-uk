@@ -15,11 +15,16 @@ async function elexon(code){
  const url='https://data.elexon.co.uk/bmrs/api/v1/datasets/'+code+'?'+new URLSearchParams({publishDateTimeFrom:new Date(end-6*3600000).toISOString(),publishDateTimeTo:new Date(end).toISOString(),format:'json'});
  const data=await cachedJSON(url,300000);if(!Array.isArray(data.value.data))throw Error('Invalid Elexon schema');return {attribution:'Contains BMRS data © Elexon Limited copyright and database right 2026.',provider:'Elexon',datasetId:code,url,licence:'https://www.elexon.co.uk/bsc/operations-settlement/bsc-central-services/balancing-mechanism-reporting-agent/copyright-licence-bmrs-data/',coverage:code==='INDO'?'GB initial national demand, not gross embedded-enriched demand':'GB transmission-metered; excludes embedded generation estimates',refreshMinutes:15,providerSchedule:code==='FUELINST'?'5-minute observations':'Half-hourly observations; subject to publication delay',checkedAt:data.checkedAt,publishedAt:null,resourceModifiedAt:null,revision:data.revision,kind:'measured',unit:'MW',records:data.value.data};
 }
+const scheduledNational=process.env.GRID_NATIONAL_EVIDENCE_URL;
+if(scheduledNational){
+ try{const shared=await cachedJSON(scheduledNational,300000);for(const code of ['FUELHH','INDO','FUELINST']){const source=shared.value.sources?.[code];if(!source?.records?.length)throw Error('Shared national source missing');sources[code]=source;}}
+ catch(e){for(const code of ['FUELHH','INDO','FUELINST'])sources[code]={...(previous.sources[code]||{records:[],checkedAt:null}),error:e.message,lastAttemptAt:new Date().toISOString()};}
+}
 await Promise.all([
  collect('dayAhead',async()=>{const s=await neso('day-ahead-constraint-flows-and-limits','38a18ec1-9e40-465d-93fb-301e80fd1352','Date_ Time GMT_BST desc');return {...s,kind:'forecast',unit:'MW',records:normalizeBoundaries(s.records)}}),
  collect('congestion',async()=>({...await neso('operational-transparency-forum-network-congestion-data','aa9d4303-b7ec-4881-be07-16bad8824ab6','Date desc',100),kind:'published-limit',unit:'MW'})),
  collect('costs',async()=>({...await neso('thermal-constraint-costs',null,'Settlement Date desc',300),kind:'retrospective-cost',unit:'GBP'})),
- ...['FUELHH','INDO','FUELINST'].map(code=>collect(code,()=>elexon(code)))
+ ...(scheduledNational?[]:['FUELHH','INDO','FUELINST'].map(code=>collect(code,()=>elexon(code))))
 ]);
 await atomicJSON(target,{schemaVersion:1,definitionVersion:VERSION,generatedAt:new Date().toISOString(),sources});console.log('Cached grid evidence:',Object.fromEntries(Object.entries(sources).map(([k,v])=>[k,{rows:v.records.length,error:v.error||null}])));
 if(Object.values(sources).every(s=>s.error))process.exitCode=1;

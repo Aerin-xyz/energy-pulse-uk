@@ -1,7 +1,7 @@
 name: Cached official grid evidence
 on:
   schedule:
-    - cron: '*/15 * * * *'
+    - cron: '7 * * * *'
   workflow_dispatch:
 permissions:
   contents: write
@@ -27,6 +27,8 @@ jobs:
           key: grid-evidence-${{ github.run_id }}
           restore-keys: grid-evidence-
       - name: Ingest and validate official evidence
+        env:
+          GRID_NATIONAL_EVIDENCE_URL: https://energymix.info/api/grid-evidence
         run: |
           npm run verify:assets || echo "Asset verification failed; retaining explicit review state"
           npm run ingest:grid || echo "Grid refresh failed; retaining dated evidence and failure state"
