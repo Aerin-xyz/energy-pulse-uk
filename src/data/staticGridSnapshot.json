@@ -1,44 +1,44 @@
 {
-  "generatedAt": "2026-09-27T18:02:56.956Z",
+  "generatedAt": "2026-09-27T20:33:59.109Z",
   "definitionVersion": "gb-evidence-v1",
   "sourceFreshness": {
     "generation": {
-      "timestamp": "2026-09-27T13:00:00.000Z"
+      "timestamp": "2026-09-27T20:00:00.000Z"
     },
     "demand": {
-      "timestamp": "2026-09-27T13:00:00.000Z"
+      "timestamp": "2026-09-27T20:00:00.000Z"
     }
   },
-  "timestamp": "2026-09-27T12:30:00Z",
+  "timestamp": "2026-09-27T19:30:00Z",
   "source": "Elexon FUELHH and INDO · cached completed half-hours",
   "status": "snapshot",
   "upstreamStatus": "cached",
   "freshnessNote": "Transmission-metered generation only; excludes embedded estimates, storage and imports. National demand is INDO, not an inferred supply balance.",
   "metrics": {
-    "demandMW": 23374,
-    "generationMW": 22204,
+    "demandMW": 27763,
+    "generationMW": 25050,
     "carbonIntensity": null,
     "carbonIndex": null,
-    "renewableShare": 69.8297604035309,
-    "gasShare": 9.133489461358314,
-    "windMW": 13207,
+    "renewableShare": 61.80439121756487,
+    "gasShare": 18.247504990019962,
+    "windMW": 11899,
     "solarMW": null,
-    "gasMW": 2028,
-    "nuclearMW": 4016,
-    "importsMW": 5948,
-    "exportsMW": 1720
+    "gasMW": 4571,
+    "nuclearMW": 4008,
+    "importsMW": 4038,
+    "exportsMW": 1610
   },
   "display": {
-    "demand": "23.4 GW",
-    "generation": "22.2 GW",
+    "demand": "27.8 GW",
+    "generation": "25.1 GW",
     "carbonIntensity": "unavailable",
     "carbonIndex": "unavailable",
-    "renewableShare": "70%",
-    "gasShare": "9%",
-    "wind": "13.2 GW",
+    "renewableShare": "62%",
+    "gasShare": "18%",
+    "wind": "11.9 GW",
     "solar": "not included",
-    "gas": "2.0 GW",
+    "gas": "4.6 GW",
     "nuclear": "4.0 GW",
-    "importsExports": "4.2 GW net imports"
+    "importsExports": "2.4 GW net imports"
   }
 }
