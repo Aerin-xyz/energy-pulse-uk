@@ -13,7 +13,7 @@ BEGIN
  VALUES('national',run_owner,now(),now()+interval '3 minutes','running')
  ON CONFLICT(name) DO UPDATE SET owner=excluded.owner,started_at=excluded.started_at,lease_until=excluded.lease_until,status='running'
  WHERE energy_ingestion_state.lease_until<now()
- AND energy_ingestion_state.started_at<now()-interval '4 minutes';
+ AND energy_ingestion_state.started_at<to_timestamp(floor(extract(epoch FROM now())/300)*300);
  GET DIAGNOSTICS claimed=ROW_COUNT;
  RETURN claimed=1;
 END $$;
@@ -25,6 +25,10 @@ BEGIN
  DELETE FROM public.rate_limits WHERE window_start<now()-interval '2 hours';
  DELETE FROM cron.job_run_details WHERE start_time<now()-interval '14 days';
  DELETE FROM public.api_cache WHERE expires_at<now();
+ INSERT INTO energy_ingestion_state(name,completed_at,status,details)
+ VALUES('storage-budget',now(),CASE WHEN pg_database_size(current_database())>=500000000 THEN 'critical' WHEN pg_database_size(current_database())>=350000000 THEN 'warning' ELSE 'ok' END,
+ jsonb_build_object('databaseBytes',pg_database_size(current_database()),'warningBytes',350000000,'publishedFreeAllowanceBytes',500000000))
+ ON CONFLICT(name) DO UPDATE SET completed_at=excluded.completed_at,status=excluded.status,details=excluded.details;
 END $$;
 REVOKE ALL ON FUNCTION public.maintain_energy_operational_records() FROM PUBLIC,anon,authenticated;
 GRANT EXECUTE ON FUNCTION public.maintain_energy_operational_records() TO service_role;
@@ -68,4 +72,8 @@ BEGIN
  DELETE FROM public.rate_limits WHERE window_start<now()-interval '2 hours';
  DELETE FROM cron.job_run_details WHERE start_time<now()-interval '14 days';
  DELETE FROM public.api_cache WHERE expires_at<now();
+ INSERT INTO energy_ingestion_state(name,completed_at,status,details)
+ VALUES('storage-budget',now(),CASE WHEN pg_database_size(current_database())>=500000000 THEN 'critical' WHEN pg_database_size(current_database())>=350000000 THEN 'warning' ELSE 'ok' END,
+ jsonb_build_object('databaseBytes',pg_database_size(current_database()),'warningBytes',350000000,'publishedFreeAllowanceBytes',500000000))
+ ON CONFLICT(name) DO UPDATE SET completed_at=excluded.completed_at,status=excluded.status,details=excluded.details;
 END $$;
