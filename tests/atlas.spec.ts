@@ -13,6 +13,7 @@ const forecast = JSON.parse(
   ),
 );
 const evidenceFixture = {schemaVersion:1,sources:{FUELINST:{records:[]},FUELHH:{records:Object.entries({WIND:20000,CCGT:10000,NUCLEAR:5000,BIOMASS:1000,NPSHYD:900,OCGT:0,COAL:0,OIL:0,OTHER:0,PS:0,INTFR:900,INTIFA2:0,INTELEC:0,INTNED:0,INTNEM:0,INTNSL:0,INTVKL:0,INTEW:0,INTIRL:0,INTGRNL:0}).map(([fuelType,generation])=>({fuelType,generation,startTime:'2026-09-12T12:00:00Z',publishTime:'2026-09-12T12:30:00Z'}))},INDO:{records:[{demand:40000,startTime:'2026-09-12T12:00:00Z',publishTime:'2026-09-12T12:30:00Z'}]}}};
+evidenceFixture.sources.FUELINST.records=evidenceFixture.sources.FUELHH.records.map(r=>({...r,startTime:'2026-09-12T12:45:00Z',publishTime:'2026-09-12T12:46:00Z'}));
 test.beforeEach(async ({ page }) => {
   await page.clock.install({ time: new Date("2026-09-12T12:50:00Z") });
   await page.route("**/api/energy-data", (route) =>

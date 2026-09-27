@@ -26,8 +26,8 @@ export function boundarySummary(rows,now=Date.now()){
 }
 export const INTERCONNECTORS=['INTFR','INTIFA2','INTELEC','INTNED','INTNEM','INTNSL','INTVKL','INTEW','INTIRL','INTGRNL'];
 export const DOMESTIC=['BIOMASS','CCGT','COAL','NPSHYD','NUCLEAR','OCGT','OIL','OTHER','WIND'];
-export function revisedRows(records,now=Date.now()){
- const map=new Map();for(const r of records){const start=Date.parse(r.startTime),pub=Date.parse(r.publishTime);if(!Number.isFinite(start)||!Number.isFinite(pub)||pub>now||start+1800000>now)continue;const key=r.startTime+'|'+(r.fuelType||'demand');const old=map.get(key);if(!old||Date.parse(old.publishTime)<pub)map.set(key,r);else if(Date.parse(old.publishTime)===pub&&(old.generation!==r.generation||old.demand!==r.demand))map.set(key,{...r,generation:null,demand:null});}return [...map.values()];
+export function revisedRows(records,now=Date.now(),durationMs=1800000){
+ const map=new Map();for(const r of records){const start=Date.parse(r.startTime),pub=Date.parse(r.publishTime);if(!Number.isFinite(start)||!Number.isFinite(pub)||pub>now||start+durationMs>now)continue;const key=r.startTime+'|'+(r.fuelType||'demand');const old=map.get(key);if(!old||Date.parse(old.publishTime)<pub)map.set(key,r);else if(Date.parse(old.publishTime)===pub&&(old.generation!==r.generation||old.demand!==r.demand))map.set(key,{...r,generation:null,demand:null});}return [...map.values()];
 }
 function total(rows,codes){const values=codes.map(c=>rows.find(r=>r.fuelType===c)?.generation);return values.every(finite)?values.reduce((a,b)=>a+b,0):null}
 export function halfHours(fuels,demand,now=Date.now()){
@@ -42,4 +42,21 @@ export function sourceHealth(source,now=Date.now()){
  if(!source?.checkedAt)return 'Unavailable';
  if(source.error)return 'Refresh failed · last known data';
  const state=sourceState(source.checkedAt,source.refreshMinutes||60,now);return state.fresh?'Checked recently':state.label;
+}
+
+// FUELINST is a five-minute operational snapshot, not a half-hour average.
+// Never splice fuel values across timestamps or silently zero missing categories.
+export function nearLiveGeneration(records,now=Date.now()) {
+ const rows=revisedRows(records,now,0);
+ const at=rows.map(r=>r.startTime).sort().at(-1);
+ if(!at)return null;
+ const latest=rows.filter(r=>r.startTime===at);
+ const names={WIND:'Wind',NPSHYD:'Hydro',BIOMASS:'Biomass',NUCLEAR:'Nuclear',CCGT:'Gas',OCGT:'OCGT',COAL:'Coal',OIL:'Oil',OTHER:'Other'};
+ const generationMix=DOMESTIC.map(code=>({code,name:names[code],value:latest.find(r=>r.fuelType===code)?.generation??null}));
+ const missing= generationMix.filter(r=>!finite(r.value)).map(r=>r.code);
+ return {source:'Elexon FUELINST',kind:'measured',resolution:'five-minute snapshot',observedAt:at,
+  publicationTimes:[...new Set(latest.map(r=>r.publishTime))],generationMix,
+  generationMW:total(latest,DOMESTIC),renewableMW:total(latest,['WIND','NPSHYD','BIOMASS']),
+  complete:missing.length===0,missing,coverage:'GB transmission-metered generation; excludes embedded estimates, storage and imports',
+  freshness:sourceState(at,5,now)};
 }
