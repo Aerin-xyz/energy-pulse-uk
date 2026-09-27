@@ -9,8 +9,8 @@ export function filterAssets(assets,{fuel='All',search='',pilotOnly=false,countr
   return availability==='All data'||(availability==='Metered history'?measured:!measured&&!scheduled);
  }).sort((a,b)=>sort==='capacity'?b.installedCapacityMW-a.installedCapacityMW:a.name.localeCompare(b.name));
 }
-export function assetClusters(assets,zoom=1){
- const groups=new Map(),cell=28/zoom;
+export function assetClusters(assets,zoom=1,spacing=28){
+ const groups=new Map(),cell=spacing/zoom;
  for(const a of assets){const x=(a.longitude+12)*40,y=(61-a.latitude)*63,key=Math.floor(x/cell)+':'+Math.floor(y/cell);const g=groups.get(key);if(g){g.sumX+=x;g.sumY+=y;g.members.push(a)}else groups.set(key,{sumX:x,sumY:y,members:[a]});}
  return [...groups.values()].map(g=>({x:g.sumX/g.members.length,y:g.sumY/g.members.length,members:g.members}));
 }

@@ -1,0 +1,92 @@
+{
+  "url": "https://energymix.info",
+  "at": "2026-09-27T19:41:23.412Z",
+  "conditions": {
+    "viewport": "390×844",
+    "cpu": "4× slowdown",
+    "network": "150ms latency, 1.6Mbps download, 0.75Mbps upload",
+    "runs": 3,
+    "fieldData": false,
+    "note": "Lab Event Timing durations are not field INP/p75. One scripted search interaction per run."
+  },
+  "runs": [
+    {
+      "run": 1,
+      "lcp": 964,
+      "cls": 0.07549626267552219,
+      "events": [],
+      "longTasks": [
+        75,
+        125,
+        398,
+        86,
+        138,
+        293,
+        74,
+        283,
+        297,
+        56,
+        251,
+        78
+      ],
+      "resources": 860569
+    },
+    {
+      "run": 2,
+      "lcp": 964,
+      "cls": 0.07549626267552219,
+      "events": [],
+      "longTasks": [
+        76,
+        132,
+        380,
+        88,
+        135,
+        278,
+        75,
+        278,
+        296,
+        56,
+        255,
+        100
+      ],
+      "resources": 860067
+    },
+    {
+      "run": 3,
+      "lcp": 952,
+      "cls": 0.07549626267552219,
+      "events": [],
+      "longTasks": [
+        78,
+        126,
+        384,
+        63,
+        95,
+        133,
+        294,
+        71,
+        286,
+        302,
+        57,
+        252,
+        71
+      ],
+      "resources": 860333
+    }
+  ],
+  "axe": {
+    "violations": [],
+    "incomplete": [
+      {
+        "id": "aria-prohibited-attr",
+        "count": 3
+      },
+      {
+        "id": "color-contrast",
+        "count": 258
+      }
+    ],
+    "passes": 35
+  }
+}

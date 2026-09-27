@@ -40,7 +40,7 @@ test('legacy HTML addresses resolve to the styled explainer',async({page})=>{
 test('crawlable reading pages retain the design without JavaScript',async({browser})=>{
  const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});const page=await context.newPage();
  for(const path of ['/reports/weekly/2026-05-11/','/uk-electricity-mix','/ai/uk-electricity-mix/']){
-  await page.goto('http://127.0.0.1:4173'+path);await expect(page.locator('.cc-topbar')).toBeVisible();await expect(page.locator('h1').first()).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+  await page.goto('http://127.0.0.1:4175'+path);await expect(page.locator('.cc-topbar')).toBeVisible();await expect(page.locator('h1').first()).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
  }
  await context.close();
 });

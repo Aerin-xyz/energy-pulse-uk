@@ -1,6 +1,6 @@
 import {nextBrowserRefresh} from '../lib/refreshTiming.mjs';
 import {useLocation} from 'react-router-dom';
-import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef, useMemo, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 // localStorage cache utilities for instant loading
@@ -407,7 +407,8 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
     return ()=>{clearTimeout(timer);document.removeEventListener('visibilitychange',refresh)};
   },[enabled]);
 
-  const value: EnergyDataContextValue = {
+  // URL/camera edits must not broadcast unchanged energy data to every chart.
+  const value = useMemo<EnergyDataContextValue>(() => ({
     data,
     rawData,
     loading,
@@ -417,7 +418,7 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
     nextMidFreqAt,
     lastUpdateType,
     refetch: () => fetchAndSetEnergyData('full', true)
-  };
+  }), [data,rawData,loading,error,nextUpdateAt,nextHighFreqAt,nextMidFreqAt,lastUpdateType,fetchAndSetEnergyData]);
 
   return (
     <EnergyDataContext.Provider value={value}>

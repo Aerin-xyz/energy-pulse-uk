@@ -30,3 +30,6 @@ playwright-report/
 
 # Local source ingestion cache (not publication data)
 .cache/
+
+# Review browser scratch (curated evidence is under docs/)
+test-results-review/

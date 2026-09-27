@@ -1,3 +1,4 @@
+import {FUEL_COLOURS} from '../lib/atlasPresentation.mjs';
 import { Fragment, useMemo, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -124,7 +125,7 @@ const formatSourceTime = (iso?: string | null) => {
   if (!iso) return null;
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) return null;
-  return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  return date.toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' });
 };
 
 interface PieLabelProps {
@@ -278,7 +279,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                   stroke="none"
                 >
                   {filteredData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} style={{ outline: 'none' }} />
+                    <Cell key={`cell-${index}`} fill={FUEL_COLOURS[entry.name] || entry.color} style={{ outline: 'none' }} />
                   ))}
                 </Pie>
                 <Tooltip cursor={false} content={() => null} />
@@ -331,7 +332,7 @@ export const GenerationMixChart = ({ data, totalGenerationMW, dataFreshness, asO
                           <div className="flex items-center gap-3">
                             <div 
                               className="w-3 h-3 rounded-sm flex-shrink-0 transition-all duration-200 group-hover:scale-125 group-hover:shadow-lg"
-                              style={{ backgroundColor: item.color }}
+                              style={{ backgroundColor: FUEL_COLOURS[item.name] || item.color }}
                             />
                             <span className="text-sm font-medium group-hover:text-cosmic-cyan transition-colors">
                               {item.name}

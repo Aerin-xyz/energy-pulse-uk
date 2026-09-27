@@ -67,7 +67,7 @@ export function ElectricityObservatory() {
   return (
     <div className="observatory" data-motion={motion ? "on" : "off"}>
       <CommandNavigation now={now} refresh={refetch} loading={loading} motion={motion} toggleMotion={()=>setMotion(v=>!v)}/>
-      <nav className="map-mobile-nav" aria-label="Quick navigation"><Link to="/"><Home/><span>Home</span></Link><a href="#grid-map"><Map/><span>Map</span></a><Link to="/data"><BarChart3/><span>Data</span></Link><Link to="/reports"><Lightbulb/><span>Insights</span></Link></nav>
+
       <main className="atlas-shell">
         {error && <p className="atlas-notice" role="status">Live refresh unavailable. Last known values retain their source timestamps.</p>}
         <GridCommandCentre data={data} history={history} carbon={carbon} now={now}/>

@@ -1,0 +1,678 @@
+{
+  "report": [
+    {
+      "width": 360,
+      "height": 800,
+      "base": "https://energymix.info",
+      "at": "2026-09-27T19:39:12.849Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 528,
+        "cls": 0,
+        "longTasks": [
+          149,
+          82,
+          80,
+          63,
+          69,
+          62
+        ]
+      },
+      "scrollWidth": 360,
+      "viewport": 360,
+      "domNodes": 3634,
+      "smallLabels": [
+        {
+          "text": "Cables",
+          "size": "10px"
+        },
+        {
+          "text": "Generation",
+          "size": "10px"
+        },
+        {
+          "text": "Connections",
+          "size": "10px"
+        },
+        {
+          "text": "Regional carbon",
+          "size": "10px"
+        },
+        {
+          "text": "Reviewed sites only",
+          "size": "10px"
+        },
+        {
+          "text": "All",
+          "size": "10px"
+        },
+        {
+          "text": "Biomass",
+          "size": "10px"
+        },
+        {
+          "text": "Gas",
+          "size": "10px"
+        },
+        {
+          "text": "Nuclear",
+          "size": "10px"
+        },
+        {
+          "text": "Pumped storage",
+          "size": "10px"
+        },
+        {
+          "text": "Offshore wind",
+          "size": "10px"
+        },
+        {
+          "text": "Onshore wind",
+          "size": "10px"
+        }
+      ],
+      "smallTargets": [
+        {
+          "name": "Network backdrop on",
+          "w": 125,
+          "h": 15
+        }
+      ],
+      "resources": 860026,
+      "search": {
+        "input": {
+          "x": 31,
+          "y": 301.75,
+          "width": 252.953125,
+          "height": 46
+        },
+        "result": {
+          "x": 45,
+          "y": 1570.75,
+          "width": 132,
+          "height": 89.390625
+        },
+        "resultInViewport": false
+      }
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "base": "https://energymix.info",
+      "at": "2026-09-27T19:39:16.402Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 476,
+        "cls": 0,
+        "longTasks": [
+          125,
+          73,
+          84,
+          65
+        ]
+      },
+      "scrollWidth": 390,
+      "viewport": 390,
+      "domNodes": 3634,
+      "smallLabels": [
+        {
+          "text": "Cables",
+          "size": "10px"
+        },
+        {
+          "text": "Generation",
+          "size": "10px"
+        },
+        {
+          "text": "Connections",
+          "size": "10px"
+        },
+        {
+          "text": "Regional carbon",
+          "size": "10px"
+        },
+        {
+          "text": "Reviewed sites only",
+          "size": "10px"
+        },
+        {
+          "text": "All",
+          "size": "10px"
+        },
+        {
+          "text": "Biomass",
+          "size": "10px"
+        },
+        {
+          "text": "Gas",
+          "size": "10px"
+        },
+        {
+          "text": "Nuclear",
+          "size": "10px"
+        },
+        {
+          "text": "Pumped storage",
+          "size": "10px"
+        },
+        {
+          "text": "Offshore wind",
+          "size": "10px"
+        },
+        {
+          "text": "Onshore wind",
+          "size": "10px"
+        }
+      ],
+      "smallTargets": [
+        {
+          "name": "Network backdrop on",
+          "w": 125,
+          "h": 15
+        }
+      ],
+      "resources": 860178,
+      "search": {
+        "input": {
+          "x": 31,
+          "y": 301.75,
+          "width": 282.953125,
+          "height": 46
+        },
+        "result": {
+          "x": 45,
+          "y": 1570.75,
+          "width": 147,
+          "height": 89.390625
+        },
+        "resultInViewport": false
+      }
+    },
+    {
+      "width": 430,
+      "height": 932,
+      "base": "https://energymix.info",
+      "at": "2026-09-27T19:39:20.729Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 408,
+        "cls": 0,
+        "longTasks": [
+          124,
+          63,
+          83,
+          79
+        ]
+      },
+      "scrollWidth": 430,
+      "viewport": 430,
+      "domNodes": 3639,
+      "smallLabels": [
+        {
+          "text": "Cables",
+          "size": "10px"
+        },
+        {
+          "text": "Generation",
+          "size": "10px"
+        },
+        {
+          "text": "Connections",
+          "size": "10px"
+        },
+        {
+          "text": "Regional carbon",
+          "size": "10px"
+        },
+        {
+          "text": "Reviewed sites only",
+          "size": "10px"
+        },
+        {
+          "text": "All",
+          "size": "10px"
+        },
+        {
+          "text": "Biomass",
+          "size": "10px"
+        },
+        {
+          "text": "Gas",
+          "size": "10px"
+        },
+        {
+          "text": "Nuclear",
+          "size": "10px"
+        },
+        {
+          "text": "Pumped storage",
+          "size": "10px"
+        },
+        {
+          "text": "Offshore wind",
+          "size": "10px"
+        },
+        {
+          "text": "Onshore wind",
+          "size": "10px"
+        }
+      ],
+      "smallTargets": [
+        {
+          "name": "Network backdrop on",
+          "w": 125,
+          "h": 15
+        }
+      ],
+      "resources": 860247,
+      "search": {
+        "input": {
+          "x": 31,
+          "y": 282.5625,
+          "width": 322.953125,
+          "height": 46
+        },
+        "result": {
+          "x": 45,
+          "y": 1539.5625,
+          "width": 167,
+          "height": 82
+        },
+        "resultInViewport": false
+      }
+    },
+    {
+      "width": 768,
+      "height": 1024,
+      "base": "https://energymix.info",
+      "at": "2026-09-27T19:39:24.496Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 516,
+        "cls": 0,
+        "longTasks": [
+          67,
+          88,
+          78,
+          63
+        ]
+      },
+      "scrollWidth": 768,
+      "viewport": 768,
+      "domNodes": 3658,
+      "smallLabels": [
+        {
+          "text": "Reviewed sites only",
+          "size": "10px"
+        },
+        {
+          "text": "All",
+          "size": "10px"
+        },
+        {
+          "text": "Biomass",
+          "size": "10px"
+        },
+        {
+          "text": "Gas",
+          "size": "10px"
+        },
+        {
+          "text": "Nuclear",
+          "size": "10px"
+        },
+        {
+          "text": "Pumped storage",
+          "size": "10px"
+        },
+        {
+          "text": "Offshore wind",
+          "size": "10px"
+        },
+        {
+          "text": "Onshore wind",
+          "size": "10px"
+        },
+        {
+          "text": "Energy from waste",
+          "size": "10px"
+        },
+        {
+          "text": "Biogas",
+          "size": "10px"
+        },
+        {
+          "text": "Hydro",
+          "size": "10px"
+        },
+        {
+          "text": "Solar",
+          "size": "10px"
+        }
+      ],
+      "smallTargets": [
+        {
+          "name": "Network backdrop on",
+          "w": 164,
+          "h": 16.5
+        }
+      ],
+      "resources": 860145,
+      "search": {
+        "input": {
+          "x": 162,
+          "y": 384.46875,
+          "width": 424.296875,
+          "height": 46
+        },
+        "result": {
+          "x": 182,
+          "y": 1720.0625,
+          "width": 169,
+          "height": 82
+        },
+        "resultInViewport": false
+      }
+    },
+    {
+      "width": 1366,
+      "height": 768,
+      "base": "https://energymix.info",
+      "at": "2026-09-27T19:39:28.102Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 440,
+        "cls": 0.0008124186743953234,
+        "longTasks": [
+          77,
+          70,
+          103,
+          105,
+          51,
+          65
+        ]
+      },
+      "scrollWidth": 1366,
+      "viewport": 1366,
+      "domNodes": 3689,
+      "smallLabels": [
+        {
+          "text": "Reviewed sites only",
+          "size": "10px"
+        },
+        {
+          "text": "All",
+          "size": "10px"
+        },
+        {
+          "text": "Biomass",
+          "size": "10px"
+        },
+        {
+          "text": "Gas",
+          "size": "10px"
+        },
+        {
+          "text": "Nuclear",
+          "size": "10px"
+        },
+        {
+          "text": "Pumped storage",
+          "size": "10px"
+        },
+        {
+          "text": "Offshore wind",
+          "size": "10px"
+        },
+        {
+          "text": "Onshore wind",
+          "size": "10px"
+        },
+        {
+          "text": "Energy from waste",
+          "size": "10px"
+        },
+        {
+          "text": "Biogas",
+          "size": "10px"
+        },
+        {
+          "text": "Hydro",
+          "size": "10px"
+        },
+        {
+          "text": "Solar",
+          "size": "10px"
+        }
+      ],
+      "smallTargets": [
+        {
+          "name": "Network backdrop on",
+          "w": 164,
+          "h": 16.5
+        },
+        {
+          "name": " Expand map",
+          "w": 80,
+          "h": 25
+        }
+      ],
+      "resources": 860148,
+      "search": {
+        "input": {
+          "x": 210,
+          "y": 396.765625,
+          "width": 600,
+          "height": 46
+        },
+        "result": {
+          "x": 210,
+          "y": 1745.15625,
+          "width": 363,
+          "height": 82
+        },
+        "resultInViewport": false
+      }
+    },
+    {
+      "width": 1440,
+      "height": 1000,
+      "base": "https://energymix.info",
+      "at": "2026-09-27T19:39:32.194Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 468,
+        "cls": 0.0005614583333333334,
+        "longTasks": [
+          70,
+          83,
+          92,
+          99,
+          67
+        ]
+      },
+      "scrollWidth": 1440,
+      "viewport": 1440,
+      "domNodes": 3689,
+      "smallLabels": [
+        {
+          "text": "Reviewed sites only",
+          "size": "10px"
+        },
+        {
+          "text": "All",
+          "size": "10px"
+        },
+        {
+          "text": "Biomass",
+          "size": "10px"
+        },
+        {
+          "text": "Gas",
+          "size": "10px"
+        },
+        {
+          "text": "Nuclear",
+          "size": "10px"
+        },
+        {
+          "text": "Pumped storage",
+          "size": "10px"
+        },
+        {
+          "text": "Offshore wind",
+          "size": "10px"
+        },
+        {
+          "text": "Onshore wind",
+          "size": "10px"
+        },
+        {
+          "text": "Energy from waste",
+          "size": "10px"
+        },
+        {
+          "text": "Biogas",
+          "size": "10px"
+        },
+        {
+          "text": "Hydro",
+          "size": "10px"
+        },
+        {
+          "text": "Solar",
+          "size": "10px"
+        }
+      ],
+      "smallTargets": [
+        {
+          "name": "Network backdrop on",
+          "w": 164,
+          "h": 16.5
+        },
+        {
+          "name": " Expand map",
+          "w": 80,
+          "h": 25
+        }
+      ],
+      "resources": 860119,
+      "search": {
+        "input": {
+          "x": 210,
+          "y": 396.765625,
+          "width": 600,
+          "height": 46
+        },
+        "result": {
+          "x": 210,
+          "y": 1745.15625,
+          "width": 387.65625,
+          "height": 82
+        },
+        "resultInViewport": false
+      }
+    },
+    {
+      "width": 1920,
+      "height": 1080,
+      "base": "https://energymix.info",
+      "at": "2026-09-27T19:39:36.447Z",
+      "errors": [],
+      "metrics": {
+        "lcp": 404,
+        "cls": 0.0002924262152777778,
+        "longTasks": [
+          78,
+          73,
+          120,
+          77,
+          68
+        ]
+      },
+      "scrollWidth": 1920,
+      "viewport": 1920,
+      "domNodes": 3729,
+      "smallLabels": [
+        {
+          "text": "Reviewed sites only",
+          "size": "10px"
+        },
+        {
+          "text": "All",
+          "size": "10px"
+        },
+        {
+          "text": "Biomass",
+          "size": "10px"
+        },
+        {
+          "text": "Gas",
+          "size": "10px"
+        },
+        {
+          "text": "Nuclear",
+          "size": "10px"
+        },
+        {
+          "text": "Pumped storage",
+          "size": "10px"
+        },
+        {
+          "text": "Offshore wind",
+          "size": "10px"
+        },
+        {
+          "text": "Onshore wind",
+          "size": "10px"
+        },
+        {
+          "text": "Energy from waste",
+          "size": "10px"
+        },
+        {
+          "text": "Biogas",
+          "size": "10px"
+        },
+        {
+          "text": "Hydro",
+          "size": "10px"
+        },
+        {
+          "text": "Solar",
+          "size": "10px"
+        }
+      ],
+      "smallTargets": [
+        {
+          "name": "Network backdrop on",
+          "w": 164,
+          "h": 16.5
+        },
+        {
+          "name": " Expand map",
+          "w": 80,
+          "h": 25
+        }
+      ],
+      "resources": 860454,
+      "search": {
+        "input": {
+          "x": 210,
+          "y": 396.765625,
+          "width": 600,
+          "height": 46
+        },
+        "result": {
+          "x": 210,
+          "y": 1745.15625,
+          "width": 547.65625,
+          "height": 82
+        },
+        "resultInViewport": false
+      }
+    }
+  ],
+  "webkit": "not installed",
+  "notes": "Chromium lab snapshots, not real-device/field measurements. Unthrottled, one run per viewport."
+}
