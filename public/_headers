@@ -1,2 +1,7 @@
 /data/*
   Cache-Control: public, max-age=60, must-revalidate
+
+/data/network-geography.json
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+/data/operational-assets.json
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400

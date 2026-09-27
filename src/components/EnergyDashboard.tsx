@@ -1,3 +1,4 @@
+import {transfers} from '@/lib/gridMetrics.mjs';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { NavigationBar } from '@/components/NavigationBar';
@@ -101,7 +102,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
   const marketIndexPriceSignal = data?.marketIndexPrice || gridSignals.marketIndexPrice;
   const systemFrequencySignal = data?.systemFrequency || gridSignals.systemFrequency;
   const storageSignal = data?.storage || gridSignals.storage;
-  const netInterconnectorFlowMW = data?.interconnectors?.reduce((sum, ic) => sum + (ic.flow || 0), 0) || 0;
+  const netInterconnectorFlowMW = transfers(data?.interconnectors).net ?? NaN;
   const storageTransferMW = storageSignal?.netMW || 0;
   const displayDemandMW = data ? calculateDisplayedDemandMW({
     totalGenerationMW: data.totalGenerationMW,
@@ -148,7 +149,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
         <GridIntelligenceHeader
           generationMix={data.generationMix}
           interconnectors={data.interconnectors}
-          totalGenerationMW={data.totalGenerationMW || 0}
+          totalGenerationMW={data.totalGenerationMW ?? NaN}
           totalDemandMW={displayDemandMW}
           carbonIntensity={data.carbonIntensity}
           marketIndexPrice={marketIndexPriceSignal}
@@ -178,7 +179,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                   generationMix={data.generationMix}
                   interconnectors={data.interconnectors}
                   totalDemandMW={displayDemandMW}
-                  totalGenerationMW={data.totalGenerationMW || 0}
+                  totalGenerationMW={data.totalGenerationMW ?? NaN}
                   carbonIntensity={data.carbonIntensity}
                   storage={storageSignal}
                   demandBreakdown={data.demandBreakdown}
@@ -192,7 +193,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
                   <DemandReconciliationPanel
                     rawDemandMW={data.totalDemandMW || 0}
                     displayedDemandMW={displayDemandMW}
-                    generationMW={data.totalGenerationMW || 0}
+                    generationMW={data.totalGenerationMW ?? NaN}
                     netTransfersMW={netInterconnectorFlowMW}
                     storageMW={storageTransferMW}
                   />
@@ -203,7 +204,7 @@ export const EnergyDashboard = ({ belowContent }: EnergyDashboardProps) => {
               <div className="relative order-3">
                 <GenerationMixChart 
                   data={data.generationMix} 
-                  totalGenerationMW={data.totalGenerationMW || 0}
+                  totalGenerationMW={data.totalGenerationMW ?? NaN}
                   dataFreshness={data.dataFreshness}
                   asOf={data.asOf}
                 />

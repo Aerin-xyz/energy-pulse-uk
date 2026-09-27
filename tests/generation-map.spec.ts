@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 for(const width of [390,1440])test(`generation layer ${width}px: filters, evidence and preserved cables`,async({page})=>{
  await page.setViewportSize({width,height:900});await page.goto('/');
  await page.getByRole('button',{name:'Generation',exact:true}).click();await page.locator('.map-filter-drawer > summary').click();await page.locator('.map-results-drawer > summary').click();
- await expect(page.getByText('metered history, not live',{exact:true})).toBeVisible();
+ await expect(page.getByText('notified schedules & delayed measured history',{exact:true})).toBeVisible();
  await page.getByRole('button',{name:'Reviewed sites only',exact:true}).click();
  await expect(page.locator('.atlas-access-list[data-layer=generation] button')).toHaveCount(8);
  await page.getByRole('searchbox',{name:'Find a generation site'}).fill('Drax');

@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+async function historyRequest(query='') {
+  const r=await fetch('/api/history'+query);if(!r.ok)throw Error('Historical cache unavailable');return {data:await r.json(),error:null};
+}
 import { useToast } from '@/hooks/use-toast';
 
 // Cache configuration
@@ -228,7 +230,7 @@ export const useHistoricalGeneration = () => {
       setLoading(true);
       setError(null);
 
-      const { data: response, error: supabaseError } = await supabase.functions.invoke('historical-generation');
+      const { data: response, error: supabaseError } = await historyRequest();
 
       if (supabaseError) {
         throw new Error(supabaseError.message);
@@ -284,7 +286,7 @@ export const useHistoricalGeneration = () => {
       setWeeklyLoading(true);
       setWeeklyError(null);
 
-      const { data: response, error: supabaseError } = await supabase.functions.invoke('historical-generation?period=7d');
+      const { data: response, error: supabaseError } = await historyRequest('?period=7d');
 
       if (supabaseError) {
         throw new Error(supabaseError.message);
@@ -345,7 +347,7 @@ export const useHistoricalGeneration = () => {
   // Auto-refresh every 30 minutes
   useEffect(() => {
     const interval = setInterval(() => {
-      fetchHistoricalData(false);
+      if(!document.hidden)fetchHistoricalData(false);
     }, 30 * 60 * 1000);
 
     return () => clearInterval(interval);
@@ -356,9 +358,7 @@ export const useHistoricalGeneration = () => {
     try {
       setForecastLoading(true);
 
-      const { data: response, error: supabaseError } = await supabase.functions.invoke('historical-generation', {
-        body: { includeForecast: true }
-      });
+      const { data: response, error: supabaseError } = await historyRequest('?forecast=true');
 
       if (supabaseError) {
         throw new Error(supabaseError.message);

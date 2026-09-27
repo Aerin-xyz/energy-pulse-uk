@@ -1,3 +1,4 @@
+import {truthfulFreshness} from '../../../src/lib/evidence/ingestion.mjs';
 import { settlementStart, settlementCoordinates } from '../_shared/settlementTime.mjs';
 import { XMLParser } from "https://esm.sh/fast-xml-parser@4.5.0";
 import {
@@ -1743,8 +1744,9 @@ Deno.serve(async (req) => {
 
   // Response caching based on update type with versioned key strategy
   // CACHE_VERSION: bump this to invalidate all cached responses after logic changes
-  const CACHE_VERSION = 'v4-source-freshness';
-  const cacheTTL = UPDATE_TYPE === 'high' ? 75 : UPDATE_TYPE === 'mid' ? 240 : 300; // 75s, 4min, 5min
+  const CACHE_VERSION = 'v5-bounded-shared';
+  UPDATE_TYPE = 'full';
+  const cacheTTL = 300; // Shared enrichment cache; legacy updateType inputs remain compatible.
   const globalCacheKey = `energy-data:${CACHE_VERSION}:${UPDATE_TYPE}:global`;
 
   const cachedResponse = await getCachedResponse(globalCacheKey);
@@ -1775,7 +1777,7 @@ Deno.serve(async (req) => {
         Deno.env.get("SUPABASE_URL") ?? "",
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
       );
-      await supa.from("energy_data_history").insert({ as_of, payload });
+      await supa.from("api_cache").upsert({cache_key:"energy-last-good-v1",data:payload,updated_at:as_of,expires_at:new Date(Date.now()+7*86400000).toISOString()},{onConflict:"cache_key"});
     } catch (e) {
       if (DEBUG) dlog(true, "LKG insert failed", e);
     }
@@ -1790,13 +1792,12 @@ Deno.serve(async (req) => {
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
       );
       const { data: lkgRow } = await supa
-        .from("energy_data_history")
-        .select("payload")
-        .order("as_of", { ascending: false })
-        .limit(1)
+        .from("api_cache")
+        .select("data")
+        .eq("cache_key", "energy-last-good-v1")
         .maybeSingle();
-      if (lkgRow?.payload) {
-        const lkg = lkgRow.payload;
+      if (lkgRow?.data) {
+        const lkg = lkgRow.data;
         lkg.dataFreshness = { ...(lkg.dataFreshness || {}), isRealtime: false, note };
         return new Response(JSON.stringify(lkg), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
       }
@@ -1813,13 +1814,12 @@ Deno.serve(async (req) => {
         Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
       );
       const { data: lkgRow } = await supa
-        .from("energy_data_history")
-        .select("payload")
-        .order("as_of", { ascending: false })
-        .limit(1)
+        .from("api_cache")
+        .select("data")
+        .eq("cache_key", "energy-last-good-v1")
         .maybeSingle();
-      if (lkgRow?.payload?.interconnectors && Array.isArray(lkgRow.payload.interconnectors) && lkgRow.payload.interconnectors.length > 0) {
-        return lkgRow.payload.interconnectors;
+      if (lkgRow?.data?.interconnectors && Array.isArray(lkgRow.data.interconnectors) && lkgRow.data.interconnectors.length > 0) {
+        return lkgRow.data.interconnectors;
       }
     } catch {}
     return [];
@@ -1997,7 +1997,7 @@ let storage = parsePumpedStorage([], "dataset", null);
         } else {
           const lkgResponse = await serveLKG("BMRS unavailable; served LKG");
           if (lkgResponse) return lkgResponse;
-          const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "BMRS unavailable", variant: "stub" } };
+          const stub = { generationMix: [], interconnectors: [], totalGenerationMW: null, totalDemandMW: null, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "BMRS unavailable", variant: "stub" } };
           if (DEBUG) (stub as any).diagnostics = { reason: "bmrs-failed", variant: "stub" };
           return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
         }
@@ -2035,13 +2035,13 @@ let storage = parsePumpedStorage([], "dataset", null);
               if (DEBUG) dlog(true, "Dataset fallback also implausible", { hvTotal2 });
               const lkgResponse = await serveLKG("HV baseline implausible; served LKG");
               if (lkgResponse) return lkgResponse;
-              const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: HV implausible" } };
+              const stub = { generationMix: [], interconnectors: [], totalGenerationMW: null, totalDemandMW: null, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: HV implausible" } };
               return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
             }
           } else {
             const lkgResponse = await serveLKG("HV baseline implausible; served LKG");
             if (lkgResponse) return lkgResponse;
-            const stub = { generationMix: [], interconnectors: [], totalGenerationMW: 0, totalDemandMW: 0, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: HV implausible" } };
+            const stub = { generationMix: [], interconnectors: [], totalGenerationMW: null, totalDemandMW: null, lastUpdated: new Date().toISOString(), dataFreshness: { source: "BMRS", isRealtime: false, note: "Stub: HV implausible" } };
             return new Response(JSON.stringify(stub), { headers: { ...corsHeaders, "Content-Type": "application/json", "Cache-Control": "no-store" } });
           }
         }
@@ -2366,6 +2366,7 @@ if (!Array.isArray(payload.interconnectors) || payload.interconnectors.length ==
     }
   } catch {}
 }
+payload.dataFreshness = truthfulFreshness(payload).dataFreshness;
 await insertLKG(payload.lastUpdated, payload, totalGenerationMW);
 
     // Create cacheable payload (strip debug info for smaller cache size)
@@ -2403,8 +2404,8 @@ await insertLKG(payload.lastUpdated, payload, totalGenerationMW);
       error: 'Internal server error',
       generationMix: [],
       interconnectors: [],
-      totalGenerationMW: 0,
-      totalDemandMW: 0,
+      totalGenerationMW: null,
+      totalDemandMW: null,
       dataFreshness: { source: "BMRS", isRealtime: false, note: "Error occurred" }
     }), {
       status: 500,

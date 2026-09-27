@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { expect, test } from '@playwright/test';
 const snapshot = JSON.parse(readFileSync(new URL('./fixtures/grid-snapshot.json', import.meta.url), 'utf8'));
-test.beforeEach(async ({page}) => { await page.route('**/functions/v1/energy-data?**', route => route.fulfill({json:snapshot})); });
+test.beforeEach(async ({page}) => { await page.route('**/api/energy-data', route => route.fulfill({json:snapshot})); });
 
 type Box = { x: number; y: number; width: number; height: number; id: string };
 

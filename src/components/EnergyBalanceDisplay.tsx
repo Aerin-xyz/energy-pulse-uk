@@ -60,7 +60,7 @@ export const EnergyBalanceDisplay = ({
           <div className="rounded-xl border border-primary/20 bg-primary/5 px-3 py-2.5 shadow-[0_0_18px_rgba(28,222,228,0.10)]">
             <div className="mb-1 flex items-center justify-between gap-2 text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
               <span className="flex items-center gap-1.5"><Factory className="h-3.5 w-3.5 text-cosmic-cyan" />GB production</span>
-              <HelpTooltip content="Domestic Great Britain electricity production, including embedded wind/solar estimates where available. Sources include Elexon FUELINST plus BMRS/NESO fallbacks." className="h-3.5 w-3.5" />
+              <HelpTooltip content="Great Britain completed-period transmission-metered generation from Elexon FUELHH. Excludes embedded wind/solar estimates, imports and storage." className="h-3.5 w-3.5" />
             </div>
             <div className="font-mono text-lg font-bold text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)} <span className="text-[10px] font-medium text-muted-foreground">GW</span></div>
           </div>
@@ -112,7 +112,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground mb-0.5">
             Displayed demand
-            <HelpTooltip content="Consumer-facing GB demand derived from live power balance: GB production plus net imports/exports plus pumped-storage transfer. This differs from raw BMRS transmission demand." className="w-3 h-3" />
+            <HelpTooltip content="Estimated transmission supply balance: metered generation plus net imports and signed storage. Excludes embedded estimates; not Elexon initial national demand." className="w-3 h-3" />
           </div>
           <div className="font-bold">{formatGWfromMW(totalDemandMW)} GW</div>
         </div>
@@ -120,7 +120,7 @@ export const EnergyBalanceDisplay = ({
         <div className="text-center">
           <div className="flex items-center justify-center gap-1 text-[10px] text-muted-foreground mb-0.5">
             GB production
-            <HelpTooltip content="Domestic Great Britain electricity production, including embedded wind and solar estimates, excluding imports." className="w-3 h-3" />
+            <HelpTooltip content="Completed-period transmission-metered GB generation, excluding embedded estimates, imports and storage." className="w-3 h-3" />
           </div>
           <div className="font-bold text-cosmic-cyan text-glow">{formatGWfromMW(totalGenerationMW)} GW</div>
         </div>
@@ -167,7 +167,7 @@ export const EnergyBalanceDisplay = ({
         <span className="text-muted-foreground">=</span>
         <div className="flex items-center gap-0.5">
           <span className="font-semibold text-muted-foreground" title="GB production">P</span>
-          <HelpTooltip content="GB production: domestic generation including embedded wind and solar estimates, excluding imports." className="w-3.5 h-3.5" />
+          <HelpTooltip content="GB metered production: transmission-metered generation excluding embedded estimates, imports and storage." className="w-3.5 h-3.5" />
           <span className="font-bold text-cosmic-cyan text-glow ml-1">{formatGWfromMW(totalGenerationMW)}</span>
         </div>
         <span className="text-muted-foreground">+</span>

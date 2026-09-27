@@ -61,10 +61,10 @@ const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <EnergyDataProvider>
+      <BrowserRouter><EnergyDataProvider>
         <Toaster />
         <Sonner />
-        <BrowserRouter>
+
           <RouteAnalytics />
           <SiteFrame><Suspense fallback={<main className="container mx-auto p-12" role="status">Loading this part of the grid…</main>}><Routes>
             <Route path="/" element={<Index />} />
@@ -119,8 +119,8 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes></Suspense></SiteFrame>
-        </BrowserRouter>
-      </EnergyDataProvider>
+
+      </EnergyDataProvider></BrowserRouter>
     </TooltipProvider>
     </QueryClientProvider>
   </HelmetProvider>

@@ -3,8 +3,8 @@ import {readFileSync} from 'node:fs';
 const snapshot=JSON.parse(readFileSync(new URL('./fixtures/grid-snapshot.json',import.meta.url),'utf8'));
 const routes=['/explore','/wholesale-electricity-price','/pumped-storage','/about','/data','/insights','/newsletter','/methodology','/contact','/privacy','/citation','/uk-electricity-mix','/carbon-intensity','/renewables','/gas-generation','/nuclear-power','/interconnectors','/electricity-demand','/uk-electricity-generation-live','/cleanest-time-to-use-electricity','/uk-wind-power-today','/uk-solar-power-today','/gas-share-of-electricity','/renewables-share-today','/carbon-intensity-today','/today','/yesterday','/power-flow','/reports','/reports/weekly/2026-05-11','/records','/records/highest-renewable-share','/records/highest-wind-generation','/records/highest-solar-generation','/records/highest-gas-generation','/social','/measurement','/glossary','/partners','/missing-page'];
 test.beforeEach(async({page})=>{
- await page.route('**/functions/v1/energy-data?**',r=>r.fulfill({json:snapshot}));
- await page.route('**/functions/v1/historical-generation',r=>r.fulfill({json:{data:[],totalPeriods:0,meta:{periods:0}}}));
+ await page.route('**/api/energy-data',r=>r.fulfill({json:snapshot}));
+ await page.route('**/api/history',r=>r.fulfill({json:{data:[],totalPeriods:0,meta:{periods:0}}}));
  await page.route('**/api.carbonintensity.org.uk/**',r=>r.fulfill({json:{data:[]}}));
  await page.route('**/groot.mailerlite.com/**',r=>r.abort());
  await page.route('**/www.google.com/recaptcha/**',r=>r.abort());

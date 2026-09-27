@@ -1,8 +1,9 @@
+import {useLocation} from 'react-router-dom';
 import { createContext, useContext, useState, useEffect, useCallback, useRef, ReactNode } from 'react';
 import { useToast } from '@/hooks/use-toast';
 
 // localStorage cache utilities for instant loading
-const CACHE_KEY = 'energymix_cache_v4'; // Bumped to invalidate slower pre-FUELINST cache
+const CACHE_KEY = 'energymix_cache_v5_canonical'; // Bumped to invalidate slower pre-FUELINST cache
 const CACHE_EXPIRY_MS = 10 * 60 * 1000; // 10 minutes
 
 interface CachedData {
@@ -185,26 +186,21 @@ const EnergyDataContext = createContext<EnergyDataContextValue | undefined>(unde
 
 // Real API integration using Supabase Edge Function
 async function fetchEnergyData(updateType: 'high' | 'mid' | 'full' = 'full', signal?: AbortSignal): Promise<any> {
-  const timestamp = new Date().getTime();
-  const response = await fetch(`https://cxvjgpuytezomdlsayif.supabase.co/functions/v1/energy-data?debug=1&updateType=${updateType}&t=${timestamp}`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      'Cache-Control': 'no-store'
-    },
-    signal,
-  });
+  const response = await fetch('/api/energy-data', {signal});
 
   if (!response.ok) {
     throw new Error(`API error: ${response.status}`);
   }
 
   const data = await response.json();
-  console.log(`Raw API response (${updateType}):`, data);
+
   return data;
 }
 
 export function EnergyDataProvider({ children }: { children: ReactNode }) {
+  const {pathname}=useLocation();
+  const enabled=!/^\/(about|privacy|contact|citation|methodology|newsletter|glossary|partners|reports(?:\/.*)?|insights|records(?:\/.*)?|social|admin(?:\/.*)?|share(?:\/.*)?)\/?$/.test(pathname);
+
   // Initialize from localStorage for instant loading
   const [data, setData] = useState<EnergyData | null>(() => loadFromLocalStorage());
   const [rawData, setRawData] = useState<any>(null);
@@ -223,12 +219,14 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
 
   // Cleanup on unmount
   useEffect(() => {
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
     };
   }, []);
 
   const fetchAndSetEnergyData = useCallback(async (updateType: 'high' | 'mid' | 'full' = 'full', showToast = true) => {
+    if (!enabled || document.hidden) return;
     // Prevent duplicate simultaneous requests
     if (pendingRequest.current) {
       console.log('[EnergyDataProvider] Request already in flight, skipping');
@@ -287,38 +285,19 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
             ic.name !== 'Denmark West'
           ),
           euGenerationMix: energyData.euGenerationMix || [],
-          totalGeneration: energyData.totalGeneration || (energyData.totalGenerationMW || 0) / 1000,
-          totalDemand: energyData.totalDemand || (energyData.totalDemandMW || 0) / 1000,
-          totalGenerationMW: energyData.totalGenerationMW || (energyData.totalGeneration || 0) * 1000,
-          totalDemandMW: energyData.totalDemandMW || (energyData.totalDemand || 0) * 1000,
+          totalGeneration: energyData.totalGeneration ?? (energyData.totalGenerationMW == null ? null : energyData.totalGenerationMW / 1000),
+          totalDemand: energyData.totalDemand ?? (energyData.totalDemandMW == null ? null : energyData.totalDemandMW / 1000),
+          totalGenerationMW: energyData.totalGenerationMW ?? null,
+          totalDemandMW: energyData.totalDemandMW ?? null,
           lastUpdated: new Date(energyData.lastUpdated),
-          carbonIntensity: energyData.carbonIntensity ? {...energyData.carbonIntensity, forecastData: (energyData.carbonIntensity.forecastData || []).filter((p: {from:string}) => Date.parse(p.from) >= Date.now())} : cachedData?.carbonIntensity,
-          marketIndexPrice: energyData.marketIndexPrice || cachedData?.marketIndexPrice || null,
-          systemFrequency: energyData.systemFrequency || cachedData?.systemFrequency || null,
-          storage: energyData.storage || cachedData?.storage || null,
-          demandBreakdown: energyData.demandBreakdown || cachedData?.demandBreakdown || null,
+          carbonIntensity: energyData.carbonIntensity ? {...energyData.carbonIntensity, forecastData: (energyData.carbonIntensity.forecastData || []).filter((p: {from:string}) => Date.parse(p.from) >= Date.now())} : null,
+          marketIndexPrice: energyData.marketIndexPrice ?? null,
+          systemFrequency: energyData.systemFrequency ?? null,
+          storage: energyData.storage ?? null,
+          demandBreakdown: energyData.demandBreakdown ?? null,
           dataFreshness: energyData.dataFreshness,
           asOf: energyData.asOf,
         };
-
-        // High-frequency responses now include fresh Elexon FUELINST generation, so do
-        // not freeze non-wind/solar categories from cache. Preserve slower-changing
-        // enrichments only when a fast response omits them.
-        if (cachedData && !energyData.carbonIntensity) {
-          newData.carbonIntensity = cachedData.carbonIntensity;
-        }
-        if (cachedData && !energyData.marketIndexPrice) {
-          newData.marketIndexPrice = cachedData.marketIndexPrice;
-        }
-        if (cachedData && !energyData.systemFrequency) {
-          newData.systemFrequency = cachedData.systemFrequency;
-        }
-        if (cachedData && !energyData.storage) {
-          newData.storage = cachedData.storage;
-        }
-        if (cachedData && !energyData.demandBreakdown) {
-          newData.demandBreakdown = cachedData.demandBreakdown;
-        }
 
         setData(newData);
         setCachedData(newData); // Cache for next time
@@ -327,9 +306,9 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
         
         // Calculate next update times
         const now = new Date();
-        const nextHigh = new Date(now.getTime() + 2 * 60 * 1000); // 2 minutes
+        const nextHigh = new Date(now.getTime() + 5 * 60 * 1000); // shared refresh
         const nextMid = new Date(now.getTime() + 5 * 60 * 1000); // 5 minutes
-        const nextFull = new Date(now.getTime() + 10 * 60 * 1000); // 10 minutes
+        const nextFull = new Date(now.getTime() + 5 * 60 * 1000); // shared refresh
         
         setNextHighFreqAt(nextHigh);
         setNextMidFreqAt(nextMid);
@@ -411,63 +390,18 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
     
     pendingRequest.current = promise;
     return promise;
-  }, [toast, cachedData, initialLoad, retryCount]);
+  }, [toast, cachedData, initialLoad, retryCount, enabled]);
 
-  // Initial fetch (full data)
-  useEffect(() => {
-    fetchAndSetEnergyData('full', false); // No toast on initial load
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty deps - only run once on mount
-
-  // Staggered multi-frequency auto-refresh intervals to prevent simultaneous requests
-  useEffect(() => {
-    const intervals: NodeJS.Timeout[] = [];
-    
-    // Start high frequency after 30 seconds (prevents clash with initial load)
-    const highFreqTimeout = setTimeout(() => {
-      const highFreqInterval = setInterval(() => {
-        fetchAndSetEnergyData('high', false);
-      }, 2 * 60 * 1000);
-      intervals.push(highFreqInterval);
-    }, 30 * 1000);
-
-    // Start mid frequency after 2 minutes
-    const midFreqTimeout = setTimeout(() => {
-      const midFreqInterval = setInterval(() => {
-        fetchAndSetEnergyData('mid', false);
-      }, 5 * 60 * 1000);
-      intervals.push(midFreqInterval);
-    }, 2 * 60 * 1000);
-
-    // Start full frequency after 5 minutes
-    const fullFreqTimeout = setTimeout(() => {
-      const fullFreqInterval = setInterval(() => {
-        fetchAndSetEnergyData('full', false);
-      }, 10 * 60 * 1000);
-      intervals.push(fullFreqInterval);
-    }, 5 * 60 * 1000);
-
-    return () => {
-      clearTimeout(highFreqTimeout);
-      clearTimeout(midFreqTimeout);
-      clearTimeout(fullFreqTimeout);
-      intervals.forEach(interval => clearInterval(interval));
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty deps - set up intervals once on mount
-
-  // Refresh when tab becomes visible again (full refresh)
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden) {
-        fetchAndSetEnergyData('full', false);
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty deps - set up listener once on mount
+  const refreshRef=useRef(fetchAndSetEnergyData);
+  refreshRef.current=fetchAndSetEnergyData;
+  useEffect(()=>{
+    if(!enabled)return;
+    const refresh=()=>{if(!document.hidden)void refreshRef.current('full',false)};
+    refresh();
+    const timer=setInterval(refresh,5*60*1000);
+    document.addEventListener('visibilitychange',refresh);
+    return ()=>{clearInterval(timer);document.removeEventListener('visibilitychange',refresh)};
+  },[enabled]);
 
   const value: EnergyDataContextValue = {
     data,
