@@ -5,6 +5,8 @@ interface AnimatedLogoProps {
   variant?: 'auto' | 'ocean' | 'coral' | 'violet' | 'green';
   speedMs?: number;
   holdMs?: number;
+  markOnly?: boolean;
+  paused?: boolean;
 }
 
 const SCHEMES = [
@@ -70,15 +72,16 @@ export const AnimatedLogo = ({
   className = '', 
   variant = 'auto',
   speedMs = 2500,
-  holdMs = 3500
+  holdMs = 3500,
+  markOnly = false,
+  paused = false
 }: AnimatedLogoProps) => {
   const [idx, setIdx] = useState(0);
   const [next, setNext] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
   
-  const reduced = useMemo(() => 
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  , []);
+  const [reduced, setReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  useEffect(() => { const mq=window.matchMedia('(prefers-reduced-motion: reduce)'); const change=()=>setReduced(mq.matches); mq.addEventListener('change',change); return ()=>mq.removeEventListener('change',change); }, []);
 
   // Memoized geometry - computed once
   const geometry = useMemo((): CircleGeo[] => {
@@ -124,7 +127,7 @@ export const AnimatedLogo = ({
 
   // CSS-driven animation loop - only updates at phase boundaries
   useEffect(() => {
-    if (variant !== 'auto' || reduced) return;
+    if (variant !== 'auto' || reduced || paused) { setIsTransitioning(false); return; }
     
     let timeout: NodeJS.Timeout;
     
@@ -146,7 +149,7 @@ export const AnimatedLogo = ({
     timeout = setTimeout(startTransition, holdMs);
     
     return () => clearTimeout(timeout);
-  }, [variant, reduced, next, speedMs, holdMs]);
+  }, [variant, reduced, paused, next, speedMs, holdMs]);
 
   // Determine active schemes
   const currentScheme = variant === 'auto' 
@@ -221,7 +224,7 @@ export const AnimatedLogo = ({
         </g>
       </svg>
       
-      <div className="logo-wordmark-wrap">
+      {!markOnly && <div className="logo-wordmark-wrap">
         <div 
           className="logo-wordmark text-3xl font-semibold tracking-tight leading-none" 
           style={{ 
@@ -234,7 +237,7 @@ export const AnimatedLogo = ({
         <div className="logo-subtitle text-xs uppercase tracking-widest mt-0.5" style={{ color: '#C8CBCD' }}>
           UK ELECTRICITY DASHBOARD
         </div>
-      </div>
+      </div>}
 
       <style>{`
         .logo-svg {

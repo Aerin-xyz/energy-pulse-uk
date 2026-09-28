@@ -41,3 +41,15 @@
 @media(max-width:600px){.cable-facts>div{font-size:11px}}
 .cable-label-name{font-size:14px}.cable-label-value{font-size:13px}.cable-label-time{font-size:10px}
 @media(max-width:600px){}
+
+/* Original particle-ring brand; decorative animation, not a source-status light. */
+.cc-brand .cc-original-logo {display:block;width:54px;height:54px;flex:none;}
+.cc-brand .cc-original-logo svg {width:54px;height:54px;filter:brightness(1.65) drop-shadow(0 0 9px #30d3e444);animation:brand-breathe 6s ease-in-out infinite;}
+.cc-brand {gap:7px;letter-spacing:-.5px;}
+.cc-brand small {letter-spacing:2px;font-size:8px;color:#bdd5e0;}
+.cc-top-status {gap:10px;}
+.cc-top-status button {min-width:44px;min-height:44px;border-radius:12px;display:grid;place-items:center;background:#09233277;}
+@keyframes brand-breathe {0%,100%{opacity:.8;transform:scale(.95)}50%{opacity:1;transform:scale(1.04)}}
+[data-motion="off"] .cc-original-logo svg {animation:none;}
+@media(prefers-reduced-motion:reduce){.cc-brand .cc-original-logo svg{animation:none;}}
+@media(max-width:600px){.cc-topbar{gap:12px;padding:0 12px;}.cc-brand{font-size:21px;}.cc-brand small{font-size:7px;letter-spacing:1.6px;}.cc-brand .cc-original-logo,.cc-brand .cc-original-logo svg{width:50px;height:50px;}.cc-top-status{gap:7px;}}
