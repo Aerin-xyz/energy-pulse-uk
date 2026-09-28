@@ -74,8 +74,9 @@ interface EUCountryGeneration {
 }
 
 interface CarbonIntensityData {
-  actual: number;
-  forecast: number;
+  schemaVersion?:number; intervalFrom?:string; intervalTo?:string; fetchedAt?:string; status?:string; basis?:string;
+  actual: number | null;
+  forecast: number | null;
   index: string;
   timestamp: string;
   percentOfAverage: number;

@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { HelpTooltip } from "@/components/HelpTooltip";
 
 type FreshnessItem = {
+  intervalFrom?:string;
+  intervalTo?:string;
   label?: string;
   source?: string;
   timestamp?: string | null;
@@ -62,7 +64,7 @@ export const SourceFreshnessBar = ({
             available: !["unavailable", "offline"].includes(item.status),
             timestamp: item.timestamp,
             cadenceMinutes: item.cadenceMinutes,
-            failed: ["fallback", "error", "bmrs-fallback"].includes(
+            failed: ["fallback", "error", "bmrs-fallback", "retained"].includes(
               item.status,
             ),
           });
@@ -79,7 +81,7 @@ export const SourceFreshnessBar = ({
                 {item.label || key}:
               </span>
               <span className="font-semibold text-foreground">
-                {formatTime(item.timestamp)} UK · {state.label}
+                {key==='carbon'&&item.intervalFrom&&item.intervalTo?`${formatTime(item.intervalFrom)}–${formatTime(item.intervalTo)} UK · ${state.label} (interval end)`:`${formatTime(item.timestamp)} UK · ${state.label}`}
               </span>
               <HelpTooltip
                 content={`${item.source || "Source"}${item.cadenceMinutes ? ` • native cadence about ${item.cadenceMinutes} min` : ""}${item.status ? ` • ${item.status}` : ""}`}

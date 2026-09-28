@@ -68,7 +68,7 @@ const Today = () => {
           <h2 className="text-2xl font-semibold text-primary mb-3">Today’s key signals</h2>
           <div className="grid md:grid-cols-2 gap-4">
             <div className="rounded-lg border border-primary/20 p-4"><h3 className="font-semibold">Demand</h3><p className="text-foreground/75 mt-1">{formatMw(data?.totalDemandMW)}</p></div>
-            <div className="rounded-lg border border-primary/20 p-4"><h3 className="font-semibold">Carbon intensity</h3><p className="text-foreground/75 mt-1">{data?.carbonIntensity?.actual ? `${data.carbonIntensity.actual} gCO₂/kWh` : 'Awaiting live data'}</p></div>
+            <div className="rounded-lg border border-primary/20 p-4"><h3 className="font-semibold">Carbon intensity</h3><p className="text-foreground/75 mt-1">{Number.isFinite(data?.carbonIntensity?.actual) ? `${data.carbonIntensity.actual} gCO₂/kWh` : 'Awaiting live data'}</p></div>
             <div className="rounded-lg border border-primary/20 p-4"><h3 className="font-semibold">Renewable share</h3><p className="text-foreground/75 mt-1">{formatPercent(renewableShare)}</p></div>
             <div className="rounded-lg border border-primary/20 p-4"><h3 className="font-semibold">Gas generation</h3><p className="text-foreground/75 mt-1">{formatMw(gas?.value)}</p></div>
           </div>

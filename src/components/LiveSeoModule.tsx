@@ -118,10 +118,10 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
       { label: 'Demand', value: fmtGW(displayDemandMW), note: 'GB grid demand' },
       { label: 'Generation', value: fmtGW(data?.totalGenerationMW), note: 'domestic generation' },
       { label: 'Low-carbon', value: pct(lowCarbon, totalMix), note: 'wind, solar, nuclear, hydro, biomass' },
-      { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
+      { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? '—'} gCO₂/kWh`, note: Number.isFinite(data?.carbonIntensity?.actual) ? 'Reported actual · Carbon Intensity API' : 'Actual unavailable; forecast is separate' },
     ],
     carbon: [
-      { label: 'Now', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
+      { label: 'Now', value: `${data?.carbonIntensity?.actual ?? '—'} gCO₂/kWh`, note: Number.isFinite(data?.carbonIntensity?.actual) ? 'Reported actual · Carbon Intensity API' : 'Actual unavailable; forecast is separate' },
       { label: 'Best upcoming', value: cleanWindow ? `${cleanWindow.value} gCO₂/kWh` : 'Checking…', note: cleanWindow ? `${fmtTime(cleanWindow.from)}–${fmtTime(cleanWindow.to)}` : 'forecast window' },
       { label: 'Gas', value: fmtGW(gas), note: `${pct(gas, totalMix)} of domestic generation` },
       { label: 'Low-carbon', value: pct(lowCarbon, totalMix), note: 'current visible share' },
@@ -136,13 +136,13 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
       { label: 'Gas', value: fmtGW(gas), note: `${pct(gas, totalMix)} of domestic generation` },
       { label: 'Demand', value: fmtGW(displayDemandMW), note: 'demand pressure' },
       { label: 'Renewables', value: pct(renewables, totalMix), note: 'renewable share' },
-      { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
+      { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? '—'} gCO₂/kWh`, note: Number.isFinite(data?.carbonIntensity?.actual) ? 'Reported actual · Carbon Intensity API' : 'Actual unavailable; forecast is separate' },
     ],
     nuclear: [
       { label: 'Nuclear', value: fmtGW(nuclear), note: `${pct(nuclear, totalMix)} of domestic generation` },
       { label: 'Low-carbon', value: pct(lowCarbon, totalMix), note: 'including nuclear' },
       { label: 'Demand', value: fmtGW(displayDemandMW), note: 'current grid demand' },
-      { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
+      { label: 'Carbon', value: `${data?.carbonIntensity?.actual ?? '—'} gCO₂/kWh`, note: Number.isFinite(data?.carbonIntensity?.actual) ? 'Reported actual · Carbon Intensity API' : 'Actual unavailable; forecast is separate' },
     ],
     interconnectors: [
       { label: 'Imports', value: fmtGW(imports), note: 'positive interconnector flow' },
@@ -164,7 +164,7 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
     ],
     cleanest: [
       { label: 'Best upcoming', value: cleanWindow ? `${cleanWindow.value} gCO₂/kWh` : 'Checking…', note: cleanWindow ? `${fmtTime(cleanWindow.from)}–${fmtTime(cleanWindow.to)}` : 'forecast window' },
-      { label: 'Now', value: `${data?.carbonIntensity?.actual ?? data?.carbonIntensity?.forecast ?? '—'} gCO₂/kWh`, note: data?.carbonIntensity?.index || 'latest estimate' },
+      { label: 'Now', value: `${data?.carbonIntensity?.actual ?? '—'} gCO₂/kWh`, note: Number.isFinite(data?.carbonIntensity?.actual) ? 'Reported actual · Carbon Intensity API' : 'Actual unavailable; forecast is separate' },
       { label: 'Market price', value: fmtPrice(marketIndexPrice?.priceGBPPerMWh), note: 'wholesale context, not tariff' },
       { label: storage?.mode === 'charging' ? 'Storage charging' : 'Storage output', value: fmtGW(storage?.absMW), note: storage?.label || 'pumped storage status' },
     ],

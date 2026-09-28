@@ -51,7 +51,7 @@ export const TopMetricsStrip = ({
     },
     {
       label: 'Carbon',
-      value: carbonIntensity ? `${carbonIntensity.actual} gCO₂/kWh` : 'Unknown',
+      value: carbonIntensity ? `${carbonIntensity.actual ?? '—'} gCO₂/kWh` : 'Unknown',
       icon: Leaf,
       tone: carbonIntensity?.index?.toLowerCase().includes('low') ? 'text-carbon-low' : 'text-carbon-moderate',
       help: `GB carbon intensity from the NESO Carbon Intensity API${carbonIntensity?.index ? ` — ${carbonIntensity.index}` : ''}.`,

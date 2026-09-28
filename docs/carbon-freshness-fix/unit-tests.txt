@@ -1,0 +1,412 @@
+TAP version 13
+# Subtest: shared slots bound cache keys, reuse origin reads, and prevent browser TTL stacking
+ok 1 - shared slots bound cache keys, reuse origin reads, and prevent browser TTL stacking
+  ---
+  duration_ms: 33.537385
+  type: 'test'
+  ...
+# Subtest: Pages archive route returns a real 404 for an unknown date
+ok 2 - Pages archive route returns a real 404 for an unknown date
+  ---
+  duration_ms: 18.543447
+  type: 'test'
+  ...
+# Subtest: Pages archive route serves the exact known date
+ok 3 - Pages archive route serves the exact known date
+  ---
+  duration_ms: 0.680001
+  type: 'test'
+  ...
+# Subtest: zoom separates nearby sites, with bounded viewport
+ok 4 - zoom separates nearby sites, with bounded viewport
+  ---
+  duration_ms: 1.677904
+  type: 'test'
+  ...
+# Subtest: availability requires verified mapping and a finite reading, including measured zero
+ok 5 - availability requires verified mapping and a finite reading, including measured zero
+  ---
+  duration_ms: 12.238231
+  type: 'test'
+  ...
+# Subtest: PN ramps integrate to scheduled mean MW, never multiply MW as energy
+ok 6 - PN ramps integrate to scheduled mean MW, never multiply MW as energy
+  ---
+  duration_ms: 0.394701
+  type: 'test'
+  ...
+# Subtest: missing or conflicting PN coverage is unavailable
+ok 7 - missing or conflicting PN coverage is unavailable
+  ---
+  duration_ms: 0.3471
+  type: 'test'
+  ...
+# Subtest: half-hour energy converts to MW; revisions are not double counted
+ok 8 - half-hour energy converts to MW; revisions are not double counted
+  ---
+  duration_ms: 1.145503
+  type: 'test'
+  ...
+# Subtest: incomplete, different-interval or nonnumeric units never manufacture a station total
+ok 9 - incomplete, different-interval or nonnumeric units never manufacture a station total
+  ---
+  duration_ms: 0.232301
+  type: 'test'
+  ...
+# Subtest: measured zero and signed storage remain real readings
+ok 10 - measured zero and signed storage remain real readings
+  ---
+  duration_ms: 0.214301
+  type: 'test'
+  ...
+# Subtest: unmapped sites are unavailable, never a measured zero
+ok 11 - unmapped sites are unavailable, never a measured zero
+  ---
+  duration_ms: 2.615906
+  type: 'test'
+  ...
+# Subtest: above-500 register has unique sites and units, sourced capacities and no retired Drax coal
+ok 12 - above-500 register has unique sites and units, sourced capacities and no retired Drax coal
+  ---
+  duration_ms: 3.105607
+  type: 'test'
+  ...
+# Subtest: explicit dimensional contract: 2000MW is 2GW; 2000MWh is 2GWh, not integrated by the tooltip
+ok 13 - explicit dimensional contract: 2000MW is 2GW; 2000MWh is 2GWh, not integrated by the tooltip
+  ---
+  duration_ms: 3.242209
+  type: 'test'
+  ...
+# Subtest: freshness never signals live from a missing, failed or future source
+ok 14 - freshness never signals live from a missing, failed or future source
+  ---
+  duration_ms: 0.3829
+  type: 'test'
+  ...
+# Subtest: same fuel family has a shared semantic colour across map and chart
+ok 15 - same fuel family has a shared semantic colour across map and chart
+  ---
+  duration_ms: 0.2831
+  type: 'test'
+  ...
+# Subtest: atlas URL round trip preserves filters, selection, query and camera without discarding campaign params
+ok 16 - atlas URL round trip preserves filters, selection, query and camera without discarding campaign params
+  ---
+  duration_ms: 2.258505
+  type: 'test'
+  ...
+# Subtest: untrusted URL limits and defaults do not create a broken camera
+ok 17 - untrusted URL limits and defaults do not create a broken camera
+  ---
+  duration_ms: 0.697401
+  type: 'test'
+  ...
+# Subtest: canonical API uses exactly the homepage calculation, excludes imports/storage, preserves signs
+ok 18 - canonical API uses exactly the homepage calculation, excludes imports/storage, preserves signs
+  ---
+  duration_ms: 3.471709
+  type: 'test'
+  ...
+# Subtest: missing source data remains null, zero is retained
+ok 19 - missing source data remains null, zero is retained
+  ---
+  duration_ms: 0.553202
+  type: 'test'
+  ...
+# Subtest: failed source refresh preserves checked time, revision and zero reading
+ok 20 - failed source refresh preserves checked time, revision and zero reading
+  ---
+  duration_ms: 0.2042
+  type: 'test'
+  ...
+# Subtest: future and missing timestamps never gain live labels from a fresh fetch
+ok 21 - future and missing timestamps never gain live labels from a fresh fetch
+  ---
+  duration_ms: 0.235301
+  type: 'test'
+  ...
+# Subtest: ingestion rejects unknown units/null output and future revisions without converting to zero
+ok 22 - ingestion rejects unknown units/null output and future revisions without converting to zero
+  ---
+  duration_ms: 0.580202
+  type: 'test'
+  ...
+# Subtest: cables keep signed MW and never borrow a French aggregate or double MWh
+ok 23 - cables keep signed MW and never borrow a French aggregate or double MWh
+  ---
+  duration_ms: 1.558404
+  type: 'test'
+  ...
+# Subtest: zero is a reading; malformed, future and unpublished observations are not
+ok 24 - zero is a reading; malformed, future and unpublished observations are not
+  ---
+  duration_ms: 0.2373
+  type: 'test'
+  ...
+# Subtest: latest revision wins, stale history retains timestamps and is not live
+ok 25 - latest revision wins, stale history retains timestamps and is not live
+  ---
+  duration_ms: 0.3585
+  type: 'test'
+  ...
+# Subtest: full interval uses end clock without changing actual or forecast
+ok 26 - full interval uses end clock without changing actual or forecast
+  ---
+  duration_ms: 17.880046
+  type: 'test'
+  ...
+# Subtest: missing actual stays null; zero stays an actual
+ok 27 - missing actual stays null; zero stays an actual
+  ---
+  duration_ms: 0.539701
+  type: 'test'
+  ...
+# Subtest: invalid values and future actual intervals cannot become observations
+ok 28 - invalid values and future actual intervals cannot become observations
+  ---
+  duration_ms: 1.468304
+  type: 'test'
+  ...
+# Subtest: forecast-only current interval is labelled incomplete, not old actual
+ok 29 - forecast-only current interval is labelled incomplete, not old actual
+  ---
+  duration_ms: 0.768302
+  type: 'test'
+  ...
+# Subtest: failed fetch retains interval and fetched time without blessing legacy fallback
+ok 30 - failed fetch retains interval and fetched time without blessing legacy fallback
+  ---
+  duration_ms: 0.985302
+  type: 'test'
+  ...
+# Subtest: cache written seconds after cron expires before next tick; no extra scheduled calls
+ok 31 - cache written seconds after cron expires before next tick; no extra scheduled calls
+  ---
+  duration_ms: 0.264301
+  type: 'test'
+  ...
+# Subtest: missing and nonnumeric are not zero
+ok 32 - missing and nonnumeric are not zero
+  ---
+  duration_ms: 2.277906
+  type: 'test'
+  ...
+# Subtest: London local time handles BST, rejects repeated and nonexistent clock-change times
+ok 33 - London local time handles BST, rejects repeated and nonexistent clock-change times
+  ---
+  duration_ms: 17.364644
+  type: 'test'
+  ...
+# Subtest: conflicting NESO rows are unavailable rather than guessed revisions
+ok 34 - conflicting NESO rows are unavailable rather than guessed revisions
+  ---
+  duration_ms: 0.563001
+  type: 'test'
+  ...
+# Subtest: expired forecast is not live and negative direction is not absolute loading
+ok 35 - expired forecast is not live and negative direction is not absolute loading
+  ---
+  duration_ms: 0.824303
+  type: 'test'
+  ...
+# Subtest: MW stays MW, NI remains external, storage and embedded estimates do not enter domestic totals
+ok 36 - MW stays MW, NI remains external, storage and embedded estimates do not enter domestic totals
+  ---
+  duration_ms: 1.165003
+  type: 'test'
+  ...
+# Subtest: every cable is required; missing export never turns into a balanced zero
+ok 37 - every cable is required; missing export never turns into a balanced zero
+  ---
+  duration_ms: 0.288
+  type: 'test'
+  ...
+# Subtest: latest published revision wins; future publication is excluded
+ok 38 - latest published revision wins; future publication is excluded
+  ---
+  duration_ms: 0.362
+  type: 'test'
+  ...
+# Subtest: only adjacent completed periods create changes
+ok 39 - only adjacent completed periods create changes
+  ---
+  duration_ms: 0.896902
+  type: 'test'
+  ...
+# Subtest: missing demand suppresses only that comparison, not inventing demand from generation
+ok 40 - missing demand suppresses only that comparison, not inventing demand from generation
+  ---
+  duration_ms: 0.627302
+  type: 'test'
+  ...
+# Subtest: failure retains a visibly failed source state even if recently checked
+ok 41 - failure retains a visibly failed source state even if recently checked
+  ---
+  duration_ms: 0.543301
+  type: 'test'
+  ...
+# Subtest: canonical reviewed selection preserves source IDs and excludes retired Drax units
+ok 42 - canonical reviewed selection preserves source IDs and excludes retired Drax units
+  ---
+  duration_ms: 1.772505
+  type: 'test'
+  ...
+# Subtest: failed ingestion preserves original observation, revision and checked time
+ok 43 - failed ingestion preserves original observation, revision and checked time
+  ---
+  duration_ms: 59.16715
+  type: 'test'
+  ...
+# Subtest: mixed imports and exports use signed net, not the larger gross total
+ok 44 - mixed imports and exports use signed net, not the larger gross total
+  ---
+  duration_ms: 1.680705
+  type: 'test'
+  ...
+# Subtest: zero transfers are real data; missing or unavailable inputs cannot become zero demand
+ok 45 - zero transfers are real data; missing or unavailable inputs cannot become zero demand
+  ---
+  duration_ms: 0.222901
+  type: 'test'
+  ...
+# Subtest: fresh retrieval does not make a delayed observation live
+ok 46 - fresh retrieval does not make a delayed observation live
+  ---
+  duration_ms: 1.017702
+  type: 'test'
+  ...
+# Subtest: forecast window excludes past intervals and never crosses a missing half-hour
+ok 47 - forecast window excludes past intervals and never crosses a missing half-hour
+  ---
+  duration_ms: 0.837502
+  type: 'test'
+  ...
+# Subtest: renewables include biomass and exclude imports and storage
+ok 48 - renewables include biomass and exclude imports and storage
+  ---
+  duration_ms: 0.2228
+  type: 'test'
+  ...
+# Subtest: UK settlement days have 46, 48 or 50 periods; BST midnight is previous UTC day
+ok 49 - UK settlement days have 46, 48 or 50 periods; BST midnight is previous UTC day
+  ---
+  duration_ms: 17.502445
+  type: 'test'
+  ...
+# Subtest: observation to GB period accounts for BST and the repeated autumn hour
+ok 50 - observation to GB period accounts for BST and the repeated autumn hour
+  ---
+  duration_ms: 1.006603
+  type: 'test'
+  ...
+# Subtest: five-minute snapshot is not subjected to half-hour completion, excludes imports/storage
+ok 51 - five-minute snapshot is not subjected to half-hour completion, excludes imports/storage
+  ---
+  duration_ms: 2.647007
+  type: 'test'
+  ...
+# Subtest: incomplete newest snapshot cannot borrow older fuels or turn missing into zero
+ok 52 - incomplete newest snapshot cannot borrow older fuels or turn missing into zero
+  ---
+  duration_ms: 0.2549
+  type: 'test'
+  ...
+# Subtest: zero, revisions, conflicts and future observations stay distinct
+ok 53 - zero, revisions, conflicts and future observations stay distinct
+  ---
+  duration_ms: 0.3579
+  type: 'test'
+  ...
+# Subtest: stale readings retain observation time without claiming freshness
+ok 54 - stale readings retain observation time without claiming freshness
+  ---
+  duration_ms: 0.2266
+  type: 'test'
+  ...
+# Subtest: canonical API retains half-hour metrics and stops claiming realtime
+ok 55 - canonical API retains half-hour metrics and stops claiming realtime
+  ---
+  duration_ms: 1.357604
+  type: 'test'
+  ...
+# Subtest: network snapshot is attributed, dated static geography with source identities
+ok 56 - network snapshot is attributed, dated static geography with source identities
+  ---
+  duration_ms: 10.984128
+  type: 'test'
+  ...
+# Subtest: every catalogue entry strictly above 100MW has an explicit decision; no unit reused
+ok 57 - every catalogue entry strictly above 100MW has an explicit decision; no unit reused
+  ---
+  duration_ms: 2.065406
+  type: 'test'
+  ...
+# Subtest: runtime registry changes withhold schedules without changing measured verification
+ok 58 - runtime registry changes withhold schedules without changing measured verification
+  ---
+  duration_ms: 4.319611
+  type: 'test'
+  ...
+# Subtest: zero is a real notification; current half hour expires at its boundary; missing unit is never zero
+ok 59 - zero is a real notification; current half hour expires at its boundary; missing unit is never zero
+  ---
+  duration_ms: 0.771902
+  type: 'test'
+  ...
+# Subtest: new schedule-only match never manufactures measured history
+ok 60 - new schedule-only match never manufactures measured history
+  ---
+  duration_ms: 0.505501
+  type: 'test'
+  ...
+# Subtest: broad official catalogue keeps GB operational identities, source IDs and reviewed links
+ok 61 - broad official catalogue keeps GB operational identities, source IDs and reviewed links
+  ---
+  duration_ms: 3.87481
+  type: 'test'
+  ...
+# Subtest: capacity is an optional filter and unknown capacity stays unknown
+ok 62 - capacity is an optional filter and unknown capacity stays unknown
+  ---
+  duration_ms: 19.61885
+  type: 'test'
+  ...
+# Subtest: source records are not duplicated by explicit site grouping
+ok 63 - source records are not duplicated by explicit site grouping
+  ---
+  duration_ms: 2.800407
+  type: 'test'
+  ...
+# Subtest: national clustering keeps every entry but bounds rendered group count
+ok 64 - national clustering keeps every entry but bounds rendered group count
+  ---
+  duration_ms: 1.293504
+  type: 'test'
+  ...
+# Subtest: edge generation changes at shared release, not visitor arrival
+ok 65 - edge generation changes at shared release, not visitor arrival
+  ---
+  duration_ms: 1.061402
+  type: 'test'
+  ...
+# Subtest: browser follows ingestion and shared edge release; strictly future at boundaries
+ok 66 - browser follows ingestion and shared edge release; strictly future at boundaries
+  ---
+  duration_ms: 0.361801
+  type: 'test'
+  ...
+# Subtest: timing remains UTC-based across UK clock changes
+ok 67 - timing remains UTC-based across UK clock changes
+  ---
+  duration_ms: 0.1638
+  type: 'test'
+  ...
+1..67
+# tests 67
+# suites 0
+# pass 67
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 491.068445

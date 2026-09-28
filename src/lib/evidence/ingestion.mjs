@@ -12,6 +12,6 @@ export function sourceStatus(timestamp,cadenceMinutes,now=Date.now()) {
  const t=Date.parse(timestamp);return !Number.isFinite(t)||t>now?'unavailable':now-t>cadenceMinutes*120000?'delayed':'live';
 }
 export function truthfulFreshness(payload,now=Date.now()) {
- const sourceFreshness=Object.fromEntries(Object.entries(payload.dataFreshness?.sourceFreshness||{}).map(([k,v])=>[k,{...v,status:sourceStatus(v.timestamp,v.cadenceMinutes||30,now)}]));
+ const sourceFreshness=Object.fromEntries(Object.entries(payload.dataFreshness?.sourceFreshness||{}).map(([k,v])=>[k,{...v,status:['retained','unavailable'].includes(v.status)?v.status:sourceStatus(v.timestamp,v.cadenceMinutes||30,now)}]));
  return {...payload,dataFreshness:{...payload.dataFreshness,sourceFreshness,isRealtime:sourceFreshness.generation?.status==='live',status:sourceFreshness.generation?.status||'unavailable'}};
 }

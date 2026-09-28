@@ -1,3 +1,4 @@
+import {carbonPresentation} from '@/lib/evidence/carbon.mjs';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -5,8 +6,9 @@ import { Leaf, TrendingUp, TrendingDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface CarbonIntensityCardProps {
-  actual: number;
-  forecast: number;
+  actual: number | null;
+  intervalFrom?:string; intervalTo?:string; status?:string;
+  forecast: number | null;
   index: string;
   timestamp: string;
   percentOfAverage: number;
@@ -71,9 +73,10 @@ export const CarbonIntensityCard = ({
   forecast,
   index,
   timestamp,
-  percentOfAverage
+  percentOfAverage, intervalFrom, intervalTo, status
 }: CarbonIntensityCardProps) => {
-  const isLow = percentOfAverage < 0;
+  const isLow = Number.isFinite(actual) && Number.isFinite(percentOfAverage) && percentOfAverage < 0;
+  const reading=carbonPresentation({actual,forecast,intervalFrom,intervalTo,status});
   
   return (
     <Card className="glow-cyan border-primary/30">
@@ -85,7 +88,7 @@ export const CarbonIntensityCard = ({
             </div>
             <div>
               <CardTitle>Carbon Intensity</CardTitle>
-              <CardDescription>Grid emissions in real-time</CardDescription>
+              <CardDescription>Half-hour carbon intensity estimate</CardDescription>
             </div>
           </div>
           <Badge variant={getCarbonBadgeVariant(index)} className="capitalize">
@@ -97,12 +100,12 @@ export const CarbonIntensityCard = ({
         {/* Main Intensity Display */}
         <div className="text-center space-y-2">
           <div className="text-5xl font-bold">
-            <span className={cn(getCarbonColor(index), "text-glow")}>{actual}</span>
+            <span className={cn(getCarbonColor(index), "text-glow")}>{actual ?? '—'}</span>
             <span className="text-2xl text-muted-foreground ml-2">gCO₂/kWh</span>
           </div>
           
           {/* Progress Bar */}
-          <div className="relative">
+          {Number.isFinite(actual) && <div className="relative">
             <Progress 
               value={getProgressValue(actual)} 
               className="h-3 bg-muted/30"
@@ -114,7 +117,7 @@ export const CarbonIntensityCard = ({
               )}
               style={{ width: `${getProgressValue(actual)}%` }}
             />
-          </div>
+          </div>}
         </div>
 
         <p className="text-center text-xs text-muted-foreground">Carbon Intensity API estimate · read the source interval alongside this value. No fixed annual-average baseline is assumed.</p>
@@ -122,12 +125,12 @@ export const CarbonIntensityCard = ({
         {/* Stats Grid */}
         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-border">
           <div className="text-center">
-            <div className="text-xs text-muted-foreground mb-1">Current</div>
-            <div className="text-lg font-bold text-foreground">{actual} g</div>
+            <div className="text-xs text-muted-foreground mb-1">Reported actual</div>
+            <div className="text-lg font-bold text-foreground">{actual ?? '—'} g</div>
           </div>
           <div className="text-center">
             <div className="text-xs text-muted-foreground mb-1">Forecast</div>
-            <div className="text-lg font-bold text-foreground">{forecast} g</div>
+            <div className="text-lg font-bold text-foreground">{forecast ?? '—'} g</div>
           </div>
         </div>
 
@@ -142,7 +145,7 @@ export const CarbonIntensityCard = ({
         )}
 
         <div className="text-xs text-muted-foreground text-center">
-          Last updated: {new Date(timestamp).toLocaleTimeString()}
+          {reading.interval} · {reading.freshness}
         </div>
       </CardContent>
     </Card>
