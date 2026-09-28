@@ -1,0 +1,29 @@
+
+Running 12 tests using 3 workers
+
+(node:298132) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:298138) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:298131) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:298132) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:298138) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:298131) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   3 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 360 (2.1s)
+  ✓   4 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 390 (1.8s)
+  ✓   2 tests/near-live-generation.spec.ts:4:31 › generation modes keep independent timestamps and missing states 390 (4.5s)
+  ✓   5 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 430 (2.1s)
+  ✓   7 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 1366 (2.2s)
+  ✓   6 tests/near-live-generation.spec.ts:4:31 › generation modes keep independent timestamps and missing states 1440 (5.5s)
+  ✓   8 tests/atlas-brand-mix.spec.ts:12:1 › original logo respects reduced motion (2.2s)
+  ✓   1 tests/site-system.spec.ts:12:31 › public route family navigation and layout at 390px (14.9s)
+  ✓   9 tests/site-system.spec.ts:12:31 › public route family navigation and layout at 1440px (8.0s)
+  ✓  10 tests/site-system.spec.ts:24:1 › interior navigation, active state and keyboard skip link work (704ms)
+  ✓  11 tests/site-system.spec.ts:34:1 › legacy HTML addresses resolve to the styled explainer (1.2s)
+  ✓  12 tests/site-system.spec.ts:40:1 › crawlable reading pages retain the design without JavaScript (431ms)
+
+  12 passed (26.2s)
