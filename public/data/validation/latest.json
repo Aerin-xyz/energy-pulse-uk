@@ -1,6 +1,6 @@
 {
   "status": "warning",
-  "generatedAt": "2026-09-28T12:16:46.519Z",
+  "generatedAt": "2026-09-28T14:30:45.455Z",
   "date": "2026-09-27",
   "generated": {
     "date": "2026-09-27",
@@ -46,7 +46,7 @@
       },
       "periodCount": 48,
       "averagesMw": {
-        "generationWithImports": 30021.354166666668,
+        "generationWithImports": 30021.1875,
         "gas": 4118.020833333333,
         "wind": 10775.791666666666,
         "embeddedWind": 2725.125,
@@ -54,9 +54,9 @@
         "hydro": 407.6875,
         "nuclear": 4011.5416666666665,
         "biomass": 2560.3333333333335,
-        "imports": 3262.5416666666665,
+        "imports": 3262.375,
         "renewableIncludingEmbeddedWind": 15421.395833333334,
-        "carbonIntensity": 97.6875
+        "carbonIntensity": 97.75
       }
     },
     "nesoDemandUpdate": {
