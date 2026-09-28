@@ -153,7 +153,7 @@ export const GridIntelligenceHeader = ({
 
   const tape = [
     { label: 'GB power', value: `${formatGWfromMW(totalGenerationMW)}GW`, signal: 'Live', icon: Factory, tone: 'cyan' as const },
-    { label: 'Carbon', value: carbonIntensity ? `${carbonIntensity.actual}g` : '—', signal: carbon.label, icon: Leaf, tone: carbon.tone },
+    { label: 'Carbon', value: carbonIntensity ? `${carbonIntensity.actual ?? '—'}g` : '—', signal: carbon.label, icon: Leaf, tone: carbon.tone },
     { label: 'Wind', value: `${formatGWfromMW(windMW)}GW`, signal: windLabel, icon: Wind, tone: windShare >= 35 ? 'calm' as const : 'muted' as const },
     { label: 'Imports', value: `${netInterconnectorMW >= 0 ? '+' : ''}${formatGWfromMW(netInterconnectorMW)}GW`, signal: transfers.label, icon: ArrowDownUp, tone: transfers.tone },
     ...(marketIndexPrice ? [{ label: 'Wholesale', value: `£${Math.round(marketIndexPrice.priceGBPPerMWh)}/MWh`, signal: price.label, icon: PoundSterling, tone: price.tone }] : []),

@@ -1,0 +1,17 @@
+{
+  "fetchedAt": "2026-09-28T12:02:29.208Z",
+  "officialResponse": {
+    "data": [
+      {
+        "from": "2026-09-28T11:30Z",
+        "to": "2026-09-28T12:00Z",
+        "intensity": {
+          "forecast": 136,
+          "actual": 143,
+          "index": "moderate"
+        }
+      }
+    ]
+  },
+  "note": "Official data normalized locally and served as a browser fixture; not a deployed backend result."
+}

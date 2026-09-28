@@ -1,0 +1,26 @@
+
+Running 9 tests using 3 workers
+
+(node:301996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:302003) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:301997) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:302003) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:301996) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:301997) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  2 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 360 (2.3s)
+  ✓  4 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 390 (2.4s)
+  ✓  3 tests/carbon-interval.spec.ts:3:31 › carbon interval, explicit forecast and retained state 390 (5.0s)
+  ✓  1 tests/near-live-generation.spec.ts:4:31 › generation modes keep independent timestamps and missing states 390 (5.1s)
+  ✓  5 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 430 (2.9s)
+  ✓  8 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 1366 (2.6s)
+  ✓  6 tests/carbon-interval.spec.ts:3:31 › carbon interval, explicit forecast and retained state 1366 (5.4s)
+  ✓  7 tests/near-live-generation.spec.ts:4:31 › generation modes keep independent timestamps and missing states 1440 (6.2s)
+  ✓  9 tests/atlas-brand-mix.spec.ts:12:1 › original logo respects reduced motion (1.5s)
+
+  9 passed (12.9s)

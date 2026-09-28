@@ -1,3 +1,4 @@
+import {normalizeCarbon,retainCarbon,enrichmentCacheTTL} from '../../../src/lib/evidence/carbon.mjs';
 import {truthfulFreshness} from '../../../src/lib/evidence/ingestion.mjs';
 import { settlementStart, settlementCoordinates } from '../_shared/settlementTime.mjs';
 import { XMLParser } from "https://esm.sh/fast-xml-parser@4.5.0";
@@ -222,32 +223,25 @@ async function fetchEmbeddedWindESO(anchorDate: string, anchorSP: number): Promi
 
 // PV Live embedded solar — column-aware parser with 45m tolerance
 // Fetch Carbon Intensity from National Grid API
-async function fetchCarbonIntensity(debug = false): Promise<{
-  actual: number;
-  forecast: number;
-  index: string;
-  timestamp: string;
-  percentOfAverage: number;
-  forecastData?: Array<{ from: string; to: string; intensity: { forecast: number; index: string } }>;
-} | null> {
+async function fetchCarbonIntensity(debug = false): Promise<any> {
+  const attemptedAt = new Date().toISOString();
   try {
     // Fetch current intensity
     const currentRes = await fetch('https://api.carbonintensity.org.uk/intensity', {
       headers: { 'Accept': 'application/json' },
-      cache: 'no-store'
+      cache: 'no-store', signal: AbortSignal.timeout(10000)
     });
 
     if (!currentRes.ok) {
-      if (debug) console.log('[carbon] Current intensity API error:', currentRes.status);
-      return null;
+      throw Error('Carbon HTTP '+currentRes.status);
     }
 
     const currentData = await currentRes.json();
     const latest = currentData?.data?.[0];
+    const normalized = normalizeCarbon(latest,new Date().toISOString());
 
     if (!latest?.intensity) {
-      if (debug) console.log('[carbon] No intensity data in response');
-      return null;
+      throw Error('No carbon intensity in response');
     }
 
     // Fetch forecast for next 24 hours
@@ -255,7 +249,7 @@ async function fetchCarbonIntensity(debug = false): Promise<{
     try {
       const forecastRes = await fetch(`https://api.carbonintensity.org.uk/intensity/${new Date().toISOString().slice(0,16)+'Z'}/fw24h`, {
         headers: { 'Accept': 'application/json' },
-        cache: 'no-store'
+        cache: 'no-store', signal: AbortSignal.timeout(10000)
       });
 
       if (forecastRes.ok) {
@@ -266,37 +260,14 @@ async function fetchCarbonIntensity(debug = false): Promise<{
       if (debug) console.log('[carbon] Forecast fetch error:', (e as Error).message);
     }
 
-    const actual = latest.intensity.actual ?? latest.intensity.forecast;
-    const forecast = latest.intensity.forecast;
-    const index = latest.intensity.index;
-    const timestamp = latest.from;
-
-    // GB annual average is ~233 gCO2/kWh
-    const GB_AVERAGE = 233;
-    const percentOfAverage = ((actual / GB_AVERAGE) * 100) - 100;
-
-    if (debug) {
-      console.log('[carbon] Fetched carbon intensity:', {
-        actual,
-        forecast,
-        index,
-        timestamp,
-        percentOfAverage: percentOfAverage.toFixed(1) + '%',
-        forecastPoints: forecastData.length
-      });
-    }
-
     return {
-      actual,
-      forecast,
-      index,
-      timestamp,
-      percentOfAverage,
+      ...normalized,
       forecastData: forecastData.slice(0, 48) // Next 48 half-hourly periods
     };
   } catch (error) {
-    if (debug) console.log('[carbon] Error fetching carbon intensity:', (error as Error).message);
-    return null;
+    if (debug) console.log('[carbon] Refresh unavailable');
+    const previous=await getCachedResponse('energy-last-good-v1');
+    return retainCarbon(previous.data?JSON.parse(previous.data).carbonIntensity:null,attemptedAt);
   }
 }
 
@@ -1744,9 +1715,9 @@ Deno.serve(async (req) => {
 
   // Response caching based on update type with versioned key strategy
   // CACHE_VERSION: bump this to invalidate all cached responses after logic changes
-  const CACHE_VERSION = 'v5-bounded-shared';
+  const CACHE_VERSION = 'v6-carbon-interval';
   UPDATE_TYPE = 'full';
-  const cacheTTL = 300; // Shared enrichment cache; legacy updateType inputs remain compatible.
+  let cacheTTL = enrichmentCacheTTL(); // Shared enrichment cache; legacy updateType inputs remain compatible.
   const globalCacheKey = `energy-data:${CACHE_VERSION}:${UPDATE_TYPE}:global`;
 
   const cachedResponse = await getCachedResponse(globalCacheKey);
@@ -2175,7 +2146,8 @@ try {
         source: 'Carbon Intensity API',
         timestamp: safeSourceTimestamp(carbonIntensity?.timestamp || null, responseNow),
         cadenceMinutes: 30,
-        status: carbonIntensity ? 'live' : 'cached',
+        status: carbonIntensity?.status==='retained'?'retained':Number.isFinite(carbonIntensity?.actual)?'live':'unavailable',
+        intervalFrom: carbonIntensity?.intervalFrom||null, intervalTo: carbonIntensity?.intervalTo||null, basis: carbonIntensity?.basis||'unavailable', fetchedAt:carbonIntensity?.fetchedAt||null,
       },
       price: {
         label: 'Market price',
@@ -2377,6 +2349,7 @@ await insertLKG(payload.lastUpdated, payload, totalGenerationMW);
 
     // Cache the compressed, stripped-down response with global key
     const cacheBody = JSON.stringify(cacheablePayload);
+    cacheTTL = enrichmentCacheTTL();
     await setCachedResponse(globalCacheKey, cacheBody, cacheTTL);
 
     // Return full payload (with debug info if requested)
