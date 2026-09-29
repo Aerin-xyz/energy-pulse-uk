@@ -95,7 +95,7 @@ export const ReportsIndex = () => (
       <section>
         <h2 className="text-2xl font-semibold text-primary mb-3">How the report engine works</h2>
         <p>
-          Weekly reports are generated from validated public generation data, then shaped into a readable summary with source notes and links back to the live dashboard. The aim is to build an indexable record of what happened on Britain’s electricity grid without inventing precision the data does not support.
+          Weekly reports compile public generation data into summaries calculated by Energy Mix, with source notes and links back to the live dashboard. Validation coverage varies; a published report is not independent certification of its source data. The aim is to build an indexable record of what happened on Britain’s electricity grid without inventing precision the data does not support.
         </p>
       </section>
     </StaticPageLayout>
@@ -235,7 +235,11 @@ export const WeeklyReportPage = () => {
 
         <section>
           <h2 className="text-2xl font-semibold text-primary mb-3">Data notes</h2>
-          <p>{report.methodologyNote || 'This report was generated from the site’s available 7-day historical generation feed. Carbon-intensity highs/lows and interconnector summaries should be added once reliable historical carbon and flow aggregates are available.'}</p>
+          <p><strong>Compiled by Energy Mix from Elexon generation data and NESO embedded-generation estimates.</strong> Energy Mix calculates the totals, averages and comparisons shown here. Source data may be revised. Source attribution does not mean that Elexon or NESO has reviewed or endorsed this report.</p>
+          <p className="mt-3">Sources: <a className="text-cosmic-cyan underline" href="https://bmrs.elexon.co.uk/api-documentation/dataset/FUELHH">Elexon Insights FUELHH</a>; <a className="text-cosmic-cyan underline" href="https://api.neso.energy/dataset/historic-generation-mix">NESO Historic GB Generation Mix</a>; <a className="text-cosmic-cyan underline" href="https://api.neso.energy/dataset/demand-data-update">NESO Demand Data Update</a>. These datasets can share underlying observations; agreement is not independent certification.</p>
+          <p className="mt-3">Renewable-share and gas-output comparisons are not measurements of carbon intensity. See <Link className="text-cosmic-cyan underline" to="/data">data sources and methodology</Link> for source information. Report-specific reproducible evidence packs are not yet available.</p>
+          {date === '2026-09-29' && <aside className="mt-4 rounded-lg border border-primary/30 p-4" aria-label="Report validation clarification"><h3 className="font-semibold">Validation: partial</h3><p>This report covers six available complete days, 23–28 September 2026. External comparisons recorded in the 29 September validation run cover 28 September only, not every day in this report. That run had warnings for the legacy UTC reporting-day basis and incomplete NESO Demand Data Update coverage.</p><p className="mt-2 text-sm">Clarification added 29 September 2026. The archived report’s figures and original reporting period have not been recalculated or changed.</p></aside>}
+          <details className="mt-4"><summary>Original publication methodology note</summary><p className="mt-2">{report.methodologyNote || 'No report-specific methodology note was preserved.'}</p><p className="mt-2 text-sm">Preserved as part of the original publication. Any broad validation wording in this note should not be read as proof that all reporting days or narrative claims were checked.</p></details>
         </section>
 
         <section>

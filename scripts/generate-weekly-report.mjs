@@ -147,7 +147,7 @@ const report = {
     { label: 'Solar', value: `Highest average solar output was about ${averageGw(highestSolar.row, highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}.` },
     { label: 'Gas', value: `Highest average gas output was about ${averageGw(highestGas.row, highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}; lowest was about ${averageGw(lowestGas.row, lowestGas.value)} on ${fmtDate(lowestGas.row.settlementDate)}.` },
   ],
-  methodologyNote: 'This report is generated from the available 7-day historical generation feed and validated against external public data. Carbon-intensity highs/lows and interconnector summaries should be treated as future additions unless they are present as validated historical aggregates.',
+  methodologyNote: 'Compiled by Energy Mix from Elexon generation data and NESO embedded-generation estimates. Energy Mix calculates the totals, averages and comparisons. Current external checks cover the latest complete reporting day only, not the full reporting period; source data may be revised. Carbon-intensity highs/lows and interconnector summaries should be treated as future additions unless they are present as validated historical aggregates.',
 };
 
 const generated = {
