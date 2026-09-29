@@ -1,0 +1,9 @@
+file:///home/aerins/.openclaw/workspace/energy-atlas-review/scripts/generate-weekly-report.mjs:104
+  throw new Error(`External data validation failed for ${yesterday.settlementDate}: ${failedChecks}`);
+        ^
+
+Error: External data validation failed for 2026-09-28: 2026-09-23: report.fuel.Hydro; 2026-09-23: cross-source.NUCLEAR; 2026-09-23: report.total; 2026-09-24: report.fuel.Hydro; 2026-09-24: report.total; 2026-09-25: report.fuel.Hydro; 2026-09-25: report.total; 2026-09-26: report.fuel.Hydro; 2026-09-26: report.total; 2026-09-27: report.fuel.Hydro; 2026-09-27: report.total; 2026-09-28: report.fuel.Hydro; 2026-09-28: cross-source.WIND; 2026-09-28: report.total
+    at file:///home/aerins/.openclaw/workspace/energy-atlas-review/scripts/generate-weekly-report.mjs:104:9
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.1
