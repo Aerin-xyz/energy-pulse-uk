@@ -61,9 +61,9 @@ for (const width of [390, 768, 1440])
       }),
     ).toBeVisible();
     await expect(page.locator(".map-total")).toContainText("36.9");
-    await expect(page.locator(".atlas-signals")).toContainText("0.9");
-    await expect(page.locator(".atlas-outlook")).toContainText(
-      "Lowest average forecast",
+    await expect(page.locator(".home-readings")).toContainText("0.9");
+    await expect(page.locator(".home-outlook")).toContainText(
+      "lowest in the available forecast",
     );
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth),
@@ -115,7 +115,7 @@ test("unavailable readings do not invent a trend or forecast", async ({
   await page.goto("/");
   await page.getByRole("button",{name:"Cables",exact:true}).click();
 
-  await expect(page.locator(".atlas-outlook")).toContainText(
+  await expect(page.locator(".home-outlook")).toContainText(
     "No complete future window",
   );
   await expect(page.locator(".atlas-now")).toContainText(
@@ -166,7 +166,7 @@ test('ambient motion can be paused independently of live readings', async ({page
  await page.getByRole('button',{name:'Pause ambient motion'}).click();
  await expect(page.locator('.observatory')).toHaveAttribute('data-motion','off');
  expect(await page.locator('.atlas-traveller:visible').count()).toBe(0);
- expect(await page.locator('.cc-orb').evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
+ expect(await page.locator('.cc-original-logo svg').evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
  await expect(page.locator('.map-total')).toContainText('36.9');
  await page.getByRole('button',{name:'Enable ambient motion'}).click();
  await expect(page.locator('.observatory')).toHaveAttribute('data-motion','on');

@@ -1,7 +1,8 @@
+import {HomepageContext} from './HomepageContext';
 import {useGridEvidence} from '@/hooks/useGridEvidence';
 import {halfHours} from '@/lib/evidence/calculations.mjs';
 import {GridEvidenceBriefing} from "./GridEvidenceBriefing";
-import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Home, Map, BarChart3, Lightbulb,
@@ -23,10 +24,8 @@ const HistoricalGenerationChart = lazy(() =>
 );
 import { StaticGridSnapshot } from "./StaticGridSnapshot";
 import {
-  cleanWindow,
   finite,
   sourceState,
-  transfers,
 } from "@/lib/gridMetrics.mjs";
 import generated from "@/data/energyMixGenerated.json";
 const gw = (n: number | null | undefined) =>
@@ -42,7 +41,6 @@ export function ElectricityObservatory() {
   const history = useHistoricalGeneration();
   const carbon = useCarbonOutlook();
   const [now, setNow] = useState(Date.now());
-  const [duration, setDuration] = useState(120);
   const [motion, setMotion] = useState(true);
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 30000);
@@ -50,20 +48,7 @@ export function ElectricityObservatory() {
   }, []);
   const evidence = useGridEvidence();
   const current = halfHours(evidence.data?.sources.FUELHH?.records||[], evidence.data?.sources.INDO?.records||[], now).at(-1);
-  const mix = (current?.generationMix || [])
-    .filter((x) => finite(x.value))
-    .sort((a, b) => b.value - a.value);
-  const top = mix.find(item => finite(item.value) && item.value > 0);
-  const flow = {net: current?.netImportsMW ?? null};
   const freshness = data?.dataFreshness?.sourceFreshness;
-  const best = useMemo(
-    () => cleanWindow(carbon.periods, duration, now),
-    [carbon.periods, duration, now],
-  );
-  const upcoming = carbon.periods.filter(
-    (p) => Date.parse(p.from) >= now && finite(p.intensity.forecast),
-  );
-  const forecastMax = Math.max(1, ...upcoming.map((p) => p.intensity.forecast));
   return (
     <div className="observatory" data-motion={motion ? "on" : "off"}>
       <CommandNavigation now={now} refresh={refetch} loading={loading} motion={motion} toggleMotion={()=>setMotion(v=>!v)}/>
@@ -72,175 +57,9 @@ export function ElectricityObservatory() {
         {error && <p className="atlas-notice" role="status">Live refresh unavailable. Last known values retain their source timestamps.</p>}
         <GridCommandCentre data={data} history={history} carbon={carbon} now={now}/>
         <GridEvidenceBriefing/>
-        <section className="atlas-editorial">
-          <article>
-            <p className="atlas-eyebrow">03 / WHY IT MATTERS</p>
-            <h2>
-              {(data?.marketIndexPrice?.priceGBPPerMWh ?? 1) < 0
-                ? "Below zero. Not a free bill."
-                : top?.name === "Wind"
-                  ? "The weather does real work."
-                  : "The mix tells a bigger story."}
-            </h2>
-            <p>
-              {(data?.marketIndexPrice?.priceGBPPerMWh ?? 1) < 0
-                ? "The latest wholesale market index is negative. That is a market signal—not a promise of free electricity at home. Your tariff determines what you pay."
-                : top?.name === "Wind"
-                  ? "Wind is the largest source in the latest reading. More wind can reduce the need for fossil generation, but demand, exports and other sources also shape the outcome."
-                  : "Generation, demand, imports and storage work together. A single number cannot tell you whether the whole system is healthy or why a change happened."}
-            </p>
-            <Link className="atlas-text-link" to="/uk-electricity-mix">
-              Read the explanation <ArrowUpRight size={14} />
-            </Link>
-          </article>
-          <article className="atlas-outlook" id="outlook">
-            <p className="atlas-eyebrow">04 / WHAT HAPPENS NEXT</p>
-            <h2>A cleaner window.</h2>
-            <label className="atlas-duration">
-              Find a{" "}
-              <select
-                value={duration}
-                onChange={(e) => setDuration(Number(e.target.value))}
-              >
-                <option value={60}>1 hour</option>
-                <option value={120}>2 hour</option>
-                <option value={180}>3 hour</option>
-              </select>{" "}
-              window
-            </label>
-            {best ? (
-              <>
-                <strong className="atlas-window">
-                  {time(best.from)} — {time(best.to)}
-                </strong>
-                <p>
-                  Lowest average forecast in the returned horizon:{" "}
-                  <b>{Math.round(best.intensity)} gCO₂/kWh</b>.
-                </p>
-                <div
-                  className="atlas-forecast-bars"
-                  role="img"
-                  aria-label="Upcoming carbon intensity forecast; taller bars mean higher carbon"
-                >
-                  {upcoming.map((p) => (
-                    <i
-                      key={p.from}
-                      className={
-                        Date.parse(p.from) >= Date.parse(best.from) &&
-                        Date.parse(p.to) <= Date.parse(best.to)
-                          ? "chosen"
-                          : ""
-                      }
-                      style={{
-                        height: `${Math.max(8, (p.intensity.forecast / forecastMax) * 100)}%`,
-                      }}
-                      title={`${time(p.from)}: ${p.intensity.forecast} gCO₂/kWh`}
-                    />
-                  ))}
-                </div>
-                <small>
-                  UK time ·{" "}
-                  {new Intl.DateTimeFormat("en-GB", {
-                    day: "numeric",
-                    month: "short",
-                    timeZone: "Europe/London",
-                  }).format(new Date(best.from))}{" "}
-                  · forecast, not a guarantee. Lower carbon does not necessarily
-                  mean a lower bill.
-                </small>
-                <details>
-                  <summary>Forecast evidence</summary>
-                  <p>
-                    Carbon Intensity API · retrieved {time(carbon.retrievedAt)}{" "}
-                    UK. Upstream issue time not supplied.
-                  </p>
-                  <table>
-                    <caption>Upcoming half-hour forecasts, gCO₂/kWh</caption>
-                    <tbody>
-                      {upcoming.map((p) => (
-                        <tr key={p.from}>
-                          <th>{time(p.from)}</th>
-                          <td>{p.intensity.forecast}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </details>
-              </>
-            ) : (
-              <p>
-                No complete future window is available. Forecast guidance will
-                return when there is sufficient coverage.
-              </p>
-            )}
-          </article>
-        </section>
-        <section className="atlas-signals">
-          <Link to="/wholesale-electricity-price">
-            <span>
-              WHOLESALE INDEX <ArrowUpRight size={13} />
-            </span>
-            <strong>
-              {data?.marketIndexPrice
-                ? `£${data.marketIndexPrice.priceGBPPerMWh.toFixed(2)}`
-                : "—"}
-              <small> /MWh</small>
-            </strong>
-            <small>
-              {sourceState(data?.marketIndexPrice?.startTime, 30, now).label} ·
-              not your retail tariff
-            </small>
-          </Link>
-          <Link to="/pumped-storage">
-            <span>
-              PUMPED STORAGE <ArrowUpRight size={13} />
-            </span>
-            <strong>
-              {gw(current?.storageMW)}
-              <small> GW · signed metered output</small>
-            </strong>
-            <small>
-              {sourceState(current?.to, 30, now).label} · not
-              battery state of charge
-            </small>
-          </Link>
-          <Link to="/interconnectors">
-            <span>
-              NET TRANSFERS <ArrowUpRight size={13} />
-            </span>
-            <strong>
-              {gw(finite(flow.net) ? Math.abs(flow.net) : null)}
-              <small>
-                {" "}
-                GW ·{" "}
-                {finite(flow.net)
-                  ? flow.net > 0
-                    ? "importing"
-                    : flow.net < 0
-                      ? "exporting"
-                      : "balanced"
-                  : "unknown"}
-              </small>
-            </strong>
-            <small>
-              {
-                sourceState(current?.to, 30, now)
-                  .label
-              }{" "}
-              · imports minus exports
-            </small>
-          </Link>
-        </section>
+        <HomepageContext data={data} current={current} carbon={carbon} now={now}/>
         <section id="rhythm" className="atlas-rhythm">
-          <div className="atlas-section-head">
-            <div>
-              <p className="atlas-eyebrow">FOLLOW THE DAY</p>
-              <h2>Britain’s electrical rhythm.</h2>
-            </div>
-            <Link to="/explore" className="atlas-text-link">
-              All charts & controls <ArrowUpRight size={14} />
-            </Link>
-          </div>
+          <Link to="/explore" className="atlas-text-link atlas-chart-link">All charts & controls <ArrowUpRight size={14}/></Link>
           {history.error ? (
             <p className="atlas-notice">
               Historical readings are unavailable. Try again later.
