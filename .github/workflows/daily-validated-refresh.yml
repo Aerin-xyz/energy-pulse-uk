@@ -37,7 +37,7 @@ jobs:
         run: npm ci
 
       - name: Build with external validation gate
-        run: npm run build
+        run: npm run refresh:data && npm run build
 
       - name: Commit generated data if changed
         id: commit
