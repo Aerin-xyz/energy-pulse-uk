@@ -1,0 +1,52 @@
+TAP version 13
+# Subtest: mixed imports and exports use signed net, not the larger gross total
+ok 1 - mixed imports and exports use signed net, not the larger gross total
+  ---
+  duration_ms: 2.626407
+  type: 'test'
+  ...
+# Subtest: zero transfers are real data; missing or unavailable inputs cannot become zero demand
+ok 2 - zero transfers are real data; missing or unavailable inputs cannot become zero demand
+  ---
+  duration_ms: 0.427901
+  type: 'test'
+  ...
+# Subtest: fresh retrieval does not make a delayed observation live
+ok 3 - fresh retrieval does not make a delayed observation live
+  ---
+  duration_ms: 2.633506
+  type: 'test'
+  ...
+# Subtest: forecast window excludes past intervals and never crosses a missing half-hour
+ok 4 - forecast window excludes past intervals and never crosses a missing half-hour
+  ---
+  duration_ms: 1.463303
+  type: 'test'
+  ...
+# Subtest: renewables include biomass and exclude imports and storage
+ok 5 - renewables include biomass and exclude imports and storage
+  ---
+  duration_ms: 0.450101
+  type: 'test'
+  ...
+# Subtest: UK settlement days have 46, 48 or 50 periods; BST midnight is previous UTC day
+ok 6 - UK settlement days have 46, 48 or 50 periods; BST midnight is previous UTC day
+  ---
+  duration_ms: 46.033519
+  type: 'test'
+  ...
+# Subtest: observation to GB period accounts for BST and the repeated autumn hour
+ok 7 - observation to GB period accounts for BST and the repeated autumn hour
+  ---
+  duration_ms: 1.370804
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 154.733604

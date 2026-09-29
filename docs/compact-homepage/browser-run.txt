@@ -1,0 +1,80 @@
+
+Running 24 tests using 3 workers
+
+(node:352075) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:352082) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:352076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:352075) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:352082) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:352076) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 360 (2.5s)
+  ✓   2 tests/carbon-interval.spec.ts:3:31 › carbon interval, explicit forecast and retained state 390 (4.8s)
+  ✓   3 tests/atlas.spec.ts:53:3 › atlas readable and interactive at 390px (4.8s)
+  ✓   4 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 390 (2.6s)
+  ✓   7 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 430 (3.0s)
+  ✓   5 tests/carbon-interval.spec.ts:3:31 › carbon interval, explicit forecast and retained state 1366 (5.8s)
+  ✓   6 tests/atlas.spec.ts:53:3 › atlas readable and interactive at 768px (5.9s)
+  ✓   8 tests/atlas-brand-mix.spec.ts:3:39 › original brand and open generation mix 1366 (3.2s)
+  ✓   9 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 360 (2.8s)
+  ✓  11 tests/atlas-brand-mix.spec.ts:12:1 › original logo respects reduced motion (2.2s)
+  ✓  10 tests/atlas.spec.ts:53:3 › atlas readable and interactive at 1440px (4.6s)
+  ✓  12 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 390 (2.2s)
+  ✓  13 tests/atlas.spec.ts:93:1 › old report dates retain their report and unknown dates are not substituted (834ms)
+  ✓  15 tests/atlas.spec.ts:105:1 › unavailable readings do not invent a trend or forecast (1.4s)
+  ✓  14 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 430 (2.2s)
+  ✓  16 tests/atlas.spec.ts:126:1 › reduced motion hides flow travellers (1.5s)
+  ✓  18 tests/atlas.spec.ts:134:1 › archived HTML and current snapshot have correct canonical meaning without JavaScript (571ms)
+  ✓  17 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 768 (2.1s)
+  ✓  19 tests/atlas.spec.ts:153:1 › expanded map is a keyboard-dismissable modal and restores focus (2.7s)
+  ✓  20 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 1366 (2.5s)
+  ✓  22 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 1920 (2.6s)
+  ✘  21 tests/atlas.spec.ts:163:1 › ambient motion can be paused independently of live readings (1.0m)
+(node:353099) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:353099) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  23 tests/atlas.spec.ts:175:1 › cable layer keeps French readings separate and shows signed evidence (2.9s)
+  ✓  24 tests/atlas.spec.ts:189:1 › delayed cable readings are stationary and unavailable is not zero (1.4s)
+
+
+  1) tests/atlas.spec.ts:163:1 › ambient motion can be paused independently of live readings ───────
+
+    [31mTest timeout of 60000ms exceeded.[39m
+
+    Error: locator.evaluate: Test timeout of 60000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('.cc-orb')[22m
+
+
+      167 |  await expect(page.locator('.observatory')).toHaveAttribute('data-motion','off');
+      168 |  expect(await page.locator('.atlas-traveller:visible').count()).toBe(0);
+    > 169 |  expect(await page.locator('.cc-original-logo svg').evaluate(el=>getComputedStyle(el).animationName)).toBe('none');
+          |                                       ^
+      170 |  await expect(page.locator('.map-total')).toContainText('36.9');
+      171 |  await page.getByRole('button',{name:'Enable ambient motion'}).click();
+      172 |  await expect(page.locator('.observatory')).toHaveAttribute('data-motion','on');
+        at /home/aerins/.openclaw/workspace/energy-atlas-review/tests/atlas.spec.ts:169:39
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results-review/atlas-ambient-motion-can-b-90615-ependently-of-live-readings/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results-review/atlas-ambient-motion-can-b-90615-ependently-of-live-readings/error-context.md
+
+    attachment #3: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results-review/atlas-ambient-motion-can-b-90615-ependently-of-live-readings/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results-review/atlas-ambient-motion-can-b-90615-ependently-of-live-readings/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    tests/atlas.spec.ts:163:1 › ambient motion can be paused independently of live readings ────────
+  23 passed (1.5m)
