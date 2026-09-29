@@ -39,6 +39,15 @@ jobs:
       - name: Build with external validation gate
         run: npm run refresh:data && npm run build
 
+      - name: Preserve validation evidence even when publication is blocked
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-validation-${{ github.run_id }}
+          path: public/data/validation/
+          retention-days: 90
+          if-no-files-found: warn
+
       - name: Commit generated data if changed
         id: commit
         shell: bash
@@ -46,7 +55,7 @@ jobs:
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add public/data/generation-assets.json public/sitemap.xml public/data/validation/latest.json src/data/energyMixGenerated.json src/data/staticGridSnapshot.json src/data/reportArchive.json
+          git add public/data/generation-assets.json public/sitemap.xml public/data/validation/ src/data/energyMixGenerated.json src/data/staticGridSnapshot.json src/data/reportArchive.json
           if git diff --cached --quiet; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
             echo "No generated data changes to commit."

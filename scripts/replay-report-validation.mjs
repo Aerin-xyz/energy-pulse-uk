@@ -1,0 +1,7 @@
+import {readFileSync} from 'node:fs';import {gunzipSync} from 'node:zlib';import {createHash} from 'node:crypto';import {dirname,join} from 'node:path';import assert from 'node:assert/strict';
+import {validateDay,carbonDay} from '../src/lib/evidence/reportValidation.mjs';
+const path=process.argv[2],m=JSON.parse(readFileSync(path)),root=dirname(path),inputs={};
+if(m.validatorSha256)assert.equal(createHash('sha256').update(readFileSync(new URL('../src/lib/evidence/reportValidation.mjs',import.meta.url))).digest('hex'),m.validatorSha256,'Validator version differs from captured run');
+for(const a of m.artifacts){const raw=gunzipSync(readFileSync(join(root,a.file)));assert.equal(createHash('sha256').update(raw).digest('hex'),a.sha256,'Source hash mismatch: '+a.file);inputs[a.file]=JSON.parse(raw);}
+for(const day of m.days){const row=inputs['report-input.json.gz'].find(r=>r.settlementDate===day.date),e=inputs[day.date+'-elexon.json.gz'],n=inputs[day.date+'-neso.json.gz'];if(e&&n&&day.recalculated){const actual=validateDay(row,e.data,n.result.records);assert.deepEqual(actual.checks,day.checks);assert.deepEqual(actual.recalculated,day.recalculated);}const c=inputs[day.date+'-carbon.json.gz'];if(c&&day.carbon?.expectedPeriods)assert.deepEqual(carbonDay(c.data,day.bounds),day.carbon);}
+console.log(`Hashes and calculations reproduced for ${m.days.length} reporting days. Recorded status: ${m.status}.`);

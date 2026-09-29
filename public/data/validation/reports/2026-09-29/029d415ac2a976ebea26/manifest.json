@@ -1,0 +1,1473 @@
+{
+  "schemaVersion": 1,
+  "validatorVersion": "all-days-v1",
+  "validatorSha256": "92d4e6c8bcc5ebc006b986650586d3ceffe41952e787ba30c6325bb6502ba755",
+  "attribution": [
+    "Contains BMRS data © Elexon Limited copyright and database right 2026.",
+    "NESO Historic GB Generation Mix: National Energy System Operator Open Data.",
+    "Carbon Intensity API: https://carbonintensity.org.uk/"
+  ],
+  "reportDate": "2026-09-29",
+  "runAt": "2026-09-29T09:16:26.093Z",
+  "sourceInputHash": "d3cf10ca3e3d4614378ea492f6d5ed2603c3786600a7957097da8bd593bd1930",
+  "period": {
+    "from": "2026-09-23",
+    "to": "2026-09-28",
+    "timeBasis": "UTC"
+  },
+  "days": [
+    {
+      "date": "2026-09-23",
+      "bounds": {
+        "from": "2026-09-23T00:00:00Z",
+        "to": "2026-09-24T00:00:00Z",
+        "count": 48,
+        "basis": "UTC"
+      },
+      "checks": [
+        {
+          "id": "elexon.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": [],
+            "revisions": 0,
+            "duplicates": 0
+          }
+        },
+        {
+          "id": "neso.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": []
+          }
+        },
+        {
+          "id": "report.period-count",
+          "status": "pass",
+          "detail": {
+            "actual": 48,
+            "expected": 48
+          }
+        },
+        {
+          "id": "report.fuel.Gas",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 183114.5,
+            "expectedMWh": 183114.5,
+            "toleranceMWh": 183.1145
+          }
+        },
+        {
+          "id": "report.fuel.Wind",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 196245.5,
+            "expectedMWh": 196245.5,
+            "toleranceMWh": 196.2455
+          }
+        },
+        {
+          "id": "report.fuel.Nuclear",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 92018.5,
+            "expectedMWh": 92018.5,
+            "toleranceMWh": 92.0185
+          }
+        },
+        {
+          "id": "report.fuel.Biomass",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 66501,
+            "expectedMWh": 66501,
+            "toleranceMWh": 66.501
+          }
+        },
+        {
+          "id": "report.fuel.Hydro",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 20124,
+            "expectedMWh": 14311,
+            "toleranceMWh": 14.311
+          }
+        },
+        {
+          "id": "report.fuel.Coal",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 66.5,
+            "expectedMWh": 66.5,
+            "toleranceMWh": 1
+          }
+        },
+        {
+          "id": "report.fuel.Other",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 19896,
+            "expectedMWh": 19896,
+            "toleranceMWh": 19.896
+          }
+        },
+        {
+          "id": "report.fuel.Solar",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 65704.58149999999,
+            "expectedMWh": 65672.5,
+            "toleranceMWh": 1313.45
+          }
+        },
+        {
+          "id": "cross-source.GAS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.WIND",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.NUCLEAR",
+          "status": "fail",
+          "detail": {
+            "compared": 48,
+            "mismatches": [
+              {
+                "from": "2026-09-23T04:00:00.000Z",
+                "elexonMW": 3746,
+                "nesoMW": 3733
+              },
+              {
+                "from": "2026-09-23T04:30:00.000Z",
+                "elexonMW": 3790,
+                "nesoMW": 3747
+              },
+              {
+                "from": "2026-09-23T05:00:00.000Z",
+                "elexonMW": 3802,
+                "nesoMW": 3757
+              },
+              {
+                "from": "2026-09-23T05:30:00.000Z",
+                "elexonMW": 3805,
+                "nesoMW": 3768
+              },
+              {
+                "from": "2026-09-23T06:00:00.000Z",
+                "elexonMW": 3805,
+                "nesoMW": 3776
+              },
+              {
+                "from": "2026-09-23T06:30:00.000Z",
+                "elexonMW": 3806,
+                "nesoMW": 3784
+              },
+              {
+                "from": "2026-09-23T07:00:00.000Z",
+                "elexonMW": 3806,
+                "nesoMW": 3794
+              },
+              {
+                "from": "2026-09-23T08:00:00.000Z",
+                "elexonMW": 3804,
+                "nesoMW": 3811
+              },
+              {
+                "from": "2026-09-23T08:30:00.000Z",
+                "elexonMW": 3801,
+                "nesoMW": 3816
+              },
+              {
+                "from": "2026-09-23T09:00:00.000Z",
+                "elexonMW": 3187,
+                "nesoMW": 3812
+              },
+              {
+                "from": "2026-09-23T09:30:00.000Z",
+                "elexonMW": 3712,
+                "nesoMW": 3805
+              },
+              {
+                "from": "2026-09-23T10:00:00.000Z",
+                "elexonMW": 3807,
+                "nesoMW": 3811
+              },
+              {
+                "from": "2026-09-23T10:30:00.000Z",
+                "elexonMW": 3802,
+                "nesoMW": 3823
+              },
+              {
+                "from": "2026-09-23T11:00:00.000Z",
+                "elexonMW": 3803,
+                "nesoMW": 3840
+              },
+              {
+                "from": "2026-09-23T11:30:00.000Z",
+                "elexonMW": 3805,
+                "nesoMW": 3856
+              },
+              {
+                "from": "2026-09-23T12:00:00.000Z",
+                "elexonMW": 3805,
+                "nesoMW": 3872
+              },
+              {
+                "from": "2026-09-23T12:30:00.000Z",
+                "elexonMW": 3806,
+                "nesoMW": 3884
+              },
+              {
+                "from": "2026-09-23T13:00:00.000Z",
+                "elexonMW": 3811,
+                "nesoMW": 3896
+              },
+              {
+                "from": "2026-09-23T13:30:00.000Z",
+                "elexonMW": 3838,
+                "nesoMW": 3907
+              },
+              {
+                "from": "2026-09-23T14:00:00.000Z",
+                "elexonMW": 3887,
+                "nesoMW": 3917
+              }
+            ]
+          }
+        },
+        {
+          "id": "cross-source.BIOMASS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.HYDRO",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "report.sum",
+          "status": "pass",
+          "detail": {
+            "fuelSumMWh": 643670.5815,
+            "reportedMWh": 643670.5814999999
+          }
+        },
+        {
+          "id": "report.total",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 643670.5814999999,
+            "expectedMWh": 637825.5
+          }
+        }
+      ],
+      "status": "failed",
+      "recalculated": {
+        "fuelMWh": {
+          "Gas": 183114.5,
+          "Wind": 196245.5,
+          "Nuclear": 92018.5,
+          "Biomass": 66501,
+          "Hydro": 14311,
+          "Coal": 66.5,
+          "Other": 19896,
+          "Solar": 65672.5
+        },
+        "totalMWh": 637825.5,
+        "renewableMWh": 276229,
+        "renewableShare": 43.30792669781939,
+        "averageMW": 26576.0625,
+        "signedStorageMWh": 1670
+      },
+      "carbon": {
+        "status": "passed",
+        "actualPeriods": 48,
+        "expectedPeriods": 48,
+        "meanActualGCO2PerKWh": 128.8125,
+        "aggregation": "Time-average of reported half-hour actual intensity; not consumption-weighted",
+        "errors": []
+      }
+    },
+    {
+      "date": "2026-09-24",
+      "bounds": {
+        "from": "2026-09-24T00:00:00Z",
+        "to": "2026-09-25T00:00:00Z",
+        "count": 48,
+        "basis": "UTC"
+      },
+      "checks": [
+        {
+          "id": "elexon.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": [],
+            "revisions": 0,
+            "duplicates": 0
+          }
+        },
+        {
+          "id": "neso.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": []
+          }
+        },
+        {
+          "id": "report.period-count",
+          "status": "pass",
+          "detail": {
+            "actual": 48,
+            "expected": 48
+          }
+        },
+        {
+          "id": "report.fuel.Gas",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 183440,
+            "expectedMWh": 183440,
+            "toleranceMWh": 183.44
+          }
+        },
+        {
+          "id": "report.fuel.Wind",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 159473.5,
+            "expectedMWh": 159473.5,
+            "toleranceMWh": 159.4735
+          }
+        },
+        {
+          "id": "report.fuel.Nuclear",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 95900,
+            "expectedMWh": 95900,
+            "toleranceMWh": 95.9
+          }
+        },
+        {
+          "id": "report.fuel.Biomass",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 70534,
+            "expectedMWh": 70534,
+            "toleranceMWh": 70.534
+          }
+        },
+        {
+          "id": "report.fuel.Hydro",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 12531.5,
+            "expectedMWh": 11082.5,
+            "toleranceMWh": 11.0825
+          }
+        },
+        {
+          "id": "report.fuel.Coal",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 0,
+            "expectedMWh": 0,
+            "toleranceMWh": 1
+          }
+        },
+        {
+          "id": "report.fuel.Other",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 21383.5,
+            "expectedMWh": 21383.5,
+            "toleranceMWh": 21.3835
+          }
+        },
+        {
+          "id": "report.fuel.Solar",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 74134.45,
+            "expectedMWh": 74129,
+            "toleranceMWh": 1482.58
+          }
+        },
+        {
+          "id": "cross-source.GAS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.WIND",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.NUCLEAR",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.BIOMASS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.HYDRO",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "report.sum",
+          "status": "pass",
+          "detail": {
+            "fuelSumMWh": 617396.95,
+            "reportedMWh": 617396.9500000001
+          }
+        },
+        {
+          "id": "report.total",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 617396.9500000001,
+            "expectedMWh": 615942.5
+          }
+        }
+      ],
+      "status": "failed",
+      "recalculated": {
+        "fuelMWh": {
+          "Gas": 183440,
+          "Wind": 159473.5,
+          "Nuclear": 95900,
+          "Biomass": 70534,
+          "Hydro": 11082.5,
+          "Coal": 0,
+          "Other": 21383.5,
+          "Solar": 74129
+        },
+        "totalMWh": 615942.5,
+        "renewableMWh": 244685,
+        "renewableShare": 39.72529903359486,
+        "averageMW": 25664.270833333332,
+        "signedStorageMWh": -2859
+      },
+      "carbon": {
+        "status": "passed",
+        "actualPeriods": 48,
+        "expectedPeriods": 48,
+        "meanActualGCO2PerKWh": 132.47916666666666,
+        "aggregation": "Time-average of reported half-hour actual intensity; not consumption-weighted",
+        "errors": []
+      }
+    },
+    {
+      "date": "2026-09-25",
+      "bounds": {
+        "from": "2026-09-25T00:00:00Z",
+        "to": "2026-09-26T00:00:00Z",
+        "count": 48,
+        "basis": "UTC"
+      },
+      "checks": [
+        {
+          "id": "elexon.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": [],
+            "revisions": 0,
+            "duplicates": 0
+          }
+        },
+        {
+          "id": "neso.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": []
+          }
+        },
+        {
+          "id": "report.period-count",
+          "status": "pass",
+          "detail": {
+            "actual": 48,
+            "expected": 48
+          }
+        },
+        {
+          "id": "report.fuel.Gas",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 215081.5,
+            "expectedMWh": 215081.5,
+            "toleranceMWh": 215.0815
+          }
+        },
+        {
+          "id": "report.fuel.Wind",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 154797.5,
+            "expectedMWh": 154797.5,
+            "toleranceMWh": 154.7975
+          }
+        },
+        {
+          "id": "report.fuel.Nuclear",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 96234.5,
+            "expectedMWh": 96234.5,
+            "toleranceMWh": 96.2345
+          }
+        },
+        {
+          "id": "report.fuel.Biomass",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 70899,
+            "expectedMWh": 70899,
+            "toleranceMWh": 70.899
+          }
+        },
+        {
+          "id": "report.fuel.Hydro",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 14882.5,
+            "expectedMWh": 10510.5,
+            "toleranceMWh": 10.5105
+          }
+        },
+        {
+          "id": "report.fuel.Coal",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 0,
+            "expectedMWh": 0,
+            "toleranceMWh": 1
+          }
+        },
+        {
+          "id": "report.fuel.Other",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 22010.5,
+            "expectedMWh": 22010.5,
+            "toleranceMWh": 22.0105
+          }
+        },
+        {
+          "id": "report.fuel.Solar",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 58225.560000000005,
+            "expectedMWh": 58219.5,
+            "toleranceMWh": 1164.39
+          }
+        },
+        {
+          "id": "cross-source.GAS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.WIND",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.NUCLEAR",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.BIOMASS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.HYDRO",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "report.sum",
+          "status": "pass",
+          "detail": {
+            "fuelSumMWh": 632131.06,
+            "reportedMWh": 632131.06
+          }
+        },
+        {
+          "id": "report.total",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 632131.06,
+            "expectedMWh": 627753
+          }
+        }
+      ],
+      "status": "failed",
+      "recalculated": {
+        "fuelMWh": {
+          "Gas": 215081.5,
+          "Wind": 154797.5,
+          "Nuclear": 96234.5,
+          "Biomass": 70899,
+          "Hydro": 10510.5,
+          "Coal": 0,
+          "Other": 22010.5,
+          "Solar": 58219.5
+        },
+        "totalMWh": 627753,
+        "renewableMWh": 223527.5,
+        "renewableShare": 35.60755583804458,
+        "averageMW": 26156.375,
+        "signedStorageMWh": -427
+      },
+      "carbon": {
+        "status": "passed",
+        "actualPeriods": 48,
+        "expectedPeriods": 48,
+        "meanActualGCO2PerKWh": 143.10416666666666,
+        "aggregation": "Time-average of reported half-hour actual intensity; not consumption-weighted",
+        "errors": []
+      }
+    },
+    {
+      "date": "2026-09-26",
+      "bounds": {
+        "from": "2026-09-26T00:00:00Z",
+        "to": "2026-09-27T00:00:00Z",
+        "count": 48,
+        "basis": "UTC"
+      },
+      "checks": [
+        {
+          "id": "elexon.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": [],
+            "revisions": 0,
+            "duplicates": 0
+          }
+        },
+        {
+          "id": "neso.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": []
+          }
+        },
+        {
+          "id": "report.period-count",
+          "status": "pass",
+          "detail": {
+            "actual": 48,
+            "expected": 48
+          }
+        },
+        {
+          "id": "report.fuel.Gas",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 143156.5,
+            "expectedMWh": 143156.5,
+            "toleranceMWh": 143.1565
+          }
+        },
+        {
+          "id": "report.fuel.Wind",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 151256.5,
+            "expectedMWh": 151256.5,
+            "toleranceMWh": 151.25650000000002
+          }
+        },
+        {
+          "id": "report.fuel.Nuclear",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 96292,
+            "expectedMWh": 96292,
+            "toleranceMWh": 96.292
+          }
+        },
+        {
+          "id": "report.fuel.Biomass",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 60639.5,
+            "expectedMWh": 60639.5,
+            "toleranceMWh": 60.6395
+          }
+        },
+        {
+          "id": "report.fuel.Hydro",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 14143.5,
+            "expectedMWh": 9328.5,
+            "toleranceMWh": 9.3285
+          }
+        },
+        {
+          "id": "report.fuel.Coal",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 0,
+            "expectedMWh": 0,
+            "toleranceMWh": 1
+          }
+        },
+        {
+          "id": "report.fuel.Other",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 17139.5,
+            "expectedMWh": 17139.5,
+            "toleranceMWh": 17.1395
+          }
+        },
+        {
+          "id": "report.fuel.Solar",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 82063.13750000001,
+            "expectedMWh": 82058.5,
+            "toleranceMWh": 1641.17
+          }
+        },
+        {
+          "id": "cross-source.GAS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.WIND",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.NUCLEAR",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.BIOMASS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.HYDRO",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "report.sum",
+          "status": "pass",
+          "detail": {
+            "fuelSumMWh": 564690.6375,
+            "reportedMWh": 564690.6375
+          }
+        },
+        {
+          "id": "report.total",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 564690.6375,
+            "expectedMWh": 559871
+          }
+        }
+      ],
+      "status": "failed",
+      "recalculated": {
+        "fuelMWh": {
+          "Gas": 143156.5,
+          "Wind": 151256.5,
+          "Nuclear": 96292,
+          "Biomass": 60639.5,
+          "Hydro": 9328.5,
+          "Coal": 0,
+          "Other": 17139.5,
+          "Solar": 82058.5
+        },
+        "totalMWh": 559871,
+        "renewableMWh": 242643.5,
+        "renewableShare": 43.33917991823117,
+        "averageMW": 23327.958333333332,
+        "signedStorageMWh": -2422
+      },
+      "carbon": {
+        "status": "passed",
+        "actualPeriods": 48,
+        "expectedPeriods": 48,
+        "meanActualGCO2PerKWh": 111.125,
+        "aggregation": "Time-average of reported half-hour actual intensity; not consumption-weighted",
+        "errors": []
+      }
+    },
+    {
+      "date": "2026-09-27",
+      "bounds": {
+        "from": "2026-09-27T00:00:00Z",
+        "to": "2026-09-28T00:00:00Z",
+        "count": 48,
+        "basis": "UTC"
+      },
+      "checks": [
+        {
+          "id": "elexon.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": [],
+            "revisions": 0,
+            "duplicates": 0
+          }
+        },
+        {
+          "id": "neso.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": []
+          }
+        },
+        {
+          "id": "report.period-count",
+          "status": "pass",
+          "detail": {
+            "actual": 48,
+            "expected": 48
+          }
+        },
+        {
+          "id": "report.fuel.Gas",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 98832.5,
+            "expectedMWh": 98832.5,
+            "toleranceMWh": 98.8325
+          }
+        },
+        {
+          "id": "report.fuel.Wind",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 258619.00000000003,
+            "expectedMWh": 258619,
+            "toleranceMWh": 258.619
+          }
+        },
+        {
+          "id": "report.fuel.Nuclear",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 96277,
+            "expectedMWh": 96277,
+            "toleranceMWh": 96.277
+          }
+        },
+        {
+          "id": "report.fuel.Biomass",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 61448,
+            "expectedMWh": 61448,
+            "toleranceMWh": 61.448
+          }
+        },
+        {
+          "id": "report.fuel.Hydro",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 12365.5,
+            "expectedMWh": 9784.5,
+            "toleranceMWh": 9.7845
+          }
+        },
+        {
+          "id": "report.fuel.Coal",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 0,
+            "expectedMWh": 0,
+            "toleranceMWh": 1
+          }
+        },
+        {
+          "id": "report.fuel.Other",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 15540.5,
+            "expectedMWh": 15540.5,
+            "toleranceMWh": 15.5405
+          }
+        },
+        {
+          "id": "report.fuel.Solar",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 33732.01950000001,
+            "expectedMWh": 33726,
+            "toleranceMWh": 674.52
+          }
+        },
+        {
+          "id": "cross-source.GAS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.WIND",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.NUCLEAR",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.BIOMASS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.HYDRO",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "report.sum",
+          "status": "pass",
+          "detail": {
+            "fuelSumMWh": 576814.5195,
+            "reportedMWh": 576814.5194999999
+          }
+        },
+        {
+          "id": "report.total",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 576814.5194999999,
+            "expectedMWh": 574227.5
+          }
+        }
+      ],
+      "status": "failed",
+      "recalculated": {
+        "fuelMWh": {
+          "Gas": 98832.5,
+          "Wind": 258619,
+          "Nuclear": 96277,
+          "Biomass": 61448,
+          "Hydro": 9784.5,
+          "Coal": 0,
+          "Other": 15540.5,
+          "Solar": 33726
+        },
+        "totalMWh": 574227.5,
+        "renewableMWh": 302129.5,
+        "renewableShare": 52.61494790827677,
+        "averageMW": 23926.145833333332,
+        "signedStorageMWh": -9854
+      },
+      "carbon": {
+        "status": "passed",
+        "actualPeriods": 48,
+        "expectedPeriods": 48,
+        "meanActualGCO2PerKWh": 83.70833333333333,
+        "aggregation": "Time-average of reported half-hour actual intensity; not consumption-weighted",
+        "errors": []
+      }
+    },
+    {
+      "date": "2026-09-28",
+      "bounds": {
+        "from": "2026-09-28T00:00:00Z",
+        "to": "2026-09-29T00:00:00Z",
+        "count": 48,
+        "basis": "UTC"
+      },
+      "checks": [
+        {
+          "id": "elexon.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": [],
+            "revisions": 0,
+            "duplicates": 0
+          }
+        },
+        {
+          "id": "neso.coverage",
+          "status": "pass",
+          "detail": {
+            "expected": 48,
+            "errors": []
+          }
+        },
+        {
+          "id": "report.period-count",
+          "status": "pass",
+          "detail": {
+            "actual": 48,
+            "expected": 48
+          }
+        },
+        {
+          "id": "report.fuel.Gas",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 284101,
+            "expectedMWh": 284101,
+            "toleranceMWh": 284.101
+          }
+        },
+        {
+          "id": "report.fuel.Wind",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 86894,
+            "expectedMWh": 86894,
+            "toleranceMWh": 86.894
+          }
+        },
+        {
+          "id": "report.fuel.Nuclear",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 96301,
+            "expectedMWh": 96301,
+            "toleranceMWh": 96.301
+          }
+        },
+        {
+          "id": "report.fuel.Biomass",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 69497,
+            "expectedMWh": 69497,
+            "toleranceMWh": 69.497
+          }
+        },
+        {
+          "id": "report.fuel.Hydro",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 21767,
+            "expectedMWh": 14305,
+            "toleranceMWh": 14.305
+          }
+        },
+        {
+          "id": "report.fuel.Coal",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 0,
+            "expectedMWh": 0,
+            "toleranceMWh": 1
+          }
+        },
+        {
+          "id": "report.fuel.Other",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 20461,
+            "expectedMWh": 20461,
+            "toleranceMWh": 20.461000000000002
+          }
+        },
+        {
+          "id": "report.fuel.Solar",
+          "status": "pass",
+          "detail": {
+            "actualMWh": 63891.74000000002,
+            "expectedMWh": 63885.5,
+            "toleranceMWh": 1277.71
+          }
+        },
+        {
+          "id": "cross-source.GAS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.WIND",
+          "status": "fail",
+          "detail": {
+            "compared": 48,
+            "mismatches": [
+              {
+                "from": "2026-09-28T15:00:00.000Z",
+                "elexonMW": 2083,
+                "nesoMW": 2796
+              },
+              {
+                "from": "2026-09-28T15:30:00.000Z",
+                "elexonMW": 2115,
+                "nesoMW": 3404
+              },
+              {
+                "from": "2026-09-28T16:00:00.000Z",
+                "elexonMW": 2117,
+                "nesoMW": 4006
+              },
+              {
+                "from": "2026-09-28T16:30:00.000Z",
+                "elexonMW": 2172,
+                "nesoMW": 4611
+              },
+              {
+                "from": "2026-09-28T17:00:00.000Z",
+                "elexonMW": 2478,
+                "nesoMW": 5210
+              },
+              {
+                "from": "2026-09-28T17:30:00.000Z",
+                "elexonMW": 3029,
+                "nesoMW": 5808
+              },
+              {
+                "from": "2026-09-28T18:00:00.000Z",
+                "elexonMW": 3351,
+                "nesoMW": 6407
+              },
+              {
+                "from": "2026-09-28T18:30:00.000Z",
+                "elexonMW": 3589,
+                "nesoMW": 7015
+              },
+              {
+                "from": "2026-09-28T19:00:00.000Z",
+                "elexonMW": 3875,
+                "nesoMW": 7632
+              },
+              {
+                "from": "2026-09-28T19:30:00.000Z",
+                "elexonMW": 4236,
+                "nesoMW": 8261
+              }
+            ]
+          }
+        },
+        {
+          "id": "cross-source.NUCLEAR",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.BIOMASS",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "cross-source.HYDRO",
+          "status": "pass",
+          "detail": {
+            "compared": 48,
+            "mismatches": []
+          }
+        },
+        {
+          "id": "report.sum",
+          "status": "pass",
+          "detail": {
+            "fuelSumMWh": 642912.74,
+            "reportedMWh": 642912.7400000001
+          }
+        },
+        {
+          "id": "report.total",
+          "status": "fail",
+          "detail": {
+            "actualMWh": 642912.7400000001,
+            "expectedMWh": 635444.5
+          }
+        }
+      ],
+      "status": "failed",
+      "recalculated": {
+        "fuelMWh": {
+          "Gas": 284101,
+          "Wind": 86894,
+          "Nuclear": 96301,
+          "Biomass": 69497,
+          "Hydro": 14305,
+          "Coal": 0,
+          "Other": 20461,
+          "Solar": 63885.5
+        },
+        "totalMWh": 635444.5,
+        "renewableMWh": 165084.5,
+        "renewableShare": 25.97937349367254,
+        "averageMW": 26476.854166666668,
+        "signedStorageMWh": 6906
+      },
+      "carbon": {
+        "status": "passed",
+        "actualPeriods": 48,
+        "expectedPeriods": 48,
+        "meanActualGCO2PerKWh": 179.125,
+        "aggregation": "Time-average of reported half-hour actual intensity; not consumption-weighted",
+        "errors": []
+      }
+    }
+  ],
+  "hours": 144,
+  "energyMWh": 3651064,
+  "averageMW": 25354.61111111111,
+  "renewableShare": 39.832196860969844,
+  "definition": "Transmission-metered generation plus NESO solar estimates; excludes imports, embedded wind and pumped storage. Renewable numerator: wind, solar and natural hydro; biomass excluded.",
+  "status": "failed",
+  "artifacts": [
+    {
+      "file": "report-input.json.gz",
+      "url": "Energy Mix report input",
+      "retrievedAt": "2026-09-29T09:16:26.093Z",
+      "sha256": "d3cf10ca3e3d4614378ea492f6d5ed2603c3786600a7957097da8bd593bd1930",
+      "bytes": 4504
+    },
+    {
+      "file": "neso-metadata.json.gz",
+      "url": "https://api.neso.energy/api/3/action/datastore_search?resource_id=f93d1835-75bc-43e5-84ad-12472b180a98&limit=1",
+      "retrievedAt": "2026-09-29T09:16:26.338Z",
+      "sha256": "30502ea72a83fc31354c156a59792e812625b5716eeae215dba1902235b549a4",
+      "bytes": 8388
+    },
+    {
+      "file": "2026-09-23-elexon.json.gz",
+      "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH?publishDateTimeFrom=2026-09-23T00%3A00%3A00Z&publishDateTimeTo=2026-09-29T09%3A16%3A26.093Z&format=json",
+      "retrievedAt": "2026-09-29T09:16:26.514Z",
+      "sha256": "9e567e785581cfab0802d6b2b96a95e007a8f8a2522c2b888359cfaf3e922658",
+      "bytes": 1112787
+    },
+    {
+      "file": "2026-09-23-neso.json.gz",
+      "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22f93d1835-75bc-43e5-84ad-12472b180a98%22%20WHERE%20%22DATETIME%22%20%3E%3D%20'2026-09-23T00%3A00%3A00Z'%20AND%20%22DATETIME%22%20%3C%20'2026-09-24T00%3A00%3A00Z'%20ORDER%20BY%20%22DATETIME%22",
+      "retrievedAt": "2026-09-29T09:16:26.987Z",
+      "sha256": "2ddeaa8f72fc7cfb173af3e54338b0f071338007ec7b7653f1c106e6fdfe1b82",
+      "bytes": 57265
+    },
+    {
+      "file": "2026-09-24-elexon.json.gz",
+      "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH?publishDateTimeFrom=2026-09-24T00%3A00%3A00Z&publishDateTimeTo=2026-09-29T09%3A16%3A26.093Z&format=json",
+      "retrievedAt": "2026-09-29T09:16:27.096Z",
+      "sha256": "8459c5845e5fa07ea9ce94d3637cde6ae9b466c5b5530c019d9bfbf733c4454b",
+      "bytes": 938732
+    },
+    {
+      "file": "2026-09-24-neso.json.gz",
+      "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22f93d1835-75bc-43e5-84ad-12472b180a98%22%20WHERE%20%22DATETIME%22%20%3E%3D%20'2026-09-24T00%3A00%3A00Z'%20AND%20%22DATETIME%22%20%3C%20'2026-09-25T00%3A00%3A00Z'%20ORDER%20BY%20%22DATETIME%22",
+      "retrievedAt": "2026-09-29T09:16:27.118Z",
+      "sha256": "292d6196927345a043f2f408275a958d0ea9f5a8b2fea1974e9f6524a185d4e5",
+      "bytes": 57155
+    },
+    {
+      "file": "2026-09-25-neso.json.gz",
+      "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22f93d1835-75bc-43e5-84ad-12472b180a98%22%20WHERE%20%22DATETIME%22%20%3E%3D%20'2026-09-25T00%3A00%3A00Z'%20AND%20%22DATETIME%22%20%3C%20'2026-09-26T00%3A00%3A00Z'%20ORDER%20BY%20%22DATETIME%22",
+      "retrievedAt": "2026-09-29T09:16:27.612Z",
+      "sha256": "bc62754361df912aff52f16f8adec72a233733b5c91467415cee01d9b393eda8",
+      "bytes": 57170
+    },
+    {
+      "file": "2026-09-25-elexon.json.gz",
+      "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH?publishDateTimeFrom=2026-09-25T00%3A00%3A00Z&publishDateTimeTo=2026-09-29T09%3A16%3A26.093Z&format=json",
+      "retrievedAt": "2026-09-29T09:16:27.858Z",
+      "sha256": "7335102a9bca0eb89659e81d9eb4b844513ae8b9f4744d25550444e6f17ad5b8",
+      "bytes": 764805
+    },
+    {
+      "file": "2026-09-26-neso.json.gz",
+      "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22f93d1835-75bc-43e5-84ad-12472b180a98%22%20WHERE%20%22DATETIME%22%20%3E%3D%20'2026-09-26T00%3A00%3A00Z'%20AND%20%22DATETIME%22%20%3C%20'2026-09-27T00%3A00%3A00Z'%20ORDER%20BY%20%22DATETIME%22",
+      "retrievedAt": "2026-09-29T09:16:27.977Z",
+      "sha256": "82e07078906fa06ed0f66e71465a4c3ec58ba107f543f1ec539d919f82978c87",
+      "bytes": 57195
+    },
+    {
+      "file": "2026-09-26-elexon.json.gz",
+      "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH?publishDateTimeFrom=2026-09-26T00%3A00%3A00Z&publishDateTimeTo=2026-09-29T09%3A16%3A26.093Z&format=json",
+      "retrievedAt": "2026-09-29T09:16:28.116Z",
+      "sha256": "bcedc5ff45a472e0c09391c4ee20a37ea6b4382011429f0ab700474734e91b28",
+      "bytes": 590861
+    },
+    {
+      "file": "2026-09-27-neso.json.gz",
+      "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22f93d1835-75bc-43e5-84ad-12472b180a98%22%20WHERE%20%22DATETIME%22%20%3E%3D%20'2026-09-27T00%3A00%3A00Z'%20AND%20%22DATETIME%22%20%3C%20'2026-09-28T00%3A00%3A00Z'%20ORDER%20BY%20%22DATETIME%22",
+      "retrievedAt": "2026-09-29T09:16:28.239Z",
+      "sha256": "bd1a93595e5430ea9ae2c6248223853544044ad46b716b1403d23ac4dee74d17",
+      "bytes": 57089
+    },
+    {
+      "file": "2026-09-27-elexon.json.gz",
+      "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH?publishDateTimeFrom=2026-09-27T00%3A00%3A00Z&publishDateTimeTo=2026-09-29T09%3A16%3A26.093Z&format=json",
+      "retrievedAt": "2026-09-29T09:16:28.399Z",
+      "sha256": "bf3ae8ef71fb136f6dbfa4860e5ab8074b2fa6942e4a71d9da73ab8cc12d6f74",
+      "bytes": 416898
+    },
+    {
+      "file": "2026-09-28-elexon.json.gz",
+      "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH?publishDateTimeFrom=2026-09-28T00%3A00%3A00Z&publishDateTimeTo=2026-09-29T09%3A16%3A26.093Z&format=json",
+      "retrievedAt": "2026-09-29T09:16:28.475Z",
+      "sha256": "21296742ef61db7de5c0ac529fb1ce80fe3bb8f5a9051a11726db645ec23161b",
+      "bytes": 242811
+    },
+    {
+      "file": "2026-09-28-neso.json.gz",
+      "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22f93d1835-75bc-43e5-84ad-12472b180a98%22%20WHERE%20%22DATETIME%22%20%3E%3D%20'2026-09-28T00%3A00%3A00Z'%20AND%20%22DATETIME%22%20%3C%20'2026-09-29T00%3A00%3A00Z'%20ORDER%20BY%20%22DATETIME%22",
+      "retrievedAt": "2026-09-29T09:16:28.525Z",
+      "sha256": "15bf2771e6257f346789888112b3571789c9d29033d6a7e0ea9fefc3737b27cc",
+      "bytes": 57240
+    },
+    {
+      "file": "2026-09-23-carbon.json.gz",
+      "url": "https://api.carbonintensity.org.uk/intensity/2026-09-23T00:00:00Z/2026-09-24T00:00:00Z",
+      "retrievedAt": "2026-09-29T09:16:28.639Z",
+      "sha256": "14ce24f8d95ea1c3cb5177da1755f1e93905c0774c3b211f706d99d4140eb9a9",
+      "bytes": 5528
+    },
+    {
+      "file": "2026-09-24-carbon.json.gz",
+      "url": "https://api.carbonintensity.org.uk/intensity/2026-09-24T00:00:00Z/2026-09-25T00:00:00Z",
+      "retrievedAt": "2026-09-29T09:16:28.756Z",
+      "sha256": "018ae06e91982d926885977b773f0b68a7f1ab5b96f4c8395b73c723248ceba3",
+      "bytes": 5543
+    },
+    {
+      "file": "2026-09-25-carbon.json.gz",
+      "url": "https://api.carbonintensity.org.uk/intensity/2026-09-25T00:00:00Z/2026-09-26T00:00:00Z",
+      "retrievedAt": "2026-09-29T09:16:28.881Z",
+      "sha256": "d7baabe3ea3f2d8d1414d73e62f4091c3cbf801260cf7b64fe0174dad220d4f1",
+      "bytes": 5595
+    },
+    {
+      "file": "2026-09-26-carbon.json.gz",
+      "url": "https://api.carbonintensity.org.uk/intensity/2026-09-26T00:00:00Z/2026-09-27T00:00:00Z",
+      "retrievedAt": "2026-09-29T09:16:28.981Z",
+      "sha256": "5fb3520519551fc7bd66f78d081e5fa7eab47c5e4aae761d295a3acff9816c47",
+      "bytes": 5545
+    },
+    {
+      "file": "2026-09-27-carbon.json.gz",
+      "url": "https://api.carbonintensity.org.uk/intensity/2026-09-27T00:00:00Z/2026-09-28T00:00:00Z",
+      "retrievedAt": "2026-09-29T09:16:29.076Z",
+      "sha256": "40897795aba0932345c9080c61e37ddca55813a6d4480651bc211b9f54067901",
+      "bytes": 5454
+    },
+    {
+      "file": "2026-09-28-carbon.json.gz",
+      "url": "https://api.carbonintensity.org.uk/intensity/2026-09-28T00:00:00Z/2026-09-29T00:00:00Z",
+      "retrievedAt": "2026-09-29T09:16:29.181Z",
+      "sha256": "f2304aa29b35dd6e81f7f52999e7de9275c4dfd2cec8a920a399e47c00e93697",
+      "bytes": 5537
+    }
+  ],
+  "limitations": [
+    "Elexon and NESO share underlying observations; this is cross-checking, not independent certification.",
+    "Historical report feed exposes daily aggregates: raw official half-hours are reconciled with each other, and Energy Mix daily aggregates are checked against their integrals.",
+    "Historical carbon actuals are checked separately for complete intervals; missing actuals are never replaced by forecasts. Carbon rankings must be withheld unless every reporting day has complete actuals.",
+    "Renewable share excludes biomass; natural hydro excludes pumped storage.",
+    "Daily fuel-energy tolerance: 0.1% or 1 MWh; solar 2% or 12 MWh. Interval provider comparison: 0.1% or 1 MW."
+  ]
+}

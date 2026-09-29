@@ -20,7 +20,9 @@
     "verify:assets": "node scripts/verify-canonical-assets.mjs",
     "ingest:operations": "node scripts/ingest-asset-operations.mjs",
     "ingest:catalogue": "node scripts/ingest-operational-assets.mjs",
-    "refresh:data": "npm run generate:weekly && node scripts/generate-static-snapshot.mjs && node scripts/generate-asset-snapshot.mjs"
+    "refresh:data": "npm run generate:weekly && node scripts/generate-static-snapshot.mjs && node scripts/generate-asset-snapshot.mjs",
+    "validate:report": "node scripts/validate-report-all-days.mjs",
+    "replay:report": "node scripts/replay-report-validation.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

@@ -16,6 +16,7 @@ type GeneratedReport = typeof latestReport & {
   higherCarbonPeriods?: ReportCallout[];
   highlights?: ReportHighlight[];
   methodologyNote?: string;
+  validation?: {status:string;days:number;timeBasis:string;evidencePath:string;dailyCsv:string;checkedAt:string};
 };
 
 export const ReportsIndex = () => (
@@ -187,7 +188,7 @@ export const WeeklyReportPage = () => {
 
         {cleanestPeriods.length > 0 && (
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-3">Cleanest periods</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-3">{report.validation ? "Renewable and gas comparisons — not carbon rankings" : "Cleanest periods"}</h2>
             <div className="space-y-4">
               {cleanestPeriods.map((item) => (
                 <div key={item.title} className="rounded-lg border border-primary/20 bg-background/40 p-4">
@@ -201,7 +202,7 @@ export const WeeklyReportPage = () => {
 
         {higherCarbonPeriods.length > 0 && (
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-3">Highest-carbon periods</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-3">{report.validation ? "Higher gas output — not a carbon measurement" : "Highest-carbon periods"}</h2>
             <div className="space-y-4">
               {higherCarbonPeriods.map((item) => (
                 <div key={item.title} className="rounded-lg border border-primary/20 bg-background/40 p-4">
@@ -237,7 +238,8 @@ export const WeeklyReportPage = () => {
           <h2 className="text-2xl font-semibold text-primary mb-3">Data notes</h2>
           <p><strong>Compiled by Energy Mix from Elexon generation data and NESO embedded-generation estimates.</strong> Energy Mix calculates the totals, averages and comparisons shown here. Source data may be revised. Source attribution does not mean that Elexon or NESO has reviewed or endorsed this report.</p>
           <p className="mt-3">Sources: <a className="text-cosmic-cyan underline" href="https://bmrs.elexon.co.uk/api-documentation/dataset/FUELHH">Elexon Insights FUELHH</a>; <a className="text-cosmic-cyan underline" href="https://api.neso.energy/dataset/historic-generation-mix">NESO Historic GB Generation Mix</a>; <a className="text-cosmic-cyan underline" href="https://api.neso.energy/dataset/demand-data-update">NESO Demand Data Update</a>. These datasets can share underlying observations; agreement is not independent certification.</p>
-          <p className="mt-3">Renewable-share and gas-output comparisons are not measurements of carbon intensity. See <Link className="text-cosmic-cyan underline" to="/data">data sources and methodology</Link> for source information. Report-specific reproducible evidence packs are not yet available.</p>
+          <p className="mt-3">Renewable-share and gas-output comparisons are not measurements of carbon intensity. See <Link className="text-cosmic-cyan underline" to="/data">data sources and methodology</Link> for source information. {!report.validation && "A report-specific reproducible evidence pack was not preserved for this publication."}</p>
+          {report.validation && <aside className="mt-4 rounded-lg border border-primary/30 p-4" aria-label="Report evidence"><h3 className="font-semibold">All-days checks: {report.validation.status}</h3><p>{report.validation.days} reporting days · {report.validation.timeBasis} day boundaries. Checked {new Date(report.validation.checkedAt).toLocaleString('en-GB',{timeZone:'Europe/London'})} UK.</p><p className="mt-2">Generation, coverage and historical carbon availability are recorded separately. Cross-checks are not independent certification.</p><div className="mt-3 flex flex-wrap gap-4"><a className="text-cosmic-cyan underline" href={report.validation.evidencePath}>Checks and source manifest (JSON)</a><a className="text-cosmic-cyan underline" href={report.validation.dailyCsv}>Daily figures (CSV)</a></div></aside>}
           {date === '2026-09-29' && <aside className="mt-4 rounded-lg border border-primary/30 p-4" aria-label="Report validation clarification"><h3 className="font-semibold">Validation: partial</h3><p>This report covers six available complete days, 23–28 September 2026. External comparisons recorded in the 29 September validation run cover 28 September only, not every day in this report. That run had warnings for the legacy UTC reporting-day basis and incomplete NESO Demand Data Update coverage.</p><p className="mt-2 text-sm">Clarification added 29 September 2026. The archived report’s figures and original reporting period have not been recalculated or changed.</p></aside>}
           <details className="mt-4"><summary>Original publication methodology note</summary><p className="mt-2">{report.methodologyNote || 'No report-specific methodology note was preserved.'}</p><p className="mt-2 text-sm">Preserved as part of the original publication. Any broad validation wording in this note should not be read as proof that all reporting days or narrative claims were checked.</p></details>
         </section>

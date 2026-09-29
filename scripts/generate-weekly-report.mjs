@@ -1,7 +1,8 @@
 import { expectedPeriods, settlementStart } from '../supabase/functions/_shared/settlementTime.mjs';
 import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { validateHistoricalRows, writeValidationReport } from './external-data-validation.mjs';
+import { writeValidationReport } from './external-data-validation.mjs';
+import { validateReportAllDays } from './validate-report-all-days.mjs';
 import { fetchHistoricalGeneration } from './historical-feed.mjs';
 
 const ROOT = new URL('..', import.meta.url).pathname;
@@ -77,14 +78,15 @@ const latestFeedDate = feedRows[feedRows.length - 1]?.settlementDate || end;
 const reportDate = latestFeedDate;
 const slug = `/reports/weekly/${reportDate}`;
 const highestRenewable = rows.map((row) => ({ row, value: renewableShare(row) })).sort((a, b) => b.value - a.value)[0];
-const highestWind = rows.map((row) => ({ row, value: fuel(row, 'Wind').mw })).sort((a, b) => b.value - a.value)[0];
-const highestSolar = rows.map((row) => ({ row, value: fuel(row, 'Solar').mw })).sort((a, b) => b.value - a.value)[0];
-const highestGas = rows.map((row) => ({ row, value: fuel(row, 'Gas').mw })).sort((a, b) => b.value - a.value)[0];
-const lowestGas = rows.map((row) => ({ row, value: fuel(row, 'Gas').mw })).sort((a, b) => a.value - b.value)[0];
-const highestGeneration = rows.map((row) => ({ row, value: row.totalMW })).sort((a, b) => b.value - a.value)[0];
-const avgGenerationMw = rows.reduce((sum, row) => sum + averageMw(row, row.totalMW), 0) / rows.length;
-const avgRenewableShare = rows.reduce((sum, row) => sum + renewableShare(row), 0) / rows.length;
-const avgGasMw = rows.reduce((sum, row) => sum + averageMw(row, fuel(row, 'Gas').mw), 0) / rows.length;
+const highestWind = rows.map((row) => ({ row, value: fuel(row, 'Wind').mw })).sort((a, b) => averageMw(b.row,b.value) - averageMw(a.row,a.value))[0];
+const highestSolar = rows.map((row) => ({ row, value: fuel(row, 'Solar').mw })).sort((a, b) => averageMw(b.row,b.value) - averageMw(a.row,a.value))[0];
+const highestGas = rows.map((row) => ({ row, value: fuel(row, 'Gas').mw })).sort((a, b) => averageMw(b.row,b.value) - averageMw(a.row,a.value))[0];
+const lowestGas = rows.map((row) => ({ row, value: fuel(row, 'Gas').mw })).sort((a, b) => averageMw(a.row,a.value) - averageMw(b.row,b.value))[0];
+const highestGeneration = rows.map((row) => ({ row, value: row.totalMW })).sort((a, b) => averageMw(b.row,b.value) - averageMw(a.row,a.value))[0];
+const totalHours = rows.reduce((sum,row)=>sum+periodsFor(row)/2,0);
+const avgGenerationMw = rows.reduce((sum,row)=>sum+row.totalMW,0)/totalHours;
+const avgRenewableShare = 100*rows.reduce((sum,row)=>sum+renewableMw(row),0)/rows.reduce((sum,row)=>sum+row.totalMW,0);
+const avgGasMw = rows.reduce((sum,row)=>sum+fuel(row,'Gas').mw,0)/totalHours;
 const yesterday = rows[rows.length - 1];
 const yRenew = renewableShare(yesterday);
 const yesterdayAverageMw = averageMw(yesterday, yesterday.totalMW);
@@ -93,27 +95,27 @@ if (yesterdayAverageMw < 15000 || yesterdayAverageMw > 50000) {
   throw new Error(`Generated yesterday average looks implausible: ${Math.round(yesterdayAverageMw)} MW for ${yesterday.settlementDate}`);
 }
 
-const validation = await validateHistoricalRows(rows, { targetDate: yesterday.settlementDate });
+const validation = await validateReportAllDays(rows, { reportDate });
+validation.date = yesterday.settlementDate;
 writeValidationReport(validation, VALIDATION_OUT);
 if (validation.status === 'failed') {
-  const failedChecks = validation.checks
-    .filter((check) => check.status === 'fail')
-    .map((check) => `${check.id}: ${check.label}`)
+  const failedChecks = validation.days.flatMap(day => day.checks.filter(check => check.status === 'fail').map(check => `${day.date}: ${check.id}`))
     .join('; ');
   throw new Error(`External data validation failed for ${yesterday.settlementDate}: ${failedChecks}`);
 }
 
 const report = {
   slug,
+  validation: {status:validation.status,days:validation.days.length,timeBasis:validation.period.timeBasis,evidencePath:validation.evidencePath,dailyCsv:validation.dailyCsv,checkedAt:validation.runAt},
   date: reportDate,
-  title: `UK Electricity Mix Weekly Report: ${fmtDate(reportDate)}`,
+  title: `GB Electricity Mix Report: ${fmtDate(reportDate)}`,
   period: `${fmtDate(start)} to ${fmtDate(end)}`,
-  intro: `A measured weekly report for EnergyMix.info using the available 7-day historical generation feed for ${fmtDate(start)} to ${fmtDate(end)}.`,
-  summary: `The week from ${fmtDate(start)} to ${fmtDate(end)} averaged about ${(avgGenerationMw / 1000).toFixed(1)} GW of measured generation, with renewables averaging ${pct(avgRenewableShare)} of measured output. The strongest renewable day in the available data was ${fmtDate(highestRenewable.row.settlementDate)}, when wind, solar and hydro together averaged ${pct(highestRenewable.value)} of measured generation. Gas was highest on ${fmtDate(highestGas.row.settlementDate)} and lowest on ${fmtDate(lowestGas.row.settlementDate)}.`,
+  intro: `An available-period generation report for EnergyMix.info using the available historical generation feed for ${fmtDate(start)} to ${fmtDate(end)} (${rows.length} complete reporting days; ${rows[0]?.timeBasis || 'UTC'} boundaries).`,
+  summary: `The reporting period from ${fmtDate(start)} to ${fmtDate(end)} averaged about ${(avgGenerationMw / 1000).toFixed(1)} GW of measured generation, with renewables averaging ${pct(avgRenewableShare)} of measured output. The strongest renewable day in the available data was ${fmtDate(highestRenewable.row.settlementDate)}, when wind, solar and hydro together averaged ${pct(highestRenewable.value)} of measured generation. Gas was highest on ${fmtDate(highestGas.row.settlementDate)} and lowest on ${fmtDate(lowestGas.row.settlementDate)}.`,
   takeaway: 'For flexible electricity use, the cleanest opportunities are likely to appear when wind is strong, gas is low and demand is not at a peak. This is the foundation for future EV-charging guidance, clean-electricity alerts and weekly newsletter summaries.',
   metrics: [
     ['Average measured generation', `~${(avgGenerationMw / 1000).toFixed(1)} GW across available settlement-period aggregates`],
-    ['Average renewable share', pct(avgRenewableShare)],
+    ['Energy-weighted renewable share (wind, solar, natural hydro)', pct(avgRenewableShare)],
     ['Highest renewable share', `${pct(highestRenewable.value)} on ${fmtDate(highestRenewable.row.settlementDate)}`],
     ['Highest average wind output', `~${averageGw(highestWind.row, highestWind.value)} on ${fmtDate(highestWind.row.settlementDate)}`],
     ['Highest average solar output', `~${averageGw(highestSolar.row, highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}`],
@@ -121,7 +123,7 @@ const report = {
   ],
   drivers: [
     `Renewables were strongest on ${fmtDate(highestRenewable.row.settlementDate)}, when wind, solar and hydro averaged ${pct(highestRenewable.value)} of measured generation.`,
-    `Wind was the largest swing factor in the available feed, peaking at about ${averageGw(highestWind.row, highestWind.value)} average output on ${fmtDate(highestWind.row.settlementDate)}.`,
+    `Wind reached its highest daily average in the available feed at about ${averageGw(highestWind.row, highestWind.value)} average output on ${fmtDate(highestWind.row.settlementDate)}.`,
     `Solar was strongest on ${fmtDate(highestSolar.row.settlementDate)}, averaging about ${averageGw(highestSolar.row, highestSolar.value)} across settlement periods after embedded-solar backfill where needed.`,
     `Gas averaged about ${(avgGasMw / 1000).toFixed(1)} GW across the period, rising highest on ${fmtDate(highestGas.row.settlementDate)} and falling lowest on ${fmtDate(lowestGas.row.settlementDate)}.`,
     `Measured generation was highest on ${fmtDate(highestGeneration.row.settlementDate)}, at roughly ${averageGw(highestGeneration.row, highestGeneration.value)} average output.`,
@@ -147,7 +149,7 @@ const report = {
     { label: 'Solar', value: `Highest average solar output was about ${averageGw(highestSolar.row, highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}.` },
     { label: 'Gas', value: `Highest average gas output was about ${averageGw(highestGas.row, highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}; lowest was about ${averageGw(lowestGas.row, lowestGas.value)} on ${fmtDate(lowestGas.row.settlementDate)}.` },
   ],
-  methodologyNote: 'Compiled by Energy Mix from Elexon generation data and NESO embedded-generation estimates. Energy Mix calculates the totals, averages and comparisons. Current external checks cover the latest complete reporting day only, not the full reporting period; source data may be revised. Carbon-intensity highs/lows and interconnector summaries should be treated as future additions unless they are present as validated historical aggregates.',
+  methodologyNote: 'Compiled by Energy Mix from Elexon generation data and NESO embedded-generation estimates. Energy Mix calculates the totals, averages and comparisons. All reporting days are checked against retained official half-hour inputs; report-specific results document coverage and differences. Source data may be revised. Renewable share is energy-weighted and uses wind, solar and natural hydro, excluding biomass and pumped storage. Carbon-intensity highs/lows and interconnector summaries should be treated as future additions unless they are present as validated historical aggregates.',
 };
 
 const generated = {
@@ -174,7 +176,7 @@ const generated = {
     highestGasGeneration: { value: averageGw(highestGas.row, highestGas.value), date: fmtDate(highestGas.row.settlementDate), text: `Current measured 7-day high: about ${averageGw(highestGas.row, highestGas.value)} average gas output on ${fmtDate(highestGas.row.settlementDate)}, based on the available historical generation feed.` },
   },
   socialPosts: [
-    { title: 'Monday weekly grid brief', body: `Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: ${pct(highestRenewable.value)} on ${fmtDate(highestRenewable.row.settlementDate)}\n• Highest average wind output: ~${averageGw(highestWind.row, highestWind.value)} on ${fmtDate(highestWind.row.settlementDate)}\n• Highest average solar output: ~${averageGw(highestSolar.row, highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}\n• Highest average gas output: ~${averageGw(highestGas.row, highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}\n\nThe shift was clear: gas-heavy weekdays gave way to a cleaner, wind-led weekend.\n\nFull report: https://energymix.info${slug}/` },
+    { title: 'Monday weekly grid brief', body: `Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: ${pct(highestRenewable.value)} on ${fmtDate(highestRenewable.row.settlementDate)}\n• Highest average wind output: ~${averageGw(highestWind.row, highestWind.value)} on ${fmtDate(highestWind.row.settlementDate)}\n• Highest average solar output: ~${averageGw(highestSolar.row, highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}\n• Highest average gas output: ~${averageGw(highestGas.row, highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}\n\nThese are generation comparisons, not validated carbon-intensity rankings.\n\nFull report: https://energymix.info${slug}/` },
     { title: 'Wednesday explainer', body: 'What does “UK electricity mix” actually mean?\n\nFor live grid dashboards, it usually means Great Britain’s electricity system: England, Scotland and Wales. Northern Ireland is part of the UK, but operates in a separate electricity market.\n\nExplainer: https://energymix.info/uk-electricity-mix' },
     { title: 'Friday practical clean-electricity post', body: 'The cleanest time to use electricity is not a fixed hour.\n\nIt changes with wind, solar, demand, imports and gas generation. Windy overnight periods and sunny middays can be much cleaner than still early-evening peaks.\n\nGuide: https://energymix.info/cleanest-time-to-use-electricity' },
   ],
