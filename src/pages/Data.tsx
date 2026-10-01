@@ -68,7 +68,7 @@ const Data = () => {
   return (
     <>
       <Helmet>
-        <title>UK Electricity Data Sources: Elexon, NESO, Carbon Intensity & PV Live</title>
+        <title>UK Electricity Data: Elexon, NESO & Carbon Intensity</title>
         <meta name="description" content="How EnergyMix.info combines public electricity data sources to explain Britain’s live power mix, carbon intensity, solar estimates and grid trends." />
         <link rel="canonical" href="https://energymix.info/data/" />
         <meta property="og:title" content="UK Electricity Data Sources" />
