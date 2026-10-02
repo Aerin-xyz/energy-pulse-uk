@@ -1,13 +1,13 @@
 {
-  "checkedAt": "2026-10-01T20:17:36.585Z",
+  "checkedAt": "2026-10-02T00:38:40.934Z",
   "repd": {
     "url": "https://assets.publishing.service.gov.uk/media/6a6cbdc00c36759b5ccaa305/REPD_Publication_Q2_2026.csv",
     "revision": "72e24a9f2ef44b1f98820b51873792d49e7d1b487029f48195a4524a69e3c7f2",
     "checkedAt": "2026-09-25T13:00:21.762Z"
   },
   "elexon": {
-    "revision": "40bc335c6d373b1428cfc7c2be0c9ef5a9055410869bd4f9965f2ccd9f8a8fa9",
-    "checkedAt": "2026-10-01T14:25:12.558Z"
+    "revision": "f69a1c4b6622af56d3b8a181d9db54bf602135a1fbba132938acd35eef868f30",
+    "checkedAt": "2026-10-01T20:17:42.025Z"
   },
   "note": "Identifier/status checks do not automatically change reviewed site-to-unit mappings or installed capacity.",
   "results": [
