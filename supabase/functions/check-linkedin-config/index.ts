@@ -1,30 +1,10 @@
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-};
-
-Deno.serve(async (req) => {
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { headers: corsHeaders });
-  }
-
-  try {
-    // Check webhook-only configuration
-    const hasWebhook = !!Deno.env.get('MAKE_LINKEDIN_WEBHOOK_URL');
-
-    return new Response(
-      JSON.stringify({ 
-        configured: hasWebhook,
-        transport: hasWebhook ? 'webhook' : null,
-        hasWebhook
-      }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
-    );
-  } catch (error: any) {
-    console.error('Error checking config:', error);
-    return new Response(
-      JSON.stringify({ configured: false, error: error.message }),
-      { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 500 }
-    );
-  }
+// Disabled by the 23 October 2026 access-control remediation.
+// Legacy workflows had no authorised caller boundary. Do not restore without
+// an explicit administrator/service identity check and outbound approval controls.
+Deno.serve((req: Request) => {
+  if (req.method === 'OPTIONS') return new Response(null, { status: 204 });
+  return new Response(JSON.stringify({ error: 'Legacy workflow disabled' }), {
+    status: 403,
+    headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+  });
 });

@@ -1,10 +1,13 @@
+import { authorizeIngestion } from '../_shared/ingestion-auth.mjs';
 import {canonicalEnergy} from '../../../src/lib/evidence/canonicalEnergy.mjs';
-import {createClient} from 'https://esm.sh/@supabase/supabase-js@2';
+import {createClient} from 'https://esm.sh/@supabase/supabase-js@2.117.2';
 import {compactRows,retainedSource,truthfulFreshness,NATIONAL_KEY,ENERGY_KEY} from '../../../src/lib/evidence/ingestion.mjs';
 const cors={'Access-Control-Allow-Origin':'*','Access-Control-Allow-Headers':'authorization,apikey,content-type','Content-Type':'application/json'};
 Deno.serve(async req=>{
  if(req.method==='OPTIONS')return new Response(null,{headers:cors});
  if(req.method!=='POST')return new Response(JSON.stringify({error:'Scheduled POST only'}),{status:405,headers:cors});
+ const denied=await authorizeIngestion(req,Deno.env.get('ENERGY_INGESTION_TOKEN'));
+ if(denied)return denied;
  const db=createClient(Deno.env.get('SUPABASE_URL')!,Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!);
  const owner=crypto.randomUUID();
  const {data:claimed,error:claimError}=await db.rpc('claim_energy_ingestion',{run_owner:owner});
