@@ -1,0 +1,142 @@
+[
+  {
+    "width": 390,
+    "route": "/",
+    "overflow": false,
+    "violations": [],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/explore/",
+    "overflow": false,
+    "violations": [
+      {
+        "id": "scrollable-region-focusable",
+        "nodes": [
+          [
+            ".md\\:mx-0"
+          ]
+        ]
+      },
+      {
+        "id": "svg-img-alt",
+        "nodes": [
+          [
+            "path[name=\"Biomass\"][color=\"#92d375\"][fill=\"#a3d783\"]"
+          ],
+          [
+            "path[name=\"Gas\"]"
+          ],
+          [
+            "path[name=\"Hydro\"][color=\"#20c5ee\"][fill=\"#4bc6ef\"]"
+          ],
+          [
+            "path[name=\"Nuclear\"]"
+          ],
+          [
+            "path[name=\"Other\"][color=\"#758ca2\"][fill=\"#a2b4c4\"]"
+          ],
+          [
+            "path[name=\"Wind\"]"
+          ]
+        ]
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/carbon-intensity/",
+    "overflow": false,
+    "violations": [],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/reports/",
+    "overflow": false,
+    "violations": [],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/methodology/",
+    "overflow": false,
+    "violations": [],
+    "errors": []
+  },
+  {
+    "width": 390,
+    "route": "/cleanest-time-to-use-electricity/",
+    "overflow": false,
+    "violations": [],
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/",
+    "overflow": false,
+    "violations": [],
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/explore/",
+    "overflow": false,
+    "violations": [
+      {
+        "id": "svg-img-alt",
+        "nodes": [
+          [
+            "path[name=\"Biomass\"][color=\"#92d375\"][fill=\"#a3d783\"]"
+          ],
+          [
+            "path[name=\"Gas\"]"
+          ],
+          [
+            "path[name=\"Hydro\"][color=\"#20c5ee\"][fill=\"#4bc6ef\"]"
+          ],
+          [
+            "path[name=\"Nuclear\"]"
+          ],
+          [
+            "path[name=\"Other\"][color=\"#758ca2\"][fill=\"#a2b4c4\"]"
+          ],
+          [
+            "path[name=\"Wind\"]"
+          ]
+        ]
+      }
+    ],
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/carbon-intensity/",
+    "overflow": false,
+    "violations": [],
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/reports/",
+    "overflow": false,
+    "violations": [],
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/methodology/",
+    "overflow": false,
+    "violations": [],
+    "errors": []
+  },
+  {
+    "width": 1440,
+    "route": "/cleanest-time-to-use-electricity/",
+    "overflow": false,
+    "violations": [],
+    "errors": []
+  }
+]

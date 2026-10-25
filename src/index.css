@@ -8,6 +8,11 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
+    /* Decorative interface accents; never substitute for fuel or source-status colours. */
+    --ui-cyan: 187 90% 67%;
+    --ui-violet: 260 100% 79%;
+    --ui-mint: 160 82% 68%;
+    --ui-amber: 42 100% 73%;
     /* Deep Space Theme */
     --background: 220 30% 8%;        /* Dark blue-black space */
     --foreground: 210 40% 98%;       /* Almost white */

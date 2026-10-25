@@ -18,8 +18,9 @@ export function SiteFrame({children}:{children:ReactNode}) {
  useEffect(()=>{if(!window.location.hash)window.scrollTo(0,0)},[pathname]);
  // Public share route is a fixed-size export canvas: preserve its framing.
  if(pathname==='/'||pathname.startsWith('/share/'))return <>{children}</>;
- const section=pathname.startsWith('/reports')?'Briefings':pathname.startsWith('/admin')?'Workspace':['/explore','/power-flow','/today','/yesterday'].includes(pathname)?'Explore':pathname.includes('price')?'Markets':pathname.includes('storage')?'Storage':pathname.includes('carbon')||pathname.includes('renewable')?'Clean electricity':'Grid intelligence';
- const tone=section==='Markets'?'amber':section==='Storage'?'violet':section==='Clean electricity'?'mint':'blue';
+ const route=pathname.replace(/\/$/,'');
+ const section=pathname.startsWith('/reports')?'Briefings':pathname.startsWith('/admin')?'Workspace':['/explore','/power-flow','/today','/yesterday'].includes(route)?'Explore':pathname.includes('price')?'Markets':pathname.includes('storage')?'Storage':pathname.includes('carbon')||pathname.includes('renewable')?'Clean electricity':'Grid intelligence';
+ const tone=section==='Markets'||pathname.includes('cleanest-time')?'amber':['Storage','Explore','Briefings'].includes(section)?'violet':section==='Clean electricity'?'mint':'blue';
  return <SiteChromeContext.Provider value={true}><div className="observatory site-system" data-motion={motion?'on':'off'} data-tone={tone}>
  <a className="site-skip" href="#site-content">Skip to content</a>
  <CommandNavigation now={now} refresh={refetch} loading={loading} motion={motion} toggleMotion={()=>setMotion(v=>!v)}/>

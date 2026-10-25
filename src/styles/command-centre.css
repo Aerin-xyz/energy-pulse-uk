@@ -17,11 +17,11 @@
 
 /* Electric atmosphere: slow decorative light, never simulated measurements. */
 .observatory{background-image:radial-gradient(ellipse at 72% 0%,#083e6e66,transparent 38%),radial-gradient(ellipse at 10% 32%,#16315b30,transparent 44%)}
-.cc-topbar{background:linear-gradient(110deg,#051725 25%,#0b3555 65%,#101d3a);border-bottom-color:#285779;box-shadow:0 2px 24px #087bb31a}
+.cc-topbar{background:linear-gradient(110deg,#071c2b 20%,#10415a 65%,#30254c);border-bottom-color:#285779;box-shadow:0 2px 24px #087bb31a}
 .cc-orb{box-shadow:0 0 12px #31d8ff55,0 0 35px #1687ff55;animation:cc-orb-breathe 6s ease-in-out infinite}
 .cc-brand b{color:#5ceaff;text-shadow:0 0 18px #00d5ff55}
 .cc-sidebar{background:linear-gradient(170deg,#081f32,#051322 60%,#13233b);border-right-color:#244258}
-.cc-sidebar nav a:nth-child(3n+2)>svg{color:#7eacff}.cc-sidebar nav a:nth-child(3n)>svg{color:#b39aff}.cc-sidebar nav a[aria-current]{box-shadow:inset 3px 0 #31e0ff,0 0 20px #00caff18;background:linear-gradient(95deg,#145477,#0b263c)}
+.cc-sidebar nav a:nth-child(3n+2)>svg{color:hsl(var(--ui-cyan))}.cc-sidebar nav a:nth-child(3n)>svg{color:hsl(var(--ui-violet))}.cc-sidebar nav a[aria-current]{box-shadow:inset 3px 0 #31e0ff,0 0 20px #00caff18;background:linear-gradient(95deg,#145477,#0b263c)}
 .cc-panel{--electric:#3dbbff;border-color:color-mix(in srgb,var(--electric) 28%,#102332);background:radial-gradient(ellipse at 0% 0%,color-mix(in srgb,var(--electric) 12%,transparent),transparent 75%),linear-gradient(130deg,#092132,#04121d);box-shadow:inset 0 1px 0 color-mix(in srgb,var(--electric) 22%,transparent),0 4px 20px #0003;transition:border-color .3s,box-shadow .3s}
 .cc-panel:hover{border-color:color-mix(in srgb,var(--electric) 60%,#163449);box-shadow:0 0 22px color-mix(in srgb,var(--electric) 10%,transparent)}
 .cc-metric:nth-child(2){--electric:#20edb6}.cc-metric:nth-child(3){--electric:#54ead4}.cc-metric:nth-child(4){--electric:#ae91ff}.cc-links{--electric:#32d6ed}.cc-price{--electric:#ffd66d}.cc-brief{--electric:#738fff}.cc-generation{--electric:#43dddf}.cc-storage{--electric:#b28bff}.cc-carbon{--electric:#32e8b3}
