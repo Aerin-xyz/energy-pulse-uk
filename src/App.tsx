@@ -1,3 +1,4 @@
+import { RouteStructuredData } from './components/RouteStructuredData';
 import { lazy, Suspense } from 'react';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -65,7 +66,7 @@ const App = () => (
         <Toaster />
         <Sonner />
 
-          <RouteAnalytics />
+          <RouteAnalytics /><RouteStructuredData />
           <SiteFrame><Suspense fallback={<main className="container mx-auto p-12" role="status">Loading this part of the grid…</main>}><Routes>
             <Route path="/" element={<Index />} />
             <Route path="/network-constraints" element={<NetworkConstraints />} />

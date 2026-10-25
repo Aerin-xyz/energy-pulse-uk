@@ -18,15 +18,15 @@ export function AtlasMobileNavigation({
     <>
       <nav className="map-mobile-nav" aria-label="Quick navigation">
         {[
-          ["/", "Atlas", Map],
-          ["/explore", "Explore", Compass],
-          ["/data", "Data", BarChart3],
-          ["/reports", "Insights", Lightbulb],
+          ["/", "Live", Map],
+          ["/explore/", "Explore", Compass],
+          ["/uk-electricity-mix", "Learn", BarChart3],
+          ["/reports/", "Reports", Lightbulb],
         ].map(([url, name, Icon]: any) => (
           <Link
             key={url}
             to={url}
-            aria-current={pathname === url ? "page" : undefined}
+            aria-current={(pathname.replace(/\/$/, "") || "/") === (url.replace(/\/$/, "") || "/") ? "page" : undefined}
           >
             <Icon />
             <span>{name}</span>
@@ -49,7 +49,7 @@ export function AtlasMobileNavigation({
                 key={url}
                 to={url}
                 onClick={() => setOpen(false)}
-                aria-current={pathname === url ? "page" : undefined}
+                aria-current={(pathname.replace(/\/$/, "") || "/") === (url.replace(/\/$/, "") || "/") ? "page" : undefined}
                 style={{
                   display: "flex",
                   gap: 12,

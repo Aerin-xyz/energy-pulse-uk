@@ -1,4 +1,8 @@
 import {chartQuantity,FUEL_COLOURS} from '@/lib/atlasPresentation.mjs';
+import {londonClock,londonTimestamp} from '@/lib/evidence/timeLabels.mjs';
+import { EvidenceExport } from '@/components/EvidenceExport';
+import { useSearchParams, useLocation } from 'react-router-dom';
+import { dayBounds } from '@/lib/evidence/reportValidation.mjs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -54,6 +58,7 @@ interface DailyDataPoint {
   dayName?: string;
   solarMatchedPeriods?: number;
   totalPeriods?: number;
+  timeBasis?: 'UTC' | 'Europe/London';
 }
 
 interface ForecastDataPoint {
@@ -114,7 +119,7 @@ const CustomTooltip = ({ active, payload, label, showForecast, basis }: {active?
     return (
       <div className="history-value-tooltip glass-morphism border-primary/30 rounded-lg p-3 shadow-lg max-w-xs glow-cyan">
         <p className="text-muted-foreground text-xs mb-2">
-          {timestamp.toLocaleDateString('en-GB',{timeZone:'Europe/London'})} {timestamp.toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' })}
+          {londonTimestamp(timestamp)}
           {isForecastOnly && <span className="ml-1 text-primary">(Forecast)</span>}
         </p>
         {!isForecastOnly && (
@@ -176,9 +181,14 @@ const CustomTooltip = ({ active, payload, label, showForecast, basis }: {active?
 
 // The native selector is the same evidence path for keyboard, touch and screen-reader users.
 function ValueInspector({rows,fuels,basis}:{rows:any[];fuels:string[];basis:'power'|'energy'}){
- const [index,setIndex]=useState(0);const row=rows[Math.min(index,rows.length-1)];if(!row)return null;
+ const [params,setParams]=useSearchParams();const location=useLocation();
+ const key=basis==='power'?'historyAt':'historyDay';const selected=params.get(key);
+ const row=rows.find(r=>new Date(r.timestamp).toISOString()===selected)||rows[0];if(!row)return null;
+ const at=new Date(row.timestamp).toISOString();
+ const viewParams=new URLSearchParams(params);viewParams.set(key,at);viewParams.set('historyView',basis);
+ const viewUrl=`https://energymix.info${location.pathname}?${viewParams.toString()}`;
  const payload=fuels.map(key=>({dataKey:key,value:row[key],color:FUEL_COLOURS[key]||'#a2b4c4',payload:row}));
- return <details className="chart-data-inspector"><summary>Inspect values without hovering</summary><label>Reporting period<select aria-label={basis==='power'?'Inspect power period':'Inspect daily energy'} value={Math.min(index,rows.length-1)} onChange={e=>setIndex(Number(e.target.value))}>{rows.map((r,i)=><option key={i} value={i}>{new Date(r.timestamp).toLocaleString('en-GB',{timeZone:'Europe/London',day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'})} UK</option>)}</select></label><CustomTooltip active payload={payload} label={row.timestamp} basis={basis}/></details>
+ return <details className="chart-data-inspector"><summary>Inspect values without hovering</summary><label>Reporting period<select aria-label={basis==='power'?'Inspect power period':'Inspect daily energy'} value={at} onChange={e=>{const next=new URLSearchParams(params);next.set(key,e.target.value);next.set('historyView',basis);setParams(next,{replace:true});}}>{rows.map(r=><option key={r.timestamp} value={new Date(r.timestamp).toISOString()}>{londonTimestamp(r.timestamp)}</option>)}</select></label>{selected&&selected!==at&&<p>The requested UTC interval is outside the available feed. Showing the first available interval; no older values are reconstructed.</p>}<CustomTooltip active payload={payload} label={row.timestamp} basis={basis}/><EvidenceExport title={basis==='power'?'Historical generation · selected half-hour':'Historical generation · selected daily energy'} at={row.periodFrom||at} periodEnd={basis==='power'?new Date(row.timestamp+1800000).toISOString():row.periodTo} kind="historical measured and estimated generation" basis={basis==='power'?'Half-hour average power; source-specific solar estimates where available':`Daily energy; ${row.timeBasis||'unverified'} day boundaries; source-specific solar estimates where available`} definitionVersion="historical-feed-v1" status={`Available source fuel rows; missing values remain unavailable. Coverage differs from the live domestic mix.${basis==='energy'&&!row.periodFrom?' The exported timestamp identifies the daily row; original day boundaries were not supplied.':''}`} sourceUrl={`https://energymix.info/api/history?period=${basis==='power'?'24h':'7d'}`} viewUrl={viewUrl} rows={fuels.map(name=>({name,value:Number.isFinite(row[name])?row[name]/1000:null,unit:basis==='power'?'GW':'GWh'}))}/></details>
 }
 
 export const HistoricalGenerationChart = ({ 
@@ -195,7 +205,9 @@ export const HistoricalGenerationChart = ({
   forecastLoading,
   onFetchForecastData
 }: HistoricalGenerationChartProps) => {
-  const [activeTab, setActiveTab] = useState("chart");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get('historyView') === 'energy' ? 'weekly' : 'chart';
+  const setActiveTab = (value: string) => { const next = new URLSearchParams(searchParams); next.set('historyView', value === 'weekly' ? 'energy' : 'power'); setSearchParams(next, {replace:true}); };
   const [weeklyDataFetched, setWeeklyDataFetched] = useState(false);
   const [showForecast, setShowForecast] = useState(false);
   const [forecastFetched, setForecastFetched] = useState(false);
@@ -308,7 +320,7 @@ export const HistoricalGenerationChart = ({
 
   const formatXAxisTick = (tickItem: number) => {
     const date = new Date(tickItem);
-    return date.toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit' });
+    return londonClock(date, false);
   };
 
   // Prepare table data for latest periods (last 12 periods = 6 hours)
@@ -316,10 +328,14 @@ export const HistoricalGenerationChart = ({
 
   // Weekly chart data  
   const weeklyChartData = weeklyData.map(point => {
+    const bounds = point.timeBasis ? dayBounds(point.settlementDate, point.timeBasis) : null;
     const chartPoint: any = {
-      day: point.dayName || new Date(point.timestamp).toLocaleDateString('en-US', { weekday: 'short' }),
+      day: point.dayName || new Date(point.timestamp).toLocaleDateString('en-GB', { timeZone: 'Europe/London', weekday: 'short' }),
       date: point.settlementDate,
       timestamp: point.timestamp.getTime(),
+      periodFrom: bounds?.from,
+      periodTo: bounds?.to,
+      timeBasis: point.timeBasis,
       total: point.totalMW
     };
     
@@ -376,6 +392,7 @@ export const HistoricalGenerationChart = ({
             <TabsTrigger value="chart">Last 24 hours · GW</TabsTrigger>
             <TabsTrigger value="weekly">Daily energy · GWh</TabsTrigger>
           </TabsList>
+          <Button type="button" variant="ghost" onClick={()=>{const next=new URLSearchParams(searchParams);['historyView','historyAt','historyDay'].forEach(key=>next.delete(key));setSearchParams(next,{replace:true});}}>Reset history view</Button>
           
           <TabsContent value="chart" className="mt-4">
             <ValueInspector rows={chartData} fuels={sortedFuelTypes} basis="power"/>
@@ -531,7 +548,7 @@ export const HistoricalGenerationChart = ({
                         return (
                           <TableRow key={index}>
                             <TableCell className="font-medium">
-                              {point.dayName || new Date(point.timestamp).toLocaleDateString('en-US', { weekday: 'short' })}
+                              {point.dayName || new Date(point.timestamp).toLocaleDateString('en-GB', { timeZone: 'Europe/London', weekday: 'short' })}
                             </TableCell>
                             <TableCell>{point.settlementDate}</TableCell>
                             <TableCell>{formatGWh(getFuelMWh('Gas') / 1000)}</TableCell>
@@ -574,7 +591,7 @@ export const HistoricalGenerationChart = ({
                     <p>Weekly Solar from PV Live (measured) • {weeklyMeta.solarMatchedDays}/{weeklyMeta.totalDays} days with matched data</p>
                     <p>PV Source: {weeklyMeta.pvSource === 'eso' ? 'ESO Open Data' : weeklyMeta.pvSource === 'sheffield' ? 'Sheffield Solar' : 'None available'}</p>
                     {weeklyLastUpdated && (
-                      <p>Last updated: {weeklyLastUpdated.toLocaleString()}</p>
+                      <p>Last updated: {londonTimestamp(weeklyLastUpdated)}</p>
                     )}
                   </div>
                 )}

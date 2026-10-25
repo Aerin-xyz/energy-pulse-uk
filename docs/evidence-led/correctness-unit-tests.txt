@@ -1,0 +1,208 @@
+TAP version 13
+# Subtest: full interval uses end clock without changing actual or forecast
+ok 1 - full interval uses end clock without changing actual or forecast
+  ---
+  duration_ms: 15.698127
+  type: 'test'
+  ...
+# Subtest: missing actual stays null; zero stays an actual
+ok 2 - missing actual stays null; zero stays an actual
+  ---
+  duration_ms: 1.876003
+  type: 'test'
+  ...
+# Subtest: invalid values and future actual intervals cannot become observations
+ok 3 - invalid values and future actual intervals cannot become observations
+  ---
+  duration_ms: 0.393901
+  type: 'test'
+  ...
+# Subtest: forecast-only current interval is labelled incomplete, not old actual
+ok 4 - forecast-only current interval is labelled incomplete, not old actual
+  ---
+  duration_ms: 1.032502
+  type: 'test'
+  ...
+# Subtest: failed fetch retains interval and fetched time without blessing legacy fallback
+ok 5 - failed fetch retains interval and fetched time without blessing legacy fallback
+  ---
+  duration_ms: 1.283202
+  type: 'test'
+  ...
+# Subtest: cache written seconds after cron expires before next tick; no extra scheduled calls
+ok 6 - cache written seconds after cron expires before next tick; no extra scheduled calls
+  ---
+  duration_ms: 0.272201
+  type: 'test'
+  ...
+# Subtest: repeated UK clock labels distinguish UTC instants across the autumn transition
+ok 7 - repeated UK clock labels distinguish UTC instants across the autumn transition
+  ---
+  duration_ms: 17.845632
+  type: 'test'
+  ...
+# Subtest: expected local coverage is boundary-derived, while declared UTC days stay 48 periods
+ok 8 - expected local coverage is boundary-derived, while declared UTC days stay 48 periods
+  ---
+  duration_ms: 1.012802
+  type: 'test'
+  ...
+# Subtest: only comparable regions rank; country and GB aggregates never overlap the ranking
+ok 9 - only comparable regions rank; country and GB aggregates never overlap the ranking
+  ---
+  duration_ms: 0.879602
+  type: 'test'
+  ...
+# Subtest: full postcode controls send only the official API outward district
+ok 10 - full postcode controls send only the official API outward district
+  ---
+  duration_ms: 0.3257
+  type: 'test'
+  ...
+# Subtest: forecast averages are duration-weighted and equal windows choose earliest UTC start
+ok 11 - forecast averages are duration-weighted and equal windows choose earliest UTC start
+  ---
+  duration_ms: 0.499
+  type: 'test'
+  ...
+# Subtest: missing, conflicting and invalid forecast periods cannot be zero or historical substitutes
+ok 12 - missing, conflicting and invalid forecast periods cannot be zero or historical substitutes
+  ---
+  duration_ms: 0.4407
+  type: 'test'
+  ...
+# Subtest: expired, failed and too-short horizons expose states and never return advice
+ok 13 - expired, failed and too-short horizons expose states and never return advice
+  ---
+  duration_ms: 0.476401
+  type: 'test'
+  ...
+# Subtest: all archived report windows are explicit without changing any publication data
+ok 14 - all archived report windows are explicit without changing any publication data
+  ---
+  duration_ms: 5.925511
+  type: 'test'
+  ...
+# Subtest: unknown range remains unknown, year crossings resolve without using wall-clock time
+ok 15 - unknown range remains unknown, year crossings resolve without using wall-clock time
+  ---
+  duration_ms: 0.409701
+  type: 'test'
+  ...
+# Subtest: mixed imports and exports use signed net, not the larger gross total
+ok 16 - mixed imports and exports use signed net, not the larger gross total
+  ---
+  duration_ms: 1.265402
+  type: 'test'
+  ...
+# Subtest: zero transfers are real data; missing or unavailable inputs cannot become zero demand
+ok 17 - zero transfers are real data; missing or unavailable inputs cannot become zero demand
+  ---
+  duration_ms: 0.3133
+  type: 'test'
+  ...
+# Subtest: fresh retrieval does not make a delayed observation live
+ok 18 - fresh retrieval does not make a delayed observation live
+  ---
+  duration_ms: 0.934502
+  type: 'test'
+  ...
+# Subtest: forecast window excludes past intervals and never crosses a missing half-hour
+ok 19 - forecast window excludes past intervals and never crosses a missing half-hour
+  ---
+  duration_ms: 0.652201
+  type: 'test'
+  ...
+# Subtest: renewables include biomass and exclude imports and storage
+ok 20 - renewables include biomass and exclude imports and storage
+  ---
+  duration_ms: 0.217901
+  type: 'test'
+  ...
+# Subtest: UK settlement days have 46, 48 or 50 periods; BST midnight is previous UTC day
+ok 21 - UK settlement days have 46, 48 or 50 periods; BST midnight is previous UTC day
+  ---
+  duration_ms: 14.235125
+  type: 'test'
+  ...
+# Subtest: observation to GB period accounts for BST and the repeated autumn hour
+ok 22 - observation to GB period accounts for BST and the repeated autumn hour
+  ---
+  duration_ms: 0.689601
+  type: 'test'
+  ...
+# Subtest: complete data reconciles all intervals, energy and signed storage
+ok 23 - complete data reconciles all intervals, energy and signed storage
+  ---
+  duration_ms: 5.217009
+  type: 'test'
+  ...
+# Subtest: DST days use 46 and 50 periods, not assumed 48
+ok 24 - DST days use 46 and 50 periods, not assumed 48
+  ---
+  duration_ms: 20.978337
+  type: 'test'
+  ...
+# Subtest: missing fuel and null values fail, zero stays valid
+ok 25 - missing fuel and null values fail, zero stays valid
+  ---
+  duration_ms: 4.284607
+  type: 'test'
+  ...
+# Subtest: newest revision wins regardless of order; conflicting same revision fails
+ok 26 - newest revision wins regardless of order; conflicting same revision fails
+  ---
+  duration_ms: 2.588005
+  type: 'test'
+  ...
+# Subtest: NESO duplicate and absent slots fail even if record count matches
+ok 27 - NESO duplicate and absent slots fail even if record count matches
+  ---
+  duration_ms: 0.893701
+  type: 'test'
+  ...
+# Subtest: pumped storage cannot be counted as natural hydro
+ok 28 - pumped storage cannot be counted as natural hydro
+  ---
+  duration_ms: 1.985603
+  type: 'test'
+  ...
+# Subtest: one provider interval disagreement fails even when averages cancel
+ok 29 - one provider interval disagreement fails even when averages cancel
+  ---
+  duration_ms: 2.274804
+  type: 'test'
+  ...
+# Subtest: period shares and power are energy/hour weighted; partial range warned
+ok 30 - period shares and power are energy/hour weighted; partial range warned
+  ---
+  duration_ms: 0.214401
+  type: 'test'
+  ...
+# Subtest: carbon uses actuals only and never fills gaps with forecasts
+ok 31 - carbon uses actuals only and never fills gaps with forecasts
+  ---
+  duration_ms: 1.243402
+  type: 'test'
+  ...
+# Subtest: end-to-end evidence pack fails closed and retains report input
+ok 32 - end-to-end evidence pack fails closed and retains report input
+  ---
+  duration_ms: 9.752517
+  type: 'test'
+  ...
+# Subtest: date gaps and mixed day bases block the run
+ok 33 - date gaps and mixed day bases block the run
+  ---
+  duration_ms: 2.496105
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 134.371235

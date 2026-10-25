@@ -1,0 +1,36 @@
+# Evidence correctness lane — 25 October 2026
+
+## Inspection before edits
+
+- B05: `HistoricalGenerationChart.ValueInspector` used array-index option values and timezone-free local labels. The existing settlement library already computed 46/48/50-period local days correctly. Preserve it; fix presentation/identity.
+- B09: `RegionalCarbonPanel` sorted every Carbon Intensity API region, including England/Scotland/Wales/GB aggregates. `useCarbonOutlook` already restricted its map data to IDs 1–14. Preserve the non-overlapping map scope and share its explicit region rule.
+- Section 7.7: `gridMetrics.cleanWindow` already required contiguous future periods and duration weighting. Harden invalid/conflicting input and state handling instead of replacing working 1/2/3-hour controls. `LiveSeoModule.bestCleanWindow` was a separate weaker calculation, accepted actual values and a single overlapping interval; remove that inconsistency.
+- B06: 127 frozen reports: 124 declare six-calendar-date ranges; 3 declare seven-date ranges without retained completeness evidence. A specific September 29 clarification existed, but the title and main presentation still implied a week. Report JSON and publication dates must remain frozen.
+- Scope extended with parent approval: integrate the existing/new shared export panel and URL state into the existing historical inspector, without advertising unsupported archive ranges.
+
+## Implemented behavior
+
+- Shared London time labels distinguish `01:00 BST (UTC+1)` and `01:00 GMT (UTC+0)`. History options use UTC ISO instants, not local strings or array indexes. Tooltip, axis and shared national-carbon interval labels include the zone. Inspection is still keyboard/touch/native-select accessible.
+- History URL keys: `historyView=power|energy`, `historyAt=<UTC ISO>` and `historyDay=<UTC ISO>`. Reset removes only those history fields. Unavailable requested intervals are disclosed, not reconstructed. No 30-day/custom archive is invented.
+- Historical export freezes selected fuel rows, GW/GWh, source, observation kind, definition version and a reproducing URL. Power includes a half-hour end. Daily source boundaries are included only when the endpoint supplied its day basis; legacy rows explicitly disclose missing boundaries. The export preserves null rather than filling missing fuels with zero.
+- Forecast windows reject negative/missing forecasts and ambiguous same-start duplicates, never use actuals as forecast substitutes, require full contiguous future duration and use time-weighted means. Ties choose earliest UTC start. Available horizon, missing/gapped/expired/failure/loading states and missing upstream issuance time are visible. No new freshness/grace threshold was invented.
+- Forecast and regional requests have independent errors. A region failure no longer blanks a valid national forecast. The homepage retains duration and half-hour inspection controls; duplicate net-transfer card removed because the primary summary owns it.
+- Rankings use API IDs 1–14 only; England/Scotland/Wales (15–17) have a separate country selector; GB (18) is excluded from both comparisons. Missing/failed data ends the loading state and offers retry. Source interval is shown; expired retained intervals are not called “now”.
+- Direct official-source verification additionally found the existing postcode control used both the wrong request granularity and response nesting. `/regional/postcode/SW1A` returned a region with `data[0].intensity`; full `SW1A1AA` returned HTTP 400. Input now accepts a full postcode or outward district and sends only the district; nested interval is displayed. No personal postcode was used (public SW1A example).
+- Topic cards no longer turn missing fuels/percentages/flows into zero, clamp net exports to zero, or substitute an invented demand balance for reported demand. No-data topic state uses the shared versioned unavailable component. Carbon keeps actual and forecast separate, with explicit source intervals.
+- Reports expose coverage/boundaries above the summary, separate calendar span from source completeness, retain original titles/publication dates/figures, and declare a dated presentation clarification. Original introductions/methodology remain available. New report generation adds explicit coverage/aggregation metadata without executing a data refresh.
+
+## Important retained report issue
+
+`docs/report-all-days/README.md` and the frozen retrospective diagnostic establish that September 23–28 Hydro totals included positive pumped-storage output. Nuclear on September 23 and wind on September 28 also disagreed with comparison inputs. The September 29 report now discloses this **failed** validation prominently and links its retained manifest. It has not been recomputed, approved or relabelled as corrected. Legacy `historical-measured-v1` is explicitly not asserted to exclude pumped storage; only new `historical-report-v2` describes the intended validated natural-hydro definition. The publication gate/thresholds are unchanged.
+
+## Verification
+
+- Focused Node suite: 33/33 passed (`evidence-correctness`, `grid-metrics`, `report-validation`, `carbon-interval`). Covers DST labels/day durations, weighted forecast/ties/gaps/conflicts/expiry, aggregate exclusion, postcode district mapping, all 127 archived ranges and immutable inputs.
+- TypeScript: `npx tsc --noEmit -p tsconfig.app.json` passed. Integrated `npm run build` passed, including 167 prerendered routes and initial-content monitor.
+- Browser: **15/15 passed** on the local production build at `http://127.0.0.1:4185`: 5 new correctness fixtures, 2 existing chart/navigation cases, 6 forecast/context width cases (360–1920px) and 2 carbon interval/retained-state cases (390/1366px). Tests exercise real native selections, postcode request shape, country selection, retry, expired/gapped forecast states, UTC query restoration, frozen JSON download despite changed selection, keyboard/touch chart access, Escape/focus return, raw-HTML report coverage and unchanged displayed archived figures. Logs: `correctness-unit-tests.txt`, `correctness-browser-tests.txt`. The earlier run's only failure was the obsolete navigation link count (13 vs the new 14); updated expectation then verified the remaining dismissal/navigation assertions.
+- `src/data/reportArchive.json` and `src/data/energyMixGenerated.json` unchanged. No deployment, source-threshold change, data refresh/publication or external communication.
+
+## B13 preservation inspection (not a new completion claim)
+
+Map and list already share `matchingAssets`/`filterAssets` for fuel/search/country/availability/min-capacity/pilot. The map additionally viewport-culls/clusters; the list paginates in 60-row increments. Existing asset detail distinguishes installed capacity, location, notified plans and metered history, states capacity-only output unavailable, preserves signed storage and source clocks. Parent was advised to clarify that results search the entire filtered register (not only current viewport). Detail currently places notified/measured information before the capacity block; no broad visual hierarchy rewrite was made in this lane. Real-device/screen-reader acceptance remains separate from code inspection.

@@ -5,6 +5,7 @@ import { SiteChromeContext } from './SiteChromeContext';
 import { useEnergyData } from '@/contexts/EnergyDataContext';
 import '@/styles/command-centre.css';
 import '@/styles/site-system.css';
+import '@/styles/national-picture.css';
 const groups=[
  {label:'Explore the grid',links:[['Live grid','/'],['All charts','/explore'],['Power flow','/power-flow'],['Today','/today'],['Yesterday','/yesterday'],['Records','/records']]},
  {label:'Understand electricity',links:[['The electricity mix','/uk-electricity-mix'],['Carbon intensity','/carbon-intensity'],['Renewables','/renewables'],['Demand','/electricity-demand'],['Gas','/gas-generation'],['Nuclear','/nuclear-power'],['Interconnectors','/interconnectors'],['Glossary','/glossary']]},
@@ -12,7 +13,7 @@ const groups=[
  {label:'Energy Mix',links:[['About','/about'],['Contact & corrections','/contact'],['Widgets & partners','/partners'],['Social','/social'],['Measurement','/measurement'],['Privacy','/privacy']]}
 ];
 export function SiteFrame({children}:{children:ReactNode}) {
- const {pathname}=useLocation();const {refetch,loading}=useEnergyData();const [now,setNow]=useState(Date.now());const [motion,setMotion]=useState(true);
+ const {pathname}=useLocation();const {refetch,loading}=useEnergyData();const [now,setNow]=useState(Date.now());const [motion,setMotion]=useState(()=>typeof window==='undefined'||!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
  useEffect(()=>{const id=setInterval(()=>setNow(Date.now()),30000);return()=>clearInterval(id)},[]);
  useEffect(()=>{if(!window.location.hash)window.scrollTo(0,0)},[pathname]);
  // Public share route is a fixed-size export canvas: preserve its framing.

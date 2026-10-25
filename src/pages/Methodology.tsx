@@ -14,18 +14,6 @@ const Methodology = () => {
         <meta property="og:url" content="https://energymix.info/methodology/" />
         <meta property="og:image" content="https://energymix.info/og-data.jpg" />
         <meta name="robots" content="index, follow" />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Dataset',
-            name: 'EnergyMix.info UK Electricity Mix Data',
-            description: 'Live and recent electricity mix, demand and carbon intensity summaries for Great Britain based on public electricity data sources.',
-            url: 'https://energymix.info/methodology/',
-            creator: { '@type': 'Organization', name: 'EnergyMix.info', url: 'https://energymix.info/' },
-            spatialCoverage: { '@type': 'Place', name: 'Great Britain' },
-            isAccessibleForFree: true,
-          })}
-        </script>
       </Helmet>
 
       <StaticPageLayout

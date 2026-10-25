@@ -4,6 +4,7 @@ import { StaticPageLayout } from '@/components/StaticPageLayout';
 import { NewsletterCta } from '@/components/NewsletterCta';
 import generated from '@/data/energyMixGenerated.json';
 import archive from '@/data/reportArchive.json';
+import { reportCoverage, REPORT_COVERAGE_CLARIFIED_AT } from '@/lib/evidence/reportCoverage.mjs';
 import NotFound from './NotFound';
 const reports = archive as typeof generated.reports;
 
@@ -48,6 +49,7 @@ export const ReportsIndex = () => (
         <Link to={latestReport.slug} className="block rounded-lg border border-primary/20 p-5 text-cosmic-cyan hover:bg-primary/10 transition-colors">
           <p className="text-sm uppercase tracking-[0.18em] text-primary/70 mb-2">Featured report</p>
           <h3 className="text-xl font-semibold">{latestReport.title}</h3>
+          <p className="mt-2 font-medium">{reportCoverage(latestReport).label} · {latestReport.period}</p>
           <p className="mt-2 text-foreground/75">{latestReport.summary}</p>
         </Link>
         <div className="mt-4 flex flex-wrap gap-3">
@@ -69,7 +71,7 @@ export const ReportsIndex = () => (
         <div className="grid gap-4">
           {reports.map((report) => (
             <Link key={report.slug} to={report.slug} className="block rounded-lg border border-primary/20 bg-background/40 p-5 hover:bg-primary/10 transition-colors">
-              <p className="text-sm uppercase tracking-[0.18em] text-primary/70 mb-2">Weekly report</p>
+              <p className="text-sm uppercase tracking-[0.18em] text-primary/70 mb-2">{reportCoverage(report).label}</p>
               <h3 className="text-xl font-semibold text-cosmic-cyan">{report.title}</h3>
               <p className="mt-2 text-foreground/75">{report.summary}</p>
             </Link>
@@ -111,6 +113,8 @@ export const WeeklyReportPage = () => {
   const cleanestPeriods = report.cleanestPeriods || [];
   const higherCarbonPeriods = report.higherCarbonPeriods || [];
   const highlights = report.highlights || [];
+  const coverage = reportCoverage(report);
+  const modifiedAt = report.date > REPORT_COVERAGE_CLARIFIED_AT ? report.date : REPORT_COVERAGE_CLARIFIED_AT;
   const reportUrl = `https://energymix.info${report.slug}/`;
   const reportDescription = `${report.summary} ${report.takeaway}`.slice(0, 280);
   const shareText = `${report.title} - ${report.summary}`;
@@ -129,7 +133,7 @@ export const WeeklyReportPage = () => {
         <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
         <meta property="og:type" content="article" />
         <meta property="article:published_time" content={report.date} />
-        <meta property="article:modified_time" content={report.date} />
+        <meta property="article:modified_time" content={modifiedAt} />
         <meta property="og:site_name" content="EnergyMix.info" />
         <meta property="og:locale" content="en_GB" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -141,11 +145,12 @@ export const WeeklyReportPage = () => {
           {JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'Article',
+            '@id': `${reportUrl}#article`,
             headline: report.title,
             datePublished: report.date,
-            dateModified: report.date,
-            author: { '@type': 'Organization', name: 'EnergyMix.info' },
-            publisher: { '@type': 'Organization', name: 'EnergyMix.info', url: 'https://energymix.info/' },
+            dateModified: modifiedAt,
+            author: { '@id': 'https://energymix.info/#organization' },
+            publisher: { '@id': 'https://energymix.info/#organization' },
             image: 'https://energymix.info/og-insights.jpg',
             mainEntityOfPage: reportUrl,
             description: reportDescription,
@@ -153,7 +158,14 @@ export const WeeklyReportPage = () => {
         </script>
       </Helmet>
 
-      <StaticPageLayout eyebrow="Weekly grid brief" title={report.title} intro={`${report.intro} Values are calculated from settlement-period generation aggregates and should be read as public grid intelligence, not billing-grade metering.`}>
+      <StaticPageLayout eyebrow={coverage.label} title={report.title} intro={`${coverage.detail} Values are public grid intelligence, not billing-grade metering.`}>
+        <aside className="rounded-lg border border-primary/30 p-4" aria-label="Report window and coverage">
+          <h2 className="text-xl font-semibold">{coverage.label}</h2>
+          <p className="mt-2">Originally published {report.date}. {coverage.status === 'partial' && 'This is not a complete seven-day week, despite the original weekly title.'}</p>
+          <p className="mt-2">{coverage.definition}</p><p className="mt-2">{coverage.aggregation}</p>
+          {coverage.validationIssue&&<p className="mt-3"><strong>Known validation issue:</strong> {coverage.validationIssue} <a href={coverage.diagnosticUrl} className="underline">Retrospective diagnostic evidence (JSON)</a>.</p>}
+          <p className="mt-2 text-sm">Coverage and definition clarification added {REPORT_COVERAGE_CLARIFIED_AT}. Original titles, figures, reporting ranges and publication dates remain unchanged.</p>
+        </aside>
         <section>
           <h2 className="text-2xl font-semibold text-primary mb-3">Summary</h2>
           <p>{report.summary}</p>
@@ -165,7 +177,7 @@ export const WeeklyReportPage = () => {
         </section>
 
         <section>
-          <h2 className="text-2xl font-semibold text-primary mb-3">The week in key numbers</h2>
+          <h2 className="text-2xl font-semibold text-primary mb-3">The reporting period in key numbers</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <tbody className="divide-y divide-primary/20">
@@ -179,7 +191,7 @@ export const WeeklyReportPage = () => {
 
         {drivers.length > 0 && (
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-3">What drove the electricity mix this week?</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-3">What the reporting-period figures show</h2>
             <ul className="space-y-2 list-disc pl-5">
               {drivers.map((driver) => <li key={driver}>{driver}</li>)}
             </ul>
@@ -188,7 +200,7 @@ export const WeeklyReportPage = () => {
 
         {cleanestPeriods.length > 0 && (
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-3">{report.validation ? "Renewable and gas comparisons — not carbon rankings" : "Cleanest periods"}</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-3">Renewable and gas comparisons — not carbon rankings</h2>
             <div className="space-y-4">
               {cleanestPeriods.map((item) => (
                 <div key={item.title} className="rounded-lg border border-primary/20 bg-background/40 p-4">
@@ -202,7 +214,7 @@ export const WeeklyReportPage = () => {
 
         {higherCarbonPeriods.length > 0 && (
           <section>
-            <h2 className="text-2xl font-semibold text-primary mb-3">{report.validation ? "Higher gas output — not a carbon measurement" : "Highest-carbon periods"}</h2>
+            <h2 className="text-2xl font-semibold text-primary mb-3">Higher gas output — not a carbon measurement</h2>
             <div className="space-y-4">
               {higherCarbonPeriods.map((item) => (
                 <div key={item.title} className="rounded-lg border border-primary/20 bg-background/40 p-4">
@@ -241,7 +253,7 @@ export const WeeklyReportPage = () => {
           <p className="mt-3">Renewable-share and gas-output comparisons are not measurements of carbon intensity. See <Link className="text-cosmic-cyan underline" to="/data">data sources and methodology</Link> for source information. {!report.validation && "A report-specific reproducible evidence pack was not preserved for this publication."}</p>
           {report.validation && <aside className="mt-4 rounded-lg border border-primary/30 p-4" aria-label="Report evidence"><h3 className="font-semibold">All-days checks: {report.validation.status}</h3><p>{report.validation.days} reporting days · {report.validation.timeBasis} day boundaries. Checked {new Date(report.validation.checkedAt).toLocaleString('en-GB',{timeZone:'Europe/London'})} UK.</p><p className="mt-2">Generation, coverage and historical carbon availability are recorded separately. Cross-checks are not independent certification.</p><div className="mt-3 flex flex-wrap gap-4"><a className="text-cosmic-cyan underline" href={report.validation.evidencePath}>Checks and source manifest (JSON)</a><a className="text-cosmic-cyan underline" href={report.validation.dailyCsv}>Daily figures (CSV)</a></div></aside>}
           {date === '2026-09-29' && <aside className="mt-4 rounded-lg border border-primary/30 p-4" aria-label="Report validation clarification"><h3 className="font-semibold">Validation: partial</h3><p>This report covers six available complete days, 23–28 September 2026. External comparisons recorded in the 29 September validation run cover 28 September only, not every day in this report. That run had warnings for the legacy UTC reporting-day basis and incomplete NESO Demand Data Update coverage.</p><p className="mt-2 text-sm">Clarification added 29 September 2026. The archived report’s figures and original reporting period have not been recalculated or changed.</p></aside>}
-          <details className="mt-4"><summary>Original publication methodology note</summary><p className="mt-2">{report.methodologyNote || 'No report-specific methodology note was preserved.'}</p><p className="mt-2 text-sm">Preserved as part of the original publication. Any broad validation wording in this note should not be read as proof that all reporting days or narrative claims were checked.</p></details>
+          <details className="mt-4"><summary>Original publication introduction and methodology note</summary><p>{report.intro}</p><p className="mt-2">{report.methodologyNote || 'No report-specific methodology note was preserved.'}</p><p className="mt-2 text-sm">Preserved as part of the original publication. Any broad validation wording in this note should not be read as proof that all reporting days or narrative claims were checked.</p></details>
         </section>
 
         <section>

@@ -34,6 +34,16 @@ export type GridSignals = {
   storage: StorageStatus | null;
 };
 
+const readSourceJson = async (response: Response) => {
+  if (!response.ok) throw new Error(`Grid signal source unavailable (${response.status})`);
+  return response.json();
+};
+const sourceRows = (value: unknown): Array<Record<string, unknown>> => {
+  if (Array.isArray(value)) return value;
+  const rows = value && typeof value === 'object' && 'data' in value ? value.data : null;
+  return Array.isArray(rows) ? rows : [];
+};
+
 const DATA_HOST = 'https://data.elexon.co.uk/bmrs/api/v1';
 
 function parseMarketIndex(rows: Array<Record<string, unknown>>): MarketIndexPrice | null {
@@ -129,16 +139,16 @@ export function useGridSignals(seed?: Partial<GridSignals>) {
       const headers = { Accept: 'application/json' };
 
       const [price, frequency, fuelinst] = await Promise.allSettled([
-        seed?.marketIndexPrice ? Promise.resolve(null) : fetch(`${DATA_HOST}/balancing/pricing/market-index?from=${encodeURIComponent(from.toISOString())}&to=${encodeURIComponent(now.toISOString())}&format=json`, { headers }).then((r) => r.json()),
-        seed?.systemFrequency ? Promise.resolve(null) : fetch(`${DATA_HOST}/system/frequency?from=${encodeURIComponent(freqFrom.toISOString())}&to=${encodeURIComponent(now.toISOString())}&format=json`, { headers }).then((r) => r.json()),
-        seed?.storage ? Promise.resolve(null) : fetch(`${DATA_HOST}/datasets/FUELINST/stream?publishDateTimeFrom=${encodeURIComponent(from.toISOString())}&publishDateTimeTo=${encodeURIComponent(now.toISOString())}&format=json`, { headers }).then((r) => r.json()),
+        seed?.marketIndexPrice ? Promise.resolve(null) : fetch(`${DATA_HOST}/balancing/pricing/market-index?from=${encodeURIComponent(from.toISOString())}&to=${encodeURIComponent(now.toISOString())}&format=json`, { headers }).then(readSourceJson),
+        seed?.systemFrequency ? Promise.resolve(null) : fetch(`${DATA_HOST}/system/frequency?from=${encodeURIComponent(freqFrom.toISOString())}&to=${encodeURIComponent(now.toISOString())}&format=json`, { headers }).then(readSourceJson),
+        seed?.storage ? Promise.resolve(null) : fetch(`${DATA_HOST}/datasets/FUELINST/stream?publishDateTimeFrom=${encodeURIComponent(from.toISOString())}&publishDateTimeTo=${encodeURIComponent(now.toISOString())}&format=json`, { headers }).then(readSourceJson),
       ]);
 
       if (cancelled) return;
       setSignals((current) => ({
-        marketIndexPrice: seed?.marketIndexPrice || current.marketIndexPrice || (price.status === 'fulfilled' ? parseMarketIndex(price.value?.data || price.value || []) : null),
-        systemFrequency: seed?.systemFrequency || current.systemFrequency || (frequency.status === 'fulfilled' ? parseFrequency(frequency.value?.data || frequency.value || []) : null),
-        storage: seed?.storage || current.storage || (fuelinst.status === 'fulfilled' ? parseStorage(Array.isArray(fuelinst.value) ? fuelinst.value : fuelinst.value?.data || []) : null),
+        marketIndexPrice: seed?.marketIndexPrice || current.marketIndexPrice || (price.status === 'fulfilled' ? parseMarketIndex(sourceRows(price.value)) : null),
+        systemFrequency: seed?.systemFrequency || current.systemFrequency || (frequency.status === 'fulfilled' ? parseFrequency(sourceRows(frequency.value)) : null),
+        storage: seed?.storage || current.storage || (fuelinst.status === 'fulfilled' ? parseStorage(sourceRows(fuelinst.value)) : null),
       }));
     }
     load().catch(() => undefined);

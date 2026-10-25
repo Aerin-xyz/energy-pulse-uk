@@ -1,4 +1,5 @@
 // Carbon intervals are half-hour emissions estimates, not instantaneous telemetry.
+import { londonClock } from './timeLabels.mjs';
 const numeric = value => typeof value === 'number' && Number.isFinite(value) && value >= 0 ? value : null;
 export function normalizeCarbon(row, fetchedAt = new Date().toISOString()) {
  const from=Date.parse(row?.from), to=Date.parse(row?.to), checked=Date.parse(fetchedAt);
@@ -20,8 +21,8 @@ export function enrichmentCacheTTL(now=Date.now()) {
 export function carbonPresentation(carbon, now=Date.now()) {
  const actual=numeric(carbon?.actual),forecast=numeric(carbon?.forecast);
  const from=Date.parse(carbon?.intervalFrom),to=Date.parse(carbon?.intervalTo);
- const time=iso=>new Date(iso).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'});
- const interval=Number.isFinite(from)&&Number.isFinite(to)?`${new Date(from).toLocaleDateString('en-GB',{timeZone:'Europe/London',day:'numeric',month:'short'})} · ${time(from)}–${time(to)} UK`:'Source interval unavailable';
+ const day=iso=>new Date(iso).toLocaleDateString('en-GB',{timeZone:'Europe/London',day:'numeric',month:'short'});
+ const interval=Number.isFinite(from)&&Number.isFinite(to)?`${day(from)} · ${londonClock(from,false)}–${day(from)===day(to)?'':day(to)+' · '}${londonClock(to,false)}`:'Source interval unavailable';
  const ended=Number.isFinite(to)&&to<=now;
  const age=ended?Math.floor((now-to)/60000):null;
  return {value:actual??'—',basis:actual===null?'Actual unavailable':'Reported actual',forecast:forecast===null?'Forecast unavailable':`Forecast ${forecast} gCO₂/kWh`,interval,freshness:carbon?.status==='retained'?'Refresh unavailable · retained interval':age===null?'Interval not yet complete':`${age>60?'Delayed · ':''}${age}m since interval ended`};

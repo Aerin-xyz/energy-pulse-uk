@@ -1,59 +1,61 @@
 import {carbonPresentation} from '@/lib/evidence/carbon.mjs';
 import {FUEL_COLOURS,sourceIndicator} from '@/lib/atlasPresentation.mjs';
 import {useGridEvidence} from '@/hooks/useGridEvidence';
-import {halfHours,nearLiveGeneration} from '@/lib/evidence/calculations.mjs';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Pause, Play, Activity, BarChart3, BatteryCharging, Cable, Compass, FileText, Globe2, Leaf, Radio, RefreshCw, Search, ShieldCheck, Wind, Zap } from 'lucide-react';
-import { GridAtlas } from './GridAtlas';
-import { useEnergyData } from '@/contexts/EnergyDataContext';
-import { useHistoricalGeneration } from '@/hooks/useHistoricalGeneration';
-import { useCarbonOutlook } from '@/hooks/useCarbonOutlook';
-import { finite, fuelValue, RENEWABLE_FUELS, sourceState, supplyBalance, transfers } from '@/lib/gridMetrics.mjs';
-const palette:Record<string,string>=FUEL_COLOURS;
-const gw = (v: number | null | undefined) => finite(v) ? (v! / 1000).toFixed(1) : '—';
-function Trace({values, color='#00dcc5', label}: {values:(number|null)[]; color?:string; label:string}) {
- const valid=values.filter((v):v is number=>finite(v));
- if(valid.length<2) return <div className="cc-no-series">Comparable history unavailable</div>;
- const min=Math.min(...valid), max=Math.max(...valid), span=max-min||1;
- const points=values.map((v,i)=>finite(v)?`${i/(values.length-1)*300},${64-(v!-min)/span*54}`:null);
- const segments:string[][]=[];points.forEach(p=>{if(p===null){segments.push([]);}else{if(!segments.length)segments.push([]);segments.at(-1)!.push(p)}});
- return <svg className="cc-trace" viewBox="0 0 300 76" preserveAspectRatio="none" role="img" aria-label={label}>{segments.map((s,i)=><g key={i}><polygon points={`${s[0]?.split(',')[0]},76 ${s.join(' ')} ${s.at(-1)?.split(',')[0]},76`} fill={color} opacity=".08"/><polyline points={s.join(' ')} fill="none" stroke={color} strokeWidth="1.8" vectorEffect="non-scaling-stroke"/></g>)}</svg>
-}
-export { CommandNavigation } from "./CommandNavigation";
-export function GridCommandCentre({data,history,carbon,now}: {data:ReturnType<typeof useEnergyData>['data'];history:ReturnType<typeof useHistoricalGeneration>;carbon:ReturnType<typeof useCarbonOutlook>;now:number}) {
- const [generationMode,setGenerationMode]=useState<'near-live'|'half-hour'>('near-live');
- const [units,setUnits]=useState<'GW'|'%'>('GW');
- const evidence=useGridEvidence();const evidenceRows=halfHours(evidence.data?.sources.FUELHH?.records||[],evidence.data?.sources.INDO?.records||[],now);const current=evidenceRows.at(-1);
+import {halfHours,nearLiveGeneration,VERSION} from '@/lib/evidence/calculations.mjs';
+import {lazy, Suspense, useState, type ReactNode} from 'react';
+import {useLocation, useNavigate, Link} from 'react-router-dom';
+import {Map, Zap, Wind, Leaf, Cable} from 'lucide-react';
+import {useEnergyData} from '@/contexts/EnergyDataContext';
+import {useHistoricalGeneration} from '@/hooks/useHistoricalGeneration';
+import {useCarbonOutlook} from '@/hooks/useCarbonOutlook';
+import {finite, sourceState} from '@/lib/gridMetrics.mjs';
+import {EvidenceExport} from './EvidenceExport';
+import '@/styles/national-picture.css';
+const GridAtlas=lazy(()=>import('./GridAtlas').then(m=>({default:m.GridAtlas})));
+const gw=(v:number|null|undefined)=>finite(v)?(v!/1000).toFixed(1):'—';
+const stamp=(v:string|undefined)=>v?new Date(v).toLocaleString('en-GB',{timeZone:'Europe/London',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',timeZoneName:'short'}):'Period unavailable';
+export {CommandNavigation} from './CommandNavigation';
+export function GridCommandCentre({data,history,carbon,now,children}:{data:ReturnType<typeof useEnergyData>['data'];history:ReturnType<typeof useHistoricalGeneration>;carbon:ReturnType<typeof useCarbonOutlook>;now:number;children?:ReactNode}) {
+ const location=useLocation(),navigate=useNavigate();
+ const generationMode=new URLSearchParams(location.search).get('basis')==='half-hour'?'half-hour':'near-live';
+ const setGenerationMode=(mode:string)=>{const p=new URLSearchParams(location.search);if(mode==='half-hour')p.set('basis',mode);else p.delete('basis');navigate({pathname:location.pathname,search:p.toString(),hash:location.hash},{state:location.state,preventScrollReset:true});};
+ const hasMapState=['layer','fuel','q','capacity','country','evidence','order','asset','selection','camera','panel','expanded'].some(k=>new URLSearchParams(location.search).has(k));
+ const [mapRequested,setMapRequested]=useState(()=>hasMapState||location.hash==='#grid-map');
+ const evidence=useGridEvidence();const current=halfHours(evidence.data?.sources.FUELHH?.records||[],evidence.data?.sources.INDO?.records||[],now).at(-1);
  const nearLive=nearLiveGeneration(evidence.data?.sources.FUELINST?.records||[],now);
  const chosen=generationMode==='near-live'?nearLive:current;
  const generationAt=generationMode==='near-live'?nearLive?.observedAt:current?.to;
- const generationLabel=generationMode==='near-live'?'Near-live · FUELINST':'Completed half-hour · FUELHH';
- const mix=(chosen?.generationMix||[]).filter(m=>finite(m.value)).sort((a,b)=>b.value-a.value);
- const total=chosen?.generationMW;const renewable=total&&finite(chosen?.renewableMW)?chosen!.renewableMW/total*100:null;
- const fresh=data?.dataFreshness?.sourceFreshness;const status=sourceIndicator({timestamp:generationAt,cadenceMinutes:generationMode==='near-live'?5:30,now,failed:evidence.isError||evidence.data?.transportStatus==='fallback'||!!evidence.data?.sources[generationMode==='near-live'?'FUELINST':'FUELHH']?.error,available:finite(total)});
+ const label=generationMode==='near-live'?'Near-live · FUELINST':'Completed half-hour · FUELHH';
+ const fuelOrder=['Wind','Nuclear','Gas','Biomass','Other','Hydro','Coal','OCGT','Oil'];
+ const mix=fuelOrder.map(name=>(chosen?.generationMix||[]).find(m=>m.name===name)||{name,value:null});
+ const complete=finite(chosen?.generationMW);
+ const total=chosen?.generationMW;const renewable=finite(total)&&total!>0&&finite(chosen?.renewableMW)?chosen!.renewableMW/total!*100:null;
+ const status=sourceIndicator({timestamp:generationAt,cadenceMinutes:generationMode==='near-live'?5:30,now,failed:evidence.isError||evidence.data?.transportStatus==='fallback'||!!evidence.data?.sources[generationMode==='near-live'?'FUELINST':'FUELHH']?.error,available:finite(total)});
  const carbonReading=carbonPresentation(data?.carbonIntensity,now);
- const demand=current?.demandMW;const flow={net:current?.netImportsMW??null};
- const rows=[...history.data].filter(r=>+new Date(r.timestamp)<=now).sort((a,b)=>+new Date(a.timestamp)-+new Date(b.timestamp));
- const series=(fuel:string)=>rows.map(r=>r.fuelMix.find(f=>f.fuelType===fuel)?.mw??null);
- const forecast=carbon.periods.filter(p=>Date.parse(p.from)>=now);
- let offset=0;const gradient=mix.map(m=>{const start=offset;offset+=total?m.value/total*100:0;return `${palette[m.name]||'#758ca2'} ${start}% ${offset}%`}).join(',');
- return <><section className="cc-heading"><div><p className="map-eyebrow">GREAT BRITAIN / ELECTRICITY ATLAS</p><h1>Britain’s electricity. <br/><em>Live, explained.</em></h1><p>Follow the power. Understand the picture.</p></div></section>
- <div className="cc-grid">
- <aside className="cc-metrics atlas-now">
- <article className="cc-panel cc-metric"><h2><Zap/>Initial national demand</h2><strong>{gw(demand)} <small>GW</small></strong><p>Elexon INDO · measured initial outturn</p><Trace values={evidenceRows.map(r=>r.demandMW)} label="Initial national demand from cached Elexon INDO"/><small>Same completed periods as the evidence briefing</small></article>
- <article className="cc-panel cc-metric"><h2><Wind/>Renewable generation</h2><strong>{gw(chosen?.renewableMW)} <small>GW</small></strong><p><em>{finite(renewable)?renewable.toFixed(1):'—'}%</em> of transmission-metered generation</p><Trace values={evidenceRows.map(r=>r.renewableMW)} label="Historical measured renewable generation"/><small>{generationLabel} value · chart remains completed half-hours</small></article>
- <article className="cc-panel cc-metric"><h2><Leaf/>Carbon intensity</h2><strong>{carbonReading.value} <small>gCO₂/kWh</small></strong><p>{carbonReading.basis} · {carbonReading.interval}</p><Trace values={forecast.map(p=>p.intensity.forecast)} label="Future carbon intensity forecast"/><small>{carbonReading.freshness} · {carbonReading.forecast}. Upcoming chart is forecast.</small></article>
- <article className="cc-panel cc-metric"><h2><Cable/>Net transfers</h2><strong>{gw(finite(flow.net)?Math.abs(flow.net):null)} <small>GW</small></strong><p><em>{finite(flow.net)?flow.net>0?'Importing':flow.net<0?'Exporting':'Balanced':'Unavailable'}</em> · half-hourly imports minus exports</p><div className="cc-transfer-symbol">EUROPE <span>⇄</span> GREAT BRITAIN</div><small>{sourceState(current?.to,30,now).label}</small></article>
- </aside>
- <GridAtlas summary={<section className="map-energy-summary" aria-label="Electricity snapshot"><header className="map-mix-heading"><div><span>THE NATIONAL PICTURE</span><h2>Generation mix</h2></div><span>Great Britain</span></header><div className="atlas-tabs" role="group" aria-label="Generation observation basis"><button aria-pressed={generationMode==='near-live'} onClick={()=>setGenerationMode('near-live')}>Near-live · 5 min</button><button aria-pressed={generationMode==='half-hour'} onClick={()=>setGenerationMode('half-hour')}>Completed half-hour</button></div><div className="map-total" data-source-state={status.state}><span>{generationLabel}</span><strong>{gw(total)} <small>GW</small></strong><small>{status.label} · {generationAt?new Date(generationAt).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'})+' UK':'Observation unavailable'}</small></div><div className="map-summary-reading"><span>Initial national demand</span><strong>{gw(demand)} <small>GW</small></strong><small>Completed half-hour · {current?.to?new Date(current.to).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'}):'unavailable'} UK</small></div><div className="map-summary-reading"><span>Carbon intensity</span><strong>{carbonReading.value} <small>gCO₂/kWh</small></strong><small>{carbonReading.basis} · {carbonReading.interval}</small><small>{carbonReading.freshness}</small><small>{carbonReading.forecast}</small></div><div className="map-visible-mix" aria-label="Generation by fuel"><div className="map-mix-strip" aria-hidden="true">{mix.map(m=><i key={m.name} style={{width:total?m.value/total*100+'%':'0',background:palette[m.name]||'#758ca2'}}/>)}</div><ul className="map-mix-legend">{mix.map(m=><li key={m.name}><i style={{background:palette[m.name]||'#758ca2'}}/><span>{m.name}</span><strong>{gw(m.value)} <small>GW</small></strong><b>{total?(m.value/total*100).toFixed(0)+'%':'—'}</b></li>)}</ul>{!mix.length&&<p>Generation readings unavailable.</p>}</div><details className="map-summary-details"><summary>Coverage &amp; definitions</summary><p>{generationLabel} · {status.label}. Generation excludes embedded estimates, pumped storage and imports. Other may include batteries. Demand and carbon have separate observation times. {generationMode==='near-live'&&nearLive&&!nearLive.complete?'Incomplete fuel coverage — total withheld.':''}</p></details></section>} flows={data?.interconnectors||[]} regions={carbon.regions} regionFrom={carbon.from} regionTo={carbon.to} flowTime={fresh?.interconnectors?.timestamp||undefined} now={now}/>
- <aside className="cc-right">
- <section className="cc-panel cc-links"><h2><Cable/>Border snapshot <Link to="/interconnectors">View all ↗</Link></h2><div className="cc-table-head"><span>Connection</span><span>GW</span><span>Direction</span></div>{(data?.interconnectors||[]).map(f=><Link to="/interconnectors" className="cc-flow-row" key={f.name}><span><i>{({France:'FR',Belgium:'BE',Netherlands:'NL',Norway:'NO',Denmark:'DK',Ireland:'IE','Northern Ireland':'NI'} as Record<string,string>)[f.country]||'↔'}</i>{f.name}</span><b>{finite(f.flow)?`${f.flow>0?'+':''}${gw(f.flow)}`:'—'}</b><small>{!finite(f.flow)||f.status==='unavailable'||f.status==='offline'?'Unavailable':f.flow>0?'Into GB':f.flow<0?'Out of GB':'Balanced'}</small></Link>)}<p className="cc-source">Country-level feed · separate from cable observations</p></section>
- <section className="cc-panel cc-price"><h2><BarChart3/>Market price <Link to="/wholesale-electricity-price">Details ↗</Link></h2><strong>{data?.marketIndexPrice?`£${data.marketIndexPrice.priceGBPPerMWh.toFixed(2)}`:'—'} <small>/MWh</small></strong><div className="cc-market-rule"/><p>Wholesale market index</p><small>{sourceState(data?.marketIndexPrice?.startTime,30,now).label} · not your retail tariff</small></section>
- <section className="cc-panel cc-brief"><h2><Activity/>System briefing</h2><p><i/> <span><b>{mix[0]?`${mix[0].name} leads the mix`:'Awaiting generation'}</b>{mix[0]?`${gw(mix[0].value)} GW in the latest reading.`:'No values inferred.'}</span></p><p><i/> <span><b>Every reading has a clock</b>Source intervals differ. Inspect timestamps below.</span></p><Link to="/methodology">Definitions & evidence ↗</Link></section>
- </aside>
- <div className="cc-bottom"><section className="cc-panel cc-generation atlas-generation"><h2><Zap/>Generation mix <span className="atlas-tabs">{(['GW','%'] as const).map(u=><button key={u} aria-pressed={units===u} onClick={()=>setUnits(u)}>{u}</button>)}</span></h2><p className="cc-source">{generationLabel} · {status.label} · {generationAt?new Date(generationAt).toLocaleTimeString('en-GB',{timeZone:'Europe/London',hour:'2-digit',minute:'2-digit'})+' UK':'Observation unavailable'}{generationMode==='near-live'&&!nearLive?' · Select completed half-hour for available history.':''}</p><div className="cc-mix-body"><div className="cc-donut" style={{background:total?`conic-gradient(${gradient})`:'#18333e'}}><div><strong>{gw(total)}</strong><span>GW TOTAL</span></div></div><div className="cc-fuels">{mix.map(m=><Link className="atlas-fuel" to="/explore" key={m.name}><span><i style={{background:palette[m.name]}}/>{m.name}</span><b>{units==='GW'?gw(m.value):total?(m.value/total*100).toFixed(1):'—'}<small>{units}</small></b></Link>)}</div></div><p className="cc-source">Transmission-metered generation · excludes embedded estimates, pumped storage & imports. Other may include batteries. Five-minute snapshots are separate from half-hour averages and the What changed? comparisons.</p></section>
- <section className="cc-panel cc-storage"><h2><BatteryCharging/>Pumped storage <Link to="/pumped-storage">Explore ↗</Link></h2><div className="cc-storage-body"><div className="cc-storage-gauge"><BatteryCharging/><strong>{gw(current?.storageMW)} <small>GW</small></strong><span>{'Signed metered output'}</span></div><div><Trace values={evidenceRows.map(r=>r.storageMW)} color="#ad87ff" label="Historical signed pumped-storage output"/><p>Measured output history</p><small>{sourceState(current?.to,30,now).label}</small></div></div><p className="cc-source">Signed FUELHH PS reading · negative values retained; not battery state of charge</p></section>
- <section className="cc-panel cc-carbon"><h2><Wind/>Carbon outlook <a href="#outlook">Find a window ↗</a></h2><Trace values={forecast.map(p=>p.intensity.forecast)} label="Upcoming carbon forecast in gCO₂ per kWh"/><div className="cc-chart-axis"><span>Next half-hour</span><span>Returned forecast horizon →</span></div><p className="cc-source">Carbon Intensity API · forecast, not a guarantee</p></section>
- </div></div></>;
+ const net=current?.netImportsMW;
+ const mapOpen=mapRequested||hasMapState||location.hash==='#grid-map';
+ return <><section className="cc-heading national-heading"><h1>Britain’s electricity. <em>Live, explained.</em></h1><p>Great Britain’s electricity: measured generation, sources and forecasts. Northern Ireland is a separate market.</p></section>
+ <p className="national-status" data-source-state={status.state}>Generation: {status.label} · {stamp(generationAt)}. Each source has its own clock.</p>
+ <div className="national-layout">
+ <section className="national-metrics" aria-label="National electricity summary">
+ <article><h2><Zap size={16}/>Demand</h2><strong>{gw(current?.demandMW)} <small>GW</small></strong><p>Initial national outturn · INDO</p><small>{stamp(current?.to)} · {sourceState(current?.to,30,now).label}</small></article>
+ <article><h2><Wind size={16}/>Renewable share</h2><strong>{finite(renewable)?renewable!.toFixed(1):'—'} <small>%</small></strong><p>Wind, hydro and biomass</p><small>Metered generation · {stamp(generationAt)}</small></article>
+ <article><h2><Leaf size={16}/>Carbon intensity</h2><strong>{carbonReading.value} <small>gCO₂/kWh</small></strong><p>{carbonReading.basis} · {carbonReading.interval}</p><small>{carbonReading.freshness}</small></article>
+ <article><h2><Cable size={16}/>Net transfers</h2><strong>{finite(net)&&net!>0?'+':''}{gw(net)} <small>GW</small></strong><p>{finite(net)?net!>0?'Net importing':net!<0?'Net exporting':'Balanced':'Unavailable'} · imports − exports</p><small>{stamp(current?.to)} · {sourceState(current?.to,30,now).label}</small></article>
+ </section>
+ <section className="national-mix" aria-label="Electricity snapshot"><header><h2>Generation mix</h2><span>Great Britain</span></header>
+ <div className="atlas-tabs" role="group" aria-label="Generation observation basis"><button aria-pressed={generationMode==='near-live'} onClick={()=>setGenerationMode('near-live')}>Near-live · 5 min</button><button aria-pressed={generationMode==='half-hour'} onClick={()=>setGenerationMode('half-hour')}>Completed half-hour</button></div>
+ <p className="national-total"><strong>{gw(total)} <small>GW</small></strong><span>{label}<br/>{stamp(generationAt)}</span></p>
+ <div className="map-mix-strip" aria-hidden="true">{mix.map(m=><i key={m.name} style={{width:total&&finite(m.value)?m.value!/total*100+'%':'0',background:FUEL_COLOURS[m.name]||'#94a3b8'}}/>)}</div>
+ <ul className="national-fuels" aria-label="Generation by fuel">{mix.map(m=><li key={m.name}><span><i style={{background:FUEL_COLOURS[m.name]||'#94a3b8'}}/>{m.name}</span><strong>{gw(m.value)} <small>GW</small></strong><b>{finite(total)&&total!>0&&finite(m.value)?(m.value!/total!*100).toFixed(1)+'%':'—'}</b></li>)}</ul>
+ {chosen&&!complete&&<p>Partial fuel coverage — total and shares withheld. Missing readings remain unknown.</p>}
+ {!chosen&&<p>Generation readings unavailable. No values inferred.</p>}
+ <details><summary>Coverage &amp; definitions</summary><p>Transmission-metered domestic generation excludes embedded estimates, pumped storage and imports. Other may include batteries. Renewable share includes wind, natural hydro and biomass, not nuclear; biomass is not zero-emission. {generationMode==='near-live'&&nearLive&&!nearLive.complete?'Incomplete fuel coverage — total withheld.':''}</p><p>Demand and carbon use separate intervals. Five-minute snapshots are not half-hour averages. <Link to="/methodology/">Methods and source definitions</Link></p><p>{carbonReading.forecast}</p></details>
+ <EvidenceExport title="Great Britain generation mix" at={generationMode==='half-hour'?current?.from:generationAt} periodEnd={generationMode==='half-hour'?current?.to:undefined} definitionVersion={VERSION} kind="measured" basis={label+'; transmission-metered domestic generation; excludes embedded estimates, pumped storage and imports'} status={complete?status.label:status.label+'; partial fuel coverage; total withheld'} rows={(chosen?.generationMix||[]).map(m=>({name:m.name,value:m.value,unit:'MW'}))} sourceUrl="https://bmrs.elexon.co.uk/api-documentation"/>
+ </section>
+ <div className="national-context">{children}</div>
+ <section className="national-atlas" aria-label="Explore the electricity atlas">
+ {mapOpen?<Suspense fallback={<p className="atlas-load-state">Loading the electricity atlas… National readings remain available above.</p>}><GridAtlas flows={data?.interconnectors||[]} regions={carbon.regions} regionFrom={carbon.from} regionTo={carbon.to} flowTime={data?.dataFreshness?.sourceFreshness?.interconnectors?.timestamp||undefined} now={now}/></Suspense>:<div className="atlas-preview"><img className="atlas-geography-preview" src="/atlas-geography-preview.svg" alt="Geographic preview of Britain and Ireland; no live flows" width="260" height="290"/><h2>Explore the electricity atlas</h2><p>Find generation sites, inspect cables and compare regional carbon. Installed capacity, notified output and measured history stay clearly separated.</p><button onClick={()=>setMapRequested(true)}>Open interactive atlas</button><p className="atlas-preview-note">Natural Earth geography. Detailed map data loads when opened; no live flows are shown in this preview.</p><Link to="/explore/">Explore charts and data →</Link></div>}
+ </section>
+ </div></>;
 }

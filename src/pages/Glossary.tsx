@@ -92,7 +92,7 @@ const Glossary = () => (
         <h2 className="text-2xl font-semibold text-primary mb-4">Terms</h2>
         <dl className="grid gap-4">
           {terms.map((item) => (
-            <div key={item.term} className="rounded-lg border border-primary/15 bg-background/30 p-4">
+            <div id={item.term.toLowerCase().replace(/[^a-z0-9]+/g, '-')} key={item.term} className="rounded-lg border border-primary/15 bg-background/30 p-4">
               <dt className="text-lg font-semibold text-foreground">{item.term}</dt>
               <dd className="mt-2 text-foreground/80">{item.definition}</dd>
               <dd className="mt-3 flex flex-wrap gap-2">

@@ -1,0 +1,291 @@
+[
+  {
+    "value": 0.10228998219373218,
+    "time": 2506.2000000476837,
+    "sources": [
+      {
+        "node": "<section class=\"atlas-evidence\"><section class=\"rounded-2xl border border-primary/20 bg-card/50 p-6\" data-evidence-status=\"unavailable\" data-evidence-schema=\"1\" aria-label=\"Current data availability\"><h2 class=\"text-xl font-semibold text-foreground\">Current readings unavailable</h2><p class=\"mt-3 text-sm text-foreground/75\">This page does not include a verified current observation. The interactive dashboard requests the latest available source da",
+        "old": {
+          "x": 8,
+          "y": 413.75,
+          "width": 374,
+          "height": 419,
+          "top": 413.75,
+          "right": 382,
+          "bottom": 832.75,
+          "left": 8
+        },
+        "new": {
+          "x": 8,
+          "y": 367.125,
+          "width": 374,
+          "height": 351,
+          "top": 367.125,
+          "right": 382,
+          "bottom": 718.125,
+          "left": 8
+        }
+      },
+      {
+        "node": "<section class=\"atlas-editorial\"><article><p class=\"atlas-eyebrow\">WHAT CHANGED</p><h2>Follow the evidence.</h2><p>Explore completed generation intervals in the interactive timeline, or read a dated briefing.</p><a href=\"/reports/weekly/2026-09-29/\">UK Electricity Mix Weekly Report: Tuesday 29 September</a></article><article><p class=\"atlas-eyebrow\">WHY IT MATTERS</p><h2>The mix tells a bigger story.</h2><p>Generation, demand, storage and transfe",
+        "old": {
+          "x": 7,
+          "y": 832.75,
+          "width": 375,
+          "height": 67.25,
+          "top": 832.75,
+          "right": 382,
+          "bottom": 900,
+          "left": 7
+        },
+        "new": {
+          "x": 8,
+          "y": 718.125,
+          "width": 374,
+          "height": 181.875,
+          "top": 718.125,
+          "right": 382,
+          "bottom": 900,
+          "left": 8
+        }
+      },
+      {
+        "old": {
+          "x": 8,
+          "y": 277.25,
+          "width": 374,
+          "height": 63,
+          "top": 277.25,
+          "right": 382,
+          "bottom": 340.25,
+          "left": 8
+        },
+        "new": {
+          "x": 8,
+          "y": 224.625,
+          "width": 374,
+          "height": 63,
+          "top": 224.625,
+          "right": 382,
+          "bottom": 287.625,
+          "left": 8
+        }
+      },
+      {
+        "node": "<p class=\"atlas-deck\">A living picture of what powers us. Follow the flows. Understand the changes.</p>",
+        "old": {
+          "x": 8,
+          "y": 343.875,
+          "width": 374,
+          "height": 42.875,
+          "top": 343.875,
+          "right": 382,
+          "bottom": 386.75,
+          "left": 8
+        },
+        "new": {
+          "x": 8,
+          "y": 297.25,
+          "width": 374,
+          "height": 42.875,
+          "top": 297.25,
+          "right": 382,
+          "bottom": 340.125,
+          "left": 8
+        }
+      },
+      {
+        "old": {
+          "x": 8,
+          "y": 184,
+          "width": 374,
+          "height": 63,
+          "top": 184,
+          "right": 382,
+          "bottom": 247,
+          "left": 8
+        },
+        "new": {
+          "x": 8,
+          "y": 178,
+          "width": 374,
+          "height": 63,
+          "top": 178,
+          "right": 382,
+          "bottom": 241,
+          "left": 8
+        }
+      }
+    ]
+  },
+  {
+    "value": 0.0005218423551756885,
+    "time": 4785.5,
+    "sources": [
+      {
+        "old": {
+          "x": 21,
+          "y": 461.609375,
+          "width": 157,
+          "height": 39,
+          "top": 461.609375,
+          "right": 178,
+          "bottom": 500.609375,
+          "left": 21
+        },
+        "new": {
+          "x": 21,
+          "y": 461.609375,
+          "width": 157,
+          "height": 39,
+          "top": 461.609375,
+          "right": 178,
+          "bottom": 500.609375,
+          "left": 21
+        }
+      },
+      {
+        "old": {
+          "x": 21,
+          "y": 504,
+          "width": 157,
+          "height": 36.1875,
+          "top": 504,
+          "right": 178,
+          "bottom": 540.1875,
+          "left": 21
+        },
+        "new": {
+          "x": 21,
+          "y": 504,
+          "width": 157,
+          "height": 36.1875,
+          "top": 504,
+          "right": 178,
+          "bottom": 540.1875,
+          "left": 21
+        }
+      }
+    ]
+  },
+  {
+    "value": 0.15932906625910098,
+    "time": 8699.600000023842,
+    "sources": [
+      {
+        "node": "<section class=\"national-mix\" aria-label=\"Electricity snapshot\"><header><h2>Generation mix</h2><span>Great Britain</span></header><div class=\"atlas-tabs\" role=\"group\" aria-label=\"Generation observation basis\"><button aria-pressed=\"true\">Near-live · 5 min</button><button aria-pressed=\"false\">Completed half-hour</button></div><p class=\"national-total\"><strong>20.3 <small>GW</small></strong><span>Near-live · FUELINST<br>25 Oct, 09:35 GMT</span></p><",
+        "old": {
+          "x": 8,
+          "y": 608.96875,
+          "width": 374,
+          "height": 291.03125,
+          "top": 608.96875,
+          "right": 382,
+          "bottom": 900,
+          "left": 8
+        },
+        "new": {
+          "x": 8,
+          "y": 575.375,
+          "width": 374,
+          "height": 324.625,
+          "top": 575.375,
+          "right": 382,
+          "bottom": 900,
+          "left": 8
+        }
+      },
+      {
+        "node": "<article><h2><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-cable\"><path d=\"M17 21v-2a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1\"></path><path d=\"M19 15V6.5a1 1 0 0 0-7 0v11a1 1 0 0 1-7 0V9\"></path><path d=\"M21 21v-2h-4\"></path><path d=\"M3 5h4V3\"></path><path d=\"M7 5a1 1 0 0",
+        "old": {
+          "x": 199,
+          "y": 425.109375,
+          "width": 183,
+          "height": 167.859375,
+          "top": 425.109375,
+          "right": 382,
+          "bottom": 592.96875,
+          "left": 199
+        },
+        "new": {
+          "x": 199,
+          "y": 408.3125,
+          "width": 183,
+          "height": 151.0625,
+          "top": 408.3125,
+          "right": 382,
+          "bottom": 559.375,
+          "left": 199
+        }
+      },
+      {
+        "node": "<article><h2><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"lucide lucide-leaf\"><path d=\"M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z\"></path><path d=\"M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12\"></path></svg>Carbon intensity</h2><strong>69 <small>gCO₂/kWh</small></st",
+        "old": {
+          "x": 8,
+          "y": 425.109375,
+          "width": 183,
+          "height": 167.859375,
+          "top": 425.109375,
+          "right": 191,
+          "bottom": 592.96875,
+          "left": 8
+        },
+        "new": {
+          "x": 8,
+          "y": 408.3125,
+          "width": 183,
+          "height": 151.0625,
+          "top": 408.3125,
+          "right": 191,
+          "bottom": 559.375,
+          "left": 8
+        }
+      },
+      {
+        "old": {
+          "x": 8,
+          "y": 197.25,
+          "width": 374,
+          "height": 35,
+          "top": 197.25,
+          "right": 382,
+          "bottom": 232.25,
+          "left": 8
+        },
+        "new": {
+          "x": 8,
+          "y": 197.25,
+          "width": 374,
+          "height": 35,
+          "top": 197.25,
+          "right": 382,
+          "bottom": 232.25,
+          "left": 8
+        }
+      },
+      {
+        "node": "<details><summary>Coverage &amp; definitions</summary><p>Transmission-metered domestic generation excludes embedded estimates, pumped storage and imports. Other may include batteries. Renewable share includes wind, natural hydro and biomass, not nuclear; biomass is not zero-emission. </p><p>Demand and carbon use separate intervals. Five-minute snapshots are not half-hour averages. <a href=\"/methodology/\">Methods and source definitions</a></p><p>F",
+        "old": {
+          "x": 25,
+          "y": 867.96875,
+          "width": 340,
+          "height": 32.03125,
+          "top": 867.96875,
+          "right": 365,
+          "bottom": 900,
+          "left": 25
+        },
+        "new": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0,
+          "top": 0,
+          "right": 0,
+          "bottom": 0,
+          "left": 0
+        }
+      }
+    ]
+  }
+]

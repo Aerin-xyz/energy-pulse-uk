@@ -106,6 +106,7 @@ if (validation.status === 'failed') {
 
 const report = {
   slug,
+  coverage: {from:start,to:end,reportingDates:rows.map(row=>row.settlementDate),days:rows.length,timeBasis:rows[0]?.timeBasis||'UTC',definitionVersion:'historical-report-v2',aggregation:'Generation and gas averages are energy divided by observed duration; renewable share is summed renewable energy divided by summed generation energy, not the arithmetic mean of daily percentages.'},
   validation: {status:validation.status,days:validation.days.length,timeBasis:validation.period.timeBasis,evidencePath:validation.evidencePath,dailyCsv:validation.dailyCsv,checkedAt:validation.runAt},
   date: reportDate,
   title: `GB Electricity Mix Report: ${fmtDate(reportDate)}`,

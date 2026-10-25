@@ -39,16 +39,21 @@ export function sourceState(timestamp, cadenceMinutes = 30, now = Date.now()) {
   };
 }
 export function futurePeriods(periods, now = Date.now()) {
-  return (periods || [])
-    .filter(
-      (x) =>
-        Date.parse(x.from) >= now &&
-        Date.parse(x.to) > Date.parse(x.from) &&
-        finite(x.intensity?.forecast),
-    )
-    .sort((a, b) => Date.parse(a.from) - Date.parse(b.from));
+  // Identical duplicates are harmless; conflicting observations without revision
+  // metadata are unknown, never an opportunity to choose the lower forecast.
+  const intervals = new Map();
+  for (const row of Array.isArray(periods) ? periods : []) {
+    const from = Date.parse(row?.from), to = Date.parse(row?.to);
+    if (!Number.isFinite(from) || !Number.isFinite(to) || from < now || to <= from) continue;
+    const previous = intervals.get(from);
+    const valid = finite(row.intensity?.forecast) && row.intensity.forecast >= 0;
+    if (!valid || (previous && (previous.to !== row.to || previous.intensity.forecast !== row.intensity.forecast))) intervals.set(from, null);
+    else if (!intervals.has(from)) intervals.set(from, row);
+  }
+  return [...intervals.values()].filter(Boolean).sort((a, b) => Date.parse(a.from) - Date.parse(b.from));
 }
 export function cleanWindow(periods, durationMinutes = 120, now = Date.now()) {
+  if (!finite(durationMinutes) || durationMinutes <= 0 || !finite(now)) return null;
   const rows = futurePeriods(periods, now);
   let best = null;
   for (let i = 0; i < rows.length; i++) {
@@ -77,4 +82,21 @@ export function cleanWindow(periods, durationMinutes = 120, now = Date.now()) {
       };
   }
   return best;
+}
+
+export function forecastWindowState(periods, durationMinutes = 120, now = Date.now(), { error = false, loading = false } = {}) {
+  const rows = futurePeriods(periods, now);
+  const horizon = rows.length ? { from: rows[0].from, to: rows.reduce((latest, r) => Date.parse(r.to) > Date.parse(latest) ? r.to : latest, rows[0].to) } : null;
+  const result = { periods: rows, horizon, window: null };
+  if (loading && !rows.length) return { ...result, status: 'loading', reason: 'Loading the carbon forecast…' };
+  if (error) return { ...result, status: 'unavailable', reason: 'Forecast refresh unavailable. No valid window can be recommended.' };
+  const supplied = Array.isArray(periods) ? periods : [];
+  if (!rows.length) {
+    const expired = supplied.length > 0 && supplied.every(r => Number.isFinite(Date.parse(r?.to)) && Date.parse(r.to) <= now);
+    return { ...result, status: expired ? 'expired' : 'unavailable', reason: expired ? 'The forecast has expired. No valid future window is available.' : 'No valid future forecast periods are available.' };
+  }
+  const window = cleanWindow(rows, durationMinutes, now);
+  return window
+    ? { ...result, status: 'available', window, reason: 'Duration-weighted mean; equal forecasts choose the earliest starting window.' }
+    : { ...result, status: 'incomplete', reason: `No complete future ${durationMinutes / 60}-hour window fits the available forecast. Missing or conflicting periods are not filled.` };
 }

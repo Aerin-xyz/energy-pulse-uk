@@ -2,6 +2,10 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { StaticPageLayout } from '@/components/StaticPageLayout';
 import generated from '@/data/energyMixGenerated.json';
+import { reportCoverage } from '@/lib/evidence/reportCoverage.mjs';
+
+const archiveWindow = reportCoverage(generated.reports[0]);
+const RecordScope = () => <section aria-label="Record coverage" className="rounded-lg border border-primary/20 p-5"><h2 className="text-2xl font-semibold text-primary mb-3">Highs within the available archive, not all-time records</h2><p>{archiveWindow.label}. {archiveWindow.detail}</p><p className="mt-3">These are archived daily-average highs for that reporting window, not live peaks or a complete historical record. Original figures and dates are preserved.</p><p className="mt-3">{archiveWindow.definition}</p></section>;
 
 type RecordPage = {
   slug: string;
@@ -32,7 +36,7 @@ const recordPages: Record<string, RecordPage> = {
     description: 'EnergyMix.info record page for Britain’s highest wind generation observations and wind-led electricity mix periods.',
     currentRecord: generated.records.highestWindGeneration.text,
     why: 'Wind is often the largest swing factor in Britain’s electricity mix. High wind periods can lower gas generation and create cleaner electricity windows.',
-    notes: ['This first record uses daily averages from the available 7-day feed.', 'Future versions should add settlement-period wind peaks and all-time UK wind records.', 'Wind records are strong candidates for LinkedIn/shareable updates.'],
+    notes: ['This record uses daily averages from the declared archive window; complete interval coverage has not been independently verified.', 'Future versions should add settlement-period wind peaks and all-time UK wind records.', 'A share or citation should include the archive window and daily-average basis.'],
     related: [{ to: '/renewables', label: 'Renewables' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/reports', label: 'Reports' }],
   },
   '/records/highest-solar-generation': {
@@ -42,7 +46,7 @@ const recordPages: Record<string, RecordPage> = {
     description: 'EnergyMix.info record page for Britain’s strongest solar generation periods and solar contribution to the daily electricity mix.',
     currentRecord: generated.records.highestSolarGeneration.text,
     why: 'Solar records matter because solar reshapes the daytime grid, often lowering gas demand through the middle of bright days.',
-    notes: ['Solar is highly seasonal and time-of-day dependent.', 'Future versions should distinguish daily averages from midday peak solar output.', 'Solar pages should link into cleanest-time and EV-charging guidance.'],
+    notes: ['Solar is highly seasonal and time-of-day dependent.', 'Future versions should distinguish daily averages from midday peak solar output.', 'Historical solar highs are not a forecast for today or an electricity-price signal.'],
     related: [{ to: '/renewables', label: 'Renewables' }, { to: '/cleanest-time-to-use-electricity', label: 'Cleanest time' }, { to: '/today', label: 'Today' }],
   },
   '/records/highest-gas-generation': {
@@ -52,7 +56,7 @@ const recordPages: Record<string, RecordPage> = {
     description: 'EnergyMix.info record page for high gas generation periods, demand peaks and carbon-intensive electricity mix conditions.',
     currentRecord: generated.records.highestGasGeneration.text,
     why: 'Gas highs show when the system is leaning more heavily on flexible fossil generation, often because demand is high or wind and solar are lower.',
-    notes: ['This is currently a 7-day reporting high, not an all-time record.', 'Future versions should add gas share, settlement-period highs and carbon-intensity context.', 'Gas records should be framed carefully as system explanation, not sensationalism.'],
+    notes: ['This is a reporting-window high, not an all-time record.', 'Future versions should add gas share, settlement-period highs and carbon-intensity context.', 'Gas records should be framed carefully as system explanation, not sensationalism.'],
     related: [{ to: '/gas-generation', label: 'Gas generation' }, { to: '/electricity-demand', label: 'Demand' }, { to: '/carbon-intensity', label: 'Carbon intensity' }],
   },
 };
@@ -69,8 +73,9 @@ export const RecordsIndex = () => (
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
     </Helmet>
     <StaticPageLayout eyebrow="Records" title="UK Electricity Mix Records" intro="A records hub for notable British electricity mix moments: renewable share highs, wind and solar peaks, gas-heavy periods and future carbon-intensity records.">
+      <RecordScope />
       <section>
-        <h2 className="text-2xl font-semibold text-primary mb-3">Current record pages</h2>
+        <h2 className="text-2xl font-semibold text-primary mb-3">Archived reporting-window highs</h2>
         <div className="grid md:grid-cols-2 gap-4">
           {Object.values(recordPages).map((record) => (
             <Link key={record.slug} to={record.slug} className="rounded-lg border border-primary/20 bg-background/40 p-5 hover:bg-primary/10 transition-colors">
@@ -82,7 +87,7 @@ export const RecordsIndex = () => (
       </section>
       <section>
         <h2 className="text-2xl font-semibold text-primary mb-3">Record methodology</h2>
-        <p>These first records use the available 7-day historical generation feed. As EnergyMix.info’s reporting pipeline matures, records should distinguish live settlement-period records, daily average records and all-time archive records.</p>
+        <p>These figures use the declared archived reporting window shown above. An available-feed high is not an all-time record; missing intervals and differing definitions limit comparisons.</p>
       </section>
     </StaticPageLayout>
   </>
@@ -99,9 +104,10 @@ const RecordDetail = ({ page }: { page: RecordPage }) => (
       <meta property="og:url" content={`https://energymix.info${page.slug}/`} />
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
     </Helmet>
-    <StaticPageLayout eyebrow="Electricity record" title={page.title} intro={page.description}>
+    <StaticPageLayout eyebrow="Archived reporting-window high" title={page.title} intro={page.description}>
+      <RecordScope />
       <section className="rounded-lg border border-primary/20 bg-background/40 p-5">
-        <h2 className="text-2xl font-semibold text-primary mb-3">Current record</h2>
+        <h2 className="text-2xl font-semibold text-primary mb-3">Archived daily-average high</h2>
         <p>{page.currentRecord}</p>
       </section>
       <section>

@@ -1,0 +1,1031 @@
+{
+  "conditions": "Same local uncompressed static server; cold browser contexts; warm read-only API proxy cache; 4\u00d7 CPU slowdown,150ms latency,1.6Mbps download; 3 runs per width/phase. Lab only, not field CWV/INP. Baseline runs retained from the isolated pre-fix run; final after runs repeated after all tests/builds finished.",
+  "runs": [
+    {
+      "phase": "before",
+      "width": 390,
+      "run": 1,
+      "lcp": 2032,
+      "cls": 0.0743355215257993,
+      "longTasks": [
+        72,
+        416,
+        51,
+        170,
+        176,
+        159,
+        71,
+        305,
+        367,
+        55,
+        329,
+        145
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CM9t20VT.js",
+          "transfer": 570537,
+          "decoded": 570237
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-DwhPogro.css",
+          "transfer": 160106,
+          "decoded": 159806
+        },
+        {
+          "name": "http://127.0.0.1:4186/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/operational-assets.json",
+          "transfer": 4372263,
+          "decoded": 4371963
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/grid-evidence?v=5976407",
+          "transfer": 864056,
+          "decoded": 863756
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/network-geography.json",
+          "transfer": 1190057,
+          "decoded": 1189757
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/generation-assets.json",
+          "transfer": 217282,
+          "decoded": 216982
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/history",
+          "transfer": 31157,
+          "decoded": 30857
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:01Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/energy-data",
+          "transfer": 11248,
+          "decoded": 10948
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/HistoricalGenerationChart-DGTKH3ty.js",
+          "transfer": 421590,
+          "decoded": 421290
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/card-DGfHY8kD.js",
+          "transfer": 1307,
+          "decoded": 1007
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/badge-BBztv1Kk.js",
+          "transfer": 1010,
+          "decoded": 710
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/tabs-DxxPm0Ki.js",
+          "transfer": 6889,
+          "decoded": 6589
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CN4WMbgw.js",
+          "transfer": 443,
+          "decoded": 143
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        }
+      ]
+    },
+    {
+      "phase": "before",
+      "width": 390,
+      "run": 2,
+      "lcp": 2028,
+      "cls": 0.0743355215257993,
+      "longTasks": [
+        69,
+        418,
+        54,
+        162,
+        173,
+        147,
+        74,
+        292,
+        256,
+        324,
+        58,
+        331,
+        144
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CM9t20VT.js",
+          "transfer": 570537,
+          "decoded": 570237
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-DwhPogro.css",
+          "transfer": 160106,
+          "decoded": 159806
+        },
+        {
+          "name": "http://127.0.0.1:4186/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/operational-assets.json",
+          "transfer": 4372263,
+          "decoded": 4371963
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/grid-evidence?v=5976408",
+          "transfer": 864056,
+          "decoded": 863756
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/network-geography.json",
+          "transfer": 1190057,
+          "decoded": 1189757
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/generation-assets.json",
+          "transfer": 217282,
+          "decoded": 216982
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/history",
+          "transfer": 31157,
+          "decoded": 30857
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:01Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/energy-data",
+          "transfer": 11248,
+          "decoded": 10948
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/HistoricalGenerationChart-DGTKH3ty.js",
+          "transfer": 421590,
+          "decoded": 421290
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/card-DGfHY8kD.js",
+          "transfer": 1307,
+          "decoded": 1007
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/badge-BBztv1Kk.js",
+          "transfer": 1010,
+          "decoded": 710
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/tabs-DxxPm0Ki.js",
+          "transfer": 6889,
+          "decoded": 6589
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CN4WMbgw.js",
+          "transfer": 443,
+          "decoded": 143
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/energy-data",
+          "transfer": 11248,
+          "decoded": 10948
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/grid-evidence?v=5976408",
+          "transfer": 864056,
+          "decoded": 863756
+        }
+      ]
+    },
+    {
+      "phase": "before",
+      "width": 390,
+      "run": 3,
+      "lcp": 2016,
+      "cls": 0.0743355215257993,
+      "longTasks": [
+        65,
+        407,
+        51,
+        160,
+        171,
+        156,
+        72,
+        304,
+        366,
+        60,
+        346,
+        144
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CM9t20VT.js",
+          "transfer": 570537,
+          "decoded": 570237
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-DwhPogro.css",
+          "transfer": 160106,
+          "decoded": 159806
+        },
+        {
+          "name": "http://127.0.0.1:4186/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/operational-assets.json",
+          "transfer": 4372263,
+          "decoded": 4371963
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/grid-evidence?v=5976408",
+          "transfer": 864056,
+          "decoded": 863756
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/network-geography.json",
+          "transfer": 1190057,
+          "decoded": 1189757
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/generation-assets.json",
+          "transfer": 217282,
+          "decoded": 216982
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/history",
+          "transfer": 31157,
+          "decoded": 30857
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:02Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/energy-data",
+          "transfer": 11248,
+          "decoded": 10948
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/HistoricalGenerationChart-DGTKH3ty.js",
+          "transfer": 421590,
+          "decoded": 421290
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/card-DGfHY8kD.js",
+          "transfer": 1307,
+          "decoded": 1007
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/badge-BBztv1Kk.js",
+          "transfer": 1010,
+          "decoded": 710
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/tabs-DxxPm0Ki.js",
+          "transfer": 6889,
+          "decoded": 6589
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CN4WMbgw.js",
+          "transfer": 443,
+          "decoded": 143
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        }
+      ]
+    },
+    {
+      "phase": "before",
+      "width": 1440,
+      "run": 1,
+      "lcp": 2056,
+      "cls": 0.0017633534372588735,
+      "longTasks": [
+        69,
+        265,
+        157,
+        71,
+        161,
+        194,
+        158,
+        73,
+        359,
+        364,
+        55,
+        356,
+        138
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CM9t20VT.js",
+          "transfer": 570537,
+          "decoded": 570237
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-DwhPogro.css",
+          "transfer": 160106,
+          "decoded": 159806
+        },
+        {
+          "name": "http://127.0.0.1:4186/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/operational-assets.json",
+          "transfer": 4372263,
+          "decoded": 4371963
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/grid-evidence?v=5976408",
+          "transfer": 864056,
+          "decoded": 863756
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/network-geography.json",
+          "transfer": 1190057,
+          "decoded": 1189757
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/generation-assets.json",
+          "transfer": 217282,
+          "decoded": 216982
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/history",
+          "transfer": 31157,
+          "decoded": 30857
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:03Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/energy-data",
+          "transfer": 11248,
+          "decoded": 10948
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/HistoricalGenerationChart-DGTKH3ty.js",
+          "transfer": 421590,
+          "decoded": 421290
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/card-DGfHY8kD.js",
+          "transfer": 1307,
+          "decoded": 1007
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/badge-BBztv1Kk.js",
+          "transfer": 1010,
+          "decoded": 710
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/tabs-DxxPm0Ki.js",
+          "transfer": 6889,
+          "decoded": 6589
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CN4WMbgw.js",
+          "transfer": 443,
+          "decoded": 143
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        }
+      ]
+    },
+    {
+      "phase": "before",
+      "width": 1440,
+      "run": 2,
+      "lcp": 2052,
+      "cls": 0.0017633534372588735,
+      "longTasks": [
+        69,
+        269,
+        162,
+        63,
+        174,
+        178,
+        154,
+        79,
+        399,
+        374,
+        59,
+        357,
+        134
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CM9t20VT.js",
+          "transfer": 570537,
+          "decoded": 570237
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-DwhPogro.css",
+          "transfer": 160106,
+          "decoded": 159806
+        },
+        {
+          "name": "http://127.0.0.1:4186/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/operational-assets.json",
+          "transfer": 4372263,
+          "decoded": 4371963
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/grid-evidence?v=5976408",
+          "transfer": 864056,
+          "decoded": 863756
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/network-geography.json",
+          "transfer": 1190057,
+          "decoded": 1189757
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/generation-assets.json",
+          "transfer": 217282,
+          "decoded": 216982
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/history",
+          "transfer": 31157,
+          "decoded": 30857
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:03Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/energy-data",
+          "transfer": 11248,
+          "decoded": 10948
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/HistoricalGenerationChart-DGTKH3ty.js",
+          "transfer": 421590,
+          "decoded": 421290
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/card-DGfHY8kD.js",
+          "transfer": 1307,
+          "decoded": 1007
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/badge-BBztv1Kk.js",
+          "transfer": 1010,
+          "decoded": 710
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/tabs-DxxPm0Ki.js",
+          "transfer": 6889,
+          "decoded": 6589
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CN4WMbgw.js",
+          "transfer": 443,
+          "decoded": 143
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        }
+      ]
+    },
+    {
+      "phase": "before",
+      "width": 1440,
+      "run": 3,
+      "lcp": 2060,
+      "cls": 0.0017633534372588735,
+      "longTasks": [
+        76,
+        272,
+        160,
+        71,
+        161,
+        168,
+        159,
+        79,
+        353,
+        372,
+        56,
+        356,
+        143
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CM9t20VT.js",
+          "transfer": 570537,
+          "decoded": 570237
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-DwhPogro.css",
+          "transfer": 160106,
+          "decoded": 159806
+        },
+        {
+          "name": "http://127.0.0.1:4186/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/operational-assets.json",
+          "transfer": 4372263,
+          "decoded": 4371963
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/grid-evidence?v=5976408",
+          "transfer": 864056,
+          "decoded": 863756
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/network-geography.json",
+          "transfer": 1190057,
+          "decoded": 1189757
+        },
+        {
+          "name": "http://127.0.0.1:4186/data/generation-assets.json",
+          "transfer": 217282,
+          "decoded": 216982
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/history",
+          "transfer": 31157,
+          "decoded": 30857
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:04Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/energy-data",
+          "transfer": 11248,
+          "decoded": 10948
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/HistoricalGenerationChart-DGTKH3ty.js",
+          "transfer": 421590,
+          "decoded": 421290
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/card-DGfHY8kD.js",
+          "transfer": 1307,
+          "decoded": 1007
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/badge-BBztv1Kk.js",
+          "transfer": 1010,
+          "decoded": 710
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/tabs-DxxPm0Ki.js",
+          "transfer": 6889,
+          "decoded": 6589
+        },
+        {
+          "name": "http://127.0.0.1:4186/assets/index-CN4WMbgw.js",
+          "transfer": 443,
+          "decoded": 143
+        },
+        {
+          "name": "http://127.0.0.1:4186/api/asset-operations",
+          "transfer": 63734,
+          "decoded": 63434
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "width": 390,
+      "run": 1,
+      "lcp": 2384,
+      "cls": 0.007698366571699906,
+      "longTasks": [
+        93,
+        240,
+        302,
+        292
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4185/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+          "transfer": 425346,
+          "decoded": 425046
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+          "transfer": 162315,
+          "decoded": 162015
+        },
+        {
+          "name": "http://127.0.0.1:4185/atlas-geography-preview.svg",
+          "transfer": 14917,
+          "decoded": 14617
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/grid-evidence?v=5976409",
+          "transfer": 864055,
+          "decoded": 863755
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:11Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/energy-data",
+          "transfer": 11026,
+          "decoded": 10726
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "width": 390,
+      "run": 2,
+      "lcp": 2376,
+      "cls": 0.007698366571699906,
+      "longTasks": [
+        91,
+        241,
+        311,
+        284
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4185/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+          "transfer": 425346,
+          "decoded": 425046
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+          "transfer": 162315,
+          "decoded": 162015
+        },
+        {
+          "name": "http://127.0.0.1:4185/atlas-geography-preview.svg",
+          "transfer": 14917,
+          "decoded": 14617
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/grid-evidence?v=5976410",
+          "transfer": 864055,
+          "decoded": 863755
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:11Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/energy-data",
+          "transfer": 11026,
+          "decoded": 10726
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "width": 390,
+      "run": 3,
+      "lcp": 2368,
+      "cls": 0.007698366571699906,
+      "longTasks": [
+        91,
+        247,
+        312,
+        326,
+        277
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4185/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+          "transfer": 425346,
+          "decoded": 425046
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+          "transfer": 162315,
+          "decoded": 162015
+        },
+        {
+          "name": "http://127.0.0.1:4185/atlas-geography-preview.svg",
+          "transfer": 14917,
+          "decoded": 14617
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/grid-evidence?v=5976410",
+          "transfer": 864055,
+          "decoded": 863755
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:11Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/energy-data",
+          "transfer": 11026,
+          "decoded": 10726
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "width": 1440,
+      "run": 1,
+      "lcp": 2420,
+      "cls": 0.002281777799211248,
+      "longTasks": [
+        103,
+        218,
+        58,
+        307,
+        291
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4185/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+          "transfer": 425346,
+          "decoded": 425046
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+          "transfer": 162315,
+          "decoded": 162015
+        },
+        {
+          "name": "http://127.0.0.1:4185/atlas-geography-preview.svg",
+          "transfer": 14917,
+          "decoded": 14617
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/grid-evidence?v=5976410",
+          "transfer": 864055,
+          "decoded": 863755
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:11Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/energy-data",
+          "transfer": 11026,
+          "decoded": 10726
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "width": 1440,
+      "run": 2,
+      "lcp": 2420,
+      "cls": 0.002281777799211248,
+      "longTasks": [
+        104,
+        201,
+        53,
+        329,
+        284
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4185/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+          "transfer": 425346,
+          "decoded": 425046
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+          "transfer": 162315,
+          "decoded": 162015
+        },
+        {
+          "name": "http://127.0.0.1:4185/atlas-geography-preview.svg",
+          "transfer": 14917,
+          "decoded": 14617
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/grid-evidence?v=5976410",
+          "transfer": 864055,
+          "decoded": 863755
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:12Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/energy-data",
+          "transfer": 11026,
+          "decoded": 10726
+        }
+      ]
+    },
+    {
+      "phase": "after",
+      "width": 1440,
+      "run": 3,
+      "lcp": 2428,
+      "cls": 0.002281777799211248,
+      "longTasks": [
+        103,
+        212,
+        50,
+        303,
+        277
+      ],
+      "resources": [
+        {
+          "name": "http://127.0.0.1:4185/source-sans-3.woff2",
+          "transfer": 29040,
+          "decoded": 28740
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+          "transfer": 425346,
+          "decoded": 425046
+        },
+        {
+          "name": "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+          "transfer": 162315,
+          "decoded": 162015
+        },
+        {
+          "name": "http://127.0.0.1:4185/atlas-geography-preview.svg",
+          "transfer": 14917,
+          "decoded": 14617
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/grid-evidence?v=5976410",
+          "transfer": 864055,
+          "decoded": 863755
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:12Z/fw24h",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "https://api.carbonintensity.org.uk/regional",
+          "transfer": 0,
+          "decoded": 0
+        },
+        {
+          "name": "http://127.0.0.1:4185/api/energy-data",
+          "transfer": 11026,
+          "decoded": 10726
+        }
+      ]
+    }
+  ]
+}

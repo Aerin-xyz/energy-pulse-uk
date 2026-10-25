@@ -1,0 +1,390 @@
+[
+  {
+    "width": 390,
+    "overflow": false,
+    "resources": [
+      {
+        "name": "https://energymix.info/assets/index-CM9t20VT.js",
+        "transfer": 175846,
+        "decoded": 570237
+      },
+      {
+        "name": "https://energymix.info/assets/index-DwhPogro.css",
+        "transfer": 33104,
+        "decoded": 159806
+      },
+      {
+        "name": "https://www.googletagmanager.com/gtm.js?id=GTM-K3QJHHTW",
+        "transfer": 0,
+        "decoded": 0
+      },
+      {
+        "name": "https://energymix.info/source-sans-3.woff2",
+        "transfer": 29040,
+        "decoded": 28740
+      },
+      {
+        "name": "https://energymix.info/data/operational-assets.json",
+        "transfer": 169961,
+        "decoded": 4371963
+      },
+      {
+        "name": "https://energymix.info/api/asset-operations",
+        "transfer": 5606,
+        "decoded": 63434
+      },
+      {
+        "name": "https://energymix.info/api/grid-evidence?v=5976403",
+        "transfer": 50664,
+        "decoded": 863755
+      },
+      {
+        "name": "https://energymix.info/data/network-geography.json",
+        "transfer": 258083,
+        "decoded": 1189757
+      },
+      {
+        "name": "https://energymix.info/data/generation-assets.json",
+        "transfer": 22665,
+        "decoded": 216982
+      },
+      {
+        "name": "https://energymix.info/api/history",
+        "transfer": 2677,
+        "decoded": 30857
+      },
+      {
+        "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T09:41Z/fw24h",
+        "transfer": 0,
+        "decoded": 0
+      },
+      {
+        "name": "https://api.carbonintensity.org.uk/regional",
+        "transfer": 0,
+        "decoded": 0
+      },
+      {
+        "name": "https://energymix.info/api/energy-data",
+        "transfer": 2390,
+        "decoded": 10948
+      },
+      {
+        "name": "https://www.googletagmanager.com/gtag/js?id=G-6C946559GE&cx=c&gtm=4e6al1",
+        "transfer": 0,
+        "decoded": 0
+      },
+      {
+        "name": "https://energymix.info/assets/HistoricalGenerationChart-DGTKH3ty.js",
+        "transfer": 109729,
+        "decoded": 421290
+      },
+      {
+        "name": "https://energymix.info/assets/card-DGfHY8kD.js",
+        "transfer": 664,
+        "decoded": 1007
+      },
+      {
+        "name": "https://energymix.info/assets/badge-BBztv1Kk.js",
+        "transfer": 649,
+        "decoded": 710
+      },
+      {
+        "name": "https://energymix.info/assets/tabs-DxxPm0Ki.js",
+        "transfer": 2937,
+        "decoded": 6589
+      },
+      {
+        "name": "https://energymix.info/assets/index-CN4WMbgw.js",
+        "transfer": 417,
+        "decoded": 143
+      },
+      {
+        "name": "https://region1.google-analytics.com/g/collect?v=2&tid=G-6C946559GE&gtm=45je6al1v9252094335za20ozb9252079506zd9252079506xf1&_p=1792921262373&gcd=13l3l3l3l1l1&npa=0&dma=0&are=1&cid=496942185.1792921263&frm=0&ngs=1&pscdl=noapi&rcb=8&sr=390x844&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=en-us&_s=1&tag_exp=115616985~115938466~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121246026~121246034~121284210&sid=1792921263&sct=1&seg=0&dl=https%3A%2F%2Fenergymix.info%2F&dt=Britain%E2%80%99s%20Electricity%20%E2%80%94%20Live%2C%20Explained%20%7C%20Energy%20Mix&en=page_view&_fv=1&_nsi=1&_ss=1&tfd=938",
+        "transfer": 0,
+        "decoded": 0
+      }
+    ],
+    "headings": [
+      {
+        "text": "Britain’s electricity. Live, explained.",
+        "y": 78
+      },
+      {
+        "text": "Initial national demand",
+        "y": 1704.65625
+      },
+      {
+        "text": "Renewable generation",
+        "y": 1704.65625
+      },
+      {
+        "text": "Carbon intensity",
+        "y": 1898.15625
+      },
+      {
+        "text": "Net transfers",
+        "y": 1898.15625
+      },
+      {
+        "text": "Generation mix",
+        "y": 883.1875
+      },
+      {
+        "text": "Border snapshot View all ↗",
+        "y": 3007.15625
+      },
+      {
+        "text": "Market price Details ↗",
+        "y": 3355.15625
+      },
+      {
+        "text": "System briefing",
+        "y": 3355.15625
+      },
+      {
+        "text": "Generation mix GW%",
+        "y": 2096.65625
+      },
+      {
+        "text": "Pumped storage Explore ↗",
+        "y": 2633.65625
+      },
+      {
+        "text": "Carbon outlook Find a window ↗",
+        "y": 2819.15625
+      },
+      {
+        "text": "The grid, explained in context.",
+        "y": 3582.40625
+      },
+      {
+        "text": "Beyond the mix",
+        "y": 4425.4375
+      },
+      {
+        "text": "Lowest-carbon 2-hour window",
+        "y": 4826.1875
+      },
+      {
+        "text": "Stay curious.Follow the evidence.",
+        "y": 6217.609375
+      },
+      {
+        "text": "A little grid intelligence.A lot less noise.",
+        "y": 7014.046875
+      }
+    ]
+  },
+  {
+    "width": 1440,
+    "overflow": false,
+    "resources": [
+      {
+        "name": "https://energymix.info/assets/index-CM9t20VT.js",
+        "transfer": 175846,
+        "decoded": 570237
+      },
+      {
+        "name": "https://energymix.info/assets/index-DwhPogro.css",
+        "transfer": 33104,
+        "decoded": 159806
+      },
+      {
+        "name": "https://www.googletagmanager.com/gtm.js?id=GTM-K3QJHHTW",
+        "transfer": 0,
+        "decoded": 0
+      },
+      {
+        "name": "https://energymix.info/source-sans-3.woff2",
+        "transfer": 29040,
+        "decoded": 28740
+      },
+      {
+        "name": "https://energymix.info/data/operational-assets.json",
+        "transfer": 169961,
+        "decoded": 4371963
+      },
+      {
+        "name": "https://energymix.info/api/asset-operations",
+        "transfer": 5604,
+        "decoded": 63434
+      },
+      {
+        "name": "https://energymix.info/api/grid-evidence?v=5976403",
+        "transfer": 50664,
+        "decoded": 863755
+      },
+      {
+        "name": "https://energymix.info/data/network-geography.json",
+        "transfer": 258083,
+        "decoded": 1189757
+      },
+      {
+        "name": "https://energymix.info/data/generation-assets.json",
+        "transfer": 22657,
+        "decoded": 216982
+      },
+      {
+        "name": "https://energymix.info/api/history",
+        "transfer": 2677,
+        "decoded": 30857
+      },
+      {
+        "name": "https://api.carbonintensity.org.uk/intensity/2026-10-25T09:41Z/fw24h",
+        "transfer": 0,
+        "decoded": 0
+      },
+      {
+        "name": "https://api.carbonintensity.org.uk/regional",
+        "transfer": 0,
+        "decoded": 0
+      },
+      {
+        "name": "https://energymix.info/api/energy-data",
+        "transfer": 2388,
+        "decoded": 10948
+      },
+      {
+        "name": "https://energymix.info/assets/HistoricalGenerationChart-DGTKH3ty.js",
+        "transfer": 109729,
+        "decoded": 421290
+      },
+      {
+        "name": "https://energymix.info/assets/card-DGfHY8kD.js",
+        "transfer": 664,
+        "decoded": 1007
+      },
+      {
+        "name": "https://energymix.info/assets/badge-BBztv1Kk.js",
+        "transfer": 649,
+        "decoded": 710
+      },
+      {
+        "name": "https://energymix.info/assets/tabs-DxxPm0Ki.js",
+        "transfer": 2937,
+        "decoded": 6589
+      },
+      {
+        "name": "https://energymix.info/assets/index-CN4WMbgw.js",
+        "transfer": 417,
+        "decoded": 143
+      },
+      {
+        "name": "https://www.googletagmanager.com/gtag/js?id=G-6C946559GE&cx=c&gtm=4e6al1",
+        "transfer": 0,
+        "decoded": 0
+      },
+      {
+        "name": "https://region1.google-analytics.com/g/collect?v=2&tid=G-6C946559GE&gtm=45je6al1v9252094335za20ozb9252079506zd9252079506xf1&_p=1792921264474&gcd=13l3l3l3l1l1&npa=0&dma=0&are=1&cid=1604805263.1792921265&frm=0&ngs=1&pscdl=noapi&rcb=8&sr=1440x1000&uaa=x86&uab=64&uafvl=Chromium%3B148.0.7778.96%7CHeadlessChrome%3B148.0.7778.96%7CNot%252FA)Brand%3B99.0.0.0&uam=&uamb=0&uap=Linux&uapv=&uaw=0&ul=en-us&_s=1&tag_exp=115938465~115938469~118897920~118897930~120213116~120385422~120469145~120469153~121246026~121246034&sid=1792921265&sct=1&seg=0&dl=https%3A%2F%2Fenergymix.info%2F&dt=Britain%E2%80%99s%20Electricity%20%E2%80%94%20Live%2C%20Explained%20%7C%20Energy%20Mix&en=page_view&_fv=1&_nsi=1&_ss=1&tfd=954",
+        "transfer": 0,
+        "decoded": 0
+      }
+    ],
+    "headings": [
+      {
+        "text": "Britain’s electricity. Live, explained.",
+        "y": 110.5
+      },
+      {
+        "text": "Initial national demand",
+        "y": 1563.6875
+      },
+      {
+        "text": "Renewable generation",
+        "y": 1563.6875
+      },
+      {
+        "text": "Carbon intensity",
+        "y": 1707.421875
+      },
+      {
+        "text": "Net transfers",
+        "y": 1707.421875
+      },
+      {
+        "text": "Generation mix",
+        "y": 1020.796875
+      },
+      {
+        "text": "Border snapshot View all ↗",
+        "y": 1566.6875
+      },
+      {
+        "text": "Market price Details ↗",
+        "y": 1844.03125
+      },
+      {
+        "text": "System briefing",
+        "y": 1989.625
+      },
+      {
+        "text": "Generation mix GW%",
+        "y": 2158.125
+      },
+      {
+        "text": "Pumped storage Explore ↗",
+        "y": 2158.125
+      },
+      {
+        "text": "Carbon outlook Find a window ↗",
+        "y": 2158.125
+      },
+      {
+        "text": "The grid, explained in context.",
+        "y": 2740.375
+      },
+      {
+        "text": "Beyond the mix",
+        "y": 3231.484375
+      },
+      {
+        "text": "Lowest-carbon 2-hour window",
+        "y": 3278.984375
+      },
+      {
+        "text": "Stay curious.Follow the evidence.",
+        "y": 4631.609375
+      },
+      {
+        "text": "A little grid intelligence.A lot less noise.",
+        "y": 5057.890625
+      }
+    ]
+  },
+  {
+    "route": "/",
+    "status": 200,
+    "datedSnapshot": true,
+    "jsonDownloadHome": false
+  },
+  {
+    "route": "/carbon-intensity/",
+    "status": 200,
+    "datedSnapshot": true,
+    "jsonDownloadHome": false
+  },
+  {
+    "route": "/today/",
+    "status": 200,
+    "datedSnapshot": true,
+    "jsonDownloadHome": false
+  },
+  {
+    "route": "/glossary/",
+    "status": 200,
+    "datedSnapshot": false,
+    "jsonDownloadHome": false
+  },
+  {
+    "route": "/data/",
+    "status": 200,
+    "datedSnapshot": false,
+    "jsonDownloadHome": false
+  },
+  {
+    "route": "/methodology/",
+    "status": 200,
+    "datedSnapshot": false,
+    "jsonDownloadHome": false
+  }
+]

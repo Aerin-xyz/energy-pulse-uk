@@ -1,0 +1,268 @@
+[
+  {
+    "width": 320,
+    "errors": [],
+    "overflow": false,
+    "metrics": [
+      {
+        "y": 278,
+        "bottom": 462.671875,
+        "text": "Demand21.8 GWInitial national outturn · INDO25 Oct, 09:30 GMT · 41m old"
+      },
+      {
+        "y": 278,
+        "bottom": 462.671875,
+        "text": "Renewable share58.0 %Wind, hydro and biomassMetered generation · 25 Oct, 09:35 GMT"
+      },
+      {
+        "y": 470.671875,
+        "bottom": 673.515625,
+        "text": "Carbon intensity69 gCO₂/kWhReported actual · 25 Oct · 09:00 GMT–09:30 GMT41m since interval ended"
+      },
+      {
+        "y": 470.671875,
+        "bottom": 673.515625,
+        "text": "Net transfers+3.4 GWNet importing · imports − exports25 Oct, 09:30 GMT · 41m old"
+      }
+    ],
+    "mapLoaded": 0,
+    "requests": [
+      "http://127.0.0.1:4185/source-sans-3.woff2",
+      "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+      "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+      "http://127.0.0.1:4185/atlas-geography-preview.svg",
+      "http://127.0.0.1:4185/api/grid-evidence?v=5976409",
+      "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:11Z/fw24h",
+      "https://api.carbonintensity.org.uk/regional",
+      "http://127.0.0.1:4185/api/energy-data"
+    ]
+  },
+  {
+    "width": 390,
+    "errors": [],
+    "overflow": false,
+    "metrics": [
+      {
+        "y": 249.25,
+        "bottom": 433.921875,
+        "text": "Demand21.8 GWInitial national outturn · INDO25 Oct, 09:30 GMT · 41m old"
+      },
+      {
+        "y": 249.25,
+        "bottom": 433.921875,
+        "text": "Renewable share58.0 %Wind, hydro and biomassMetered generation · 25 Oct, 09:35 GMT"
+      },
+      {
+        "y": 441.921875,
+        "bottom": 626.59375,
+        "text": "Carbon intensity69 gCO₂/kWhReported actual · 25 Oct · 09:00 GMT–09:30 GMT41m since interval ended"
+      },
+      {
+        "y": 441.921875,
+        "bottom": 626.59375,
+        "text": "Net transfers+3.4 GWNet importing · imports − exports25 Oct, 09:30 GMT · 41m old"
+      }
+    ],
+    "mapLoaded": 0,
+    "requests": [
+      "http://127.0.0.1:4185/source-sans-3.woff2",
+      "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+      "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+      "http://127.0.0.1:4185/atlas-geography-preview.svg",
+      "http://127.0.0.1:4185/api/grid-evidence?v=5976409",
+      "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:11Z/fw24h",
+      "https://api.carbonintensity.org.uk/regional",
+      "http://127.0.0.1:4185/api/energy-data"
+    ]
+  },
+  {
+    "width": 430,
+    "errors": [],
+    "overflow": false,
+    "metrics": [
+      {
+        "y": 246.84375,
+        "bottom": 431.515625,
+        "text": "Demand21.8 GWInitial national outturn · INDO25 Oct, 09:30 GMT · 41m old"
+      },
+      {
+        "y": 246.84375,
+        "bottom": 431.515625,
+        "text": "Renewable share58.0 %Wind, hydro and biomassMetered generation · 25 Oct, 09:35 GMT"
+      },
+      {
+        "y": 439.515625,
+        "bottom": 624.1875,
+        "text": "Carbon intensity69 gCO₂/kWhReported actual · 25 Oct · 09:00 GMT–09:30 GMT41m since interval ended"
+      },
+      {
+        "y": 439.515625,
+        "bottom": 624.1875,
+        "text": "Net transfers+3.4 GWNet importing · imports − exports25 Oct, 09:30 GMT · 41m old"
+      }
+    ],
+    "mapLoaded": 0,
+    "requests": [
+      "http://127.0.0.1:4185/source-sans-3.woff2",
+      "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+      "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+      "http://127.0.0.1:4185/atlas-geography-preview.svg",
+      "http://127.0.0.1:4185/api/grid-evidence?v=5976409",
+      "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:11Z/fw24h",
+      "https://api.carbonintensity.org.uk/regional",
+      "http://127.0.0.1:4185/api/energy-data"
+    ]
+  },
+  {
+    "width": 768,
+    "errors": [],
+    "overflow": false,
+    "metrics": [
+      {
+        "y": 243.578125,
+        "bottom": 480.734375,
+        "text": "Demand21.8 GWInitial national outturn · INDO25 Oct, 09:30 GMT · 41m old"
+      },
+      {
+        "y": 243.578125,
+        "bottom": 480.734375,
+        "text": "Renewable share58.0 %Wind, hydro and biomassMetered generation · 25 Oct, 09:35 GMT"
+      },
+      {
+        "y": 243.578125,
+        "bottom": 480.734375,
+        "text": "Carbon intensity69 gCO₂/kWhReported actual · 25 Oct · 09:00 GMT–09:30 GMT41m since interval ended"
+      },
+      {
+        "y": 243.578125,
+        "bottom": 480.734375,
+        "text": "Net transfers+3.4 GWNet importing · imports − exports25 Oct, 09:30 GMT · 41m old"
+      }
+    ],
+    "mapLoaded": 0,
+    "requests": [
+      "http://127.0.0.1:4185/source-sans-3.woff2",
+      "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+      "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+      "http://127.0.0.1:4185/atlas-geography-preview.svg",
+      "http://127.0.0.1:4185/api/grid-evidence?v=5976409",
+      "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:11Z/fw24h",
+      "https://api.carbonintensity.org.uk/regional",
+      "http://127.0.0.1:4185/api/energy-data"
+    ]
+  },
+  {
+    "width": 1024,
+    "errors": [],
+    "overflow": false,
+    "metrics": [
+      {
+        "y": 246.703125,
+        "bottom": 444.6875,
+        "text": "Demand21.8 GWInitial national outturn · INDO25 Oct, 09:30 GMT · 41m old"
+      },
+      {
+        "y": 246.703125,
+        "bottom": 444.6875,
+        "text": "Renewable share58.0 %Wind, hydro and biomassMetered generation · 25 Oct, 09:35 GMT"
+      },
+      {
+        "y": 246.703125,
+        "bottom": 444.6875,
+        "text": "Carbon intensity69 gCO₂/kWhReported actual · 25 Oct · 09:00 GMT–09:30 GMT41m since interval ended"
+      },
+      {
+        "y": 246.703125,
+        "bottom": 444.6875,
+        "text": "Net transfers+3.4 GWNet importing · imports − exports25 Oct, 09:30 GMT · 41m old"
+      }
+    ],
+    "mapLoaded": 0,
+    "requests": [
+      "http://127.0.0.1:4185/source-sans-3.woff2",
+      "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+      "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+      "http://127.0.0.1:4185/atlas-geography-preview.svg",
+      "http://127.0.0.1:4185/api/grid-evidence?v=5976409",
+      "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:11Z/fw24h",
+      "https://api.carbonintensity.org.uk/regional",
+      "http://127.0.0.1:4185/api/energy-data"
+    ]
+  },
+  {
+    "width": 1440,
+    "errors": [],
+    "overflow": false,
+    "metrics": [
+      {
+        "y": 259.6875,
+        "bottom": 457.671875,
+        "text": "Demand21.8 GWInitial national outturn · INDO25 Oct, 09:30 GMT · 41m old"
+      },
+      {
+        "y": 259.6875,
+        "bottom": 457.671875,
+        "text": "Renewable share58.0 %Wind, hydro and biomassMetered generation · 25 Oct, 09:35 GMT"
+      },
+      {
+        "y": 259.6875,
+        "bottom": 457.671875,
+        "text": "Carbon intensity69 gCO₂/kWhReported actual · 25 Oct · 09:00 GMT–09:30 GMT41m since interval ended"
+      },
+      {
+        "y": 259.6875,
+        "bottom": 457.671875,
+        "text": "Net transfers+3.4 GWNet importing · imports − exports25 Oct, 09:30 GMT · 41m old"
+      }
+    ],
+    "mapLoaded": 0,
+    "requests": [
+      "http://127.0.0.1:4185/source-sans-3.woff2",
+      "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+      "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+      "http://127.0.0.1:4185/atlas-geography-preview.svg",
+      "http://127.0.0.1:4185/api/grid-evidence?v=5976409",
+      "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:11Z/fw24h",
+      "https://api.carbonintensity.org.uk/regional",
+      "http://127.0.0.1:4185/api/energy-data"
+    ]
+  },
+  {
+    "width": 1920,
+    "errors": [],
+    "overflow": false,
+    "metrics": [
+      {
+        "y": 259.6875,
+        "bottom": 457.671875,
+        "text": "Demand21.8 GWInitial national outturn · INDO25 Oct, 09:30 GMT · 41m old"
+      },
+      {
+        "y": 259.6875,
+        "bottom": 457.671875,
+        "text": "Renewable share58.0 %Wind, hydro and biomassMetered generation · 25 Oct, 09:35 GMT"
+      },
+      {
+        "y": 259.6875,
+        "bottom": 457.671875,
+        "text": "Carbon intensity69 gCO₂/kWhReported actual · 25 Oct · 09:00 GMT–09:30 GMT41m since interval ended"
+      },
+      {
+        "y": 259.6875,
+        "bottom": 457.671875,
+        "text": "Net transfers+3.4 GWNet importing · imports − exports25 Oct, 09:30 GMT · 41m old"
+      }
+    ],
+    "mapLoaded": 0,
+    "requests": [
+      "http://127.0.0.1:4185/source-sans-3.woff2",
+      "http://127.0.0.1:4185/assets/index-HvqQQZJw.css",
+      "http://127.0.0.1:4185/assets/index-CxmWjmLz.js",
+      "http://127.0.0.1:4185/atlas-geography-preview.svg",
+      "http://127.0.0.1:4185/api/grid-evidence?v=5976409",
+      "https://api.carbonintensity.org.uk/intensity/2026-10-25T10:11Z/fw24h",
+      "https://api.carbonintensity.org.uk/regional",
+      "http://127.0.0.1:4185/api/energy-data"
+    ]
+  }
+]

@@ -45,7 +45,7 @@ const Partners = () => (
     <StaticPageLayout
       eyebrow="Publisher and partner access"
       title="Energy Mix widgets and data access"
-      intro="A quiet landing page for the commercial layer: simple live grid summaries, embeddable cards and useful data access — without crowding the public dashboard."
+      intro="Help shape future electricity-data tools for publishers and organisations. Widgets and data-access pilots are proposals, not generally available services."
     >
       <section className="rounded-lg border border-primary/20 bg-background/40 p-5">
         <h2 className="text-2xl font-semibold text-primary mb-3">What we are packaging</h2>
