@@ -1,7 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { StaticPageLayout } from '@/components/StaticPageLayout';
-import { StaticGridSnapshot } from '@/components/StaticGridSnapshot';
 import { LiveSeoModule } from '@/components/LiveSeoModule';
 import { RegionalCarbonPanel } from '@/components/RegionalCarbonPanel';
 
@@ -30,7 +29,7 @@ const explainers: Record<string, Explainer> = {
     intro: 'The UK electricity mix is the blend of sources supplying power at a given moment. EnergyMix.info focuses on live Great Britain electricity data and explains how wind, solar, gas, nuclear, imports, storage, demand and carbon intensity shape the grid today.',
     shortAnswer: 'The UK electricity mix changes through the day as demand rises and falls, weather-dependent generation moves up or down, and flexible sources such as gas, storage and interconnectors respond. Most live data here covers Great Britain: England, Scotland and Wales. Northern Ireland is part of the UK but operates in a separate electricity market.',
     sections: [
-      { heading: 'Live electricity mix now', body: ['Use the live dashboard and snapshot on this page to see current demand, visible generation, renewable share, gas output, nuclear generation, imports and exports, storage context and carbon intensity. These values change as settlement periods update and source systems publish fresh data.', 'The build-time snapshot gives crawlers and non-JavaScript readers a source-backed summary, while the interactive dashboard refreshes in the browser from public grid and carbon-intensity sources.'] },
+      { heading: 'Live electricity mix now', body: ['Use the live dashboard on this page to see current demand, visible generation, renewable share, gas output, nuclear generation, imports and exports, storage context and carbon intensity. These values change as settlement periods update and source systems publish fresh data.', 'Current values require dated source observations. When those are unavailable, this page retains its explanation without presenting an archived reading as current.'] },
       { heading: 'What does electricity mix mean?', body: ['The electricity mix is the share of power coming from each source at a particular time. In Britain this usually includes wind, solar, gas, nuclear, biomass, hydro, pumped storage, imports and other smaller categories.', 'It is different from the total UK energy mix. Total energy includes transport fuels, heating, oil, industrial energy and other non-electricity uses. EnergyMix.info is about electricity: what is powering the grid now and what that means for carbon intensity.'] },
       { heading: 'UK vs GB electricity mix', body: ['Most live electricity-system feeds used by public dashboards cover Great Britain: England, Scotland and Wales. Northern Ireland is part of the UK, but it operates in a separate electricity market and is not normally included in the same live GB electricity mix feeds.', 'That distinction matters. The page uses common search language such as “UK electricity mix”, but explains the geographic coverage so the numbers are not presented as more complete than the source data allows.'] },
       { heading: 'Main electricity sources', body: ['Britain’s live electricity mix is shaped by a handful of major categories. Each behaves differently, which is why the grid can look very different on a windy night, a still winter evening or a bright summer lunchtime.'], bullets: ['Wind can be the largest source during windy periods, especially overnight and in winter.', 'Solar is strongest around the middle of the day and falls quickly towards the evening peak.', 'Gas often fills gaps when demand is high, wind is low, solar has faded or imports are less favourable.', 'Nuclear provides steadier low-carbon output, subject to maintenance and outages.', 'Hydro and pumped storage can respond quickly, though they are smaller than wind, gas or nuclear.', 'Interconnectors import or export electricity depending on prices, demand, constraints and neighbouring systems.', 'Biomass and other sources appear as smaller but still relevant parts of the mix.'] },
@@ -268,8 +267,6 @@ const ExplainerPage = ({ page }: { page: Explainer }) => (
         <h2 className="text-2xl font-semibold text-primary mb-3">Short answer</h2>
         <p>{page.shortAnswer}</p>
       </section>
-
-      <StaticGridSnapshot compact />
 
       <LiveSeoModule focus={page.liveFocus} />
 

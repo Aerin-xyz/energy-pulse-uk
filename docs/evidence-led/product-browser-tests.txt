@@ -1,0 +1,32 @@
+
+Running 19 tests using 2 workers
+
+(node:314567) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:314568) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:314567) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:314568) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/evidence-correctness.spec.ts:14:1 › regional comparison excludes overlapping aggregates, separate country and full-postcode controls work (659ms)
+  ✓   2 tests/evidence-led-product.spec.ts:2:53 › national answer before optional atlas at 320 (757ms)
+  ✓   3 tests/evidence-correctness.spec.ts:29:1 › regional failure ends loading and offers retry without fabricating a rank (558ms)
+  ✓   4 tests/evidence-led-product.spec.ts:2:53 › national answer before optional atlas at 390 (846ms)
+  ✓   5 tests/evidence-correctness.spec.ts:36:1 › duration controls, horizon, gap and expired forecast states are truthful at mobile width (823ms)
+  ✓   6 tests/evidence-led-product.spec.ts:2:53 › national answer before optional atlas at 430 (624ms)
+  ✓   8 tests/evidence-led-product.spec.ts:2:53 › national answer before optional atlas at 768 (897ms)
+  ✓   7 tests/evidence-correctness.spec.ts:54:1 › DST inspector URL selection and frozen download preserve power versus daily energy (1.9s)
+  ✓   9 tests/evidence-led-product.spec.ts:2:53 › national answer before optional atlas at 1024 (999ms)
+  ✓  10 tests/evidence-correctness.spec.ts:79:1 › report partial status is in raw HTML and visible before the original figures, dates retained (473ms)
+  ✓  12 tests/initial-content.spec.ts:4:1 › JavaScript-disabled readers receive definitions, source table and honest live state (401ms)
+  ✓  11 tests/evidence-led-product.spec.ts:2:53 › national answer before optional atlas at 1440 (940ms)
+  ✓  13 tests/initial-content.spec.ts:19:1 › source outage never resurrects the old snapshot or shows zeros as current readings (920ms)
+  ✓  14 tests/evidence-led-product.spec.ts:2:53 › national answer before optional atlas at 1920 (697ms)
+  ✓  15 tests/initial-content.spec.ts:35:1 › a newer client interval replaces the initial unavailable state without competing saved data (527ms)
+  ✓  16 tests/evidence-led-product.spec.ts:3:1 › atlas search, evidence, expansion and URL Back survive opt-in (1.5s)
+  ✓  17 tests/evidence-led-product.spec.ts:4:1 › frozen generation exports preserve selected basis and safe downloadable files (705ms)
+  ✓  18 tests/evidence-led-product.spec.ts:5:1 › reduced motion and five-destination mobile navigation (440ms)
+  ✓  19 tests/evidence-led-product.spec.ts:6:1 › partial half-hour exports keep missing fuels, exact interval and definition while enrichment is down (732ms)
+
+  19 passed (10.1s)

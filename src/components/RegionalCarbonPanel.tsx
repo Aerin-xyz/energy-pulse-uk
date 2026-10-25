@@ -1,4 +1,6 @@
 import { type FormEvent, useEffect, useMemo, useState } from 'react';
+import { partitionCarbonRegions, postcodeDistrict } from '@/lib/evidence/regionalCarbon.mjs';
+import { londonTimestamp } from '@/lib/evidence/timeLabels.mjs';
 
 type Region = {
   regionid: number;
@@ -11,45 +13,49 @@ type PostcodeResult = {
   shortname?: string;
   dnoregion?: string;
   intensity?: { forecast?: number; index?: string };
+  from?: string;
+  to?: string;
 };
-
-function cleanPostcode(value: string) {
-  return value.trim().toUpperCase().replace(/\s+/g, '');
-}
 
 export function RegionalCarbonPanel() {
   const [regions, setRegions] = useState<Region[]>([]);
   const [postcode, setPostcode] = useState('');
   const [postcodeResult, setPostcodeResult] = useState<PostcodeResult | null>(null);
   const [postcodeError, setPostcodeError] = useState('');
+  const [countryId, setCountryId] = useState('15');
+  const [regionState, setRegionState] = useState<'loading' | 'available' | 'unavailable'>('loading');
+  const [period, setPeriod] = useState<{from?:string;to?:string}>({});
+  const [retry, setRetry] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
+    setRegionState('loading');
     fetch('https://api.carbonintensity.org.uk/regional')
       .then((res) => res.ok ? res.json() : Promise.reject(new Error(`Carbon API ${res.status}`)))
       .then((json) => {
         if (cancelled) return;
         const latest = json?.data?.[0]?.regions || [];
         setRegions(latest.filter((region: Region) => Number.isFinite(region?.intensity?.forecast)));
+        setPeriod({from:json?.data?.[0]?.from,to:json?.data?.[0]?.to});
+        setRegionState(latest.length ? 'available' : 'unavailable');
       })
       .catch(() => {
-        if (!cancelled) setRegions([]);
+        if (!cancelled) { setRegions([]); setRegionState('unavailable'); }
       });
     return () => { cancelled = true; };
-  }, []);
+  }, [retry]);
 
-  const ranked = useMemo(() => {
-    return [...regions].sort((a, b) => Number(a.intensity.forecast) - Number(b.intensity.forecast));
-  }, [regions]);
+  const { ranked, countries } = useMemo(() => partitionCarbonRegions(regions), [regions]);
+  const country = countries.find((region: Region) => String(region.regionid) === countryId) || countries[0];
 
   async function lookupPostcode(event: FormEvent) {
     event.preventDefault();
     setPostcodeError('');
     setPostcodeResult(null);
 
-    const value = cleanPostcode(postcode);
-    if (!value || value.length < 5) {
-      setPostcodeError('Enter a full UK postcode to check its regional carbon forecast.');
+    const value = postcodeDistrict(postcode);
+    if (!value) {
+      setPostcodeError('Enter a GB postcode or postcode district to check its regional carbon forecast.');
       return;
     }
 
@@ -57,9 +63,10 @@ export function RegionalCarbonPanel() {
       const res = await fetch(`https://api.carbonintensity.org.uk/regional/postcode/${encodeURIComponent(value)}`);
       if (!res.ok) throw new Error(`Carbon API ${res.status}`);
       const json = await res.json();
-      const item = json?.data?.[0];
-      if (!item?.intensity) throw new Error('No regional result');
-      setPostcodeResult(item);
+      const region = json?.data?.[0];
+      const reading = region?.data?.[0];
+      if (!Number.isFinite(reading?.intensity?.forecast)) throw new Error('No regional result');
+      setPostcodeResult({shortname:region.shortname,dnoregion:region.dnoregion,...reading});
     } catch {
       setPostcodeError('Could not find that postcode region. Check the postcode and try again.');
     }
@@ -71,7 +78,7 @@ export function RegionalCarbonPanel() {
         <p className="text-xs uppercase tracking-[0.24em] text-cosmic-cyan/80">Regional carbon</p>
         <h2 className="text-2xl font-semibold text-primary mt-1">Check local carbon intensity</h2>
         <p className="text-foreground/80 mt-2">
-          National carbon intensity is useful, but the cleanest part of Britain can vary by region. This panel uses NESO’s regional Carbon Intensity API so the page answers location-specific searches too.
+          Carbon forecasts vary across Britain. Compare the 14 non-overlapping electricity distribution sub-regions below; country aggregates are shown separately.
         </p>
       </div>
 
@@ -95,12 +102,14 @@ export function RegionalCarbonPanel() {
           <p className="text-xl font-semibold text-foreground mt-1">{postcodeResult.shortname || postcodeResult.dnoregion}</p>
           <p className="text-2xl font-bold text-primary mt-1">{postcodeResult.intensity?.forecast} gCO₂/kWh</p>
           <p className="text-sm text-foreground/60 capitalize">{postcodeResult.intensity?.index || 'latest forecast'}</p>
+          <p className="text-sm mt-2">{londonTimestamp(postcodeResult.from)}–{londonTimestamp(postcodeResult.to)}</p>
         </div>
       )}
 
+      <p className="text-sm mb-4">{period.from && period.to ? `Forecast interval: ${londonTimestamp(period.from)}–${londonTimestamp(period.to)}. ${Date.parse(period.to) <= Date.now() ? 'This retained interval has ended.' : ''}` : 'Forecast interval unavailable.'}</p>
       <div className="grid md:grid-cols-2 gap-4">
         <div className="rounded-lg border border-primary/15 bg-background/60 p-4">
-          <h3 className="font-semibold mb-3">Cleanest regions now</h3>
+          <h3 className="font-semibold mb-3">Lowest-carbon sub-regions</h3>
           <ol className="space-y-2 text-sm">
             {ranked.slice(0, 5).map((region) => (
               <li key={region.regionid} className="flex justify-between gap-3">
@@ -108,11 +117,11 @@ export function RegionalCarbonPanel() {
                 <span className="text-cosmic-cyan">{region.intensity.forecast} gCO₂/kWh</span>
               </li>
             ))}
-            {!ranked.length && <li className="text-foreground/60">Loading regional data…</li>}
+            {!ranked.length && <li className="text-foreground/60">{regionState === 'loading' ? 'Loading regional data…' : 'Regional forecasts unavailable.'}</li>}
           </ol>
         </div>
         <div className="rounded-lg border border-primary/15 bg-background/60 p-4">
-          <h3 className="font-semibold mb-3">Higher-carbon regions now</h3>
+          <h3 className="font-semibold mb-3">Higher-carbon sub-regions</h3>
           <ol className="space-y-2 text-sm">
             {ranked.slice(-5).reverse().map((region) => (
               <li key={region.regionid} className="flex justify-between gap-3">
@@ -120,13 +129,20 @@ export function RegionalCarbonPanel() {
                 <span className="text-amber-300">{region.intensity.forecast} gCO₂/kWh</span>
               </li>
             ))}
-            {!ranked.length && <li className="text-foreground/60">Loading regional data…</li>}
+            {!ranked.length && <li className="text-foreground/60">{regionState === 'loading' ? 'Loading regional data…' : 'Regional forecasts unavailable.'}</li>}
           </ol>
         </div>
       </div>
 
-      <p className="text-xs text-foreground/50 mt-4">
-        Regional figures are forecasts from the Carbon Intensity API and should be read as practical guidance, not billing-grade measurement.
+      {regionState === 'unavailable' && <button type="button" className="mt-4 rounded-md border border-primary/30 px-4 py-3" onClick={() => setRetry(v => v + 1)}>Retry regional forecasts</button>}
+      <div className="rounded-lg border border-primary/15 bg-background/60 p-4 mt-4">
+        <h3 className="font-semibold mb-3">Country aggregate forecast</h3>
+        {country ? <><label>Country<select aria-label="Country aggregate" className="ml-3 rounded-md border border-primary/30 bg-background px-3 py-3" value={String(country.regionid)} onChange={e => setCountryId(e.target.value)}>{countries.map((region: Region) => <option key={region.regionid} value={region.regionid}>{region.shortname}</option>)}</select></label><p className="mt-3">{country.shortname}: <strong>{country.intensity.forecast} gCO₂/kWh</strong> · forecast</p></> : <p>{regionState === 'loading' ? 'Loading country forecasts…' : 'Country forecasts unavailable.'}</p>}
+        <p className="text-sm text-foreground/70 mt-2">England, Scotland and Wales overlap the sub-regions, so they are not included in either ranking.</p>
+      </div>
+
+      <p className="text-sm text-foreground/70 mt-4">
+        Regional figures are forecasts from the <a href="https://api.carbonintensity.org.uk/" className="underline">Carbon Intensity API</a>, not billing-grade measurement. {ranked.length} of 14 comparable sub-regions available. Equal values are ordered by region ID.
       </p>
     </section>
   );

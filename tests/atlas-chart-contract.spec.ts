@@ -74,7 +74,7 @@ test("historical tooltips keep power and daily energy distinct with keyboard and
   await chart
     .getByText("Inspect values without hovering", { exact: true })
     .click();
-  await page.getByLabel("Inspect daily energy").selectOption("1");
+  await page.getByLabel("Inspect daily energy").selectOption("2026-09-28T00:00:00.000Z");
   await expect(chart.locator(".chart-data-inspector")).toContainText(
     "240.0 GWh",
   );
@@ -107,7 +107,7 @@ test("mobile menu preserves all sections and dismissal returns focus", async ({
   await menu.click();
   await expect(
     page.getByRole("navigation", { name: "All sections" }).getByRole("link"),
-  ).toHaveCount(13);
+  ).toHaveCount(14);
   await page.keyboard.press("Escape");
   await expect(menu).toBeFocused();
   await menu.click();

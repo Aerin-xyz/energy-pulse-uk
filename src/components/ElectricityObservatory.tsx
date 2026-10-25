@@ -1,4 +1,5 @@
 import {HomepageContext} from './HomepageContext';
+import { INITIAL_EVIDENCE } from '@/lib/initialEvidence.mjs';
 import {useGridEvidence} from '@/hooks/useGridEvidence';
 import {halfHours} from '@/lib/evidence/calculations.mjs';
 import {GridEvidenceBriefing} from "./GridEvidenceBriefing";
@@ -38,10 +39,11 @@ const time = (v: string | Date) =>
   }).format(new Date(v));
 export function ElectricityObservatory() {
   const { data, error, loading, refetch } = useEnergyData();
-  const history = useHistoricalGeneration();
+  const [historyEnabled,setHistoryEnabled] = useState(()=>typeof window!=='undefined'&&['historyView','powerAt','energyAt','historyDay'].some(k=>new URLSearchParams(window.location.search).has(k)));
+  const history = useHistoricalGeneration(historyEnabled);
   const carbon = useCarbonOutlook();
   const [now, setNow] = useState(Date.now());
-  const [motion, setMotion] = useState(true);
+  const [motion, setMotion] = useState(()=>typeof window==='undefined'?false:!window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 30000);
     return () => clearInterval(t);
@@ -53,14 +55,15 @@ export function ElectricityObservatory() {
     <div className="observatory" data-motion={motion ? "on" : "off"}>
       <CommandNavigation now={now} refresh={refetch} loading={loading} motion={motion} toggleMotion={()=>setMotion(v=>!v)}/>
 
-      <main className="atlas-shell">
+      <main id="energy-main" className="atlas-shell" data-evidence-status={!data && !evidence.data ? INITIAL_EVIDENCE.status : undefined} data-evidence-schema={INITIAL_EVIDENCE.schemaVersion}>
         {error && <p className="atlas-notice" role="status">Live refresh unavailable. Last known values retain their source timestamps.</p>}
-        <GridCommandCentre data={data} history={history} carbon={carbon} now={now}/>
+        <GridCommandCentre data={data} history={history} carbon={carbon} now={now}>
         <GridEvidenceBriefing/>
         <HomepageContext data={data} current={current} carbon={carbon} now={now}/>
+        </GridCommandCentre>
         <section id="rhythm" className="atlas-rhythm">
-          <Link to="/explore" className="atlas-text-link atlas-chart-link">All charts & controls <ArrowUpRight size={14}/></Link>
-          {history.error ? (
+          <Link to="/explore/" className="atlas-text-link atlas-chart-link">All charts & controls <ArrowUpRight size={14}/></Link>
+          {!historyEnabled ? <button className="history-load-button" onClick={()=>setHistoryEnabled(true)}>Load historical generation chart</button> : history.error ? (
             <p className="atlas-notice">
               Historical readings are unavailable. Try again later.
             </p>
@@ -97,14 +100,14 @@ export function ElectricityObservatory() {
               <br />
               Follow the evidence.
             </h2>
-            <Link to="/reports" className="atlas-text-link">
+            <Link to="/reports/" className="atlas-text-link">
               All briefings <ArrowRight size={14} />
             </Link>
           </div>
           <Link className="atlas-story" to={generated.reports[0].slug}>
             <span>THE GRID BRIEF / {generated.reports[0].date}</span>
             <h3>
-              Seven days.
+              A dated report.
               <br />A different perspective.
             </h3>
             <p>
@@ -131,8 +134,7 @@ export function ElectricityObservatory() {
           <details>
             <summary>Every number has a source. Inspect this snapshot.</summary>
             <p>
-              Scope: Great Britain, excluding Northern Ireland. Demand is an
-              estimated supply balance, not metered national consumption.
+              Scope: Great Britain, excluding Northern Ireland. Demand is initial national demand outturn (INDO), with the source’s transmission-system boundary.
               Biomass is included in renewable share; storage is excluded.
               Individual inputs can cover different intervals.
             </p>
@@ -158,7 +160,7 @@ export function ElectricityObservatory() {
             </p>
           </details>
         </section>
-        {!data && <StaticGridSnapshot />}
+        {!data && <p className="source-unavailable">Carbon and enrichment readings unavailable. Generation and demand have separate source status above.</p>}
         <section className="atlas-newsletter">
           <div>
             <p className="atlas-eyebrow">THE WEEKLY CURRENT</p>

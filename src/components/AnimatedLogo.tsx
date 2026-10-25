@@ -80,7 +80,7 @@ export const AnimatedLogo = ({
   const [next, setNext] = useState(1);
   const [isTransitioning, setIsTransitioning] = useState(false);
   
-  const [reduced, setReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  const [reduced, setReduced] = useState(() => typeof window==='undefined'||window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   useEffect(() => { const mq=window.matchMedia('(prefers-reduced-motion: reduce)'); const change=()=>setReduced(mq.matches); mq.addEventListener('change',change); return ()=>mq.removeEventListener('change',change); }, []);
 
   // Memoized geometry - computed once

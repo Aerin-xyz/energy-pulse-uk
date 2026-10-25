@@ -1,0 +1,28 @@
+
+Running 15 tests using 2 workers
+
+(node:310241) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:310242) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:310241) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:310242) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   2 tests/carbon-interval.spec.ts:3:31 › carbon interval, explicit forecast and retained state 390 (1.7s)
+  ✓   1 tests/atlas-chart-contract.spec.ts:6:1 › historical tooltips keep power and daily energy distinct with keyboard and touch inspection (2.0s)
+  ✓   4 tests/atlas-chart-contract.spec.ts:101:1 › mobile menu preserves all sections and dismissal returns focus (1.1s)
+  ✓   3 tests/carbon-interval.spec.ts:3:31 › carbon interval, explicit forecast and retained state 1366 (1.8s)
+  ✓   5 tests/evidence-correctness.spec.ts:14:1 › regional comparison excludes overlapping aggregates, separate country and full-postcode controls work (821ms)
+  ✓   6 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 360 (922ms)
+  ✓   7 tests/evidence-correctness.spec.ts:29:1 › regional failure ends loading and offers retry without fabricating a rank (674ms)
+  ✓   8 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 390 (871ms)
+  ✓   9 tests/evidence-correctness.spec.ts:36:1 › duration controls, horizon, gap and expired forecast states are truthful at mobile width (1.3s)
+  ✓  10 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 430 (1.2s)
+  ✓  12 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 768 (1.2s)
+  ✓  11 tests/evidence-correctness.spec.ts:54:1 › DST inspector URL selection and frozen download preserve power versus daily energy (3.1s)
+  ✓  13 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 1366 (1.4s)
+  ✓  14 tests/evidence-correctness.spec.ts:79:1 › report partial status is in raw HTML and visible before the original figures, dates retained (1.1s)
+  ✓  15 tests/homepage-context.spec.ts:2:48 › compact context, forecast inspection and gutters 1920 (1.5s)
+
+  15 passed (11.6s)

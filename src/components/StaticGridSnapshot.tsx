@@ -1,55 +1,11 @@
-import snapshot from '@/data/staticGridSnapshot.json';
+import { INITIAL_EVIDENCE } from '@/lib/initialEvidence.mjs';
 
-const items = [
-  ['National demand', snapshot.display?.demand],
-  ['Generation', snapshot.display?.generation],
-  ['Carbon', snapshot.display?.carbonIntensity],
-  ['Renewables', snapshot.display?.renewableShare],
-  ['Gas', snapshot.display?.gasShare],
-  ['Wind', snapshot.display?.wind],
-  ['Solar', snapshot.display?.solar],
-  ['Nuclear', snapshot.display?.nuclear],
-  ['Flows', snapshot.display?.importsExports],
-].filter(([, value]) => Boolean(value));
-
-const formatTimestamp = (timestamp?: string | null) => {
-  if (!timestamp) return 'latest available build-time snapshot';
-  return new Intl.DateTimeFormat('en-GB', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-    timeZone: 'Europe/London',
-  }).format(new Date(timestamp));
-};
-
-interface StaticGridSnapshotProps {
-  compact?: boolean;
-}
-
-export const StaticGridSnapshot = ({ compact = false }: StaticGridSnapshotProps) => {
-  return (
-    <section className="rounded-2xl border border-primary/20 bg-card/50 p-5 md:p-6 shadow-lg shadow-primary/5" aria-labelledby="latest-grid-snapshot">
-      <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-[0.22em] text-primary/80">Latest grid snapshot</p>
-          <h2 id="latest-grid-snapshot" className="mt-1 text-xl md:text-2xl font-semibold text-foreground">Saved GB electricity snapshot</h2>
-        </div>
-        <p className="text-xs text-foreground/55">
-          {formatTimestamp(snapshot.timestamp)} · {snapshot.source || 'public grid data'}
-        </p>
-      </div>
-
-      <div className={`grid gap-3 ${compact ? 'grid-cols-2 md:grid-cols-3' : 'grid-cols-2 md:grid-cols-3 lg:grid-cols-5'}`}>
-        {items.map(([label, value]) => (
-          <div key={label} className="rounded-xl border border-primary/10 bg-background/35 px-3 py-3">
-            <div className="text-[11px] uppercase tracking-[0.16em] text-foreground/50">{label}</div>
-            <div className="mt-1 font-mono text-sm md:text-base font-semibold text-foreground">{value}</div>
-          </div>
-        ))}
-      </div>
-
-      <p className="mt-4 text-xs text-foreground/55 leading-relaxed">
-        Saved at build time, not a live reading. Demand is Elexon INDO initial national demand. Generation and shares cover transmission-metered output, excluding embedded estimates, imports and pumped storage. The same cached evidence and calculation definitions power the homepage and briefing.
-      </p>
-    </section>
-  );
-};
+// Existing fallback API, without a frozen numerical snapshot competing with live data.
+export const StaticGridSnapshot = ({ compact = false }: { compact?: boolean }) => (
+  <section className={`rounded-2xl border border-primary/20 bg-card/50 ${compact ? 'p-5' : 'p-6'}`} data-evidence-status={INITIAL_EVIDENCE.status} data-evidence-schema={INITIAL_EVIDENCE.schemaVersion} aria-label="Current data availability">
+    <h2 className="text-xl font-semibold text-foreground">{INITIAL_EVIDENCE.title}</h2>
+    <p className="mt-3 text-sm text-foreground/75">{INITIAL_EVIDENCE.explanation}</p>
+    <p className="mt-3 text-sm text-foreground/75">Great Britain covers England, Scotland and Wales; Northern Ireland operates in a separate electricity market.</p>
+    <p className="mt-3 text-sm"><a href="/data/">Sources</a> · <a href="/methodology/">Definitions and limitations</a> · <a href="/reports/">Dated reports</a></p>
+  </section>
+);

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { partitionCarbonRegions } from '@/lib/evidence/regionalCarbon.mjs';
 export type CarbonPeriod = {
   from: string;
   to: string;
@@ -17,6 +18,9 @@ export function useCarbonOutlook() {
     to: string;
     retrievedAt: string;
     error: boolean;
+    forecastError: boolean;
+    regionsError: boolean;
+    loading: boolean;
   }>({
     periods: [],
     regions: [],
@@ -24,6 +28,9 @@ export function useCarbonOutlook() {
     to: "",
     retrievedAt: "",
     error: false,
+    forecastError: false,
+    regionsError: false,
+    loading: true,
   });
   useEffect(() => {
     const controller = new AbortController();
@@ -51,13 +58,14 @@ export function useCarbonOutlook() {
         results[1].status === "fulfilled" ? results[1].value.data?.[0] : null;
       setState({
         periods: forecast || [],
-        regions: (region?.regions || []).filter(
-          (r: CarbonRegion) => r.regionid >= 1 && r.regionid <= 14,
-        ),
+        regions: partitionCarbonRegions(region?.regions || []).ranked,
         from: region?.from || "",
         to: region?.to || "",
-        retrievedAt: new Date().toISOString(),
+        retrievedAt: results[0].status === 'fulfilled' ? new Date().toISOString() : '',
         error: results.some((r) => r.status === "rejected"),
+        forecastError: results[0].status === 'rejected',
+        regionsError: results[1].status === 'rejected',
+        loading: false,
       });
     }
     refresh();

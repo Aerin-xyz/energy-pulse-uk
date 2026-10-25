@@ -26,15 +26,6 @@ export default function Index() {
           content="https://energymix.info/og-atlas.png"
         />
         <meta name="twitter:card" content="summary_large_image" />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            name: "Energy Mix",
-            url: "https://energymix.info/",
-            description: "Britain’s electricity — live, explained.",
-          })}
-        </script>
       </Helmet>
       <ElectricityObservatory />
     </>

@@ -1199,7 +1199,7 @@ export function GridAtlas({
                   {" "}
                   {mode === "generation" && (
                     <p className="asset-results" role="status">
-                      {filtered.length} matching register entries · REPD
+                      {filtered.length} matches across the filtered register, not only this map view · REPD
                       renewables & DUKES stations · numbered markers group
                       nearby entries
                       {filtered.length === 0

@@ -1,10 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { StaticPageLayout } from '@/components/StaticPageLayout';
-import snapshot from '@/data/staticGridSnapshot.json';
+import { LiveSeoModule } from '@/components/LiveSeoModule';
+import { absoluteDailySummary } from '@/lib/initialEvidence.mjs';
 import generated from '@/data/energyMixGenerated.json';
-
-type DisplayKey = keyof typeof snapshot.display;
 
 interface InsightPage {
   slug: string;
@@ -13,15 +12,6 @@ interface InsightPage {
   metaTitle: string;
   description: string;
   intro: string;
-  primaryMetric: {
-    label: string;
-    value: string;
-    detail: string;
-  };
-  contextMetrics: Array<{
-    label: string;
-    value: string;
-  }>;
   sections: Array<{
     heading: string;
     body: string[];
@@ -36,18 +26,6 @@ interface InsightPage {
   }>;
 }
 
-const formatSnapshotTime = (timestamp?: string | null) =>
-  timestamp
-    ? new Intl.DateTimeFormat('en-GB', {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-        timeZone: 'Europe/London',
-      }).format(new Date(timestamp))
-    : 'the latest build-time snapshot';
-
-const metricValue = (key: DisplayKey, fallback: string) => snapshot.display[key] || fallback;
-
-const snapshotTime = formatSnapshotTime(snapshot.timestamp);
 const weeklyReport = generated.reports[0];
 
 const sharedRelated = [
@@ -64,24 +42,13 @@ const pages: Record<string, InsightPage> = {
     title: 'UK Wind Power Today',
     metaTitle: 'UK Wind Power Today | Live GB Wind Generation',
     description: 'Track UK wind power today with current GB wind generation, renewable-share context and plain-English electricity mix analysis.',
-    intro: "A durable landing page for checking how much wind power is contributing to Britain's electricity mix today, with live-dashboard links and stable snapshot context.",
-    primaryMetric: {
-      label: 'Wind generation',
-      value: metricValue('wind', 'Awaiting wind snapshot'),
-      detail: `Latest static snapshot from ${snapshotTime}.`,
-    },
-    contextMetrics: [
-      { label: 'Renewable share', value: metricValue('renewableShare', 'Awaiting renewable snapshot') },
-      { label: 'Measured generation', value: metricValue('generation', 'Awaiting generation snapshot') },
-      { label: 'Gas generation', value: metricValue('gas', 'Awaiting gas snapshot') },
-      { label: 'Carbon intensity', value: metricValue('carbonIntensity', 'Awaiting carbon snapshot') },
-    ],
+    intro: "Check wind generation in Great Britain's electricity mix. Live source readings and their periods are shown when available; historical report context is dated separately.",
     sections: [
       {
         heading: 'What wind power means for the grid today',
         body: [
           'Wind is often the biggest swing source in the GB electricity mix. When wind output rises, renewable share tends to improve and gas generation can fall if demand and interconnector flows allow it.',
-          'The live dashboard is the best place to check the current half-hourly picture. This landing page keeps the search page stable while pointing readers to the current wind, gas and carbon signals.',
+          'Check the source interval alongside a reading. Near-live observations and completed half-hours are separate bases and can legitimately differ.',
         ],
       },
       {
@@ -109,18 +76,7 @@ const pages: Record<string, InsightPage> = {
     title: 'UK Solar Power Today',
     metaTitle: 'UK Solar Power Today | Live GB Solar Generation',
     description: 'Track UK solar power today with current GB solar generation, renewable-share context and plain-English electricity mix analysis.',
-    intro: "A durable landing page for checking how much solar power is contributing to Britain's electricity mix today, with current-grid context and settled report links.",
-    primaryMetric: {
-      label: 'Solar generation',
-      value: metricValue('solar', 'Awaiting solar snapshot'),
-      detail: `Latest static snapshot from ${snapshotTime}. Solar is strongly time-of-day and season dependent.`,
-    },
-    contextMetrics: [
-      { label: 'Renewable share', value: metricValue('renewableShare', 'Awaiting renewable snapshot') },
-      { label: 'Measured generation', value: metricValue('generation', 'Awaiting generation snapshot') },
-      { label: 'Demand', value: metricValue('demand', 'Awaiting demand snapshot') },
-      { label: 'Carbon intensity', value: metricValue('carbonIntensity', 'Awaiting carbon snapshot') },
-    ],
+    intro: "A guide to checking how much solar power is contributing to Britain's electricity mix today, with current-grid context and settled report links.",
     sections: [
       {
         heading: 'How to read solar power today',
@@ -132,7 +88,7 @@ const pages: Record<string, InsightPage> = {
       {
         heading: 'Recent solar context',
         body: [
-          `${weeklyReport.highlights[1].value} The latest settled daily summary says: ${generated.yesterday.summary}`,
+          `${weeklyReport.highlights[1].value} The latest settled daily summary says: ${absoluteDailySummary(generated.yesterday)}`,
           'Use solar alongside wind, demand and gas generation rather than reading it as a standalone cleanliness signal.',
         ],
       },
@@ -154,18 +110,7 @@ const pages: Record<string, InsightPage> = {
     title: 'Gas Share of UK Electricity',
     metaTitle: 'Gas Share of UK Electricity | Live GB Gas Generation',
     description: 'Check the current gas share of UK electricity generation and understand how gas affects carbon intensity in the GB electricity mix.',
-    intro: "A durable landing page for understanding how much of Britain's electricity is currently coming from gas and why that matters for emissions.",
-    primaryMetric: {
-      label: 'Gas share',
-      value: metricValue('gasShare', 'Awaiting gas-share snapshot'),
-      detail: `Latest static snapshot from ${snapshotTime}. Gas generation was ${metricValue('gas', 'awaiting gas snapshot')}.`,
-    },
-    contextMetrics: [
-      { label: 'Gas generation', value: metricValue('gas', 'Awaiting gas snapshot') },
-      { label: 'Renewable share', value: metricValue('renewableShare', 'Awaiting renewable snapshot') },
-      { label: 'Measured generation', value: metricValue('generation', 'Awaiting generation snapshot') },
-      { label: 'Carbon intensity', value: metricValue('carbonIntensity', 'Awaiting carbon snapshot') },
-    ],
+    intro: "A guide to understanding how much of Britain's electricity is currently coming from gas and why that matters for emissions.",
     sections: [
       {
         heading: 'Why gas share matters',
@@ -199,18 +144,7 @@ const pages: Record<string, InsightPage> = {
     title: 'Renewables Share Today',
     metaTitle: 'Renewables Share Today | UK Electricity Mix',
     description: "Check today's renewable share of UK electricity generation, including wind and solar context for the live GB electricity mix.",
-    intro: "A durable landing page for today's renewable electricity share, bringing together wind, solar, hydro and wider grid context.",
-    primaryMetric: {
-      label: 'Renewable share',
-      value: metricValue('renewableShare', 'Awaiting renewable-share snapshot'),
-      detail: `Latest static snapshot from ${snapshotTime}.`,
-    },
-    contextMetrics: [
-      { label: 'Wind generation', value: metricValue('wind', 'Awaiting wind snapshot') },
-      { label: 'Solar generation', value: metricValue('solar', 'Awaiting solar snapshot') },
-      { label: 'Gas share', value: metricValue('gasShare', 'Awaiting gas-share snapshot') },
-      { label: 'Carbon intensity', value: metricValue('carbonIntensity', 'Awaiting carbon snapshot') },
-    ],
+    intro: "A guide to today's renewable electricity share, bringing together wind, solar, hydro and wider grid context.",
     sections: [
       {
         heading: 'What counts in the renewable share',
@@ -244,18 +178,7 @@ const pages: Record<string, InsightPage> = {
     title: 'UK Carbon Intensity Today',
     metaTitle: 'UK Carbon Intensity Today | Live GB Electricity Emissions',
     description: 'Check UK carbon intensity today with current GB electricity emissions context, renewable share, gas generation and demand.',
-    intro: "A durable landing page for today's electricity carbon intensity in Great Britain, linking the live emissions signal to renewables, gas and demand.",
-    primaryMetric: {
-      label: 'Carbon intensity',
-      value: metricValue('carbonIntensity', 'Awaiting carbon snapshot'),
-      detail: `Latest static snapshot from ${snapshotTime}; current index: ${metricValue('carbonIndex', 'awaiting index')}.`,
-    },
-    contextMetrics: [
-      { label: 'Renewable share', value: metricValue('renewableShare', 'Awaiting renewable snapshot') },
-      { label: 'Gas share', value: metricValue('gasShare', 'Awaiting gas-share snapshot') },
-      { label: 'Demand', value: metricValue('demand', 'Awaiting demand snapshot') },
-      { label: 'Imports / exports', value: metricValue('importsExports', 'Awaiting import snapshot') },
-    ],
+    intro: "A guide to today's electricity carbon intensity in Great Britain, linking the live emissions signal to renewables, gas and demand.",
     sections: [
       {
         heading: 'What carbon intensity means today',
@@ -312,24 +235,7 @@ const InsightPage = ({ page }: { page: InsightPage }) => (
     </Helmet>
 
     <StaticPageLayout eyebrow={page.eyebrow} title={page.title} intro={page.intro}>
-      <section className="rounded-lg border border-primary/20 bg-background/40 p-5">
-        <p className="text-sm uppercase tracking-[0.18em] text-primary/75">{page.primaryMetric.label}</p>
-        <p className="mt-2 text-4xl font-bold text-foreground">{page.primaryMetric.value}</p>
-        <p className="mt-3 text-sm text-foreground/65">{page.primaryMetric.detail}</p>
-      </section>
-
-      <section>
-        <h2 className="text-2xl font-semibold text-primary mb-3">Current grid context</h2>
-        <div className="grid md:grid-cols-2 gap-4">
-          {page.contextMetrics.map((metric) => (
-            <div key={metric.label} className="rounded-lg border border-primary/20 bg-background/40 p-4">
-              <h3 className="font-semibold">{metric.label}</h3>
-              <p className="text-foreground/75 mt-1">{metric.value}</p>
-            </div>
-          ))}
-        </div>
-        <p className="mt-3 text-sm text-foreground/60">Snapshot source: {snapshot.source}. Live dashboard values may have moved since this static crawlable snapshot.</p>
-      </section>
+      <LiveSeoModule focus={page.slug.includes('carbon') ? 'carbon' : page.slug.includes('gas') ? 'gas' : 'renewables'} />
 
       {page.sections.map((section) => (
         <section key={section.heading}>

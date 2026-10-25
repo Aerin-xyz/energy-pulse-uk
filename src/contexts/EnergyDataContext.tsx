@@ -13,6 +13,7 @@ interface CachedData {
 }
 
 function loadFromLocalStorage(): EnergyData | null {
+  if (typeof localStorage === 'undefined') return null;
   try {
     const cached = localStorage.getItem(CACHE_KEY);
     if (!cached) return null;
@@ -203,10 +204,10 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
   const {pathname}=useLocation();
   const enabled=!/^\/(about|privacy|contact|citation|methodology|newsletter|glossary|partners|reports(?:\/.*)?|insights|records(?:\/.*)?|social|admin(?:\/.*)?|share(?:\/.*)?)\/?$/.test(pathname);
 
-  // Initialize from localStorage for instant loading
-  const [data, setData] = useState<EnergyData | null>(() => loadFromLocalStorage());
+  // Match the static unavailable state before restoring browser-only cached data.
+  const [data, setData] = useState<EnergyData | null>(null);
   const [rawData, setRawData] = useState<any>(null);
-  const [cachedData, setCachedData] = useState<EnergyData | null>(() => loadFromLocalStorage());
+  const [cachedData, setCachedData] = useState<EnergyData | null>(null);
   const [loading, setLoading] = useState(false);
   const [initialLoad, setInitialLoad] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -218,6 +219,11 @@ export function EnergyDataProvider({ children }: { children: ReactNode }) {
   const pendingRequest = useRef<Promise<void> | null>(null);
   const isMountedRef = useRef(true);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const restored = loadFromLocalStorage();
+    if (restored) { setData(restored); setCachedData(restored); }
+  }, []);
 
   // Cleanup on unmount
   useEffect(() => {

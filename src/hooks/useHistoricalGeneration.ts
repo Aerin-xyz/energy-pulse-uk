@@ -105,6 +105,7 @@ const toWeeklyMeta = (meta?: HistoricalMeta): WeeklyMeta | undefined => {
 
 // Load historical data from localStorage
 function loadHistoricalFromCache(): HistoricalCachedData | null {
+  if (typeof localStorage === 'undefined') return null;
   try {
     const cached = localStorage.getItem(HISTORICAL_CACHE_KEY);
     if (!cached) return null;
@@ -144,6 +145,7 @@ function saveHistoricalToCache(data: HistoricalDataPoint[], lastUpdated: string,
 
 // Load weekly data from localStorage
 function loadWeeklyFromCache(): WeeklyCachedData | null {
+  if (typeof localStorage === 'undefined') return null;
   try {
     const cached = localStorage.getItem(WEEKLY_CACHE_KEY);
     if (!cached) return null;
@@ -181,7 +183,7 @@ function saveWeeklyToCache(data: DailyDataPoint[], lastUpdated: string, meta?: W
   }
 }
 
-export const useHistoricalGeneration = () => {
+export const useHistoricalGeneration = (enabled = true) => {
   // Load from cache on mount
   const cachedHistorical = loadHistoricalFromCache();
   const cachedWeekly = loadWeeklyFromCache();
@@ -341,17 +343,17 @@ export const useHistoricalGeneration = () => {
   // Fetch historical data in parallel with energy data for faster initial load.
   // Keep this silent: historical refresh is normal background work, not a user-facing event.
   useEffect(() => {
-    fetchHistoricalData(false);
-  }, [fetchHistoricalData]);
+    if(enabled) fetchHistoricalData(false);
+  }, [fetchHistoricalData,enabled]);
 
   // Auto-refresh every 30 minutes
   useEffect(() => {
     const interval = setInterval(() => {
-      if(!document.hidden)fetchHistoricalData(false);
+      if(enabled&&!document.hidden)fetchHistoricalData(false);
     }, 30 * 60 * 1000);
 
     return () => clearInterval(interval);
-  }, [fetchHistoricalData]);
+  }, [fetchHistoricalData,enabled]);
 
   // Fetch forecast data separately
   const fetchForecastData = useCallback(async (showToast = false) => {
