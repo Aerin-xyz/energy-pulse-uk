@@ -1,0 +1,7 @@
+{
+  "rows": 300,
+  "maxAbsoluteDeltaGBP": 0,
+  "sourceField": "Daily Cost GBP",
+  "normalisedField": "Daily Cost (GBP)",
+  "latestDay": "2026-10-21"
+}

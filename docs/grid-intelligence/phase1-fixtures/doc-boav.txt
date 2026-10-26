@@ -1,0 +1,235 @@
+Services
+Programmes
+Elexon Support
+Log In
+INSIGHTS
+REMIT
+Generation
+Demand
+Balancing
+Notices
+Transmission
+Data Services & Reports
+Login to Insights
+Search by endpoint
+Getting Started
+What's New
+Browse All
+BMRS Datasets
+Balancing Mechanism Dynamic
+Balancing Mechanism Physical
+Balancing Services Adjustment - Disaggregated
+Balancing Services Adjustment - Net
+Bid-Offer
+Bid-Offer Acceptances
+Data Status
+Demand
+Demand Forecast
+Generation
+Generation Forecast
+Health Check
+Indicated Forecast
+Indicative Imbalance Settlement
+Acceptance volumes by settlement date (BOAV)
+Acceptance volumes by settlement period (BOAV)
+Default notices (CDN)
+Historic acceptances by settlement period (ISPSTACK, BOALF, BOD)
+Indicative period BMU cashflows by settlement date (EBOCF)
+Indicative period BMU cashflows by settlement period (EBOCF)
+Indicative volumes by settlement date (DISPTAV)
+Indicative volumes by settlement period (DISPTAV)
+Market depth by settlement date (IMBALNGC, BOD, DISEBSP, DISPTAV)
+Market depth by settlement period (IMBALNGC, BOD, DISEBSP, DISPTAV)
+Settlement bid-offer stacks by settlement period (ISPSTACK)
+Settlement calculation summary (ISPSTACK, DISEBSP, MID, NETBSAD)
+Settlement messages by settlement date (SMSG)
+Settlement messages by settlement date and period (SMSG)
+Settlement system prices by settlement date (DISEBSP)
+Settlement system prices by settlement date and period (DISEBSP)
+Load Shape
+Margin Forecast
+Market Index
+Non-BM STOR
+Non-BM Volumes
+REMIT
+Reference
+SAA Datasets
+SAA Market Reports
+SAA Settlement Reports (I014)
+SO-SO Prices
+Surplus Forecast
+System
+System forecast
+Temperature
+Indicative Imbalance Settlement
+Acceptance volumes by settlement period (BOAV)
+
+Returns the settlement acceptance volumes for the requested settlement period.
+
+Only messages generated for the latest settlement run are returned.
+
+Settlement date parameter must be provided in the exact format yyyy-MM-dd.
+
+GET
+/balancing/settlement/acceptance/volumes/all/{bidOffer}/{settlementDate}/{settlementPeriod}
+Acceptance volumes by settlement period (BOAV)
+Parameters
+Try it out
+Name	Description
+
+settlementPeriod *
+integer($int32)
+(path)
+
+
+This should be an integer from 1-50 inclusive.
+
+Example : 48
+
+
+
+settlementDate *
+string($date)
+(path)
+
+
+This must be in the format yyyy-MM-dd.
+
+Example : 2024-02-01
+
+
+
+bidOffer *
+string
+(path)
+
+
+Available values : bid, offer
+
+Example : bid
+
+bid
+offer
+
+
+bmUnit
+array<string>
+(query)
+
+
+Elexon or NGC BMU IDs can be used. If omitted, results for all BM units will be returned.
+
+Example : List [ "DALSW-1" ]
+
+
+
+format
+string
+(query)
+
+
+Response data format. Use json/xml to include metadata.
+
+Available values : json, xml
+
+--
+json
+xml
+Responses
+Code	Description	Links
+200
+
+Data retrieved
+
+Media type
+application/json
+application/xml
+Controls Accept header.
+Example Value
+Schema
+{
+  "data": [
+    {
+      "createdDateTime": "2023-02-28T15:31:12Z",
+      "settlementDate": "2023-03-01",
+      "settlementPeriod": 2,
+      "startTime": "2023-03-01T00:30:00Z",
+      "bmUnit": "T_ABRBO-1",
+      "bmUnitType": "T",
+      "leadPartyName": "Aberdeen Offshore Wind Farm",
+      "nationalGridBmUnit": "ABRBO-1",
+      "acceptanceId": 76110,
+      "acceptanceDuration": "L",
+      "totalVolumeAccepted": -75.725,
+      "pairVolumes": {
+        "negative1": null,
+        "positive1": 23062.377,
+        "negative2": null,
+        "positive2": 5017.6255,
+        "negative3": null,
+        "positive3": null,
+        "negative4": null,
+        "positive4": null,
+        "negative5": null,
+        "positive5": null,
+        "negative6": null,
+        "positive6": null
+      }
+    }
+  ],
+  "metadata": {
+    "datasets": [
+      "DATASET"
+    ]
+  }
+}
+	No links
+400
+
+Error with query parameters - see response for details
+
+	No links
+429
+
+Too many requests
+
+	No links
+500
+
+Server error - please try again later
+
+	No links
+BSC
+CMAG
+DIP
+EMRS
+FM
+MHHS
+NCC
+SSES
+Corporate Policies
+Privacy Policy
+Cookie Policy
+Contact Elexon
+Service Status Dashboard
+A-Z Index
+Glossary
+Linkedin
+X
+Glassdoor
+Copyright © 2026 Elexon
+×
+This website uses cookies
+We use necessary cookies to enable our website to work, functionality cookies that allow you to create an individual experience on the website, and analytics cookies that record anonymised information about how you use the website. Functionality and analytics cookies will only be set if you accept.
+
+We'd like to set Google Analytics cookies to help us improve our website by collecting and reporting information on how you use it. The cookies collect information in a way that does not directly identify anyone. Analytics cookies will only be set if you accept.
+
+We never include marketing cookies. For more information about the cookies we use, see our Cookies page.
+
+Manage consent preferences
+Necessary
+Analytics
+Targeting
+Functional
+ACCEPT ALL
+ VIEW COOKIES LIST

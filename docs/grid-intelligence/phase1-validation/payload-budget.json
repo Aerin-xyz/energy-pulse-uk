@@ -1,0 +1,54 @@
+{
+  "measuredAt": "2026-10-26T16:41:57.258Z",
+  "samples": [
+    {
+      "dataset": "BMUNITS",
+      "sourceBytes": 2167142,
+      "rawGzipBytes": 129846,
+      "normalisedBytes": 906818
+    },
+    {
+      "dataset": "BOALF",
+      "sourceBytes": 139183,
+      "rawGzipBytes": 7479,
+      "normalisedBytes": 239305
+    },
+    {
+      "dataset": "BOAV-bid",
+      "sourceBytes": 143210,
+      "rawGzipBytes": 6112,
+      "normalisedBytes": 104246
+    },
+    {
+      "dataset": "BOAV-bid",
+      "sourceBytes": 126721,
+      "rawGzipBytes": 5744,
+      "normalisedBytes": 94655
+    },
+    {
+      "dataset": "BOAV-offer",
+      "sourceBytes": 142764,
+      "rawGzipBytes": 4963,
+      "normalisedBytes": 103590
+    },
+    {
+      "dataset": "BOAV-offer",
+      "sourceBytes": 126307,
+      "rawGzipBytes": 4647,
+      "normalisedBytes": 94156
+    },
+    {
+      "dataset": "DISEBSP",
+      "sourceBytes": 44215,
+      "rawGzipBytes": 3870,
+      "normalisedBytes": 33990
+    },
+    {
+      "dataset": "DISEBSP",
+      "sourceBytes": 28701,
+      "rawGzipBytes": 2574,
+      "normalisedBytes": 21960
+    }
+  ],
+  "note": "Single-cycle byte sample, gzip is an illustration not a PostgreSQL storage measurement. No billed usage or field performance claimed."
+}
