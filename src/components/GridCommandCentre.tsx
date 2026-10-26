@@ -2,9 +2,9 @@ import {carbonPresentation} from '@/lib/evidence/carbon.mjs';
 import {FUEL_COLOURS,sourceIndicator} from '@/lib/atlasPresentation.mjs';
 import {useGridEvidence} from '@/hooks/useGridEvidence';
 import {halfHours,nearLiveGeneration,VERSION} from '@/lib/evidence/calculations.mjs';
-import {lazy, Suspense, useState, type ReactNode} from 'react';
+import {lazy, Suspense, type ReactNode} from 'react';
 import {useLocation, useNavigate, Link} from 'react-router-dom';
-import {Map, Zap, Wind, Leaf, Cable} from 'lucide-react';
+import {Zap, Wind, Leaf, Cable} from 'lucide-react';
 import {useEnergyData} from '@/contexts/EnergyDataContext';
 import {useHistoricalGeneration} from '@/hooks/useHistoricalGeneration';
 import {useCarbonOutlook} from '@/hooks/useCarbonOutlook';
@@ -19,8 +19,6 @@ export function GridCommandCentre({data,history,carbon,now,children}:{data:Retur
  const location=useLocation(),navigate=useNavigate();
  const generationMode=new URLSearchParams(location.search).get('basis')==='half-hour'?'half-hour':'near-live';
  const setGenerationMode=(mode:string)=>{const p=new URLSearchParams(location.search);if(mode==='half-hour')p.set('basis',mode);else p.delete('basis');navigate({pathname:location.pathname,search:p.toString(),hash:location.hash},{state:location.state,preventScrollReset:true});};
- const hasMapState=['layer','fuel','q','capacity','country','evidence','order','asset','selection','camera','panel','expanded'].some(k=>new URLSearchParams(location.search).has(k));
- const [mapRequested,setMapRequested]=useState(()=>hasMapState||location.hash==='#grid-map');
  const evidence=useGridEvidence();const current=halfHours(evidence.data?.sources.FUELHH?.records||[],evidence.data?.sources.INDO?.records||[],now).at(-1);
  const nearLive=nearLiveGeneration(evidence.data?.sources.FUELINST?.records||[],now);
  const chosen=generationMode==='near-live'?nearLive:current;
@@ -33,7 +31,6 @@ export function GridCommandCentre({data,history,carbon,now,children}:{data:Retur
  const status=sourceIndicator({timestamp:generationAt,cadenceMinutes:generationMode==='near-live'?5:30,now,failed:evidence.isError||evidence.data?.transportStatus==='fallback'||!!evidence.data?.sources[generationMode==='near-live'?'FUELINST':'FUELHH']?.error,available:finite(total)});
  const carbonReading=carbonPresentation(data?.carbonIntensity,now);
  const net=current?.netImportsMW;
- const mapOpen=mapRequested||hasMapState||location.hash==='#grid-map';
  return <><section className="cc-heading national-heading"><h1>Britain’s electricity. <em>Live, explained.</em></h1><p>Great Britain’s electricity: measured generation, sources and forecasts. Northern Ireland is a separate market.</p></section>
  <p className="national-status" data-source-state={status.state}>Generation: {status.label} · {stamp(generationAt)}. Each source has its own clock.</p>
  <div className="national-layout">
@@ -55,7 +52,7 @@ export function GridCommandCentre({data,history,carbon,now,children}:{data:Retur
  </section>
  <div className="national-context">{children}</div>
  <section className="national-atlas" aria-label="Explore the electricity atlas">
- {mapOpen?<Suspense fallback={<p className="atlas-load-state">Loading the electricity atlas… National readings remain available above.</p>}><GridAtlas flows={data?.interconnectors||[]} regions={carbon.regions} regionFrom={carbon.from} regionTo={carbon.to} flowTime={data?.dataFreshness?.sourceFreshness?.interconnectors?.timestamp||undefined} now={now}/></Suspense>:<div className="atlas-preview"><img className="atlas-geography-preview" src="/atlas-geography-preview.svg" alt="Geographic preview of Britain and Ireland; no live flows" width="260" height="290"/><h2>Explore the electricity atlas</h2><p>Find generation sites, inspect cables and compare regional carbon. Installed capacity, notified output and measured history stay clearly separated.</p><button onClick={()=>setMapRequested(true)}>Open interactive atlas</button><p className="atlas-preview-note">Natural Earth geography. Detailed map data loads when opened; no live flows are shown in this preview.</p><Link to="/explore/">Explore charts and data →</Link></div>}
+ <Suspense fallback={<p className="atlas-load-state">Loading the electricity atlas… National readings remain available above.</p>}><GridAtlas flows={data?.interconnectors||[]} regions={carbon.regions} regionFrom={carbon.from} regionTo={carbon.to} flowTime={data?.dataFreshness?.sourceFreshness?.interconnectors?.timestamp||undefined} now={now}/></Suspense>
  </section>
  </div></>;
 }
