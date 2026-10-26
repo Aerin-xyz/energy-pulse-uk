@@ -41,7 +41,7 @@
   gap: 18px;
   align-items: start;
 }
-.observatory .cc-grid > .immersive-atlas {
+.observatory .immersive-atlas {
   grid-column: 1/-1;
   grid-row: 1;
   width: 100%;
@@ -219,7 +219,7 @@
     radial-gradient(ellipse at 50% 50%, #0b3c4055, transparent 68%), #03141e;
   isolation: isolate;
 }
-.observatory .cc-grid .immersive-atlas .atlas-map {
+.observatory .immersive-atlas .atlas-map {
   display: block;
   width: 100%;
   height: 100%;
@@ -737,7 +737,7 @@
   color: #a2dedc;
   text-decoration: underline;
 }
-.observatory .cc-grid > .immersive-atlas.expanded {
+.observatory .immersive-atlas.expanded {
   position: fixed;
   inset: 0;
   margin: 0;
@@ -919,7 +919,7 @@
     flex-direction: column;
     gap: 14px;
   }
-  .observatory .cc-grid > .immersive-atlas {
+  .observatory .immersive-atlas {
     order: -1;
     border-radius: 14px;
   }

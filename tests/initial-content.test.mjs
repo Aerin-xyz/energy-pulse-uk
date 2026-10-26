@@ -103,6 +103,6 @@ test('homepage initial layout renders the actual national summary, not the obsol
   assert.match(html, /class="national-layout"/);
   assert.match(html, /aria-label="National electricity summary"/);
   assert.match(html, /class="national-fuels"/);
-  assert.match(html, /Open interactive atlas/);
+  assert.match(html, /Loading the electricity atlas/);
   assert.doesNotMatch(html, /class="atlas-intro"|class="atlas-deck"|id="seo-prerender"/);
 });
