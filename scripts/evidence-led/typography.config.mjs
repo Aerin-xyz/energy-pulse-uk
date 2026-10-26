@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'../../tests',timeout:60000,workers:2,use:{baseURL:'http://127.0.0.1:4187',screenshot:'only-on-failure'},reporter:'list',outputDir:'/tmp/energy-type-test-artifacts'});
