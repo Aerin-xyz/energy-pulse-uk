@@ -1,3 +1,4 @@
+import {useMapLabelLayout} from '@/hooks/useMapLabelLayout';
 import { useAtlasWorkspace } from "@/hooks/useAtlasWorkspace";
 import { AtlasInspector } from "./AtlasInspector";
 import { NetworkBackdrop, useNetworkGeography } from "./NetworkBackdrop";
@@ -95,6 +96,7 @@ export function GridAtlas({
     selected,
     expanded,
     showNetwork,
+    showNetworkNames,
     panel,
   } = state;
   const field = (key: string) => (value: any) =>
@@ -111,6 +113,7 @@ export function GridAtlas({
     setAssetAvailability = field("assetAvailability"),
     setAssetSort = field("assetSort"),
     setShowNetwork = field("showNetwork");
+  const setShowNetworkNames = field("showNetworkNames");
   const setExpanded = (expanded: boolean) => update({ expanded }, "push");
   const setViewport = (value: any) =>
     update(
@@ -139,8 +142,10 @@ export function GridAtlas({
     previousPanel.current = panel;
   }, [panel]);
 
+  const [showPan, setShowPan] = useState(false);
   const [markerScale, setMarkerScale] = useState(1);
   const mapRef = useRef<SVGSVGElement>(null);
+  useMapLabelLayout(mapRef);
   useEffect(() => {
     const svg = mapRef.current;
     if (!svg) return;
@@ -475,49 +480,18 @@ export function GridAtlas({
         className={panel ? "atlas-workspace has-inspector" : "atlas-workspace"}
       >
         <div className="map-canvas">
-          <div className="network-key">
-            <button
-              aria-pressed={showNetwork}
-              onClick={() => setShowNetwork((v) => !v)}
-            >
-              Network backdrop {showNetwork ? "on" : "off"}
-            </button>
-            {showNetwork && (
-              <>
-                <details>
-                  <summary>Map key</summary>
-                  <span>
-                    <i className="key-400" />
-                    400 kV
-                  </span>
-                  <span>
-                    <i className="key-275" />
-                    275 kV
-                  </span>
-                  <span>
-                    <i className="key-132" />
-                    132 kV · Scotland
-                  </span>
-                  <span>
-                    <i className="key-site" />
-                    Generation sites / groups
-                  </span>
-                  <span>
-                    <i className="key-cable" />
-                    Interconnectors · schematic
-                  </span>
-                </details>
-                <small>
-                  {network.isError
-                    ? "Network geography unavailable"
-                    : "Mapped infrastructure · not live flows"}
-                </small>
-              </>
-            )}
-          </div>
+          <details className="network-key">
+            <summary>Map layers &amp; key</summary>
+            <button aria-pressed={showNetwork} onClick={()=>setShowNetwork(v=>!v)}>Network backdrop {showNetwork?'on':'off'}</button>
+            <button aria-pressed={!!showNetworkNames} disabled={!showNetwork} onClick={()=>setShowNetworkNames(v=>!v)}>Network names {showNetworkNames?'on':'off'}</button>
+            <span><i className="key-400"/>400 kV</span>
+            <span><i className="key-275"/>275 kV</span>
+            <span><i className="key-132"/>132 kV · Scotland</span>
+            <small>{network.isError?'Network geography unavailable':'Mapped infrastructure · not live flows'}</small>
+          </details>
           {mode === "generation" && (
             <div
-              className="asset-navigation"
+              className={showPan?"asset-navigation show-pan":"asset-navigation"}
               aria-label="Generation map navigation"
             >
               <button
@@ -538,16 +512,17 @@ export function GridAtlas({
                 Reset GB view
               </button>
               <span>{viewport.zoom.toFixed(1)}×</span>
-              <button onClick={() => pan(-1, 0)} aria-label="Pan west">
+              <button className="pan-toggle" aria-expanded={showPan} onClick={()=>setShowPan(v=>!v)}>Pan controls</button>
+              <button className="pan-direction" onClick={() => pan(-1, 0)} aria-label="Pan west">
                 ←
               </button>
-              <button onClick={() => pan(0, -1)} aria-label="Pan north">
+              <button className="pan-direction" onClick={() => pan(0, -1)} aria-label="Pan north">
                 ↑
               </button>
-              <button onClick={() => pan(0, 1)} aria-label="Pan south">
+              <button className="pan-direction" onClick={() => pan(0, 1)} aria-label="Pan south">
                 ↓
               </button>
-              <button onClick={() => pan(1, 0)} aria-label="Pan east">
+              <button className="pan-direction" onClick={() => pan(1, 0)} aria-label="Pan east">
                 →
               </button>
             </div>
@@ -740,9 +715,12 @@ export function GridAtlas({
             {showNetwork && (
               <NetworkBackdrop
                 data={network.data}
+                showNames={!!showNetworkNames}
+                markerScale={markerScale}
                 zoom={mode === "generation" ? viewport.zoom : 1}
               />
             )}
+            {(mode !== "generation" || viewport.zoom < 3) && <g>
             <text
               x="150"
               y="235"
@@ -763,6 +741,7 @@ export function GridAtlas({
             <text x="285" y="541" className="atlas-place">
               WALES
             </text>
+            </g>}
             {mode === "cables" && (
               <CableMapLayer
                 rows={cableFeed.rows}
