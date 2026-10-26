@@ -31,9 +31,11 @@ export function GridCommandCentre({data,history,carbon,now,children}:{data:Retur
  const status=sourceIndicator({timestamp:generationAt,cadenceMinutes:generationMode==='near-live'?5:30,now,failed:evidence.isError||evidence.data?.transportStatus==='fallback'||!!evidence.data?.sources[generationMode==='near-live'?'FUELINST':'FUELHH']?.error,available:finite(total)});
  const carbonReading=carbonPresentation(data?.carbonIntensity,now);
  const net=current?.netImportsMW;
- return <><section className="cc-heading national-heading"><h1>Britain’s electricity. <em>Live, explained.</em></h1><p>Great Britain’s electricity: measured generation, sources and forecasts. Northern Ireland is a separate market.</p></section>
- <p className="national-status" data-source-state={status.state}>Generation: {status.label} · {stamp(generationAt)}. Each source has its own clock.</p>
+ return <><section className="cc-heading national-heading"><h1>Britain’s electricity. <em>Live, explained.</em></h1></section>
  <div className="national-layout">
+ <section className="national-atlas" aria-label="Explore the electricity atlas">
+ <Suspense fallback={<p className="atlas-load-state">Loading the electricity atlas… National readings are below the map.</p>}><GridAtlas flows={data?.interconnectors||[]} regions={carbon.regions} regionFrom={carbon.from} regionTo={carbon.to} flowTime={data?.dataFreshness?.sourceFreshness?.interconnectors?.timestamp||undefined} now={now}/></Suspense>
+ </section>
  <section className="national-metrics" aria-label="National electricity summary">
  <article><h2><Zap size={16}/>Demand</h2><strong>{gw(current?.demandMW)} <small>GW</small></strong><p>Initial national outturn · INDO</p><small>{stamp(current?.to)} · {sourceState(current?.to,30,now).label}</small></article>
  <article><h2><Wind size={16}/>Renewable share</h2><strong>{finite(renewable)?renewable!.toFixed(1):'—'} <small>%</small></strong><p>Wind, hydro and biomass</p><small>Metered generation · {stamp(generationAt)}</small></article>
@@ -42,7 +44,7 @@ export function GridCommandCentre({data,history,carbon,now,children}:{data:Retur
  </section>
  <section className="national-mix" aria-label="Electricity snapshot"><header><h2>Generation mix</h2><span>Great Britain</span></header>
  <div className="atlas-tabs" role="group" aria-label="Generation observation basis"><button aria-pressed={generationMode==='near-live'} onClick={()=>setGenerationMode('near-live')}>Near-live · 5 min</button><button aria-pressed={generationMode==='half-hour'} onClick={()=>setGenerationMode('half-hour')}>Completed half-hour</button></div>
- <p className="national-total"><strong>{gw(total)} <small>GW</small></strong><span>{label}<br/>{stamp(generationAt)}</span></p>
+ <p className="national-total"><strong>{gw(total)} <small>GW</small></strong><span>{label}<br/>{status.label} · {stamp(generationAt)}</span></p>
  <div className="map-mix-strip" aria-hidden="true">{mix.map(m=><i key={m.name} style={{width:total&&finite(m.value)?m.value!/total*100+'%':'0',background:FUEL_COLOURS[m.name]||'#94a3b8'}}/>)}</div>
  <ul className="national-fuels" aria-label="Generation by fuel">{mix.map(m=><li key={m.name}><span><i style={{background:FUEL_COLOURS[m.name]||'#94a3b8'}}/>{m.name}</span><strong>{gw(m.value)} <small>GW</small></strong><b>{finite(total)&&total!>0&&finite(m.value)?(m.value!/total!*100).toFixed(1)+'%':'—'}</b></li>)}</ul>
  {chosen&&!complete&&<p>Partial fuel coverage — total and shares withheld. Missing readings remain unknown.</p>}
@@ -51,8 +53,6 @@ export function GridCommandCentre({data,history,carbon,now,children}:{data:Retur
  <EvidenceExport title="Great Britain generation mix" at={generationMode==='half-hour'?current?.from:generationAt} periodEnd={generationMode==='half-hour'?current?.to:undefined} definitionVersion={VERSION} kind="measured" basis={label+'; transmission-metered domestic generation; excludes embedded estimates, pumped storage and imports'} status={complete?status.label:status.label+'; partial fuel coverage; total withheld'} rows={(chosen?.generationMix||[]).map(m=>({name:m.name,value:m.value,unit:'MW'}))} sourceUrl="https://bmrs.elexon.co.uk/api-documentation"/>
  </section>
  <div className="national-context">{children}</div>
- <section className="national-atlas" aria-label="Explore the electricity atlas">
- <Suspense fallback={<p className="atlas-load-state">Loading the electricity atlas… National readings remain available above.</p>}><GridAtlas flows={data?.interconnectors||[]} regions={carbon.regions} regionFrom={carbon.from} regionTo={carbon.to} flowTime={data?.dataFreshness?.sourceFreshness?.interconnectors?.timestamp||undefined} now={now}/></Suspense>
- </section>
+
  </div></>;
 }
