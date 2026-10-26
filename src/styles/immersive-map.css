@@ -433,7 +433,7 @@
 .atlas-inspector {
   color: #d8e8ef;
   background: #081f2b;
-  font-family: "Source Sans 3", sans-serif;
+  font-family: var(--font-interface);
   border: 0;
   border-left: 1px solid #3c5c69;
   border-radius: 0;

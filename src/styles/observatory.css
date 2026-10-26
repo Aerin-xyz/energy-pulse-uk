@@ -11,7 +11,7 @@
   --line: #263c43;
   background: var(--ink);
   color: #e9f2ef;
-  font-family: "Source Sans 3", "Segoe UI", sans-serif;
+  font-family: var(--font-interface);
   line-height: 1.5;
   font-variant-numeric: tabular-nums;
 }
@@ -889,7 +889,7 @@
   --gradient-card: linear-gradient(135deg, #10232b, #0b1b23);
 }
 body {
-  font-family: "Source Sans 3", "Segoe UI", sans-serif;
+  font-family: var(--font-interface);
 }
 .text-glow {
   text-shadow: none !important;
