@@ -988,15 +988,9 @@
   .map-canvas > .asset-navigation span {
     display: none;
   }
-  .map-canvas > .asset-navigation button:nth-of-type(n + 4) {
-    display: none;
-  }
-  .immersive-atlas.expanded .asset-navigation {
-    grid-template-columns: 44px 44px;
-  }
-  .immersive-atlas.expanded .asset-navigation button:nth-of-type(n + 4) {
-    display: block;
-  }
+  .map-canvas > .asset-navigation .pan-direction { display: none; }
+  .map-canvas > .asset-navigation.show-pan .pan-direction { display: block; }
+  .immersive-atlas.expanded .asset-navigation.show-pan { grid-template-columns:44px 44px; }
   .atlas-gesture-hint {
     font-size: 11px;
     left: 8px;
@@ -1086,3 +1080,11 @@
     animation: none !important;
   }
 }
+
+/* Collapsed cartographic controls leave the map unobscured. */
+.network-key:not([open]){display:block;padding:0;max-width:180px}
+.network-key>summary{cursor:pointer;min-height:44px;padding:12px;font-size:12px}
+.network-key[open]{display:flex}
+.network-key button{min-height:44px}
+.map-canvas>.asset-navigation .pan-toggle{display:none}
+@media(max-width:600px){.map-canvas>.asset-navigation .pan-toggle{display:block;font-size:10px;line-height:1.2;padding:4px}.map-canvas>.asset-navigation{grid-template-columns:44px}}

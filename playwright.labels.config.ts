@@ -1,0 +1,1 @@
+import {defineConfig} from '@playwright/test';export default defineConfig({testDir:'./tests',timeout:45000,workers:2,use:{baseURL:process.env.MAP_TEST_URL||'http://127.0.0.1:4189'},reporter:'list',outputDir:'/tmp/map-label-test-artifacts'});
