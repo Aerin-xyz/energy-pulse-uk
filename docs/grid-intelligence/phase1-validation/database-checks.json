@@ -1,0 +1,17 @@
+{
+  "checks": 12,
+  "passed": true,
+  "engine": "PGlite isolated PostgreSQL; not live Supabase",
+  "covers": [
+    "migration",
+    "public/raw access denied",
+    "service permissions",
+    "lease exclusion",
+    "idempotency",
+    "revision preservation",
+    "out-of-order write",
+    "atomic rejection",
+    "payload bound",
+    "retention"
+  ]
+}

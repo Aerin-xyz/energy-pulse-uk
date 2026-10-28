@@ -41,6 +41,7 @@ export function changesEvidence(fuels,demand,now=Date.now()){
 export function sourceHealth(source,now=Date.now()){
  if(!source?.checkedAt)return 'Unavailable';
  if(source.error)return 'Refresh failed · last known data';
+ if(source.observationHealth?.status==='expired')return 'Forecast expired · no upcoming periods';
  const state=sourceState(source.checkedAt,source.refreshMinutes||60,now);return state.fresh?'Checked recently':state.label;
 }
 

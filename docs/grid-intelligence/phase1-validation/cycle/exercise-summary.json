@@ -1,0 +1,105 @@
+{
+  "checkedAt": "2026-10-26T16:38:53.317Z",
+  "firstStatus": "succeeded",
+  "outcomes": [
+    {
+      "key": "DISEBSP|2026-10-26",
+      "result": "ok",
+      "records": 32,
+      "bytes": 28701
+    },
+    {
+      "key": "DISEBSP|2026-10-25",
+      "result": "ok",
+      "records": 50,
+      "bytes": 44215
+    },
+    {
+      "key": "BOAV-bid|2026-10-26/32",
+      "result": "ok",
+      "records": 211,
+      "bytes": 126721
+    },
+    {
+      "key": "BOAV-offer|2026-10-26/32",
+      "result": "ok",
+      "records": 211,
+      "bytes": 126307
+    },
+    {
+      "key": "BOAV-bid|2026-10-25/32",
+      "result": "ok",
+      "records": 232,
+      "bytes": 143210
+    },
+    {
+      "key": "BOAV-offer|2026-10-25/32",
+      "result": "ok",
+      "records": 232,
+      "bytes": 142764
+    },
+    {
+      "key": "BOALF|2026-10-26/32",
+      "result": "ok",
+      "records": 386,
+      "bytes": 139183
+    },
+    {
+      "key": "BMUNITS|reference",
+      "result": "ok",
+      "records": 3127,
+      "bytes": 2167142
+    }
+  ],
+  "reconciliation": [
+    {
+      "scope": {
+        "date": "2026-10-26",
+        "period": 32
+      },
+      "status": "matched",
+      "bidMWh": -3100.8094211290054,
+      "offerMWh": 3001.5174049851184,
+      "sourceBidMWh": -3100.8094211290068,
+      "sourceOfferMWh": 3001.5174049851184,
+      "toleranceMWh": 0.01,
+      "note": "Compare only the same settlement period and source creation/run timestamp; not measured generation, curtailment or total balancing cost"
+    },
+    {
+      "scope": {
+        "date": "2026-10-25",
+        "period": 32
+      },
+      "status": "matched",
+      "bidMWh": -1221.7416872222223,
+      "offerMWh": 1270.8333225000001,
+      "sourceBidMWh": -1221.7416872222223,
+      "sourceOfferMWh": 1270.8333225,
+      "toleranceMWh": 0.01,
+      "note": "Compare only the same settlement period and source creation/run timestamp; not measured generation, curtailment or total balancing cost"
+    }
+  ],
+  "secondStatus": "succeeded",
+  "secondFetches": 0,
+  "snapshotBytes": 694847,
+  "health": [
+    {
+      "observationState": "current",
+      "status": "current",
+      "latestPeriodEnd": "2026-10-26T16:00:00.000Z",
+      "coverage": "partial",
+      "error": null,
+      "checkedAt": "2026-10-26T16:38:52.456Z",
+      "lastAttemptAt": "2026-10-26T16:38:52.456Z"
+    },
+    {
+      "observationState": "stale",
+      "status": "stale",
+      "latestPeriodEnd": "2026-10-26T00:00:00.000Z",
+      "coverage": "complete",
+      "error": null,
+      "checkedAt": "2026-10-26T16:38:52.456Z",
+      "lastAttemptAt": "2026-10-26T16:38:52.456Z"
+    }
+  ]
+}
