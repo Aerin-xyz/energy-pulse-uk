@@ -1,10 +1,10 @@
 {
-  "checkedAt": "2026-11-05T10:41:10.326Z",
+  "checkedAt": "2026-11-05T18:39:34.503Z",
   "settlementDate": "2026-10-28",
   "settlementPeriod": 48,
   "source": "Elexon B1610",
   "canonicalVersion": "gb-assets-v1",
-  "verificationCheckedAt": "2026-11-05T10:40:57.651Z",
+  "verificationCheckedAt": "2026-11-05T18:39:17.564Z",
   "verificationError": null,
   "publicationNote": "Provider row publication time unavailable; settlement run and content revision retained",
   "points": [
