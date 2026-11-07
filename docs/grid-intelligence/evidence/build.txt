@@ -1,0 +1,65 @@
+
+> vite_react_shadcn_ts@0.0.0 build:local
+> node scripts/generate-static-snapshot.mjs && vite build && node scripts/prerender-static.mjs && node scripts/check-initial-content.mjs dist
+
+Static snapshot uses shared gb-evidence-v1 calculations
+vite v7.3.7 building client environment for production...
+transforming...
+✓ 2533 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                      4.20 kB │ gzip:   1.52 kB
+dist/assets/energy-mix-logo-BfBqpvRW.png            44.87 kB
+dist/assets/GridAtlas-DY8nMJqJ.css                   3.77 kB │ gzip:   1.27 kB
+dist/assets/mailerlite-overrides-DeOks72L.css       10.83 kB │ gzip:   1.85 kB
+dist/assets/index-DCItxNe2.css                     164.27 kB │ gzip:  32.51 kB
+dist/assets/index-D8qWkb7-.js                        0.14 kB │ gzip:   0.14 kB
+dist/assets/chevron-up-CgIUnGXz.js                   0.20 kB │ gzip:   0.17 kB
+dist/assets/external-link-Ddto-UkI.js                0.25 kB │ gzip:   0.20 kB
+dist/assets/NavigationBar-CnQfqs8u.js                0.31 kB │ gzip:   0.23 kB
+dist/assets/index-DzY6yuWx.js                        0.67 kB │ gzip:   0.41 kB
+dist/assets/badge-CjW6yMSe.js                        0.71 kB │ gzip:   0.37 kB
+dist/assets/NotFound-Cry37weQ.js                     0.77 kB │ gzip:   0.46 kB
+dist/assets/AtlasNavigation-Dd4EOuVw.js              0.83 kB │ gzip:   0.48 kB
+dist/assets/card-CaZAZh2t.js                         1.01 kB │ gzip:   0.39 kB
+dist/assets/button-KygiN4mi.js                       1.23 kB │ gzip:   0.60 kB
+dist/assets/Citation-DQdLhnSt.js                     2.38 kB │ gzip:   1.03 kB
+dist/assets/Social-jtOaJIdW.js                       2.49 kB │ gzip:   1.03 kB
+dist/assets/Contact-BTWgyfoo.js                      2.58 kB │ gzip:   1.06 kB
+dist/assets/Yesterday-BEZUMD44.js                    2.71 kB │ gzip:   0.99 kB
+dist/assets/StaticPageLayout-CbsPC7oL.js             2.79 kB │ gzip:   1.13 kB
+dist/assets/Privacy-4g9UdvKD.js                      2.91 kB │ gzip:   1.09 kB
+dist/assets/GridSignalPage-BG5ICH5l.js               3.22 kB │ gzip:   1.47 kB
+dist/assets/Today-CjqrFnor.js                        3.51 kB │ gzip:   1.17 kB
+dist/assets/reportCoverage-DyqY4LoH.js               3.57 kB │ gzip:   1.70 kB
+dist/assets/About-B_yAhAAX.js                        3.65 kB │ gzip:   1.41 kB
+dist/assets/PowerFlow-Bp5AWJpF.js                    3.70 kB │ gzip:   1.42 kB
+dist/assets/Measurement-CKzVRRDP.js                  3.96 kB │ gzip:   1.35 kB
+dist/assets/useGridSignals-Dcc1Ju0q.js               4.04 kB │ gzip:   1.48 kB
+dist/assets/Partners-BfM61P5Y.js                     4.69 kB │ gzip:   1.67 kB
+dist/assets/Glossary-aME3KLC-.js                     4.78 kB │ gzip:   1.91 kB
+dist/assets/AdminDailySummary-DXH3lQRb.js            5.46 kB │ gzip:   2.03 kB
+dist/assets/ShareDailySummary--l_zArOS.js            6.45 kB │ gzip:   2.37 kB
+dist/assets/tabs-BotIZMyW.js                         6.59 kB │ gzip:   2.63 kB
+dist/assets/Insights-BS3f4PcF.js                     6.88 kB │ gzip:   2.29 kB
+dist/assets/Methodology-CSRB5TEM.js                  6.93 kB │ gzip:   2.56 kB
+dist/assets/NetworkConstraints-BVZRohd9.js           8.28 kB │ gzip:   3.19 kB
+dist/assets/Records-Da_1kvrf.js                      8.41 kB │ gzip:   2.42 kB
+dist/assets/LiveSeoModule-Dk5b2GNG.js                8.67 kB │ gzip:   3.21 kB
+dist/assets/Newsletter-D2Ov8z0f.js                   9.67 kB │ gzip:   2.80 kB
+dist/assets/DigestPreview-DTfRQHmH.js               10.17 kB │ gzip:   3.47 kB
+dist/assets/GridInsightPages-DHCA-SLn.js            11.15 kB │ gzip:   3.70 kB
+dist/assets/powerFlowDemand-Dd0qdTr4.js             16.33 kB │ gzip:   5.97 kB
+dist/assets/Data-DOhm4wdY.js                        19.33 kB │ gzip:   4.98 kB
+dist/assets/dialog-_8Noemc-.js                      23.51 kB │ gzip:   8.55 kB
+dist/assets/AdminSocialPosts-ybdgwa46.js            30.81 kB │ gzip:  10.45 kB
+dist/assets/CoreExplainers-BO_5JyNt.js              40.51 kB │ gzip:  12.04 kB
+dist/assets/Explore-COAvo1bj.js                     78.09 kB │ gzip:  22.34 kB
+dist/assets/client-D55MzUXV.js                     122.66 kB │ gzip:  33.97 kB
+dist/assets/GridAtlas-CaGkz3U9.js                  149.84 kB │ gzip:  43.93 kB
+dist/assets/index-CiSGUszE.js                      428.94 kB │ gzip: 139.48 kB
+dist/assets/HistoricalGenerationChart-DY1BfJMS.js  431.93 kB │ gzip: 116.96 kB
+dist/assets/Reports-ly9xNuyN.js                    448.34 kB │ gzip:  24.12 kB
+✓ built in 6.28s
+Prerendered 167 static HTML routes
+Initial content: PASS · 5/5 honest unavailable live pages; cache written 2026-10-26T10:56:21.383Z, archived snapshot 2026-10-26T10:00:00Z. Source ages are separate; use --json for detail.

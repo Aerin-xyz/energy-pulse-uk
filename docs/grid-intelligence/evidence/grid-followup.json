@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-26T16:12:40.456Z",
+  "generatedAt": "2026-10-26T16:11:21.400Z",
+  "sources": {
+    "FUELINST": {
+      "checkedAt": "2026-10-26T16:11:00.656Z",
+      "newestObservationAt": "2026-10-26T16:05:00Z"
+    },
+    "FUELHH": {
+      "checkedAt": "2026-10-26T16:11:00.656Z",
+      "newestObservationAt": "2026-10-26T15:30:00Z"
+    },
+    "INDO": {
+      "checkedAt": "2026-10-26T16:11:00.656Z",
+      "newestObservationAt": "2026-10-26T15:30:00Z"
+    }
+  }
+}

@@ -50,3 +50,6 @@ verify_jwt = false
 
 [functions.eu-generation-mix]
 verify_jwt = false
+# Dedicated scheduler authorization plus GRID_OPERATIONS_ENABLED flag inside function.
+[functions.grid-operations-ingest]
+verify_jwt = false
