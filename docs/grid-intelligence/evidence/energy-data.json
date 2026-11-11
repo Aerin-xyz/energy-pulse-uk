@@ -1,0 +1,756 @@
+{
+  "asOf": {
+    "endISO": "2026-10-26T16:00:00.000Z",
+    "percentageSum": 100
+  },
+  "units": "MW",
+  "storage": {
+    "mode": "generating",
+    "absMW": 238,
+    "label": "Signed metered pumped-storage output",
+    "netMW": 238,
+    "source": "Elexon FUELHH",
+    "timestamp": "2026-10-26T16:00:00.000Z"
+  },
+  "coverage": "GB transmission-metered generation; excludes embedded estimates, imports and pumped storage; Other may include battery output",
+  "observedAt": "2026-10-26T16:00:00.000Z",
+  "lastUpdated": "2026-10-26T16:06:22.651Z",
+  "dataFreshness": {
+    "source": "Elexon FUELHH/INDO completed-period outturn",
+    "status": "live",
+    "variant": "completed-half-hour",
+    "isRealtime": false,
+    "resolution": "half-hour average",
+    "sourceFreshness": {
+      "wind": {
+        "label": "Embedded wind",
+        "source": "NESO embedded wind",
+        "status": "unavailable",
+        "timestamp": null,
+        "cadenceMinutes": 30
+      },
+      "price": {
+        "label": "Market price",
+        "source": "Elexon Market Index Price",
+        "status": "live",
+        "timestamp": "2026-10-26T15:30:00.000Z",
+        "cadenceMinutes": 30
+      },
+      "solar": {
+        "label": "Solar",
+        "source": "PV Live",
+        "status": "live",
+        "timestamp": "2026-10-26T16:00:00.000Z",
+        "cadenceMinutes": 30
+      },
+      "carbon": {
+        "basis": "actual",
+        "label": "Carbon",
+        "source": "Carbon Intensity API",
+        "status": "live",
+        "fetchedAt": "2026-10-26T16:06:02.790Z",
+        "timestamp": "2026-10-26T16:00:00.000Z",
+        "intervalTo": "2026-10-26T16:00:00.000Z",
+        "intervalFrom": "2026-10-26T15:30:00.000Z",
+        "cadenceMinutes": 30
+      },
+      "demand": {
+        "label": "Initial national demand",
+        "source": "Elexon INDO",
+        "status": "live",
+        "timestamp": "2026-10-26T16:00:00.000Z",
+        "cadenceMinutes": 30
+      },
+      "storage": {
+        "label": "Signed pumped storage",
+        "source": "Elexon FUELHH",
+        "status": "live",
+        "timestamp": "2026-10-26T16:00:00.000Z",
+        "cadenceMinutes": 30
+      },
+      "frequency": {
+        "label": "Grid frequency",
+        "source": "Elexon FREQ",
+        "status": "live",
+        "timestamp": "2026-10-26T16:03:45.000Z",
+        "cadenceMinutes": 2
+      },
+      "generation": {
+        "label": "Transmission-metered generation",
+        "source": "Elexon FUELHH",
+        "status": "live",
+        "timestamp": "2026-10-26T16:00:00.000Z",
+        "cadenceMinutes": 30
+      },
+      "stationLoad": {
+        "label": "Station load",
+        "source": "NESO Demand Data Update",
+        "status": "delayed",
+        "timestamp": "2026-10-26T07:30:00.000Z",
+        "cadenceMinutes": 30
+      },
+      "interconnectors": {
+        "label": "Completed-period transfers",
+        "source": "Elexon FUELHH",
+        "status": "live",
+        "timestamp": "2026-10-26T16:00:00.000Z",
+        "cadenceMinutes": 30
+      }
+    },
+    "interconnectorStatus": "live"
+  },
+  "generationMix": [
+    {
+      "name": "Biomass",
+      "color": "#92d375",
+      "value": 3170,
+      "percentage": 10.239348816176234
+    },
+    {
+      "name": "Gas",
+      "color": "#439cf5",
+      "value": 5966,
+      "percentage": 19.270648276753125
+    },
+    {
+      "name": "Coal",
+      "color": "#b9bfc8",
+      "value": 0,
+      "percentage": 0
+    },
+    {
+      "name": "Hydro",
+      "color": "#20c5ee",
+      "value": 641,
+      "percentage": 2.070480312671598
+    },
+    {
+      "name": "Nuclear",
+      "color": "#ac83ff",
+      "value": 5091,
+      "percentage": 16.44432959720921
+    },
+    {
+      "name": "OCGT",
+      "color": "#d48d59",
+      "value": 1,
+      "percentage": 0.003230078490907329
+    },
+    {
+      "name": "Oil",
+      "color": "#999999",
+      "value": 0,
+      "percentage": 0
+    },
+    {
+      "name": "Other",
+      "color": "#758ca2",
+      "value": 532,
+      "percentage": 1.7184017571626993
+    },
+    {
+      "name": "Wind",
+      "color": "#00d9bf",
+      "value": 15558,
+      "percentage": 50.25356116153622
+    }
+  ],
+  "totalDemandMW": 33279,
+  "carbonIntensity": {
+    "basis": "actual",
+    "index": "low",
+    "actual": 75,
+    "source": "Carbon Intensity API",
+    "status": "ok",
+    "forecast": 76,
+    "fetchedAt": "2026-10-26T16:06:02.790Z",
+    "sourceUrl": "https://api.carbonintensity.org.uk/intensity",
+    "timestamp": "2026-10-26T16:00:00.000Z",
+    "intervalTo": "2026-10-26T16:00:00.000Z",
+    "forecastData": [
+      {
+        "to": "2026-10-26T17:00Z",
+        "from": "2026-10-26T16:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 79
+        }
+      },
+      {
+        "to": "2026-10-26T17:30Z",
+        "from": "2026-10-26T17:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 78
+        }
+      },
+      {
+        "to": "2026-10-26T18:00Z",
+        "from": "2026-10-26T17:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 80
+        }
+      },
+      {
+        "to": "2026-10-26T18:30Z",
+        "from": "2026-10-26T18:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 77
+        }
+      },
+      {
+        "to": "2026-10-26T19:00Z",
+        "from": "2026-10-26T18:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 77
+        }
+      },
+      {
+        "to": "2026-10-26T19:30Z",
+        "from": "2026-10-26T19:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 77
+        }
+      },
+      {
+        "to": "2026-10-26T20:00Z",
+        "from": "2026-10-26T19:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 78
+        }
+      },
+      {
+        "to": "2026-10-26T20:30Z",
+        "from": "2026-10-26T20:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 76
+        }
+      },
+      {
+        "to": "2026-10-26T21:00Z",
+        "from": "2026-10-26T20:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 76
+        }
+      },
+      {
+        "to": "2026-10-26T21:30Z",
+        "from": "2026-10-26T21:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 75
+        }
+      },
+      {
+        "to": "2026-10-26T22:00Z",
+        "from": "2026-10-26T21:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 75
+        }
+      },
+      {
+        "to": "2026-10-26T22:30Z",
+        "from": "2026-10-26T22:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 75
+        }
+      },
+      {
+        "to": "2026-10-26T23:00Z",
+        "from": "2026-10-26T22:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 73
+        }
+      },
+      {
+        "to": "2026-10-26T23:30Z",
+        "from": "2026-10-26T23:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 69
+        }
+      },
+      {
+        "to": "2026-10-27T00:00Z",
+        "from": "2026-10-26T23:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 67
+        }
+      },
+      {
+        "to": "2026-10-27T00:30Z",
+        "from": "2026-10-27T00:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 67
+        }
+      },
+      {
+        "to": "2026-10-27T01:00Z",
+        "from": "2026-10-27T00:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 65
+        }
+      },
+      {
+        "to": "2026-10-27T01:30Z",
+        "from": "2026-10-27T01:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 62
+        }
+      },
+      {
+        "to": "2026-10-27T02:00Z",
+        "from": "2026-10-27T01:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 62
+        }
+      },
+      {
+        "to": "2026-10-27T02:30Z",
+        "from": "2026-10-27T02:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 61
+        }
+      },
+      {
+        "to": "2026-10-27T03:00Z",
+        "from": "2026-10-27T02:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 59
+        }
+      },
+      {
+        "to": "2026-10-27T03:30Z",
+        "from": "2026-10-27T03:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 58
+        }
+      },
+      {
+        "to": "2026-10-27T04:00Z",
+        "from": "2026-10-27T03:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 59
+        }
+      },
+      {
+        "to": "2026-10-27T04:30Z",
+        "from": "2026-10-27T04:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 58
+        }
+      },
+      {
+        "to": "2026-10-27T05:00Z",
+        "from": "2026-10-27T04:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 57
+        }
+      },
+      {
+        "to": "2026-10-27T05:30Z",
+        "from": "2026-10-27T05:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 57
+        }
+      },
+      {
+        "to": "2026-10-27T06:00Z",
+        "from": "2026-10-27T05:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 58
+        }
+      },
+      {
+        "to": "2026-10-27T06:30Z",
+        "from": "2026-10-27T06:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 61
+        }
+      },
+      {
+        "to": "2026-10-27T07:00Z",
+        "from": "2026-10-27T06:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 61
+        }
+      },
+      {
+        "to": "2026-10-27T07:30Z",
+        "from": "2026-10-27T07:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 63
+        }
+      },
+      {
+        "to": "2026-10-27T08:00Z",
+        "from": "2026-10-27T07:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 61
+        }
+      },
+      {
+        "to": "2026-10-27T08:30Z",
+        "from": "2026-10-27T08:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 60
+        }
+      },
+      {
+        "to": "2026-10-27T09:00Z",
+        "from": "2026-10-27T08:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 56
+        }
+      },
+      {
+        "to": "2026-10-27T09:30Z",
+        "from": "2026-10-27T09:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 54
+        }
+      },
+      {
+        "to": "2026-10-27T10:00Z",
+        "from": "2026-10-27T09:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 51
+        }
+      },
+      {
+        "to": "2026-10-27T10:30Z",
+        "from": "2026-10-27T10:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 51
+        }
+      },
+      {
+        "to": "2026-10-27T11:00Z",
+        "from": "2026-10-27T10:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 50
+        }
+      },
+      {
+        "to": "2026-10-27T11:30Z",
+        "from": "2026-10-27T11:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 49
+        }
+      },
+      {
+        "to": "2026-10-27T12:00Z",
+        "from": "2026-10-27T11:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 49
+        }
+      },
+      {
+        "to": "2026-10-27T12:30Z",
+        "from": "2026-10-27T12:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 50
+        }
+      },
+      {
+        "to": "2026-10-27T13:00Z",
+        "from": "2026-10-27T12:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 50
+        }
+      },
+      {
+        "to": "2026-10-27T13:30Z",
+        "from": "2026-10-27T13:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 49
+        }
+      },
+      {
+        "to": "2026-10-27T14:00Z",
+        "from": "2026-10-27T13:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 50
+        }
+      },
+      {
+        "to": "2026-10-27T14:30Z",
+        "from": "2026-10-27T14:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 53
+        }
+      },
+      {
+        "to": "2026-10-27T15:00Z",
+        "from": "2026-10-27T14:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 56
+        }
+      },
+      {
+        "to": "2026-10-27T15:30Z",
+        "from": "2026-10-27T15:00Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 59
+        }
+      },
+      {
+        "to": "2026-10-27T16:00Z",
+        "from": "2026-10-27T15:30Z",
+        "intensity": {
+          "index": "low",
+          "actual": null,
+          "forecast": 63
+        }
+      }
+    ],
+    "intervalFrom": "2026-10-26T15:30:00.000Z",
+    "schemaVersion": 2,
+    "percentOfAverage": -67.81115879828326
+  },
+  "demandBreakdown": null,
+  "euGenerationMix": [],
+  "interconnectors": [
+    {
+      "asOf": "2026-10-26T16:00:00.000Z",
+      "flow": 268,
+      "name": "France",
+      "source": "Elexon FUELHH",
+      "status": "live",
+      "country": "France",
+      "capacity": 4000
+    },
+    {
+      "asOf": "2026-10-26T16:00:00.000Z",
+      "flow": -198,
+      "name": "Netherlands",
+      "source": "Elexon FUELHH",
+      "status": "live",
+      "country": "Netherlands",
+      "capacity": 1000
+    },
+    {
+      "asOf": "2026-10-26T16:00:00.000Z",
+      "flow": -86,
+      "name": "Belgium",
+      "source": "Elexon FUELHH",
+      "status": "live",
+      "country": "Belgium",
+      "capacity": 1000
+    },
+    {
+      "asOf": "2026-10-26T16:00:00.000Z",
+      "flow": 1400,
+      "name": "Norway",
+      "source": "Elexon FUELHH",
+      "status": "live",
+      "country": "Norway",
+      "capacity": 1400
+    },
+    {
+      "asOf": "2026-10-26T16:00:00.000Z",
+      "flow": 1426,
+      "name": "Denmark",
+      "source": "Elexon FUELHH",
+      "status": "live",
+      "country": "Denmark",
+      "capacity": 1400
+    },
+    {
+      "asOf": "2026-10-26T16:00:00.000Z",
+      "flow": 92,
+      "name": "Ireland",
+      "source": "Elexon FUELHH",
+      "status": "live",
+      "country": "Ireland",
+      "capacity": 1000
+    },
+    {
+      "asOf": "2026-10-26T16:00:00.000Z",
+      "flow": 42,
+      "name": "Northern Ireland",
+      "source": "Elexon FUELHH",
+      "status": "live",
+      "country": "Northern Ireland",
+      "capacity": 500
+    }
+  ],
+  "systemFrequency": {
+    "hz": 50.032,
+    "source": "Elexon system frequency",
+    "status": "normal",
+    "deviationHz": 0.032,
+    "measurementTime": "2026-10-26T16:03:45.000Z"
+  },
+  "marketIndexPrice": {
+    "source": "Elexon Market Index Price",
+    "status": "live",
+    "providers": [
+      "APXMIDP"
+    ],
+    "startTime": "2026-10-26T15:30:00.000Z",
+    "volumeMWh": 3393.9,
+    "priceGBPPerMWh": 226.32,
+    "settlementDate": "2026-10-26",
+    "settlementPeriod": 32
+  },
+  "publicationTimes": [
+    "2026-10-26T16:00:00Z"
+  ],
+  "definitionVersion": "gb-evidence-v1",
+  "totalGenerationMW": 30959,
+  "nearLiveGeneration": {
+    "kind": "measured",
+    "source": "Elexon FUELINST",
+    "missing": [],
+    "complete": true,
+    "coverage": "GB transmission-metered generation; excludes embedded estimates, pumped storage and imports; Other may include battery output",
+    "freshness": {
+      "age": 6,
+      "fresh": true,
+      "label": "6m old"
+    },
+    "observedAt": "2026-10-26T16:00:00Z",
+    "resolution": "five-minute snapshot",
+    "renewableMW": 19280,
+    "generationMW": 31372,
+    "generationMix": [
+      {
+        "code": "BIOMASS",
+        "name": "Biomass",
+        "value": 3155
+      },
+      {
+        "code": "CCGT",
+        "name": "Gas",
+        "value": 6098
+      },
+      {
+        "code": "COAL",
+        "name": "Coal",
+        "value": 0
+      },
+      {
+        "code": "NPSHYD",
+        "name": "Hydro",
+        "value": 642
+      },
+      {
+        "code": "NUCLEAR",
+        "name": "Nuclear",
+        "value": 5092
+      },
+      {
+        "code": "OCGT",
+        "name": "OCGT",
+        "value": 5
+      },
+      {
+        "code": "OIL",
+        "name": "Oil",
+        "value": 0
+      },
+      {
+        "code": "OTHER",
+        "name": "Other",
+        "value": 897
+      },
+      {
+        "code": "WIND",
+        "name": "Wind",
+        "value": 15483
+      }
+    ],
+    "publicationTimes": [
+      "2026-10-26T16:05:00Z"
+    ]
+  }
+}
