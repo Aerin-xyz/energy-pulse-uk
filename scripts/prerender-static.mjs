@@ -61,6 +61,14 @@ const nav = '<p><a href="/">Live dashboard</a> · <a href="/uk-electricity-mix">
 
 const schemaTag = (schema) => `<script type="application/ld+json" data-rh="true" id="site-identity">${JSON.stringify(schema).replaceAll('<', '\\u003c')}</script>`;
 const schemasFor = (route, title, description) => schemaTag(pageSchema(route, { title, description, report: archive.find(report => report.slug === route) }));
+const escapeMeta = (value) => value.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll('<', '&lt;').replaceAll('>', '&gt;');
+const decodeMeta = (value) => value.replaceAll('&quot;', '"').replaceAll('&#39;', "'").replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&amp;', '&');
+const twitterMetadata = (title, description) => [
+  ['twitter:card', 'summary'],
+  ['twitter:title', title],
+  ['twitter:description', description],
+].map(([name, content]) => ({ name, tag: `<meta name="${name}" content="${escapeMeta(content)}" />` }));
+const twitterTags = (title, description) => twitterMetadata(title, description).map(({ tag }) => tag).join('\n    ');
 const snapshotHtml = renderInitialEvidence();
 
 const staticChrome = (body) => `<div class="observatory site-system" data-motion="off"><header class="cc-topbar"><a class="cc-brand" href="/">Energy <b>Mix</b></a><a class="cc-search" href="/explore/">Explore the grid, sources and insights ↗</a></header><aside class="cc-sidebar"><nav aria-label="Grid navigation">${[['Live grid','/'],['Generation','/explore/'],['Demand','/electricity-demand/'],['Emissions','/carbon-intensity/'],['Storage','/pumped-storage/'],['Interconnectors','/interconnectors/'],['Markets','/wholesale-electricity-price/'],['Reports','/reports/'],['Sources','/data/'],['Learn','/uk-electricity-mix']].map(([label,to])=>`<a href="${to}">${label}</a>`).join('')}</nav></aside><div class="site-content"><div class="site-section-bar">Britain’s electricity — live, explained.</div><div class="site-page">${body}</div><footer class="site-footer"><strong>Energy Mix</strong><p>Public data. Clear evidence.</p>${nav}</footer></div></div>`;
@@ -81,7 +89,7 @@ for (const [route, title, description, h1, paragraphs] of pages) {
     .replace(/<link rel="canonical" href="[^"]*" \/>/, `<link rel="canonical" href="${canonical}" />`)
     .replace(/<meta property="og:title" content="[^"]*" \/>/, `<meta property="og:title" content="${title.replaceAll('"','&quot;')}" />`)
     .replace(/<meta property="og:url" content="[^"]*" \/>/, `<meta property="og:url" content="${canonical}" />`)
-    .replace('</head>', `    ${schemasFor(route, title, description)}\n  </head>`)
+    .replace('</head>', `    ${twitterTags(title, description)}\n    ${schemasFor(route, title, description)}\n  </head>`)
     .replace(/<div id="root">[\s\S]*?<\/div>\s*<\/body>/, `<div id="root">${content}</div>\n  </body>`);
   if (rendered) {
     // Helmet's server tags are adopted by the browser; discard shell defaults
@@ -91,6 +99,14 @@ for (const [route, title, description, h1, paragraphs] of pages) {
       .replace(/<link\s+rel="canonical"[^>]*>/g, '')
       .replace(/<script type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/g, '')
       .replace('</head>', `${rendered.head}</head>`);
+  }
+  const resolvedTitle = decodeMeta(html.match(/<title[^>]*>([^<]*)<\/title>/i)?.[1] || title);
+  const resolvedDescription = decodeMeta(html.match(/<meta[^>]*name="description"[^>]*content="([^"]*)"/i)?.[1] || description);
+  const missingTwitterTags = twitterMetadata(resolvedTitle, resolvedDescription)
+    .filter(({ name }) => !new RegExp(`<meta\\s+[^>]*name=["']${name.replace(':', '\\:')}["']`, 'i').test(html))
+    .map(({ tag }) => tag);
+  if (missingTwitterTags.length) {
+    html = html.replace('</head>', `    ${missingTwitterTags.join('\n    ')}\n  </head>`);
   }
   if (includeSnapshot) html = html.replace('</head>', `<script type="application/json" id="initial-evidence">${JSON.stringify(INITIAL_EVIDENCE)}</script></head>`);
   if (route === '/social' || route === '/measurement') {
