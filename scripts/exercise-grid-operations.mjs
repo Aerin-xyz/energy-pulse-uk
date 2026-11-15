@@ -1,0 +1,8 @@
+// One bounded read-only ingestion cycle into a local diagnostic store. No public files or DB writes.
+import fs from'node:fs/promises';import {runOperations}from'../src/lib/operations/runner.mjs';
+const dir=process.env.OPERATIONS_EXERCISE_DIR||'.cache/grid-operations-exercise';await fs.mkdir(dir,{recursive:true});
+const state=new Map();const store={get:async k=>state.get(k),put:async(key,snapshot,nextAttemptAt)=>{state.set(key,{snapshot,nextAttemptAt});await fs.writeFile(dir+'/'+encodeURIComponent(key)+'.json',JSON.stringify(snapshot));},fail:async(key,dataset,scope,error,nextAttemptAt)=>{const old=state.get(key);state.set(key,{snapshot:old?.snapshot?{...old.snapshot,error}:null,nextAttemptAt});}};
+const mappings=JSON.parse(await fs.readFile('src/data/atlas/notification-mappings.json','utf8')).entries;
+const first=await runOperations({store,mappings});await fs.writeFile(dir+'/public-snapshot.json',JSON.stringify(first.snapshot,null,2));
+let calls=0;const second=await runOperations({store,mappings,collect:async()=>{calls++;throw Error('Unexpected repeat fetch')}});
+const result={checkedAt:new Date().toISOString(),firstStatus:first.status,outcomes:first.outcomes,reconciliation:first.snapshot.acceptedVolumes.map(v=>({scope:v.scope,...v.reconciliation})),secondStatus:second.status,secondFetches:calls,snapshotBytes:Buffer.byteLength(JSON.stringify(first.snapshot)),health:first.snapshot.prices.map(p=>p.health)};await fs.writeFile(dir+'/exercise-summary.json',JSON.stringify(result,null,2));console.log(JSON.stringify(result,null,2));if(calls||first.status!=='succeeded')process.exitCode=1;

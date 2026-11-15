@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-26T16:08:00Z/2026-10-26T16:14:00Z",
+  "databaseBytes": 98675859,
+  "activeJobs": {
+    "warmup-energy-functions": "1-59/5 * * * *",
+    "energy-operational-retention": "17 * * * *"
+  },
+  "schedulerSuccessesPriorTwoHours": 26,
+  "retainedHttpResults": {
+    "200": 72,
+    "timeouts": 0
+  },
+  "nationalCompletion": "2026-10-26T16:06:22.767Z",
+  "nationalSourceOutcomes": {
+    "INDO": "ok",
+    "FUELHH": "ok",
+    "FUELINST": "ok",
+    "enrichment": "ok"
+  },
+  "publicSnapshotUpdatedAt": "2026-10-26T16:11:21.4Z",
+  "method": "read-only Supabase Management API queries; excludes job command text and credentials"
+}

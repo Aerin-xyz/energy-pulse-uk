@@ -1,0 +1,56 @@
+{
+  "checkedAt": "2026-10-26T16:41:09.064Z",
+  "status": "needs-attention",
+  "sources": [
+    {
+      "dataset": "FUELHH",
+      "status": "ok",
+      "warnings": [],
+      "checkedAt": "2026-10-26T16:31:00.731Z",
+      "latestForecastStart": null,
+      "error": null
+    },
+    {
+      "dataset": "INDO",
+      "status": "ok",
+      "warnings": [],
+      "checkedAt": "2026-10-26T16:31:00.731Z",
+      "latestForecastStart": null,
+      "error": null
+    },
+    {
+      "dataset": "FUELINST",
+      "status": "ok",
+      "warnings": [],
+      "checkedAt": "2026-10-26T16:31:00.731Z",
+      "latestForecastStart": null,
+      "error": null
+    },
+    {
+      "dataset": "congestion",
+      "status": "ok",
+      "warnings": [],
+      "checkedAt": "2026-10-26T16:35:22.871Z",
+      "latestForecastStart": null,
+      "error": null
+    },
+    {
+      "dataset": "costs",
+      "status": "ok",
+      "warnings": [],
+      "checkedAt": "2026-10-26T16:35:23.133Z",
+      "latestForecastStart": null,
+      "error": null
+    },
+    {
+      "dataset": "dayAhead",
+      "status": "needs-attention",
+      "warnings": [
+        "forecast-expired"
+      ],
+      "checkedAt": "2026-10-26T16:35:34.119Z",
+      "latestForecastStart": "2026-10-24T22:30:00.000Z",
+      "error": null
+    }
+  ]
+}

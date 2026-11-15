@@ -44,3 +44,8 @@ jobs:
             git commit -m "Refresh official GB evidence cache"
             git push
           fi
+      - name: Report source failures and expired horizons
+        # Preserve dated snapshots first, then fail visibly on an unhealthy source.
+        # No new external notification destination or schedule is introduced.
+        if: always()
+        run: node scripts/check-grid-source-health.mjs

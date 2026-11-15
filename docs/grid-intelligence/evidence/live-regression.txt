@@ -1,0 +1,34 @@
+
+Running 21 tests using 2 workers
+
+(node:411065) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:411066) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:411065) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:411066) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓   1 tests/map-first.spec.ts:2:57 › map leads homepage at 320 (1.6s)
+  ✓   2 tests/map-label-density.spec.ts:8:89 › labels 390px capacity 0 zoom 8 (2.5s)
+  ✓   3 tests/map-first.spec.ts:2:57 › map leads homepage at 360 (1.3s)
+  ✓   5 tests/map-first.spec.ts:2:57 › map leads homepage at 390 (1.7s)
+  ✓   4 tests/map-label-density.spec.ts:8:89 › labels 390px capacity 0 zoom 16 (2.7s)
+  ✓   6 tests/map-first.spec.ts:2:57 › map leads homepage at 430 (1.5s)
+  ✓   8 tests/map-first.spec.ts:2:57 › map leads homepage at 768 (1.4s)
+  ✓   7 tests/map-label-density.spec.ts:8:89 › labels 390px capacity 0 zoom 32 (2.5s)
+  ✓   9 tests/map-first.spec.ts:2:57 › map leads homepage at 1024 (1.4s)
+  ✓  10 tests/map-label-density.spec.ts:8:89 › labels 390px capacity 100 zoom 8 (2.4s)
+  ✓  11 tests/map-first.spec.ts:2:57 › map leads homepage at 1366 (1.5s)
+  ✓  13 tests/map-first.spec.ts:2:57 › map leads homepage at 1920 (1.6s)
+  ✓  12 tests/map-label-density.spec.ts:8:89 › labels 390px capacity 100 zoom 16 (2.3s)
+  ✓  14 tests/map-label-density.spec.ts:8:89 › labels 390px capacity 100 zoom 32 (2.2s)
+  ✓  15 tests/map-label-density.spec.ts:8:89 › labels 1366px capacity 0 zoom 8 (2.2s)
+  ✓  16 tests/map-label-density.spec.ts:8:89 › labels 1366px capacity 0 zoom 16 (2.0s)
+  ✓  17 tests/map-label-density.spec.ts:8:89 › labels 1366px capacity 0 zoom 32 (1.9s)
+  ✓  18 tests/map-label-density.spec.ts:8:89 › labels 1366px capacity 100 zoom 8 (2.0s)
+  ✓  19 tests/map-label-density.spec.ts:8:89 › labels 1366px capacity 100 zoom 16 (1.9s)
+  ✓  20 tests/map-label-density.spec.ts:8:89 › labels 1366px capacity 100 zoom 32 (1.9s)
+  ✓  21 tests/map-label-density.spec.ts:20:1 › network names URL roundtrip and asset selection (1.7s)
+
+  21 passed (29.0s)
