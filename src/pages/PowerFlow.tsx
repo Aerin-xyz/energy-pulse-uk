@@ -57,7 +57,7 @@ const PowerFlow = () => {
         <section className="rounded-lg border border-primary/20 bg-background/40 p-5">
           <h2 className="mb-3 text-2xl font-semibold text-primary">How to read it</h2>
           <p className="text-foreground/80">
-            Each animated line represents a major live electricity source or transfer category. Thicker and faster lines mean more power. The centre shows displayed GB demand, balanced from generation, net interconnector flow and storage transfer.
+            Each animated line represents a generation source or transfer category, not a measured transmission-line route. Larger flows are shown more prominently. Read each source timestamp: generation, demand and transfers may describe different intervals. The displayed demand basis is identified separately; this diagram is not a loss-free reconciliation of every meter.
           </p>
           <p className="mt-3 text-sm text-foreground/65">
             Inspired by flixlix’s Power Flow Card Plus for Home Assistant, rebuilt natively for EnergyMix.info using public GB electricity data.

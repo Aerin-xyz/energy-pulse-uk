@@ -21,8 +21,8 @@ type RecordPage = {
 const recordPages: Record<string, RecordPage> = {
   '/records/highest-renewable-share': {
     slug: '/records/highest-renewable-share',
-    title: 'Highest Renewable Share Record',
-    metaTitle: 'Highest Renewable Share | UK Electricity Mix Records',
+    title: 'Highest Wind + Hydro Share in the Report Window',
+    metaTitle: 'Highest Renewable Share | GB Electricity Reporting-Window Highs',
     description: 'EnergyMix.info record page for Britain’s highest renewable electricity share, with source notes and related live dashboard links.',
     currentRecord: generated.records.highestRenewableShare.text,
     why: 'Renewable share records are useful because they show when wind, solar and hydro are doing enough work to materially reduce fossil generation and carbon intensity.',
@@ -31,18 +31,18 @@ const recordPages: Record<string, RecordPage> = {
   },
   '/records/highest-wind-generation': {
     slug: '/records/highest-wind-generation',
-    title: 'Highest Wind Generation Record',
-    metaTitle: 'Highest Wind Generation | UK Electricity Mix Records',
+    title: 'Highest Daily-Average Wind in the Report Window',
+    metaTitle: 'Highest Wind Generation | GB Electricity Reporting-Window Highs',
     description: 'EnergyMix.info record page for Britain’s highest wind generation observations and wind-led electricity mix periods.',
     currentRecord: generated.records.highestWindGeneration.text,
     why: 'Wind is often the largest swing factor in Britain’s electricity mix. High wind periods can lower gas generation and create cleaner electricity windows.',
-    notes: ['This record uses daily averages from the declared archive window; complete interval coverage has not been independently verified.', 'Future versions should add settlement-period wind peaks and all-time UK wind records.', 'A share or citation should include the archive window and daily-average basis.'],
+    notes: ['This high uses daily averages from the declared reporting window. The linked report documents interval coverage, validation and source revisions. It is not an instantaneous or all-time record.', 'Future versions should add settlement-period wind peaks and all-time UK wind records.', 'A share or citation should include the archive window and daily-average basis.'],
     related: [{ to: '/renewables', label: 'Renewables' }, { to: '/carbon-intensity', label: 'Carbon intensity' }, { to: '/reports', label: 'Reports' }],
   },
   '/records/highest-solar-generation': {
     slug: '/records/highest-solar-generation',
-    title: 'Highest Solar Generation Record',
-    metaTitle: 'Highest Solar Generation | UK Electricity Mix Records',
+    title: 'Highest Solar Estimate in the Report Window',
+    metaTitle: 'Highest Solar Generation | GB Electricity Reporting-Window Highs',
     description: 'EnergyMix.info record page for Britain’s strongest solar generation periods and solar contribution to the daily electricity mix.',
     currentRecord: generated.records.highestSolarGeneration.text,
     why: 'Solar records matter because solar reshapes the daytime grid, often lowering gas demand through the middle of bright days.',
@@ -51,8 +51,8 @@ const recordPages: Record<string, RecordPage> = {
   },
   '/records/highest-gas-generation': {
     slug: '/records/highest-gas-generation',
-    title: 'Highest Gas Generation Record',
-    metaTitle: 'Highest Gas Generation | UK Electricity Mix Records',
+    title: 'Highest Daily-Average Gas in the Report Window',
+    metaTitle: 'Highest Gas Generation | GB Electricity Reporting-Window Highs',
     description: 'EnergyMix.info record page for high gas generation periods, demand peaks and carbon-intensive electricity mix conditions.',
     currentRecord: generated.records.highestGasGeneration.text,
     why: 'Gas highs show when the system is leaning more heavily on flexible fossil generation, often because demand is high or wind and solar are lower.',
@@ -64,15 +64,15 @@ const recordPages: Record<string, RecordPage> = {
 export const RecordsIndex = () => (
   <>
     <Helmet>
-      <title>UK Electricity Mix Records | Wind, Solar, Renewables and Gas</title>
+      <title>GB Electricity Reporting-Window Highs | Wind, Solar, Renewables and Gas</title>
       <meta name="description" content="EnergyMix.info records hub for Britain’s electricity mix: renewable share, wind generation, solar generation, gas generation and future carbon-intensity records." />
       <link rel="canonical" href="https://energymix.info/records/" />
-      <meta property="og:title" content="UK Electricity Mix Records" />
+      <meta property="og:title" content="GB Electricity Reporting-Window Highs" />
       <meta property="og:description" content="Track notable electricity mix records for renewables, wind, solar and gas." />
       <meta property="og:url" content="https://energymix.info/records/" />
       <meta property="og:image" content="https://energymix.info/og-insights.jpg" />
     </Helmet>
-    <StaticPageLayout eyebrow="Records" title="UK Electricity Mix Records" intro="A records hub for notable British electricity mix moments: renewable share highs, wind and solar peaks, gas-heavy periods and future carbon-intensity records.">
+    <StaticPageLayout eyebrow="Records" title="GB Electricity Reporting-Window Highs" intro="Compare daily-average highs within the latest validated reporting window. These are not all-time records or instantaneous peaks.">
       <RecordScope />
       <section>
         <h2 className="text-2xl font-semibold text-primary mb-3">Archived reporting-window highs</h2>

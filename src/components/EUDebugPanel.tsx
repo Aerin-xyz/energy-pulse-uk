@@ -5,7 +5,7 @@ import { useEnergyData } from '@/contexts/EnergyDataContext';
 
 export const EUDebugPanel: React.FC = () => {
   const energy = useEnergyData();
-  const isDebugMode = new URLSearchParams(window.location.search).has('debug');
+  const isDebugMode = typeof window !== 'undefined' && new URLSearchParams(window.location.search).has('debug');
   
   if (!isDebugMode) return null;
   

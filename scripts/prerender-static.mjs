@@ -142,10 +142,10 @@ writeFileSync(aiFile,aiHtml);
 
 console.log(`Prerendered ${pages.length} static HTML routes`);
 
-writeFileSync(join(distDir, 'route-manifest.json'), JSON.stringify(pages.map(p => p[0])));
+writeFileSync(join(distDir, 'route-manifest.json'), JSON.stringify([...pages.map(p => p[0]), '/ai/uk-electricity-mix']));
 writeFileSync(join(distDir, '404.html'), '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="robots" content="noindex"><title>Page not found | Energy Mix</title><body style="background:#061119;color:#e9f2ef;font:20px system-ui;padding:10vw"><h1>This page is not in the archive.</h1><p>We will not substitute a different date’s report.</p><a style="color:#a8edcf" href="/reports/">Browse the report archive</a></body></html>');
 // Keep sitemap tied to actual generated canonical routes, not legacy placeholders.
-const sitemap = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + pages.filter(p => !['/social','/measurement'].includes(p[0])).map(p => `<url><loc>https://energymix.info${p[0] === '/' ? '/' : p[0] === '/uk-electricity-mix' ? p[0] : p[0] + '/'}</loc></url>`).join('') + '</urlset>';
+const sitemap = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' + pages.filter(p => !['/social','/measurement'].includes(p[0])).map(p => `<url><loc>https://energymix.info${p[0] === '/' ? '/' : p[0] === '/uk-electricity-mix' ? p[0] : p[0] + '/'}</loc></url>`).join('') + '<url><loc>https://energymix.info/ai/uk-electricity-mix/</loc></url></urlset>';
 writeFileSync(join(distDir, 'sitemap.xml'), sitemap);
 
 writeFileSync(join(rootDir, 'public/sitemap.xml'), sitemap);

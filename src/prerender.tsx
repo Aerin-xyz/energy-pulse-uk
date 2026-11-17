@@ -8,6 +8,12 @@ import { SiteFrame } from './components/SiteFrame';
 import { RouteStructuredData } from './components/RouteStructuredData';
 import { StaticGridSnapshot } from './components/StaticGridSnapshot';
 import Index from './pages/Index';
+import NetworkConstraints from './pages/NetworkConstraints';
+import PowerFlow from './pages/PowerFlow';
+import Explore from './pages/Explore';
+import About from './pages/About';
+import Contact from './pages/Contact';
+import {GridSignalPage} from './pages/GridSignalPage';
 import Glossary from './pages/Glossary';
 import Methodology from './pages/Methodology';
 import Data from './pages/Data';
@@ -23,6 +29,10 @@ import * as Insights from './pages/GridInsightPages';
 // on the server. No crawler-specific content or parallel numerical pipeline.
 const pages = {
   '/': Index,
+  '/network-constraints': NetworkConstraints, '/power-flow': PowerFlow,
+  '/explore': Explore, '/about': About, '/contact': Contact,
+  '/wholesale-electricity-price': () => <GridSignalPage kind="price" />,
+  '/pumped-storage': () => <GridSignalPage kind="storage" />,
   '/glossary': Glossary, '/methodology': Methodology, '/data': Data,
   '/records': Records.RecordsIndex,
   '/records/highest-renewable-share': Records.HighestRenewableShare,
