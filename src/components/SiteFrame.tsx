@@ -1,3 +1,4 @@
+import {CitableEvidence} from './CitableEvidence';
 import { useEffect, useState, type ReactNode } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { CommandNavigation } from './CommandNavigation';
@@ -24,7 +25,7 @@ export function SiteFrame({children}:{children:ReactNode}) {
  return <SiteChromeContext.Provider value={true}><div className="observatory site-system" data-motion={motion?'on':'off'} data-tone={tone}>
  <a className="site-skip" href="#site-content">Skip to content</a>
  <CommandNavigation now={now} refresh={refetch} loading={loading} motion={motion} toggleMotion={()=>setMotion(v=>!v)}/>
- <div className="site-content" id="site-content" tabIndex={-1}><div className="site-section-bar"><Link to="/">Energy Mix</Link><span>/</span><span>{section}</span><Link to="/methodology">Public data. Clear evidence. ↗</Link></div><div className="site-page">{children}</div>
+ <div className="site-content" id="site-content" tabIndex={-1}><div className="site-section-bar"><Link to="/">Energy Mix</Link><span>/</span><span>{section}</span><Link to="/methodology">Public data. Clear evidence. ↗</Link></div><div className="site-page">{children}{['/explore','/power-flow','/network-constraints','/pumped-storage','/wholesale-electricity-price','/carbon-intensity','/interconnectors'].includes(pathname.replace(/\/$/,''))&&<CitableEvidence/>}</div>
  <footer className="site-footer"><div className="site-footer-intro"><strong>Energy <span>Mix</span></strong><p>Britain’s electricity — live, explained.</p><Link to="/newsletter">Get the weekly current ↗</Link></div><div className="site-footer-links">{groups.map(g=><nav key={g.label} aria-label={g.label}><h2>{g.label}</h2>{g.links.map(([label,to])=><Link key={to} to={to}>{label}</Link>)}</nav>)}</div><small>Contains BMRS data © Elexon Limited {new Date().getFullYear()}. Sources retain their respective terms.</small></footer>
  </div></div></SiteChromeContext.Provider>;
 }

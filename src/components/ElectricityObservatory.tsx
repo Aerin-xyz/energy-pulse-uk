@@ -1,3 +1,4 @@
+import {CitableEvidence} from './CitableEvidence';
 import {HomepageContext} from './HomepageContext';
 import { INITIAL_EVIDENCE } from '@/lib/initialEvidence.mjs';
 import {useGridEvidence} from '@/hooks/useGridEvidence';
@@ -173,7 +174,7 @@ export function ElectricityObservatory() {
             Get the weekly briefing <ArrowRight size={17} />
           </Link>
         </section>
-      </main>
+      <CitableEvidence/></main>
       <footer className="atlas-footer">
         <span>
           energy mix <small>Britain’s electricity — live, explained.</small>

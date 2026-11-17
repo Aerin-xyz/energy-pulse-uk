@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import { canonicalPath } from '@/lib/initialEvidence.mjs';
 
 declare global {
   interface Window {
@@ -8,7 +9,7 @@ declare global {
 }
 
 const buildPagePath = (location: ReturnType<typeof useLocation>) =>
-  `${location.pathname}${location.search}${location.hash}`;
+  canonicalPath(location.pathname);
 
 export const RouteAnalytics = () => {
   const location = useLocation();
@@ -33,7 +34,7 @@ export const RouteAnalytics = () => {
       window.dataLayer.push({
         event: 'virtual_page_view',
         page_path: pagePath,
-        page_location: window.location.href,
+        page_location: `${window.location.origin}${pagePath}`,
         page_title: document.title,
       });
     }, 0);

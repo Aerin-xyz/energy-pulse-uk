@@ -109,9 +109,17 @@ Use: Energy Mix, UK electricity dashboard, https://energymix.info/. For methodol
 
 High-intent static answer pages:
 - https://energymix.info/uk-electricity-mix
-- https://energymix.info/uk-renewable-electricity
-- https://energymix.info/uk-wind-generation-live
-- https://energymix.info/uk-electricity-carbon-intensity
-- https://energymix.info/uk-electricity-imports-exports
+- https://energymix.info/renewables/
+- https://energymix.info/uk-wind-power-today/
+- https://energymix.info/carbon-intensity/
+- https://energymix.info/interconnectors/
 - https://energymix.info/glossary/
 - https://energymix.info/partners/
+
+## Reporting and citation boundaries
+
+Coverage is Great Britain (England, Scotland and Wales), not Northern Ireland. Physical Notifications describe intended operation, not metered asset output. Accepted balancing instructions are not measurements.
+
+Reports at https://energymix.info/reports/ retain dated source evidence and downloadable calculation inputs. Their Elexon metered generation excludes imports and pumped storage; wind-plus-natural-hydro share excludes biomass. NESO embedded estimates and carbon intensity are separate validated modules. Figures remain provisional and source-revisable. Cite the dated report and observation window; do not present a retained report as current telemetry.
+
+Editorial responsibility: Energy Mix. Corrections: https://energymix.info/contact/ . Methodology: https://energymix.info/methodology/ . These files describe the site, not live numerical observations.

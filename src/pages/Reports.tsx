@@ -154,6 +154,12 @@ export const WeeklyReportPage = () => {
             image: 'https://energymix.info/og-insights.jpg',
             mainEntityOfPage: reportUrl,
             description: reportDescription,
+            spatialCoverage: { '@type': 'Place', name: 'Great Britain' },
+            temporalCoverage: `${coverage.from}/${coverage.to}`,
+            ...(report.validation?.status === 'passed' ? { associatedMedia: [
+              { '@type': 'DataDownload', name: 'Daily report calculation inputs', encodingFormat: 'text/csv', contentUrl: `https://energymix.info${report.validation.dailyCsv}` },
+              { '@type': 'DataDownload', name: 'Source and validation manifest', encodingFormat: 'application/json', contentUrl: `https://energymix.info${report.validation.evidencePath}` }
+            ] } : {}),
           })}
         </script>
       </Helmet>

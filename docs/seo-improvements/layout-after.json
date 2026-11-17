@@ -1,0 +1,386 @@
+[
+  {
+    "path": "/",
+    "width": 390,
+    "metrics": {
+      "cls": 0.00044036631449825896,
+      "lcp": 264,
+      "shifts": [
+        {
+          "value": 0.00044036631449825896,
+          "nodes": [
+            {
+              "tag": "P",
+              "cl": "atlas-attribution",
+              "prev": {
+                "x": 9,
+                "y": 877.546875,
+                "width": 372,
+                "height": 22.453125,
+                "top": 877.546875,
+                "right": 381,
+                "bottom": 900,
+                "left": 9
+              },
+              "y": {
+                "x": 9,
+                "y": 894.34375,
+                "width": 372,
+                "height": 5.65625,
+                "top": 894.34375,
+                "right": 381,
+                "bottom": 900,
+                "left": 9
+              }
+            },
+            {
+              "tag": "SPAN",
+              "cl": "atlas-evidence-mark",
+              "prev": {
+                "x": 25,
+                "y": 855.640625,
+                "width": 7,
+                "height": 7,
+                "top": 855.640625,
+                "right": 32,
+                "bottom": 862.640625,
+                "left": 25
+              },
+              "y": {
+                "x": 25,
+                "y": 864.046875,
+                "width": 7,
+                "height": 7,
+                "top": 864.046875,
+                "right": 32,
+                "bottom": 871.046875,
+                "left": 25
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "overflow": false,
+    "text": "Britain’s electricity. Live, explained.\nCables\nGeneration\nConnections\nRegional carbon\nSearch sites\nFilters\nExpand map\nSites above 100 MW installed\nMap layers & key\n+\n−\nReset GB view\nPan controls\n\nScroll the page normally. Expand the map for touch panning and pinch zoom.\n\nATLANTIC OCEAN\nNORTH SEA\nSCOTLAND\nENGLAND\nWALES\n232\n232 nearby sites\nSelect or zoom in\n83\n83 nearby sites\nSelect or zoom in\n209\n209 nearby sites\nSelect or zoom in\n161\n161 nearby sites\nSelect or zoom in\n221\n221 nearby sites\nSelect or zoom in\n141\n141 nearby sites\nSelect or zoom in\n69\n69 nearby sites\nSelect or zoom in\n281\n281 nearby sites\nSelect or zoom in\n34\n34 nearby sites\nSelect or zoom in\n64\n64 nearby sites\nSelect or zoom in\n14\n14 nearby sites\nSelect or zoom in\n222\n222 nearby sites\nSelect or zoom in\n88\n88 nearby sites\nSelect or zoom in\n115\n115 nearby sites\nSelect or zoom in\n99\n99 nearby sites\nSelect or zoom in\n97\n97 nearby sites\nSelect or zoom in\n10\n10 nearby sites\nSelect or zoom in\n89\n89 nearby sites\nSelect or zoom in\n116\n116 nearby sites\nSelect or zoom in\n7\n7 nearby sites\nSelect or zoom in\n50\n50 nearby sites\nSelect or zoom in\n101\n101 nearby sites\nSelect or zoom in\n22\n22 nearby sites\nSelect or zoom in\n11\n11 nearby sites\nSelect or zoom in\n70\n70 nearby sites\nSelect or zoom in\n47\n47 nearby sites\nSelect or zoom in\n5\n5 nearby sites\nSelect or zoom in\n71\n71 nearby sites\nSelect or zoom in\n54\n54 nearby sites\nSelect or zoom in\n3\n3 nearby sites\nSelect or zoom in\n13\n13 nearby sites\nSelect or zoom in\n19\n19 nearby sites\nSelect or zoom in\n13\n13 nearby sites\nSelect or zoom in\n12\n12 nearby sites\nSelect or zoom in\n8\n8 nearby sites\nSelect or zoom in\n23\n23 nearby sites\nSelect or zoom in\n23\n23 nearby sites\nSelect or zoom in\nDogger Bank A\nCapacity only · no output\nHornsea Two\n186 MW · notified\nLidl Foodstore - Solar Panels\nCapacity only · no output\nSeagreen\nCapacity only · no output\nElexon metered snapshot · 10 Nov 2026, 23:30 UK · approximate sites\n\nCountry outlines: Natural Earth (public domain). Northern Ireland operates in the separate all-island electricity market. Contains BMRS data © Elexon Limited copyright and database right 2026. BMRS licence. Asset records: DESNZ, Open Government Licence v3.0.\n\nDemand\n36.8 GW\n\nInitial national outturn · INDO\n\n17 Nov, 16:00 GMT · 8m old\nRenewable share\n44.5 %\n\nWind, hydro and biomass\n\nMetered generation · 17 Nov, 16:00 GMT\nCarbon intensity\n141 gCO₂/kWh\n\nReported actual · 17 Nov · 15:30 GMT–16:00 GMT\n\n8m since interval ended\nNet transfers\n+6.1 GW\n\nNet importing · imports − exports\n\n17 Nov, 16:00 GMT · 8m old\nGeneration mix\nGreat Britain\nNear-live · 5 min\nCompleted half-hour\n\n32.0 GW\nNear-live · FUELINST\n8m old · 17 Nov, 16:00 GMT\n\nWind\n11.7 GW\n36.8%\nNuclear\n5.1 GW\n16.0%\nGas\n11.7 GW\n36.6%\nBiomass\n2.0 GW\n6.3%\nOther\n0.9 GW\n2.9%\nHydro\n0.5 GW\n1.5%\nCoal\n0.0 GW\n0.0%\nOCGT\n0.0 GW\n0.0%\nOil\n0.0 GW\n0.0%\nCoverage & definitions\nCite or download these readings\n\nWHAT CHANGED / EVIDENCE FIRST\n\nWhat changed?\nExplore network constraints ↗\n\nCompleted half-hours starting 17 Nov, 15:00 → 17 Nov, 15:30 UK. Recent observations.\n\nTransmission-metered wind\n-362 MW\nMeasured change · same half-hours\nCCGT generation\n-6 MW\nMeasured change · same half-hours\n\nThese movements happened together. They do not establish why a generator changed output, or whether network constraints caused it.\n\nDefinitions and supporting observations\nForecast network context\nDeterministic comparisons of official evidence. No generated causal claims. Source revisions are available in the network evidence view. Contains BMRS data © Elexon Limited copyright and database right 2026. Supported by National Energy SO Open Data.\nBeyond the mix\n\nMarket and storage\n\nWholesale index\n£228.53 /MWh\nNot your retail tariff\n38m old\nPumped storage\n-0.2 GW\nNegative metered output\n8m old\n\nCARBON OUTLOOK\n\nLowest-carbon 2-hour window\nDuration\n1 hour\n2 hours\n3 hours\n18 Nov · 01:30 GMT–03:30 GMT\n\n97 gCO₂/kWh duration-weighted average · lowest in the available forecast\n\nAvailable forecast horizon: 17 Nov · 16:30 GMT–18 Nov · 16:00 GMT. Gaps are not filled.\n\n17 Nov · 16:30 GMT\n18 Nov · 16:00 GMT\nInspect a half-hour\n17 Nov · 16:30 GMT–17:00 GMT\n17 Nov · 17:00 GMT–17:30 GMT\n17 Nov · 17:30 GMT–18:00 GMT\n17 Nov · 18:00 GMT–18:30 GMT\n17 Nov · 18:30 GMT–19:00 GMT\n17 Nov · 19:00 GMT–19:30 GMT\n17 Nov · 19:30 GMT–20:00 GMT\n17 Nov · 20:00 GMT–20:30 GMT\n17 Nov · 20:30 GMT–21:00 GMT\n17 Nov · 21:00 GMT–21:30 GMT\n17 Nov · 21:30 GMT–22:00 GMT\n17 Nov · 22:00 GMT–22:30 GMT\n17 Nov · 22:30 GMT–23:00 GMT\n17 Nov · 23:00 GMT–23:30 GMT\n17 Nov · 23:30 GMT–18 Nov · 00:00 GMT\n18 Nov · 00:00 GMT–00:30 GMT\n18 Nov · 00:30 GMT–01:00 GMT\n18 Nov · 01:00 GMT–01:30 GMT\n18 Nov · 01:30 GMT–02:00 GMT\n18 Nov · 02:00 GMT–02:30 GMT\n18 Nov · 02:30 GMT–03:00 GMT\n18 Nov · 03:00 GMT–03:30 GMT\n18 Nov · 03:30 GMT–04:00 GMT\n18 Nov · 04:00 GMT–04:30 GMT\n18 Nov · 04:30 GMT–05:00 GMT\n18 Nov · 05:00 GMT–05:30 GMT\n18 Nov · 05:30 GMT–06:00 GMT\n18 Nov · 06:00 GMT–06:30 GMT\n18 Nov · 06:30 GMT–07:00 GMT\n18 Nov · 07:00 GMT–07:30 GMT\n18 Nov · 07:30 GMT–08:00 GMT\n18 Nov · 08:00 GMT–08:30 GMT\n18 Nov · 08:30 GMT–09:00 GMT\n18 Nov · 09:00 GMT–09:30 GMT\n18 Nov · 09:30 GMT–10:00 GMT\n18 Nov · 10:00 GMT–10:30 GMT\n18 Nov · 10:30 GMT–11:00 GMT\n18 Nov · 11:00 GMT–11:30 GMT\n18 Nov · 11:30 GMT–12:00 GMT\n18 Nov · 12:00 GMT–12:30 GMT\n18 Nov · 12:30 GMT–13:00 GMT\n18 Nov · 13:00 GMT–13:30 GMT\n18 Nov · 13:30 GMT–14:00 GMT\n18 Nov · 14:00 GMT–14:30 GMT\n18 Nov · 14:30 GMT–15:00 GMT\n18 Nov · 15:00 GMT–15:30 GMT\n18 Nov · 15:30 GMT–16:00 GMT\n157 gCO₂/kWh · forecast\n\nForecast, not a guarantee. Lower carbon does not necessarily mean a lower bill.\n\nForecast evidence\nAll charts & controls\nLoad historical generation chart\n\nHistorical measured generation has different embedded-source coverage from the live mix. Gaps and incomplete periods are not observations.\n\nBEYOND THE MOMENT\n\nStay curious.\nFollow the evidence.\nAll briefings\nTHE GRID BRIEF / 2026-11-17\nA dated report.\nA different perspective.\n\nGeneration, changing renewables and gas, with the limits of the evidence in view.\n\nTHE EXPLAINER / CLEANER ELECTRICITY\nWhen is electricity\nactually cleaner?\n\nWhy the answer changes with the weather—and why clean and cheap are not the same thing.\n\nEvery number has a source. Inspect this snapshot.\n\nTHE WEEKLY CURRENT\n\nA little grid intelligence.\nA lot less noise.\nGet the weekly briefing\nSources, definitions and a validated reporting example"
+  },
+  {
+    "path": "/network-constraints/",
+    "width": 390,
+    "metrics": {
+      "cls": 0.039723040024533085,
+      "lcp": 164,
+      "shifts": [
+        {
+          "value": 0.02736203970797721,
+          "nodes": [
+            {
+              "tag": "SECTION",
+              "cl": "",
+              "prev": {
+                "x": 14,
+                "y": 464.625,
+                "width": 362,
+                "height": 435.375,
+                "top": 464.625,
+                "right": 376,
+                "bottom": 900,
+                "left": 14
+              },
+              "y": {
+                "x": 14,
+                "y": 430.734375,
+                "width": 362,
+                "height": 469.265625,
+                "top": 430.734375,
+                "right": 376,
+                "bottom": 900,
+                "left": 14
+              }
+            },
+            {
+              "tag": "P",
+              "cl": "evidence-lead",
+              "prev": {
+                "x": 14,
+                "y": 256.46875,
+                "width": 362,
+                "height": 91.78125,
+                "top": 256.46875,
+                "right": 376,
+                "bottom": 348.25,
+                "left": 14
+              },
+              "y": {
+                "x": 14,
+                "y": 222.578125,
+                "width": 362,
+                "height": 91.78125,
+                "top": 222.578125,
+                "right": 376,
+                "bottom": 314.359375,
+                "left": 14
+              }
+            },
+            {
+              "tag": "DIV",
+              "cl": "evidence-tabs",
+              "prev": {
+                "x": 14,
+                "y": 376.25,
+                "width": 362,
+                "height": 60.375,
+                "top": 376.25,
+                "right": 376,
+                "bottom": 436.625,
+                "left": 14
+              },
+              "y": {
+                "x": 14,
+                "y": 342.359375,
+                "width": 362,
+                "height": 60.375,
+                "top": 342.359375,
+                "right": 376,
+                "bottom": 402.734375,
+                "left": 14
+              }
+            },
+            {
+              "tag": "::after",
+              "cl": "",
+              "prev": {
+                "x": 0,
+                "y": 208.46875,
+                "width": 113,
+                "height": 57,
+                "top": 208.46875,
+                "right": 113,
+                "bottom": 265.46875,
+                "left": 0
+              },
+              "y": {
+                "x": 0,
+                "y": 174.578125,
+                "width": 113,
+                "height": 57,
+                "top": 174.578125,
+                "right": 113,
+                "bottom": 231.578125,
+                "left": 0
+              }
+            },
+            {
+              "prev": {
+                "x": 69,
+                "y": 18,
+                "width": 148.15625,
+                "height": 26,
+                "top": 18,
+                "right": 217.15625,
+                "bottom": 44,
+                "left": 69
+              },
+              "y": {
+                "x": 69,
+                "y": 17,
+                "width": 111.5,
+                "height": 26,
+                "top": 17,
+                "right": 180.5,
+                "bottom": 43,
+                "left": 69
+              }
+            }
+          ]
+        },
+        {
+          "value": 0.012361000316555872,
+          "nodes": [
+            {
+              "tag": "P",
+              "cl": "",
+              "prev": {
+                "x": 31,
+                "y": 868.1875,
+                "width": 328,
+                "height": 31.8125,
+                "top": 868.1875,
+                "right": 359,
+                "bottom": 900,
+                "left": 31
+              },
+              "y": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "overflow": false,
+    "text": "NETWORK / ENGLAND · SCOTLAND · WALES\n\nPower has to get there.\n\nGeneration is only part of the story. The network has limits—and different datasets describe different moments.\n\nDay-ahead forecasts\nPublished boundary limits\nRetrospective costs\n\nFORECAST · MW\n\nDay-ahead boundary flows and limits\n\nNESO models flows from forecasts of demand, wind and dispatch. Limits belong to the same published snapshot, not a permanent rating. Positive direction follows NESO’s diagrams. A forecast exceedance is not a measured breach or proof of curtailment.\n\nBoundary \nBOLSELEX1\nCANDUNEX\nCANSELEX\nDRESHEX1\nDUNSELEX\nESTEX\nESTEX3\nESTEX4\nFLOWSTH\nGM+SNOW5A\nHARSPNBLY\nNINSELEX\nNKILGRMO\nSCOTEX\nSEIMPPR23\nSSE-SP2\nSSE+GRMO\nSSEN-S\nSSHARN3\n\nCyan: signed forecast flow · amber: published limit · chronological half-hours, read exact times below.\n\nValid from (UK)\tForecast flow MW\tPublished limit MW\tLimit minus flow MW\n17 Nov, 16:30\t3,133\t10,000\t6,867\n17 Nov, 17:00\t3,123\t10,000\t6,877\n17 Nov, 17:30\t2,865\t10,000\t7,135\n17 Nov, 18:00\t2,836\t10,000\t7,164\n17 Nov, 18:30\t2,843\t10,000\t7,157\n17 Nov, 19:00\t2,916\t10,000\t7,084\n17 Nov, 19:30\t2,968\t10,000\t7,032\n17 Nov, 20:00\t2,989\t10,000\t7,011\n17 Nov, 20:30\t2,995\t10,000\t7,005\n17 Nov, 21:00\t3,016\t10,000\t6,984\n17 Nov, 21:30\t3,091\t10,000\t6,909\n17 Nov, 22:00\t3,202\t10,000\t6,798\n17 Nov, 22:30\t3,281\t10,000\t6,719\n17 Nov, 23:00\t313\t10,000\t9,687\n17 Nov, 23:30\t305\t10,000\t9,695\n\nNESO Scotland boundary diagram ↗ · England & Wales diagram ↗\n\nSource, freshness and revision\nWhat this can—and cannot—explain\n\nForecast flows, network limits and historical costs provide useful context. Without matching operational evidence, they do not establish why a particular station changed output. This release does not infer curtailment from spare capacity or from schedules versus measured generation.\n\nSupported by National Energy SO Open Data. Licensed under the NESO Open Data Licence. No Omnia data is used."
+  },
+  {
+    "path": "/",
+    "width": 1366,
+    "metrics": {
+      "cls": 0.006237808881732592,
+      "lcp": 356,
+      "shifts": [
+        {
+          "value": 0.006237808881732592,
+          "nodes": [
+            {
+              "prev": {
+                "x": 175,
+                "y": 81,
+                "width": 1171,
+                "height": 52,
+                "top": 81,
+                "right": 1346,
+                "bottom": 133,
+                "left": 175
+              },
+              "y": {
+                "x": 175,
+                "y": 79,
+                "width": 1171,
+                "height": 52,
+                "top": 79,
+                "right": 1346,
+                "bottom": 131,
+                "left": 175
+              }
+            },
+            {
+              "prev": {
+                "x": 262.109375,
+                "y": 10.5,
+                "width": 340,
+                "height": 34,
+                "top": 10.5,
+                "right": 602.109375,
+                "bottom": 44.5,
+                "left": 262.109375
+              },
+              "y": {
+                "x": 238,
+                "y": 10.5,
+                "width": 340,
+                "height": 34,
+                "top": 10.5,
+                "right": 578,
+                "bottom": 44.5,
+                "left": 238
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "overflow": false,
+    "text": "Britain’s electricity. Live, explained.\nGeneration Atlas\nCables\nGeneration\nConnections\nRegional carbon\nFind a generation site\nFilters\nBrowse sites\nExpand map\nSites above 100 MW installed\nMap layers & key\n+\n−\nReset GB view\n1.0×\n←\n↑\n↓\n→\n\nScroll the page normally. Expand the map for touch panning and pinch zoom.\n\nATLANTIC OCEAN\nNORTH SEA\nSCOTLAND\nENGLAND\nWALES\n232\n232 nearby sites\nSelect or zoom in\n83\n83 nearby sites\nSelect or zoom in\n209\n209 nearby sites\nSelect or zoom in\n161\n161 nearby sites\nSelect or zoom in\n221\n221 nearby sites\nSelect or zoom in\n141\n141 nearby sites\nSelect or zoom in\n69\n69 nearby sites\nSelect or zoom in\n281\n281 nearby sites\nSelect or zoom in\n34\n34 nearby sites\nSelect or zoom in\n64\n64 nearby sites\nSelect or zoom in\n14\n14 nearby sites\nSelect or zoom in\n222\n222 nearby sites\nSelect or zoom in\n88\n88 nearby sites\nSelect or zoom in\n115\n115 nearby sites\nSelect or zoom in\n99\n99 nearby sites\nSelect or zoom in\n97\n97 nearby sites\nSelect or zoom in\n10\n10 nearby sites\nSelect or zoom in\n89\n89 nearby sites\nSelect or zoom in\n116\n116 nearby sites\nSelect or zoom in\n7\n7 nearby sites\nSelect or zoom in\n50\n50 nearby sites\nSelect or zoom in\n101\n101 nearby sites\nSelect or zoom in\n22\n22 nearby sites\nSelect or zoom in\n11\n11 nearby sites\nSelect or zoom in\n70\n70 nearby sites\nSelect or zoom in\n47\n47 nearby sites\nSelect or zoom in\n5\n5 nearby sites\nSelect or zoom in\n71\n71 nearby sites\nSelect or zoom in\n54\n54 nearby sites\nSelect or zoom in\n3\n3 nearby sites\nSelect or zoom in\n13\n13 nearby sites\nSelect or zoom in\n19\n19 nearby sites\nSelect or zoom in\n13\n13 nearby sites\nSelect or zoom in\n12\n12 nearby sites\nSelect or zoom in\n8\n8 nearby sites\nSelect or zoom in\n23\n23 nearby sites\nSelect or zoom in\n23\n23 nearby sites\nSelect or zoom in\nDogger Bank A\nCapacity only · no output\nHornsea Two\n186 MW · notified\nLidl Foodstore - Solar Panels\nCapacity only · no output\nSeagreen\nCapacity only · no output\nElexon metered snapshot · 10 Nov 2026, 23:30 UK · approximate sites\n\nCountry outlines: Natural Earth (public domain). Northern Ireland operates in the separate all-island electricity market. Contains BMRS data © Elexon Limited copyright and database right 2026. BMRS licence. Asset records: DESNZ, Open Government Licence v3.0.\n\nDemand\n36.8 GW\n\nInitial national outturn · INDO\n\n17 Nov, 16:00 GMT · 8m old\nRenewable share\n44.5 %\n\nWind, hydro and biomass\n\nMetered generation · 17 Nov, 16:00 GMT\nCarbon intensity\n141 gCO₂/kWh\n\nReported actual · 17 Nov · 15:30 GMT–16:00 GMT\n\n8m since interval ended\nNet transfers\n+6.1 GW\n\nNet importing · imports − exports\n\n17 Nov, 16:00 GMT · 8m old\nGeneration mix\nGreat Britain\nNear-live · 5 min\nCompleted half-hour\n\n32.0 GW\nNear-live · FUELINST\n8m old · 17 Nov, 16:00 GMT\n\nWind\n11.7 GW\n36.8%\nNuclear\n5.1 GW\n16.0%\nGas\n11.7 GW\n36.6%\nBiomass\n2.0 GW\n6.3%\nOther\n0.9 GW\n2.9%\nHydro\n0.5 GW\n1.5%\nCoal\n0.0 GW\n0.0%\nOCGT\n0.0 GW\n0.0%\nOil\n0.0 GW\n0.0%\nCoverage & definitions\nCite or download these readings\n\nWHAT CHANGED / EVIDENCE FIRST\n\nWhat changed?\nExplore network constraints ↗\n\nCompleted half-hours starting 17 Nov, 15:00 → 17 Nov, 15:30 UK. Recent observations.\n\nTransmission-metered wind\n-362 MW\nMeasured change · same half-hours\nCCGT generation\n-6 MW\nMeasured change · same half-hours\n\nThese movements happened together. They do not establish why a generator changed output, or whether network constraints caused it.\n\nDefinitions and supporting observations\nForecast network context\nDeterministic comparisons of official evidence. No generated causal claims. Source revisions are available in the network evidence view. Contains BMRS data © Elexon Limited copyright and database right 2026. Supported by National Energy SO Open Data.\nBeyond the mix\n\nMarket and storage\n\nWholesale index\n£228.53 /MWh\nNot your retail tariff\n38m old\nPumped storage\n-0.2 GW\nNegative metered output\n8m old\n\nCARBON OUTLOOK\n\nLowest-carbon 2-hour window\nDuration\n1 hour\n2 hours\n3 hours\n18 Nov · 01:30 GMT–03:30 GMT\n\n97 gCO₂/kWh duration-weighted average · lowest in the available forecast\n\nAvailable forecast horizon: 17 Nov · 16:30 GMT–18 Nov · 16:00 GMT. Gaps are not filled.\n\n17 Nov · 16:30 GMT\n18 Nov · 16:00 GMT\nInspect a half-hour\n17 Nov · 16:30 GMT–17:00 GMT\n17 Nov · 17:00 GMT–17:30 GMT\n17 Nov · 17:30 GMT–18:00 GMT\n17 Nov · 18:00 GMT–18:30 GMT\n17 Nov · 18:30 GMT–19:00 GMT\n17 Nov · 19:00 GMT–19:30 GMT\n17 Nov · 19:30 GMT–20:00 GMT\n17 Nov · 20:00 GMT–20:30 GMT\n17 Nov · 20:30 GMT–21:00 GMT\n17 Nov · 21:00 GMT–21:30 GMT\n17 Nov · 21:30 GMT–22:00 GMT\n17 Nov · 22:00 GMT–22:30 GMT\n17 Nov · 22:30 GMT–23:00 GMT\n17 Nov · 23:00 GMT–23:30 GMT\n17 Nov · 23:30 GMT–18 Nov · 00:00 GMT\n18 Nov · 00:00 GMT–00:30 GMT\n18 Nov · 00:30 GMT–01:00 GMT\n18 Nov · 01:00 GMT–01:30 GMT\n18 Nov · 01:30 GMT–02:00 GMT\n18 Nov · 02:00 GMT–02:30 GMT\n18 Nov · 02:30 GMT–03:00 GMT\n18 Nov · 03:00 GMT–03:30 GMT\n18 Nov · 03:30 GMT–04:00 GMT\n18 Nov · 04:00 GMT–04:30 GMT\n18 Nov · 04:30 GMT–05:00 GMT\n18 Nov · 05:00 GMT–05:30 GMT\n18 Nov · 05:30 GMT–06:00 GMT\n18 Nov · 06:00 GMT–06:30 GMT\n18 Nov · 06:30 GMT–07:00 GMT\n18 Nov · 07:00 GMT–07:30 GMT\n18 Nov · 07:30 GMT–08:00 GMT\n18 Nov · 08:00 GMT–08:30 GMT\n18 Nov · 08:30 GMT–09:00 GMT\n18 Nov · 09:00 GMT–09:30 GMT\n18 Nov · 09:30 GMT–10:00 GMT\n18 Nov · 10:00 GMT–10:30 GMT\n18 Nov · 10:30 GMT–11:00 GMT\n18 Nov · 11:00 GMT–11:30 GMT\n18 Nov · 11:30 GMT–12:00 GMT\n18 Nov · 12:00 GMT–12:30 GMT\n18 Nov · 12:30 GMT–13:00 GMT\n18 Nov · 13:00 GMT–13:30 GMT\n18 Nov · 13:30 GMT–14:00 GMT\n18 Nov · 14:00 GMT–14:30 GMT\n18 Nov · 14:30 GMT–15:00 GMT\n18 Nov · 15:00 GMT–15:30 GMT\n18 Nov · 15:30 GMT–16:00 GMT\n157 gCO₂/kWh · forecast\n\nForecast, not a guarantee. Lower carbon does not necessarily mean a lower bill.\n\nForecast evidence\nAll charts & controls\nLoad historical generation chart\n\nHistorical measured generation has different embedded-source coverage from the live mix. Gaps and incomplete periods are not observations.\n\nBEYOND THE MOMENT\n\nStay curious.\nFollow the evidence.\nAll briefings\nTHE GRID BRIEF / 2026-11-17\nA dated report.\nA different perspective.\n\nGeneration, changing renewables and gas, with the limits of the evidence in view.\n\nTHE EXPLAINER / CLEANER ELECTRICITY\nWhen is electricity\nactually cleaner?\n\nWhy the answer changes with the weather—and why clean and cheap are not the same thing.\n\nEvery number has a source. Inspect this snapshot.\n\nTHE WEEKLY CURRENT\n\nA little grid intelligence.\nA lot less noise.\nGet the weekly briefing\nSources, definitions and a validated reporting example"
+  },
+  {
+    "path": "/network-constraints/",
+    "width": 1366,
+    "metrics": {
+      "cls": 0.016583636953390116,
+      "lcp": 164,
+      "shifts": [
+        {
+          "value": 0.00018289905936807847,
+          "nodes": [
+            {
+              "tag": "A",
+              "cl": "cc-search",
+              "prev": {
+                "x": 262.109375,
+                "y": 9.90625,
+                "width": 340,
+                "height": 35.1875,
+                "top": 9.90625,
+                "right": 602.109375,
+                "bottom": 45.09375,
+                "left": 262.109375
+              },
+              "y": {
+                "x": 238,
+                "y": 9.90625,
+                "width": 340,
+                "height": 35.1875,
+                "top": 9.90625,
+                "right": 578,
+                "bottom": 45.09375,
+                "left": 238
+              }
+            }
+          ]
+        },
+        {
+          "value": 0.016400737894022036,
+          "nodes": [
+            {
+              "tag": "DETAILS",
+              "cl": "evidence-source",
+              "prev": {
+                "x": 208.5,
+                "y": 868.234375,
+                "width": 1104,
+                "height": 31.765625,
+                "top": 868.234375,
+                "right": 1312.5,
+                "bottom": 900,
+                "left": 208.5
+              },
+              "y": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              }
+            },
+            {
+              "tag": "P",
+              "cl": "",
+              "prev": {
+                "x": 233.5,
+                "y": 803.140625,
+                "width": 1054,
+                "height": 22.09375,
+                "top": 803.140625,
+                "right": 1287.5,
+                "bottom": 825.234375,
+                "left": 233.5
+              },
+              "y": {
+                "x": 0,
+                "y": 0,
+                "width": 0,
+                "height": 0,
+                "top": 0,
+                "right": 0,
+                "bottom": 0,
+                "left": 0
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "overflow": false,
+    "text": "NETWORK / ENGLAND · SCOTLAND · WALES\n\nPower has to get there.\n\nGeneration is only part of the story. The network has limits—and different datasets describe different moments.\n\nDay-ahead forecasts\nPublished boundary limits\nRetrospective costs\n\nFORECAST · MW\n\nDay-ahead boundary flows and limits\n\nNESO models flows from forecasts of demand, wind and dispatch. Limits belong to the same published snapshot, not a permanent rating. Positive direction follows NESO’s diagrams. A forecast exceedance is not a measured breach or proof of curtailment.\n\nBoundary \nBOLSELEX1\nCANDUNEX\nCANSELEX\nDRESHEX1\nDUNSELEX\nESTEX\nESTEX3\nESTEX4\nFLOWSTH\nGM+SNOW5A\nHARSPNBLY\nNINSELEX\nNKILGRMO\nSCOTEX\nSEIMPPR23\nSSE-SP2\nSSE+GRMO\nSSEN-S\nSSHARN3\n\nCyan: signed forecast flow · amber: published limit · chronological half-hours, read exact times below.\n\nValid from (UK)\tForecast flow MW\tPublished limit MW\tLimit minus flow MW\n17 Nov, 16:30\t3,133\t10,000\t6,867\n17 Nov, 17:00\t3,123\t10,000\t6,877\n17 Nov, 17:30\t2,865\t10,000\t7,135\n17 Nov, 18:00\t2,836\t10,000\t7,164\n17 Nov, 18:30\t2,843\t10,000\t7,157\n17 Nov, 19:00\t2,916\t10,000\t7,084\n17 Nov, 19:30\t2,968\t10,000\t7,032\n17 Nov, 20:00\t2,989\t10,000\t7,011\n17 Nov, 20:30\t2,995\t10,000\t7,005\n17 Nov, 21:00\t3,016\t10,000\t6,984\n17 Nov, 21:30\t3,091\t10,000\t6,909\n17 Nov, 22:00\t3,202\t10,000\t6,798\n17 Nov, 22:30\t3,281\t10,000\t6,719\n17 Nov, 23:00\t313\t10,000\t9,687\n17 Nov, 23:30\t305\t10,000\t9,695\n\nNESO Scotland boundary diagram ↗ · England & Wales diagram ↗\n\nSource, freshness and revision\nWhat this can—and cannot—explain\n\nForecast flows, network limits and historical costs provide useful context. Without matching operational evidence, they do not establish why a particular station changed output. This release does not infer curtailment from spare capacity or from schedules versus measured generation.\n\nSupported by National Energy SO Open Data. Licensed under the NESO Open Data Licence. No Omnia data is used."
+  }
+]

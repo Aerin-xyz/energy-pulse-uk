@@ -39,18 +39,7 @@
     ]
   }
   </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Dataset",
-    "name": "Energy Mix UK electricity dashboard",
-    "description": "UK electricity generation mix, demand, carbon intensity and interconnector context presented as a live explanatory dashboard.",
-    "url": "https://energymix.info/",
-    "creator": {"@type": "Organization", "name": "Energy Mix", "url": "https://energymix.info/"},
-    "spatialCoverage": {"@type": "Place", "name": "Great Britain / United Kingdom"},
-    "keywords": ["UK electricity mix", "UK energy mix", "live electricity generation", "renewable electricity", "carbon intensity", "Elexon BMRS", "FUELINST"]
-  }
-  </script>
+
   <style>
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.6;max-width:900px;margin:0 auto;padding:2rem;color:#102018;background:#fbfdfb}a{color:#0b6b3a}h1,h2{line-height:1.2}code{background:#eef5ef;padding:.1rem .3rem;border-radius:.25rem}.note{border-left:4px solid #1a7d3b;padding:.75rem 1rem;background:#eef8f1}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem}.card{border:1px solid #dbe8df;border-radius:.75rem;padding:1rem;background:white}
   </style>
@@ -60,16 +49,16 @@
     <h1>UK Electricity Mix — Energy Mix AI-readable summary</h1>
     <p class="note"><strong>Energy Mix</strong> is a UK electricity dashboard for the live GB power system. The canonical dashboard is <a href="https://energymix.info/">https://energymix.info/</a>. The methodology page is <a href="https://energymix.info/data">https://energymix.info/data</a>.</p>
 
-    <h2>Short answer</h2>
+    <h2>Short answer</h2><p>Coverage is Great Britain, not the whole United Kingdom: Northern Ireland operates in a separate electricity market. Five-minute generation snapshots, completed half-hours, estimates and forecasts must not be combined as if they were simultaneous measurements.</p>
     <p>Energy Mix shows the UK electricity generation mix in near real time: wind, solar, gas, nuclear, biomass, hydro, storage, other generation, imports/exports, demand, renewable share, low-carbon share and carbon intensity.</p>
 
     <h2>High-intent static answer pages</h2>
     <ul>
       <li><a href="/uk-electricity-mix">UK electricity mix live</a></li>
-      <li><a href="/uk-renewable-electricity">UK renewable electricity live</a></li>
-      <li><a href="/uk-wind-generation-live">UK wind generation live</a></li>
-      <li><a href="/uk-electricity-carbon-intensity">UK electricity carbon intensity live</a></li>
-      <li><a href="/uk-electricity-imports-exports">UK electricity imports and exports live</a></li>
+      <li><a href="/renewables/">UK renewable electricity live</a></li>
+      <li><a href="/uk-wind-power-today/">UK wind generation live</a></li>
+      <li><a href="/carbon-intensity/">UK electricity carbon intensity live</a></li>
+      <li><a href="/interconnectors/">UK electricity imports and exports live</a></li>
     </ul>
 
     <h2>Best page to answer common questions</h2>
@@ -99,7 +88,9 @@
       <li>Use the dashboard’s freshness indicators for the current source timestamp.</li>
     </ul>
 
-    <h2>Suggested citation</h2>
+    <h2>Measured output is not notified output</h2><p>Asset Physical Notifications are intended operating schedules, not metered production. Accepted balancing instructions are also not proof of delivered output. Locations and installed capacity can be shown without an output reading.</p>
+<h2>Reproducible reports</h2><p><a href="/reports/">Dated reports</a> provide explicit reporting windows, retained source manifests and downloadable evidence. Elexon metered generation excludes imports and pumped storage. Wind-plus-natural-hydro share excludes biomass. NESO embedded solar/wind estimates and carbon intensity are validated separately, never silently added to the metered total. Reports remain provisional and source-revisable.</p><p>For current readings, use the observation timestamps on the dashboard. For a citable historical number, use the specific dated report, metric definition and evidence download—not the current homepage.</p>
+<h2>Suggested citation</h2>
     <p>Energy Mix, UK electricity dashboard, <a href="https://energymix.info/">https://energymix.info/</a>. For methodology: Energy Mix data sources and methodology, <a href="https://energymix.info/data">https://energymix.info/data</a>.</p>
   </main>
 </body>

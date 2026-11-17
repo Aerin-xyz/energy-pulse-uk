@@ -1,0 +1,22 @@
+[
+  {
+    "event": "page_view",
+    "location": "https://energymix.info/",
+    "engagement": null
+  },
+  {
+    "event": null,
+    "location": "https://energymix.info/",
+    "engagement": null
+  },
+  {
+    "event": "page_view",
+    "location": "https://energymix.info/",
+    "engagement": "821"
+  },
+  {
+    "event": "user_engagement",
+    "location": "https://energymix.info/",
+    "engagement": "1060"
+  }
+]

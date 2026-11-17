@@ -5,10 +5,10 @@ export default function Index() {
   return (
     <>
       <Helmet>
-        <title>Britain’s Electricity — Live, Explained | Energy Mix</title>
+        <title>UK Electricity Mix Live | GB Generation Map & Sources | Energy Mix</title>
         <meta
           name="description"
-          content="Explore Britain’s live electricity atlas: generation, interconnector flows, carbon forecasts and the stories behind the grid. Public data, clearly explained."
+          content="See Great Britain’s electricity generation by source, explore power stations and interconnectors, and check carbon forecasts. Dated Elexon and NESO evidence."
         />
         <link rel="canonical" href="https://energymix.info/" />
         <meta

@@ -1,5 +1,14 @@
+import {MeaningfulAnalytics} from './components/MeaningfulAnalytics';
 import { RouteStructuredData } from './components/RouteStructuredData';
-import { lazy, Suspense } from 'react';
+import { lazy as reactLazy, Suspense, type ComponentType } from 'react';
+// Resolve the initial route before replacing its already-rendered HTML.
+function lazy(loader: () => Promise<{default: ComponentType<any>}>) {
+ let ready: ComponentType<any> | undefined;
+ const fallback=reactLazy(loader);
+ const Page=(props:any)=>{const Component=ready||fallback;return <Component {...props}/>};
+ Page.preload=async()=>{ready=(await loader()).default};
+ return Page;
+}
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -66,7 +75,7 @@ const App = () => (
         <Toaster />
         <Sonner />
 
-          <RouteAnalytics /><RouteStructuredData />
+          <RouteAnalytics /><MeaningfulAnalytics /><RouteStructuredData />
           <SiteFrame><Suspense fallback={<main className="container mx-auto p-12" role="status">Loading this part of the grid…</main>}><Routes>
             <Route path="/" element={<Index />} />
             <Route path="/network-constraints" element={<NetworkConstraints />} />
@@ -128,3 +137,10 @@ const App = () => (
 );
 
 export default App;
+
+export async function preloadInitialRoute(pathname: string) {
+ const path=pathname.replace(/\/$/,'')||'/';
+ const pages:Record<string,{preload:()=>Promise<void>}>= {'/network-constraints':NetworkConstraints,'/explore':Explore,'/wholesale-electricity-price':GridSignalPage,'/pumped-storage':GridSignalPage,'/about':About,'/data':Data,'/insights':Insights,'/newsletter':Newsletter,'/methodology':Methodology,'/contact':Contact,'/privacy':Privacy,'/citation':Citation,'/uk-electricity-mix':UkElectricityMix,'/carbon-intensity':CarbonIntensity,'/renewables':Renewables,'/gas-generation':GasGeneration,'/nuclear-power':NuclearPower,'/interconnectors':Interconnectors,'/electricity-demand':ElectricityDemand,'/uk-electricity-generation-live':UkElectricityGenerationLive,'/cleanest-time-to-use-electricity':CleanestTimeToUseElectricity,'/uk-wind-power-today':UkWindPowerToday,'/uk-solar-power-today':UkSolarPowerToday,'/gas-share-of-electricity':GasShareOfElectricity,'/renewables-share-today':RenewablesShareToday,'/carbon-intensity-today':CarbonIntensityToday,'/today':Today,'/yesterday':Yesterday,'/power-flow':PowerFlow,'/reports':ReportsIndex,'/records':RecordsIndex,'/records/highest-renewable-share':HighestRenewableShare,'/records/highest-wind-generation':HighestWindGeneration,'/records/highest-solar-generation':HighestSolarGeneration,'/records/highest-gas-generation':HighestGasGeneration,'/social':Social,'/measurement':Measurement,'/glossary':Glossary,'/partners':Partners,'/share/daily-summary':ShareDailySummary,'/admin/digest-preview':DigestPreview,'/admin/social-posts':AdminSocialPosts,'/admin/daily-summary':AdminDailySummary};
+ const page=path.startsWith('/reports/weekly/')?WeeklyReportPage:pages[path];
+ if(page)await page.preload();
+}
