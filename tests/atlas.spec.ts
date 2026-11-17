@@ -90,11 +90,11 @@ for (const width of [390, 768, 1440])
     await closeAllPanels(page);await page.getByRole("button", { name: "%", exact: true }).click();
     await expect(page.locator(".atlas-fuel").first()).toContainText("54.2");
   });
-test("old report dates retain their report and unknown dates are not substituted", async ({
+test("withdrawn and unknown report dates are not substituted", async ({
   page,
 }) => {
   await page.goto("/reports/weekly/2026-05-11");
-  await expect(page.locator("h1")).toContainText("11 May");
+  await expect(page.locator("h1")).toContainText("not in the archive");
   await page.goto("/reports/weekly/1900-01-01");
   await expect(page.locator("h1")).toContainText("not in the archive");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
@@ -136,11 +136,11 @@ test("archived HTML and current snapshot have correct canonical meaning without 
 }) => {
   const context = await browser.newContext({ javaScriptEnabled: false });
   const page = await context.newPage();
-  await page.goto("http://127.0.0.1:4175/reports/weekly/2026-05-11/");
-  await expect(page.locator("h1")).toContainText("11 May");
+  await page.goto("http://127.0.0.1:4175/reports/weekly/2026-11-16/");
+  await expect(page.locator("h1")).toContainText("GB Metered Electricity Generation");
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
     "href",
-    "https://energymix.info/reports/weekly/2026-05-11/",
+    "https://energymix.info/reports/weekly/2026-11-16/",
   );
   await page.goto("http://127.0.0.1:4175/");
   await expect(page.locator("body")).toContainText(

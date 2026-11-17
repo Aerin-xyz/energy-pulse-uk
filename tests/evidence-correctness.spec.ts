@@ -76,13 +76,8 @@ test('DST inspector URL selection and frozen download preserve power versus dail
  await expect(page.getByRole('tabpanel').locator('.history-value-tooltip')).toContainText('240.0 GWh');
  await page.getByRole('button',{name:'Reset history view'}).click();await expect(page).not.toHaveURL(/historyAt|historyView/);
 });
-test('report partial status is in raw HTML and visible before the original figures, dates retained',async({page,request})=>{
- const response=await request.get('/reports/weekly/2026-09-29/');const raw=await response.text();
- expect(raw).toContain('Partial week');expect(raw).toContain('2026-09-23');expect(raw).toContain('2026-09-28');
+test('withdrawn report shows absence rather than replacement figures',async({page})=>{
  await setup(page);await page.goto('/reports/weekly/2026-09-29/');
- const coverage=page.getByRole('complementary',{name:'Report window and coverage'});
- await expect(coverage).toContainText('6 calendar dates');await expect(coverage).toContainText('Originally published 2026-09-29');
- await expect(coverage).toContainText('excluding biomass');await expect(coverage).toContainText('2026-10-25');
- await expect(page.getByRole('heading',{name:'The reporting period in key numbers'})).toBeVisible();
- await expect(page.getByRole('table')).toContainText('40.5%');
+ await expect(page.locator('h1')).toContainText('not in the archive');
+ await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content','noindex, follow');
 });

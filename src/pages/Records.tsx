@@ -27,7 +27,7 @@ const recordPages: Record<string, RecordPage> = {
     currentRecord: generated.records.highestRenewableShare.text,
     why: 'Renewable share records are useful because they show when wind, solar and hydro are doing enough work to materially reduce fossil generation and carbon intensity.',
     notes: ['This is an initial record from the current reporting feed, not yet an all-time archive.', 'Future versions should track settlement-period highs, daily highs and all-time records separately.', archiveWindow.definition],
-    related: [{ to: '/renewables', label: 'Renewables' }, { to: '/reports/weekly/2026-05-11', label: 'Weekly report' }, { to: '/', label: 'Live dashboard' }],
+    related: [{ to: '/renewables', label: 'Renewables' }, { to: '/reports', label: 'Weekly report' }, { to: '/', label: 'Live dashboard' }],
   },
   '/records/highest-wind-generation': {
     slug: '/records/highest-wind-generation',

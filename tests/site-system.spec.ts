@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {readFileSync} from 'node:fs';
 const snapshot=JSON.parse(readFileSync(new URL('./fixtures/grid-snapshot.json',import.meta.url),'utf8'));
-const routes=['/explore','/wholesale-electricity-price','/pumped-storage','/about','/data','/insights','/newsletter','/methodology','/contact','/privacy','/citation','/uk-electricity-mix','/carbon-intensity','/renewables','/gas-generation','/nuclear-power','/interconnectors','/electricity-demand','/uk-electricity-generation-live','/cleanest-time-to-use-electricity','/uk-wind-power-today','/uk-solar-power-today','/gas-share-of-electricity','/renewables-share-today','/carbon-intensity-today','/today','/yesterday','/power-flow','/reports','/reports/weekly/2026-05-11','/records','/records/highest-renewable-share','/records/highest-wind-generation','/records/highest-solar-generation','/records/highest-gas-generation','/social','/measurement','/glossary','/partners','/missing-page'];
+const routes=['/explore','/wholesale-electricity-price','/pumped-storage','/about','/data','/insights','/newsletter','/methodology','/contact','/privacy','/citation','/uk-electricity-mix','/carbon-intensity','/renewables','/gas-generation','/nuclear-power','/interconnectors','/electricity-demand','/uk-electricity-generation-live','/cleanest-time-to-use-electricity','/uk-wind-power-today','/uk-solar-power-today','/gas-share-of-electricity','/renewables-share-today','/carbon-intensity-today','/today','/yesterday','/power-flow','/reports','/reports/weekly/2026-11-16','/records','/records/highest-renewable-share','/records/highest-wind-generation','/records/highest-solar-generation','/records/highest-gas-generation','/social','/measurement','/glossary','/partners','/missing-page'];
 test.beforeEach(async({page})=>{
  await page.route('**/api/energy-data',r=>r.fulfill({json:snapshot}));
  await page.route('**/api/history',r=>r.fulfill({json:{data:[],totalPeriods:0,meta:{periods:0}}}));
@@ -39,7 +39,7 @@ test('legacy HTML addresses resolve to the styled explainer',async({page})=>{
 });
 test('crawlable reading pages retain the design without JavaScript',async({browser})=>{
  const context=await browser.newContext({javaScriptEnabled:false,viewport:{width:390,height:844}});const page=await context.newPage();
- for(const path of ['/reports/weekly/2026-05-11/','/uk-electricity-mix','/ai/uk-electricity-mix/']){
+ for(const path of ['/reports/weekly/2026-11-16/','/uk-electricity-mix','/ai/uk-electricity-mix/']){
   await page.goto('http://127.0.0.1:4175'+path);await expect(page.locator('.cc-topbar')).toBeVisible();await expect(page.locator('h1').first()).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
  }
  await context.close();
