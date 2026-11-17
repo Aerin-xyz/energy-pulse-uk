@@ -1,0 +1,10 @@
+{
+  "src/data/reportArchive.json": {
+    "unchanged": true,
+    "sha256": "b9203671f948fd4f981cae389941cce3c265263d0ab6d70c82319d7e47dd336c"
+  },
+  "src/data/energyMixGenerated.json": {
+    "unchanged": true,
+    "sha256": "b3a90b9f9fe587f42af699f08265eef2d073f1a88f6a5856f4f612b26413abe6"
+  }
+}

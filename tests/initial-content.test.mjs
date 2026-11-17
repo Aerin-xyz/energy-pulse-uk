@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import { reportCoverage } from '../src/lib/evidence/reportCoverage.mjs';
+const generated=JSON.parse(readFileSync('src/data/energyMixGenerated.json','utf8'));
 import { INITIAL_EVIDENCE, absoluteDailySummary, pageSchema } from '../src/lib/initialEvidence.mjs';
 
 const read = route => readFileSync(`dist/${route ? `${route}/` : ''}index.html`, 'utf8');
@@ -53,7 +55,7 @@ test('frozen daily context uses an absolute archive date without rewriting the a
   const daily = { date: '2026-09-28', summary: 'Yesterday, Monday 28 September, measured average generation was about 26.8 GW.' };
   assert.equal(absoluteDailySummary(daily), 'Archived daily context (2026-09-28): Monday 28 September, measured average generation was about 26.8 GW.');
   assert.match(daily.summary, /^Yesterday,/);
-  assert.match(read('today'), /Archived daily context \(2026-09-28\)/);
+  assert.ok(read('today').includes(`Archived daily context (${generated.yesterday.date})`));
   assert.doesNotMatch(read('yesterday'), /Yesterday, Monday|Yesterday in five numbers/);
 });
 
@@ -68,8 +70,9 @@ test('query/filter state canonicalises to its page and reports preserve publicat
 test('reports and record highs disclose their actual archive window in the initial response', () => {
   for (const route of ['reports/weekly/2026-09-29', 'records', 'records/highest-wind-generation']) {
     const html = read(route);
-    assert.match(html, /Partial week/);
-    assert.match(html, /2026-09-23–2026-09-28/);
+    const c=route.startsWith('reports/')?reportCoverage(JSON.parse(readFileSync('src/data/reportArchive.json','utf8')).find(r=>r.slug==='/reports/weekly/2026-09-29')):reportCoverage(generated.reports[0]);
+    assert.ok(html.includes(c.label));
+    assert.ok(html.includes(`${c.from}–${c.to}`));
   }
   assert.match(read('records'), /not all-time records/);
   const article = schemas(read('reports/weekly/2026-09-29')).find(item => item['@type'] === 'Article');

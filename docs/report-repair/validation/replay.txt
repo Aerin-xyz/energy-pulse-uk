@@ -1,0 +1,1 @@
+Modular report hashes and all calculations reproduced.

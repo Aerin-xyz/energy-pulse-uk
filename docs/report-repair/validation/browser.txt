@@ -1,0 +1,13 @@
+[2m[WebServer] [22m(node:351046) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+[2m[WebServer] [22m(Use `node --trace-warnings ...` to show where the warning was created)
+
+Running 2 tests using 1 worker
+
+(node:351064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+(node:351064) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+  ✓  1 tests/report-repair.spec.ts:2:31 › source-faithful report 390px (846ms)
+  ✓  2 tests/report-repair.spec.ts:2:31 › source-faithful report 1366px (1.3s)
+
+  2 passed (3.2s)
