@@ -2941,5 +2941,7 @@
   "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/PN?settlementDate=2026-11-17&settlementPeriod=27&format=json",
   "revision": "0ebc07cb036f1279d4266aaae9f42891f2ee5836132659b068c6af0870650df2",
   "mappingReviewedAt": "2026-09-24T17:20:24.270161+00:00",
-  "registryCheckedAt": "2026-11-17T13:02:20.125Z"
+  "registryCheckedAt": "2026-11-17T13:02:20.125Z",
+  "error": "No mapped PN records for requested interval",
+  "lastAttemptAt": "2026-11-17T21:39:59.781Z"
 }
