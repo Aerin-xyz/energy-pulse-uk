@@ -1,143 +1,163 @@
 {
-  "generatedAt": "2026-09-29T08:08:42.047Z",
+  "generatedAt": "2026-11-17T14:38:59.883Z",
   "reports": [
     {
-      "slug": "/reports/weekly/2026-09-29",
-      "date": "2026-09-29",
-      "title": "UK Electricity Mix Weekly Report: Tuesday 29 September",
-      "period": "Wednesday 23 September to Monday 28 September",
-      "intro": "A measured weekly report for EnergyMix.info using the available 7-day historical generation feed for Wednesday 23 September to Monday 28 September.",
-      "summary": "The week from Wednesday 23 September to Monday 28 September averaged about 25.5 GW of measured generation, with renewables averaging 40.5% of measured output. The strongest renewable day in the available data was Sunday 27 September, when wind, solar and hydro together averaged 52.8% of measured generation. Gas was highest on Monday 28 September and lowest on Sunday 27 September.",
-      "takeaway": "For flexible electricity use, the cleanest opportunities are likely to appear when wind is strong, gas is low and demand is not at a peak. This is the foundation for future EV-charging guidance, clean-electricity alerts and weekly newsletter summaries.",
+      "slug": "/reports/weekly/2026-11-16",
+      "date": "2026-11-17",
+      "title": "GB Metered Electricity Generation: 2026-11-10–2026-11-16",
+      "period": "2026-11-10 to 2026-11-16",
+      "intro": "Seven complete Europe/London reporting days. Provisional, source-revisable readings; this is not a whole-system generation total.",
+      "summary": "Transmission-metered generation excluding pumped storage averaged 29.38 GW. Wind and natural hydro supplied 27.76% of that metered energy. Embedded estimates and imports are excluded.",
+      "takeaway": "Historical generation comparisons do not establish the cheapest or lowest-carbon time to use electricity today.",
       "metrics": [
         [
-          "Average measured generation",
-          "~25.5 GW across available settlement-period aggregates"
+          "Average transmission-metered generation",
+          "29.38 GW"
         ],
         [
-          "Average renewable share",
-          "40.5%"
+          "Metered energy excluding pumped storage",
+          "4936620.00 MWh"
         ],
         [
-          "Highest renewable share",
-          "52.8% on Sunday 27 September"
+          "Wind + natural hydro share of metered generation",
+          "27.76%"
         ],
         [
-          "Highest average wind output",
-          "~10.8 GW on Sunday 27 September"
+          "Highest daily-average metered wind",
+          "12.07 GW on 2026-11-12"
         ],
         [
-          "Highest average solar output",
-          "~3.4 GW on Saturday 26 September"
-        ],
-        [
-          "Highest average gas output",
-          "~11.8 GW on Monday 28 September"
+          "Highest daily-average metered gas",
+          "22.30 GW on 2026-11-10"
         ]
       ],
       "drivers": [
-        "Renewables were strongest on Sunday 27 September, when wind, solar and hydro averaged 52.8% of measured generation.",
-        "Wind was the largest swing factor in the available feed, peaking at about 10.8 GW average output on Sunday 27 September.",
-        "Solar was strongest on Saturday 26 September, averaging about 3.4 GW across settlement periods after embedded-solar backfill where needed.",
-        "Gas averaged about 7.7 GW across the period, rising highest on Monday 28 September and falling lowest on Sunday 27 September.",
-        "Measured generation was highest on Wednesday 23 September, at roughly 26.8 GW average output."
+        "Highest daily-average metered wind: 12.07 GW on 2026-11-12.",
+        "Highest daily-average metered gas: 22.30 GW on 2026-11-10.",
+        "Pumped storage is separate: -10126.00 MWh signed net energy across the window; excluded from the generation denominator."
       ],
-      "cleanestPeriods": [
-        {
-          "title": "Best low-carbon proxy: Sunday 27 September",
-          "body": "Historical carbon-intensity aggregates are not yet part of this weekly report feed, so EnergyMix.info uses renewable share and gas output as cautious proxies. Sunday 27 September had the strongest renewable share at 52.8%."
-        },
-        {
-          "title": "Lowest gas proxy: Sunday 27 September",
-          "body": "Gas generation averaged about 4.1 GW on Sunday 27 September. Lower gas periods are often cleaner, but the report does not yet claim this was the lowest-carbon period without historical carbon-intensity validation."
-        }
-      ],
-      "higherCarbonPeriods": [
-        {
-          "title": "Highest gas proxy: Monday 28 September",
-          "body": "Gas averaged about 11.8 GW on Monday 28 September. Gas-heavy periods are usually higher-carbon, but this is labelled as a proxy until historical carbon-intensity highs/lows are added to the report feed."
-        }
-      ],
+      "cleanestPeriods": [],
+      "higherCarbonPeriods": [],
       "highlights": [
         {
-          "label": "Wind",
-          "value": "Highest average wind output was about 10.8 GW on Sunday 27 September."
+          "label": "Embedded solar estimate",
+          "value": "Embedded solar: 1.30 GW average across 2026-11-10–2026-11-16; NESO estimate, not included in metered totals."
         },
         {
-          "label": "Solar",
-          "value": "Highest average solar output was about 3.4 GW on Saturday 26 September."
+          "label": "Embedded wind estimate",
+          "value": "Embedded wind: 1.36 GW average across 2026-11-10–2026-11-16; NESO estimate, not included in metered totals."
         },
         {
-          "label": "Gas",
-          "value": "Highest average gas output was about 11.8 GW on Monday 28 September; lowest was about 4.1 GW on Sunday 27 September."
+          "label": "Carbon intensity",
+          "value": "Published actual carbon intensity averaged 158.7 gCO₂/kWh (time-weighted). This is not a marginal-emissions or consumption-weighted measure."
         }
       ],
-      "methodologyNote": "This report is generated from the available 7-day historical generation feed and validated against external public data. Carbon-intensity highs/lows and interconnector summaries should be treated as future additions unless they are present as validated historical aggregates."
+      "methodologyNote": "Elexon transmission-metered generation; excludes imports, embedded estimates and pumped storage. Renewable share is wind plus natural hydro, excluding biomass. MW interval averages are integrated over half-hour durations. Optional estimates are not added to the denominator. Every included module requires all intervals across the entire window. Latest published Elexon revisions at retrieval are selected; conflicting equal-timestamp records fail validation. Original source responses and hashes are retained. Source-faithful validation is not independent certification. Publication remains provisional; later collections retain revised source evidence without silently rewriting archived reports.",
+      "coverage": {
+        "from": "2026-11-10",
+        "to": "2026-11-16",
+        "days": 7,
+        "reportingDates": [
+          "2026-11-10",
+          "2026-11-11",
+          "2026-11-12",
+          "2026-11-13",
+          "2026-11-14",
+          "2026-11-15",
+          "2026-11-16"
+        ],
+        "timeBasis": "Europe/London",
+        "definitionVersion": "authoritative-report-v3",
+        "aggregation": "Energy divided by observed duration; shares are energy-weighted, not averages of percentages."
+      },
+      "validation": {
+        "status": "passed",
+        "days": 7,
+        "timeBasis": "Europe/London",
+        "evidencePath": "/data/validation/reports/2026-11-16/02b98eb91a1f81048b8f/manifest.json",
+        "dailyCsv": "/data/validation/reports/2026-11-16/02b98eb91a1f81048b8f/daily.csv",
+        "checkedAt": "2026-11-17T14:38:59.883Z"
+      },
+      "modules": {
+        "metered": {
+          "status": "passed",
+          "completeDays": 7,
+          "expectedDays": 7,
+          "totalMWh": 4936620,
+          "averageMW": 29384.64285714286,
+          "renewableShare": 27.75723065579283,
+          "signedStorageMWh": -10126
+        },
+        "solar": {
+          "status": "passed",
+          "completeDays": 7,
+          "expectedDays": 7,
+          "totalMWh": 218529,
+          "averageMW": 1300.767857142857
+        },
+        "embeddedWind": {
+          "status": "passed",
+          "completeDays": 7,
+          "expectedDays": 7,
+          "totalMWh": 228386.5,
+          "averageMW": 1359.4434523809523
+        },
+        "carbon": {
+          "status": "passed",
+          "completeDays": 7,
+          "expectedDays": 7,
+          "meanActualGCO2PerKWh": 158.7470238095238
+        }
+      },
+      "publicationStatus": "provisional; source records may be revised"
     }
   ],
-  "latestReportSlug": "/reports/weekly/2026-09-29",
+  "latestReportSlug": "/reports/weekly/2026-11-16",
   "yesterday": {
     "slug": "/yesterday",
-    "date": "2026-09-28",
-    "title": "UK Electricity Mix Yesterday: Monday 28 September",
-    "summary": "Yesterday, Monday 28 September, measured average generation was about 26.8 GW. Renewables averaged 26.8% of measured generation, gas averaged 11.8 GW, wind averaged 3.6 GW and solar averaged 2.7 GW.",
+    "date": "2026-11-16",
+    "title": "GB Metered Electricity Summary: 2026-11-16",
+    "summary": "On 2026-11-16, transmission-metered generation excluding pumped storage averaged 28.14 GW. Wind and natural hydro supplied 31.48% of metered energy. Imports and embedded estimates are excluded; source data may be revised.",
     "metrics": [
       [
-        "Average measured generation",
-        "~26.8 GW"
+        "Average transmission-metered generation",
+        "28.14 GW"
       ],
       [
-        "Average renewable share",
-        "26.8%"
+        "Wind + natural hydro share",
+        "31.48%"
       ],
       [
-        "Average wind output",
-        "~3.6 GW"
+        "Average metered wind",
+        "8.49 GW"
       ],
       [
-        "Average solar output",
-        "~2.7 GW"
-      ],
-      [
-        "Average gas output",
-        "~11.8 GW"
+        "Embedded solar estimate (separate)",
+        "1.47 GW"
       ]
     ]
   },
   "records": {
     "highestRenewableShare": {
-      "value": "52.8%",
-      "date": "Sunday 27 September",
-      "text": "Current measured 7-day high: 52.8% average renewable share on Sunday 27 September, based on the available historical generation feed."
+      "value": "40.85%",
+      "date": "2026-11-12",
+      "text": "Window 2026-11-10–2026-11-16: highest daily wind + natural hydro share of metered generation was 40.85% on 2026-11-12. Excludes embedded estimates, biomass and pumped storage."
     },
     "highestWindGeneration": {
-      "value": "10.8 GW",
-      "date": "Sunday 27 September",
-      "text": "Current measured 7-day high: about 10.8 GW average wind output on Sunday 27 September, based on the available historical generation feed."
-    },
-    "highestSolarGeneration": {
-      "value": "3.4 GW",
-      "date": "Saturday 26 September",
-      "text": "Current measured 7-day high: about 3.4 GW average solar output on Saturday 26 September, based on the available historical generation feed."
+      "value": "12.07 GW",
+      "date": "2026-11-12",
+      "text": "Window 2026-11-10–2026-11-16: highest daily-average metered wind was 12.07 GW on 2026-11-12."
     },
     "highestGasGeneration": {
-      "value": "11.8 GW",
-      "date": "Monday 28 September",
-      "text": "Current measured 7-day high: about 11.8 GW average gas output on Monday 28 September, based on the available historical generation feed."
+      "value": "22.30 GW",
+      "date": "2026-11-10",
+      "text": "Window 2026-11-10–2026-11-16: highest daily-average metered gas was 22.30 GW on 2026-11-10."
+    },
+    "highestSolarGeneration": {
+      "value": "2.07 GW",
+      "date": "2026-11-12",
+      "text": "Window 2026-11-10–2026-11-16: highest daily-average embedded solar estimate was 2.07 GW on 2026-11-12, from NESO. Not metered generation."
     }
   },
-  "socialPosts": [
-    {
-      "title": "Monday weekly grid brief",
-      "body": "Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: 52.8% on Sunday 27 September\n• Highest average wind output: ~10.8 GW on Sunday 27 September\n• Highest average solar output: ~3.4 GW on Saturday 26 September\n• Highest average gas output: ~11.8 GW on Monday 28 September\n\nThe shift was clear: gas-heavy weekdays gave way to a cleaner, wind-led weekend.\n\nFull report: https://energymix.info/reports/weekly/2026-09-29/"
-    },
-    {
-      "title": "Wednesday explainer",
-      "body": "What does “UK electricity mix” actually mean?\n\nFor live grid dashboards, it usually means Great Britain’s electricity system: England, Scotland and Wales. Northern Ireland is part of the UK, but operates in a separate electricity market.\n\nExplainer: https://energymix.info/uk-electricity-mix"
-    },
-    {
-      "title": "Friday practical clean-electricity post",
-      "body": "The cleanest time to use electricity is not a fixed hour.\n\nIt changes with wind, solar, demand, imports and gas generation. Windy overnight periods and sunny middays can be much cleaner than still early-evening peaks.\n\nGuide: https://energymix.info/cleanest-time-to-use-electricity"
-    }
-  ]
+  "socialPosts": []
 }
