@@ -68,16 +68,16 @@ test('query/filter state canonicalises to its page and reports preserve publicat
 });
 
 test('reports and record highs disclose their actual archive window in the initial response', () => {
-  for (const route of ['reports/weekly/2026-09-29', 'records', 'records/highest-wind-generation']) {
+  for (const route of ['reports/weekly/2026-11-16', 'records', 'records/highest-wind-generation']) {
     const html = read(route);
-    const c=route.startsWith('reports/')?reportCoverage(JSON.parse(readFileSync('src/data/reportArchive.json','utf8')).find(r=>r.slug==='/reports/weekly/2026-09-29')):reportCoverage(generated.reports[0]);
+    const c=route.startsWith('reports/')?reportCoverage(JSON.parse(readFileSync('src/data/reportArchive.json','utf8')).find(r=>r.slug==='/reports/weekly/2026-11-16')):reportCoverage(generated.reports[0]);
     assert.ok(html.includes(c.label));
     assert.ok(html.includes(`${c.from}–${c.to}`));
   }
   assert.match(read('records'), /not all-time records/);
-  const article = schemas(read('reports/weekly/2026-09-29')).find(item => item['@type'] === 'Article');
-  assert.equal(article.datePublished, '2026-09-29');
-  assert.equal(article.dateModified, '2026-10-25');
+  const article = schemas(read('reports/weekly/2026-11-16')).find(item => item['@type'] === 'Article');
+  assert.equal(article.datePublished, '2026-11-17');
+  assert.equal(article.dateModified, '2026-11-17');
 });
 
 test('sitemap selects existing canonical pages and registered initial links avoid redirects', () => {
@@ -108,4 +108,14 @@ test('homepage initial layout renders the actual national summary, not the obsol
   assert.match(html, /class="national-fuels"/);
   assert.match(html, /Loading the electricity atlas/);
   assert.doesNotMatch(html, /class="atlas-intro"|class="atlas-deck"|id="seo-prerender"/);
+});
+
+test('withdrawn archive pages are absent from build, sitemap and route manifest',()=>{
+ const routes=JSON.parse(readFileSync('dist/route-manifest.json','utf8'));
+ const sitemap=readFileSync('dist/sitemap.xml','utf8');
+ const reports=routes.filter(r=>r.startsWith('/reports/weekly/'));
+ assert.ok(reports.includes('/reports/weekly/2026-11-16'));
+ assert.ok(reports.every(r=>r >= '/reports/weekly/2026-11-16'));
+ assert.ok(!sitemap.includes('/reports/weekly/2026-09-29'));
+ assert.throws(()=>read('reports/weekly/2026-09-29'),/ENOENT/);
 });

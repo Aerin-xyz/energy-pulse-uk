@@ -66,19 +66,15 @@ test('expired, failed and too-short horizons expose states and never return advi
   assert.equal(forecastWindowState(rows,180,now+1).status,'incomplete');
   assert.equal(forecastWindowState(rows,60,now).horizon.to,rows.at(-1).to);
 });
-test('all archived report windows are explicit without changing any publication data',()=>{
+test('public archive starts with the validated November baseline',()=>{
   const archive=JSON.parse(readFileSync(new URL('../src/data/reportArchive.json',import.meta.url)));
-  const original=JSON.stringify(archive), coverage=archive.map(reportCoverage);
-  assert.equal(coverage.filter(c=>c.status==='partial'&&c.days===6).length,124);
-  assert.equal(coverage.filter(c=>c.status==='unknown'&&c.days===7).length,3);
-  assert.equal(JSON.stringify(archive),original);
-  const legacy = reportCoverage(archive.find(r=>r.slug==='/reports/weekly/2026-09-29'));
-  assert.equal(legacy.from,'2026-09-23');
-  assert.equal(legacy.to,'2026-09-28');
-  assert.equal(legacy.timeBasis,'UTC');
-  assert.match(legacy.definition,/excluding biomass/);
-  assert.match(legacy.definition,/may include pumped-storage/);
-  assert.match(legacy.validationIssue,/all-days check failed/);
+  assert.ok(archive.length >= 1);
+  assert.ok(archive.every(r=>r.slug >= '/reports/weekly/2026-11-16'));
+  const current=archive.find(r=>r.slug==='/reports/weekly/2026-11-16');
+  const coverage=reportCoverage(current);
+  assert.equal(coverage.from,'2026-11-10');
+  assert.equal(coverage.to,'2026-11-16');
+  assert.equal(coverage.days,7);
 });
 test('unknown range remains unknown, year crossings resolve without using wall-clock time',()=>{
   assert.equal(reportCoverage({date:'2026-09-29',period:'unknown'}).status,'unknown');
