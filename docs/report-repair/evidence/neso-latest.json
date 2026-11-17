@@ -1,0 +1,235 @@
+{
+  "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22f93d1835-75bc-43e5-84ad-12472b180a98%22%20ORDER%20BY%20%22DATETIME%22%20DESC%20LIMIT%202",
+  "retrievedAt": "2026-11-17T14:18:26.242Z",
+  "body": {
+    "help": "https://api.neso.energy/api/3/action/help_show?name=datastore_search_sql",
+    "success": true,
+    "result": {
+      "records": [
+        {
+          "RENEWABLE_perc": "35.8",
+          "NUCLEAR": "5133.0",
+          "HYDRO_perc": "1.1",
+          "STORAGE": "0",
+          "IMPORTS_perc": "4.5",
+          "SOLAR_perc": "0.0",
+          "LOW_CARBON": "19613.0",
+          "BIOMASS_perc": "10.5",
+          "HYDRO": "332",
+          "STORAGE_perc": "0.0",
+          "WIND_EMB": "1659.0",
+          "WIND_perc": "29.4",
+          "IMPORTS": "1400.0",
+          "LOW_CARBON_perc": "62.7",
+          "GAS": "9937.0",
+          "COAL_perc": "0.0",
+          "CARBON_INTENSITY": "141.0",
+          "COAL": "0.0",
+          "FOSSIL": "9937.0",
+          "ZERO_CARBON_perc": "67.1",
+          "FOSSIL_perc": "31.7",
+          "GENERATION_perc": "100.0",
+          "GENERATION": "31305.0",
+          "DATETIME": "2026-11-04T23:30:00",
+          "OTHER": "355.0",
+          "NUCLEAR_perc": "16.4",
+          "ZERO_CARBON": "17956.0",
+          "WIND_EMB_perc": "5.3",
+          "_full_text": "'-04':3 '-11':2 '0':17 '0.0':8,16,25,33,34 '00':6 '1.1':29,32 '10.5':31 '100.0':35 '11195.0':22 '1400.0':13 '141.0':19 '16.4':26 '1659.0':11 '17954.0':21 '19613.0':20 '2026':1 '29.4':27 '30':5 '31.7':24,39 '31305.0':18 '3285.0':14 '332':12 '35.8':38 '355.0':15 '4.5':30 '5.3':28 '5133.0':9 '62.7':36 '63.6':37 '9204.0':10 '9937.0':7,23 't23':4",
+          "BIOMASS": "3285.0",
+          "GAS_perc": "31.7",
+          "OTHER_perc": "1.1",
+          "WIND": "9204.0",
+          "SOLAR": "0.0",
+          "_id": 25231210,
+          "RENEWABLE": "11195.0"
+        },
+        {
+          "RENEWABLE_perc": "35.0",
+          "NUCLEAR": "5134.0",
+          "HYDRO_perc": "1.1",
+          "STORAGE": "0",
+          "IMPORTS_perc": "4.4",
+          "SOLAR_perc": "0.0",
+          "LOW_CARBON": "19664.0",
+          "BIOMASS_perc": "10.2",
+          "HYDRO": "340",
+          "STORAGE_perc": "0.0",
+          "WIND_EMB": "1668.0",
+          "WIND_perc": "28.8",
+          "IMPORTS": "1400.0",
+          "LOW_CARBON_perc": "61.3",
+          "GAS": "10680.0",
+          "COAL_perc": "0.0",
+          "CARBON_INTENSITY": "147.0",
+          "COAL": "0.0",
+          "FOSSIL": "10680.0",
+          "ZERO_CARBON_perc": "65.1",
+          "FOSSIL_perc": "33.3",
+          "GENERATION_perc": "100.0",
+          "GENERATION": "32098.0",
+          "DATETIME": "2026-11-04T23:00:00",
+          "OTHER": "354.0",
+          "NUCLEAR_perc": "16.0",
+          "ZERO_CARBON": "17998.0",
+          "WIND_EMB_perc": "5.2",
+          "_full_text": "'-04':3 '-11':2 '0':17 '0.0':8,16,25,33,34 '00':5,6 '1.1':29,32 '10.2':31 '100.0':35 '10680.0':7,23 '11245.0':22 '1400.0':13 '147.0':19 '16.0':26 '1668.0':11 '17996.0':21 '19664.0':20 '2026':1 '28.8':27 '32098.0':18 '3285.0':14 '33.3':24,39 '340':12 '35.0':38 '354.0':15 '4.4':30 '5.2':28 '5134.0':9 '61.3':36 '62.0':37 '9237.0':10 't23':4",
+          "BIOMASS": "3285.0",
+          "GAS_perc": "33.3",
+          "OTHER_perc": "1.1",
+          "WIND": "9237.0",
+          "SOLAR": "0.0",
+          "_id": 25231209,
+          "RENEWABLE": "11245.0"
+        }
+      ],
+      "fields": [
+        {
+          "type": "int4",
+          "id": "_id"
+        },
+        {
+          "type": "tsvector",
+          "id": "_full_text"
+        },
+        {
+          "type": "timestamp",
+          "id": "DATETIME"
+        },
+        {
+          "type": "numeric",
+          "id": "GAS"
+        },
+        {
+          "type": "numeric",
+          "id": "COAL"
+        },
+        {
+          "type": "numeric",
+          "id": "NUCLEAR"
+        },
+        {
+          "type": "numeric",
+          "id": "WIND"
+        },
+        {
+          "type": "numeric",
+          "id": "WIND_EMB"
+        },
+        {
+          "type": "numeric",
+          "id": "HYDRO"
+        },
+        {
+          "type": "numeric",
+          "id": "IMPORTS"
+        },
+        {
+          "type": "numeric",
+          "id": "BIOMASS"
+        },
+        {
+          "type": "numeric",
+          "id": "OTHER"
+        },
+        {
+          "type": "numeric",
+          "id": "SOLAR"
+        },
+        {
+          "type": "numeric",
+          "id": "STORAGE"
+        },
+        {
+          "type": "numeric",
+          "id": "GENERATION"
+        },
+        {
+          "type": "numeric",
+          "id": "CARBON_INTENSITY"
+        },
+        {
+          "type": "numeric",
+          "id": "LOW_CARBON"
+        },
+        {
+          "type": "numeric",
+          "id": "ZERO_CARBON"
+        },
+        {
+          "type": "numeric",
+          "id": "RENEWABLE"
+        },
+        {
+          "type": "numeric",
+          "id": "FOSSIL"
+        },
+        {
+          "type": "numeric",
+          "id": "GAS_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "COAL_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "NUCLEAR_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "WIND_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "WIND_EMB_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "HYDRO_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "IMPORTS_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "BIOMASS_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "OTHER_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "SOLAR_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "STORAGE_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "GENERATION_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "LOW_CARBON_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "ZERO_CARBON_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "RENEWABLE_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "FOSSIL_perc"
+        }
+      ],
+      "sql": "SELECT * FROM \"f93d1835-75bc-43e5-84ad-12472b180a98\" ORDER BY \"DATETIME\" DESC LIMIT 2"
+    }
+  }
+}

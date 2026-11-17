@@ -72,12 +72,13 @@ test('all archived report windows are explicit without changing any publication 
   assert.equal(coverage.filter(c=>c.status==='partial'&&c.days===6).length,124);
   assert.equal(coverage.filter(c=>c.status==='unknown'&&c.days===7).length,3);
   assert.equal(JSON.stringify(archive),original);
-  assert.equal(coverage[0].from,'2026-09-23');
-  assert.equal(coverage[0].to,'2026-09-28');
-  assert.equal(coverage[0].timeBasis,'UTC');
-  assert.match(coverage[0].definition,/excluding biomass/);
-  assert.match(coverage[0].definition,/may include pumped-storage/);
-  assert.match(coverage[0].validationIssue,/all-days check failed/);
+  const legacy = reportCoverage(archive.find(r=>r.slug==='/reports/weekly/2026-09-29'));
+  assert.equal(legacy.from,'2026-09-23');
+  assert.equal(legacy.to,'2026-09-28');
+  assert.equal(legacy.timeBasis,'UTC');
+  assert.match(legacy.definition,/excluding biomass/);
+  assert.match(legacy.definition,/may include pumped-storage/);
+  assert.match(legacy.validationIssue,/all-days check failed/);
 });
 test('unknown range remains unknown, year crossings resolve without using wall-clock time',()=>{
   assert.equal(reportCoverage({date:'2026-09-29',period:'unknown'}).status,'unknown');

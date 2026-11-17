@@ -1,0 +1,8 @@
+{
+  "independent_language": "Python",
+  "intervals": 336,
+  "fuel_interval_values": 3024,
+  "energyMWh": 4936620.0,
+  "renewableShare": 27.75723065579283,
+  "result": "exact match to retained Elexon observations"
+}

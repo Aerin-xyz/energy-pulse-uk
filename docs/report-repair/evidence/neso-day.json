@@ -1,0 +1,158 @@
+{
+  "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22f93d1835-75bc-43e5-84ad-12472b180a98%22%20WHERE%20%22DATETIME%22%20%3E%3D%20'2026-11-16T00%3A00%3A00Z'%20AND%20%22DATETIME%22%20%3C%20'2026-11-17T00%3A00%3A00Z'%20ORDER%20BY%20%22DATETIME%22",
+  "retrievedAt": "2026-11-17T14:18:26.136Z",
+  "body": {
+    "help": "https://api.neso.energy/api/3/action/help_show?name=datastore_search_sql",
+    "success": true,
+    "result": {
+      "records": [],
+      "fields": [
+        {
+          "type": "int4",
+          "id": "_id"
+        },
+        {
+          "type": "tsvector",
+          "id": "_full_text"
+        },
+        {
+          "type": "timestamp",
+          "id": "DATETIME"
+        },
+        {
+          "type": "numeric",
+          "id": "GAS"
+        },
+        {
+          "type": "numeric",
+          "id": "COAL"
+        },
+        {
+          "type": "numeric",
+          "id": "NUCLEAR"
+        },
+        {
+          "type": "numeric",
+          "id": "WIND"
+        },
+        {
+          "type": "numeric",
+          "id": "WIND_EMB"
+        },
+        {
+          "type": "numeric",
+          "id": "HYDRO"
+        },
+        {
+          "type": "numeric",
+          "id": "IMPORTS"
+        },
+        {
+          "type": "numeric",
+          "id": "BIOMASS"
+        },
+        {
+          "type": "numeric",
+          "id": "OTHER"
+        },
+        {
+          "type": "numeric",
+          "id": "SOLAR"
+        },
+        {
+          "type": "numeric",
+          "id": "STORAGE"
+        },
+        {
+          "type": "numeric",
+          "id": "GENERATION"
+        },
+        {
+          "type": "numeric",
+          "id": "CARBON_INTENSITY"
+        },
+        {
+          "type": "numeric",
+          "id": "LOW_CARBON"
+        },
+        {
+          "type": "numeric",
+          "id": "ZERO_CARBON"
+        },
+        {
+          "type": "numeric",
+          "id": "RENEWABLE"
+        },
+        {
+          "type": "numeric",
+          "id": "FOSSIL"
+        },
+        {
+          "type": "numeric",
+          "id": "GAS_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "COAL_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "NUCLEAR_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "WIND_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "WIND_EMB_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "HYDRO_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "IMPORTS_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "BIOMASS_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "OTHER_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "SOLAR_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "STORAGE_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "GENERATION_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "LOW_CARBON_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "ZERO_CARBON_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "RENEWABLE_perc"
+        },
+        {
+          "type": "numeric",
+          "id": "FOSSIL_perc"
+        }
+      ],
+      "sql": "SELECT * FROM \"f93d1835-75bc-43e5-84ad-12472b180a98\" WHERE \"DATETIME\" >= '2026-11-16T00:00:00Z' AND \"DATETIME\" < '2026-11-17T00:00:00Z' ORDER BY \"DATETIME\""
+    }
+  }
+}

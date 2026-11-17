@@ -1,198 +1,22 @@
-import { expectedPeriods, settlementStart } from '../supabase/functions/_shared/settlementTime.mjs';
-import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { writeValidationReport } from './external-data-validation.mjs';
-import { validateReportAllDays } from './validate-report-all-days.mjs';
-import { fetchHistoricalGeneration } from './historical-feed.mjs';
-
-const ROOT = new URL('..', import.meta.url).pathname;
-const OUT = join(ROOT, 'src/data/energyMixGenerated.json');
-const VALIDATION_OUT = join(ROOT, 'public/data/validation/latest.json');
-const NESO_DEMAND_RESOURCE_ID = '177f6fa4-ae49-4182-81ea-0c6b35f26ca6';
-const NESO_SQL_URL = 'https://api.neso.energy/api/3/action/datastore_search_sql';
-
-const fmtDate = (iso) => new Intl.DateTimeFormat('en-GB', { weekday: 'long', day: 'numeric', month: 'long' }).format(new Date(`${iso}T12:00:00Z`));
-const periodsFor = (row) => {
-  const n = Number(row.totalPeriods);
-  return Number.isFinite(n) && n > 0 ? n : 48;
-};
-const averageMw = (row, halfHourlyMwhTotal) => (halfHourlyMwhTotal * 2) / periodsFor(row);
-const averageGw = (row, halfHourlyMwhTotal) => `${(averageMw(row, halfHourlyMwhTotal) / 1000).toFixed(1)} GW`;
-const pct = (n) => `${n.toFixed(1)}%`;
-const fuel = (row, name) => row.fuelMix.find((x) => x.fuelType.toLowerCase() === name.toLowerCase()) || { mw: 0, percentage: 0 };
-const renewableMw = (row) => fuel(row, 'Wind').mw + fuel(row, 'Solar').mw + fuel(row, 'Hydro').mw;
-const renewableShare = (row) => (renewableMw(row) / row.totalMW) * 100;
-const averageField = (rows, key) => rows.reduce((sum, row) => sum + Number(row[key] || 0), 0) / rows.length;
-const fetchEmbeddedSolarAverageMw = async (date) => {
-  const sql = `SELECT * from "${NESO_DEMAND_RESOURCE_ID}" WHERE "SETTLEMENT_DATE" = '${date}'`;
-  const response = await fetch(`${NESO_SQL_URL}?sql=${encodeURIComponent(sql)}`);
-  if (!response.ok) throw new Error(`NESO Demand Data Update failed ${response.status}: ${await response.text()}`);
-
-  const json = await response.json();
-  const actualRows = (json.result?.records || []).filter((row) => row.FORECAST_ACTUAL_INDICATOR === 'A');
-  if (actualRows.length !== expectedPeriods(date)) throw new Error(`NESO Demand Data Update returned ${actualRows.length} actual periods for ${date}`);
-
-  return averageField(actualRows, 'EMBEDDED_SOLAR_GENERATION');
-};
-const withSolarBackfill = async (row) => {
-  if (averageMw(row, fuel(row, 'Solar').mw) > 0) return row;
-
-  const solarAverageMw = await fetchEmbeddedSolarAverageMw(row.settlementDate);
-  if (!Number.isFinite(solarAverageMw) || solarAverageMw <= 0) return row;
-
-  const solarHalfHourlyMwhTotal = (solarAverageMw * periodsFor(row)) / 2;
-  const fuelMix = row.fuelMix.filter((item) => item.fuelType.toLowerCase() !== 'solar');
-  const totalMW = row.totalMW + solarHalfHourlyMwhTotal;
-  const next = {
-    ...row,
-    totalMW,
-    fuelMix: [
-      ...fuelMix,
-      {
-        fuelType: 'Solar',
-        mw: solarHalfHourlyMwhTotal,
-        percentage: 0,
-        color: '#F7B633',
-      },
-    ],
-    solarMatched: true,
-    solarMatchedPeriods: periodsFor(row),
-  };
-
-  next.fuelMix = next.fuelMix.map((item) => ({
-    ...item,
-    percentage: totalMW > 0 ? Math.round((item.mw / totalMW) * 100) : 0,
-  }));
-
-  return next;
-};
-
-const feed = await fetchHistoricalGeneration('7d');
-const feedRows = feed.data || [];
-const rows = await Promise.all(feedRows.filter((row) => periodsFor(row) === (row.timeBasis === 'Europe/London' ? expectedPeriods(row.settlementDate) : 48)).map(withSolarBackfill));
-if (rows.length < 2) throw new Error('Need at least 2 complete days of historical data');
-
-const start = rows[0].settlementDate;
-const end = rows[rows.length - 1].settlementDate;
-const latestFeedDate = feedRows[feedRows.length - 1]?.settlementDate || end;
-const reportDate = latestFeedDate;
-const slug = `/reports/weekly/${reportDate}`;
-const highestRenewable = rows.map((row) => ({ row, value: renewableShare(row) })).sort((a, b) => b.value - a.value)[0];
-const highestWind = rows.map((row) => ({ row, value: fuel(row, 'Wind').mw })).sort((a, b) => averageMw(b.row,b.value) - averageMw(a.row,a.value))[0];
-const highestSolar = rows.map((row) => ({ row, value: fuel(row, 'Solar').mw })).sort((a, b) => averageMw(b.row,b.value) - averageMw(a.row,a.value))[0];
-const highestGas = rows.map((row) => ({ row, value: fuel(row, 'Gas').mw })).sort((a, b) => averageMw(b.row,b.value) - averageMw(a.row,a.value))[0];
-const lowestGas = rows.map((row) => ({ row, value: fuel(row, 'Gas').mw })).sort((a, b) => averageMw(a.row,a.value) - averageMw(b.row,b.value))[0];
-const highestGeneration = rows.map((row) => ({ row, value: row.totalMW })).sort((a, b) => averageMw(b.row,b.value) - averageMw(a.row,a.value))[0];
-const totalHours = rows.reduce((sum,row)=>sum+periodsFor(row)/2,0);
-const avgGenerationMw = rows.reduce((sum,row)=>sum+row.totalMW,0)/totalHours;
-const avgRenewableShare = 100*rows.reduce((sum,row)=>sum+renewableMw(row),0)/rows.reduce((sum,row)=>sum+row.totalMW,0);
-const avgGasMw = rows.reduce((sum,row)=>sum+fuel(row,'Gas').mw,0)/totalHours;
-const yesterday = rows[rows.length - 1];
-const yRenew = renewableShare(yesterday);
-const yesterdayAverageMw = averageMw(yesterday, yesterday.totalMW);
-
-if (yesterdayAverageMw < 15000 || yesterdayAverageMw > 50000) {
-  throw new Error(`Generated yesterday average looks implausible: ${Math.round(yesterdayAverageMw)} MW for ${yesterday.settlementDate}`);
-}
-
-const validation = await validateReportAllDays(rows, { reportDate });
-validation.date = yesterday.settlementDate;
-writeValidationReport(validation, VALIDATION_OUT);
-if (validation.status === 'failed') {
-  const failedChecks = validation.days.flatMap(day => day.checks.filter(check => check.status === 'fail').map(check => `${day.date}: ${check.id}`))
-    .join('; ');
-  throw new Error(`External data validation failed for ${yesterday.settlementDate}: ${failedChecks}`);
-}
-
-const report = {
-  slug,
-  coverage: {from:start,to:end,reportingDates:rows.map(row=>row.settlementDate),days:rows.length,timeBasis:rows[0]?.timeBasis||'UTC',definitionVersion:'historical-report-v2',aggregation:'Generation and gas averages are energy divided by observed duration; renewable share is summed renewable energy divided by summed generation energy, not the arithmetic mean of daily percentages.'},
-  validation: {status:validation.status,days:validation.days.length,timeBasis:validation.period.timeBasis,evidencePath:validation.evidencePath,dailyCsv:validation.dailyCsv,checkedAt:validation.runAt},
-  date: reportDate,
-  title: `GB Electricity Mix Report: ${fmtDate(reportDate)}`,
-  period: `${fmtDate(start)} to ${fmtDate(end)}`,
-  intro: `An available-period generation report for EnergyMix.info using the available historical generation feed for ${fmtDate(start)} to ${fmtDate(end)} (${rows.length} complete reporting days; ${rows[0]?.timeBasis || 'UTC'} boundaries).`,
-  summary: `The reporting period from ${fmtDate(start)} to ${fmtDate(end)} averaged about ${(avgGenerationMw / 1000).toFixed(1)} GW of measured generation, with renewables averaging ${pct(avgRenewableShare)} of measured output. The strongest renewable day in the available data was ${fmtDate(highestRenewable.row.settlementDate)}, when wind, solar and hydro together averaged ${pct(highestRenewable.value)} of measured generation. Gas was highest on ${fmtDate(highestGas.row.settlementDate)} and lowest on ${fmtDate(lowestGas.row.settlementDate)}.`,
-  takeaway: 'For flexible electricity use, the cleanest opportunities are likely to appear when wind is strong, gas is low and demand is not at a peak. This is the foundation for future EV-charging guidance, clean-electricity alerts and weekly newsletter summaries.',
-  metrics: [
-    ['Average measured generation', `~${(avgGenerationMw / 1000).toFixed(1)} GW across available settlement-period aggregates`],
-    ['Energy-weighted renewable share (wind, solar, natural hydro)', pct(avgRenewableShare)],
-    ['Highest renewable share', `${pct(highestRenewable.value)} on ${fmtDate(highestRenewable.row.settlementDate)}`],
-    ['Highest average wind output', `~${averageGw(highestWind.row, highestWind.value)} on ${fmtDate(highestWind.row.settlementDate)}`],
-    ['Highest average solar output', `~${averageGw(highestSolar.row, highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}`],
-    ['Highest average gas output', `~${averageGw(highestGas.row, highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}`],
-  ],
-  drivers: [
-    `Renewables were strongest on ${fmtDate(highestRenewable.row.settlementDate)}, when wind, solar and hydro averaged ${pct(highestRenewable.value)} of measured generation.`,
-    `Wind reached its highest daily average in the available feed at about ${averageGw(highestWind.row, highestWind.value)} average output on ${fmtDate(highestWind.row.settlementDate)}.`,
-    `Solar was strongest on ${fmtDate(highestSolar.row.settlementDate)}, averaging about ${averageGw(highestSolar.row, highestSolar.value)} across settlement periods after embedded-solar backfill where needed.`,
-    `Gas averaged about ${(avgGasMw / 1000).toFixed(1)} GW across the period, rising highest on ${fmtDate(highestGas.row.settlementDate)} and falling lowest on ${fmtDate(lowestGas.row.settlementDate)}.`,
-    `Measured generation was highest on ${fmtDate(highestGeneration.row.settlementDate)}, at roughly ${averageGw(highestGeneration.row, highestGeneration.value)} average output.`,
-  ],
-  cleanestPeriods: [
-    {
-      title: `Best low-carbon proxy: ${fmtDate(highestRenewable.row.settlementDate)}`,
-      body: `Historical carbon-intensity aggregates are not yet part of this weekly report feed, so EnergyMix.info uses renewable share and gas output as cautious proxies. ${fmtDate(highestRenewable.row.settlementDate)} had the strongest renewable share at ${pct(highestRenewable.value)}.`,
-    },
-    {
-      title: `Lowest gas proxy: ${fmtDate(lowestGas.row.settlementDate)}`,
-      body: `Gas generation averaged about ${averageGw(lowestGas.row, lowestGas.value)} on ${fmtDate(lowestGas.row.settlementDate)}. Lower gas periods are often cleaner, but the report does not yet claim this was the lowest-carbon period without historical carbon-intensity validation.`,
-    },
-  ],
-  higherCarbonPeriods: [
-    {
-      title: `Highest gas proxy: ${fmtDate(highestGas.row.settlementDate)}`,
-      body: `Gas averaged about ${averageGw(highestGas.row, highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}. Gas-heavy periods are usually higher-carbon, but this is labelled as a proxy until historical carbon-intensity highs/lows are added to the report feed.`,
-    },
-  ],
-  highlights: [
-    { label: 'Wind', value: `Highest average wind output was about ${averageGw(highestWind.row, highestWind.value)} on ${fmtDate(highestWind.row.settlementDate)}.` },
-    { label: 'Solar', value: `Highest average solar output was about ${averageGw(highestSolar.row, highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}.` },
-    { label: 'Gas', value: `Highest average gas output was about ${averageGw(highestGas.row, highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}; lowest was about ${averageGw(lowestGas.row, lowestGas.value)} on ${fmtDate(lowestGas.row.settlementDate)}.` },
-  ],
-  methodologyNote: 'Compiled by Energy Mix from Elexon generation data and NESO embedded-generation estimates. Energy Mix calculates the totals, averages and comparisons. All reporting days are checked against retained official half-hour inputs; report-specific results document coverage and differences. Source data may be revised. Renewable share is energy-weighted and uses wind, solar and natural hydro, excluding biomass and pumped storage. Carbon-intensity highs/lows and interconnector summaries should be treated as future additions unless they are present as validated historical aggregates.',
-};
-
-const generated = {
-  generatedAt: new Date().toISOString(),
-  reports: [report],
-  latestReportSlug: slug,
-  yesterday: {
-    slug: '/yesterday',
-    date: yesterday.settlementDate,
-    title: `UK Electricity Mix Yesterday: ${fmtDate(yesterday.settlementDate)}`,
-    summary: `Yesterday, ${fmtDate(yesterday.settlementDate)}, measured average generation was about ${(yesterdayAverageMw / 1000).toFixed(1)} GW. Renewables averaged ${pct(yRenew)} of measured generation, gas averaged ${averageGw(yesterday, fuel(yesterday, 'Gas').mw)}, wind averaged ${averageGw(yesterday, fuel(yesterday, 'Wind').mw)} and solar averaged ${averageGw(yesterday, fuel(yesterday, 'Solar').mw)}.`,
-    metrics: [
-      ['Average measured generation', `~${(yesterdayAverageMw / 1000).toFixed(1)} GW`],
-      ['Average renewable share', pct(yRenew)],
-      ['Average wind output', `~${averageGw(yesterday, fuel(yesterday, 'Wind').mw)}`],
-      ['Average solar output', `~${averageGw(yesterday, fuel(yesterday, 'Solar').mw)}`],
-      ['Average gas output', `~${averageGw(yesterday, fuel(yesterday, 'Gas').mw)}`],
-    ],
-  },
-  records: {
-    highestRenewableShare: { value: pct(highestRenewable.value), date: fmtDate(highestRenewable.row.settlementDate), text: `Current measured 7-day high: ${pct(highestRenewable.value)} average renewable share on ${fmtDate(highestRenewable.row.settlementDate)}, based on the available historical generation feed.` },
-    highestWindGeneration: { value: averageGw(highestWind.row, highestWind.value), date: fmtDate(highestWind.row.settlementDate), text: `Current measured 7-day high: about ${averageGw(highestWind.row, highestWind.value)} average wind output on ${fmtDate(highestWind.row.settlementDate)}, based on the available historical generation feed.` },
-    highestSolarGeneration: { value: averageGw(highestSolar.row, highestSolar.value), date: fmtDate(highestSolar.row.settlementDate), text: `Current measured 7-day high: about ${averageGw(highestSolar.row, highestSolar.value)} average solar output on ${fmtDate(highestSolar.row.settlementDate)}, based on the available historical generation feed.` },
-    highestGasGeneration: { value: averageGw(highestGas.row, highestGas.value), date: fmtDate(highestGas.row.settlementDate), text: `Current measured 7-day high: about ${averageGw(highestGas.row, highestGas.value)} average gas output on ${fmtDate(highestGas.row.settlementDate)}, based on the available historical generation feed.` },
-  },
-  socialPosts: [
-    { title: 'Monday weekly grid brief', body: `Last week in Britain’s electricity mix:\n\n• Highest renewable share in the available feed: ${pct(highestRenewable.value)} on ${fmtDate(highestRenewable.row.settlementDate)}\n• Highest average wind output: ~${averageGw(highestWind.row, highestWind.value)} on ${fmtDate(highestWind.row.settlementDate)}\n• Highest average solar output: ~${averageGw(highestSolar.row, highestSolar.value)} on ${fmtDate(highestSolar.row.settlementDate)}\n• Highest average gas output: ~${averageGw(highestGas.row, highestGas.value)} on ${fmtDate(highestGas.row.settlementDate)}\n\nThese are generation comparisons, not validated carbon-intensity rankings.\n\nFull report: https://energymix.info${slug}/` },
-    { title: 'Wednesday explainer', body: 'What does “UK electricity mix” actually mean?\n\nFor live grid dashboards, it usually means Great Britain’s electricity system: England, Scotland and Wales. Northern Ireland is part of the UK, but operates in a separate electricity market.\n\nExplainer: https://energymix.info/uk-electricity-mix' },
-    { title: 'Friday practical clean-electricity post', body: 'The cleanest time to use electricity is not a fixed hour.\n\nIt changes with wind, solar, demand, imports and gas generation. Windy overnight periods and sunny middays can be much cleaner than still early-evening peaks.\n\nGuide: https://energymix.info/cleanest-time-to-use-electricity' },
-  ],
-};
-
-mkdirSync(dirname(OUT), { recursive: true });
-writeFileSync(OUT, JSON.stringify(generated, null, 2) + '\n');
-// Freeze each published date; future refreshes must not silently rewrite history.
-const archivePath = join(ROOT, 'src/data/reportArchive.json');
-const archive = JSON.parse(readFileSync(archivePath, 'utf8'));
-for (const report of generated.reports) {
-  if (!archive.some(item => item.slug === report.slug)) archive.push({...report, archiveProvenance: { archivedAt: new Date().toISOString(), definition: 'historical-measured-v1', timeBasis: rows[0]?.timeBasis || 'UTC', validationStatus: validation.status, coverage: 'available completed reporting days' }});
-}
-archive.sort((a,b) => b.slug.localeCompare(a.slug));
-writeFileSync(archivePath, JSON.stringify(archive, null, 2) + '\n');
-
-console.log(`Generated weekly report data for ${slug}`);
-console.log(`External validation ${validation.status} for ${yesterday.settlementDate}: ${VALIDATION_OUT}`);
+import {mkdirSync,readFileSync,writeFileSync,existsSync} from 'node:fs';
+import {join,dirname} from 'node:path';
+import {settlementCoordinates} from '../supabase/functions/_shared/settlementTime.mjs';
+import {collectReport} from './collect-report-modules.mjs';
+import {presentReport} from '../src/lib/evidence/reportPresentation.mjs';
+const ROOT=new URL('..',import.meta.url).pathname;
+// Explicit output root enables source validation and browser previews without touching published archives.
+const OUTROOT=process.env.REPORT_OUTPUT_ROOT||ROOT;
+const today=settlementCoordinates(new Date().toISOString()).date;
+const end=process.env.REPORT_END_DATE||new Date(Date.parse(today+'T12:00Z')-86400000).toISOString().slice(0,10);
+const v=await collectReport({end,outRoot:join(OUTROOT,'public/data/validation/reports')});
+const latest=join(OUTROOT,'public/data/validation/latest.json');mkdirSync(dirname(latest),{recursive:true});writeFileSync(latest,JSON.stringify(v,null,2)+'\n');
+if(v.status!=='passed')throw Error('Metered report blocked: '+v.days.filter(d=>d.status==='failed').map(d=>`${d.date}: ${d.modules.metered.errors.slice(0,3).join('; ')}`).join(' | '));
+const generated=presentReport(v),archivePath=join(OUTROOT,'src/data/reportArchive.json');
+const archive=JSON.parse(readFileSync(existsSync(archivePath)?archivePath:join(ROOT,'src/data/reportArchive.json'),'utf8'));
+const previous=archive.find(r=>r.slug===generated.latestReportSlug);
+// Published report identity and figures remain frozen. Each replay has its own content-addressed evidence.
+if(previous){console.log('Published report and generated summaries preserved; new source revision evidence retained separately.');process.exit(0);}
+else archive.push({...generated.reports[0],archiveProvenance:{archivedAt:v.runAt,definition:'authoritative-report-v3',timeBasis:'Europe/London',validationStatus:'passed',coverage:'7 complete local reporting days'}});
+archive.sort((a,b)=>b.slug.localeCompare(a.slug));
+mkdirSync(dirname(archivePath),{recursive:true});writeFileSync(archivePath,JSON.stringify(archive,null,2)+'\n');writeFileSync(join(OUTROOT,'src/data/energyMixGenerated.json'),JSON.stringify(generated,null,2)+'\n');
+console.log(JSON.stringify({status:v.status,modules:v.modules,manifest:v.localManifest,outputRoot:OUTROOT},null,2));

@@ -1,0 +1,90 @@
+{
+  "url": "https://api.neso.energy/api/3/action/datastore_search?resource_id=177f6fa4-ae49-4182-81ea-0c6b35f26ca6&limit=1",
+  "retrievedAt": "2026-11-17T14:26:10.835Z",
+  "fields": [
+    {
+      "info": {
+        "comment": "",
+        "description": "The period from 00:00 hours to 24:00 hours on each day.",
+        "title": "Settlement date",
+        "type": "date",
+        "example": "01/01/2021",
+        "unit": ""
+      },
+      "type": "date",
+      "id": "SETTLEMENT_DATE"
+    },
+    {
+      "info": {
+        "comment": "",
+        "description": "The half hourly period at which outurns occurred. Settlement period 1 runs from 00:00-00:30.",
+        "title": "Settlement Period",
+        "type": "integer",
+        "example": "1",
+        "unit": "Number"
+      },
+      "type": "int4",
+      "id": "SETTLEMENT_PERIOD"
+    },
+    {
+      "info": {
+        "comment": "",
+        "description": "Indicates weather it's a outurn (A) or Forecast (F).",
+        "title": "Forecast or Actual Indicator",
+        "type": "string",
+        "example": "A, F",
+        "unit": "Text"
+      },
+      "type": "text",
+      "id": "FORECAST_ACTUAL_INDICATOR"
+    },
+    {
+      "info": {
+        "comment": "",
+        "description": "This is an estimate of the GB wind generation from wind farms which do not have Transmission System metering installed. These wind farms are embedded in the distribution network and invisible to National Grid ESO. Their effect is to suppress the electricity demand during periods of high wind. The true output of these generators is not known so an estimate is provided based on National Grid ESO’s best model. ",
+        "title": "Estimated Embedded Wind Generation",
+        "type": "integer",
+        "example": "3001",
+        "unit": "MW"
+      },
+      "type": "int4",
+      "id": "EMBEDDED_WIND_GENERATION"
+    },
+    {
+      "info": {
+        "comment": "",
+        "description": "This is National Grid ESO’s best view of the installed embedded wind capacity in GB. This is based on publicly available information compiled from a variety of sources and is not the definitive view. It is consistent with the generation estimate provided above.  ",
+        "title": "Embedded Wind Capacity",
+        "type": "integer",
+        "example": "6465",
+        "unit": "MW"
+      },
+      "type": "int4",
+      "id": "EMBEDDED_WIND_CAPACITY"
+    },
+    {
+      "info": {
+        "comment": "",
+        "description": "This is an estimate of the GB solar generation from PV panels. These are embedded in the distribution network and invisible to National Grid ESO. Their effect is to suppress the electricity demand during periods of high radiation. The true output of these generators is not known so an estimate is provided based on National Grid ESO’s best model.",
+        "title": "Estimated Embedded Solar Generation",
+        "type": "integer",
+        "example": "50",
+        "unit": "MW"
+      },
+      "type": "int4",
+      "id": "EMBEDDED_SOLAR_GENERATION"
+    },
+    {
+      "info": {
+        "comment": "",
+        "description": "As embedded wind capacity above, but for solar generation.",
+        "title": "Embedded Solar Capacity",
+        "type": "integer",
+        "example": "13080",
+        "unit": "MW"
+      },
+      "type": "int4",
+      "id": "EMBEDDED_SOLAR_CAPACITY"
+    }
+  ]
+}
