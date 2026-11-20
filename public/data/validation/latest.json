@@ -2,95 +2,18 @@
   "schemaVersion": 3,
   "validatorVersion": "authoritative-report-v3",
   "validatorSha256": "1fe2ffb4db58585a898323c31a22d6417be13570249867d7b9211f824de82fee",
-  "runAt": "2026-11-19T16:04:28.391Z",
-  "date": "2026-11-18",
-  "reportDate": "2026-11-18",
+  "runAt": "2026-11-20T15:46:22.752Z",
+  "date": "2026-11-19",
+  "reportDate": "2026-11-19",
   "status": "passed",
   "publicationStatus": "provisional; source records may be revised",
   "period": {
-    "from": "2026-11-12",
-    "to": "2026-11-18",
+    "from": "2026-11-13",
+    "to": "2026-11-19",
     "timeBasis": "Europe/London"
   },
   "basis": "Elexon transmission-metered generation; excludes imports, embedded estimates and pumped storage. Renewable share is wind plus natural hydro, excluding biomass.",
   "days": [
-    {
-      "date": "2026-11-12",
-      "bounds": {
-        "from": "2026-11-12T00:00:00.000Z",
-        "to": "2026-11-13T00:00:00.000Z",
-        "count": 48,
-        "basis": "Europe/London"
-      },
-      "status": "passed",
-      "modules": {
-        "metered": {
-          "status": "passed",
-          "kind": "measured",
-          "publicationStatus": "revisable",
-          "unit": "MWh",
-          "expectedPeriods": 48,
-          "observedPeriods": 48,
-          "fuelMWh": {
-            "BIOMASS": 74241,
-            "CCGT": 206290.5,
-            "COAL": 0,
-            "NPSHYD": 6235.5,
-            "NUCLEAR": 123053.5,
-            "OCGT": 37,
-            "OIL": 0,
-            "OTHER": 24759.5,
-            "PS": -4334,
-            "WIND": 289623
-          },
-          "totalMWh": 724240,
-          "averageMW": 30176.666666666668,
-          "renewableShare": 40.850891969512865,
-          "signedStorageMWh": -4334,
-          "revisions": 0,
-          "duplicates": 0,
-          "sourcePublishedAt": "2026-11-13T00:00:00.000Z",
-          "errors": []
-        },
-        "solar": {
-          "status": "passed",
-          "kind": "estimated",
-          "unit": "MWh",
-          "sourceField": "EMBEDDED_SOLAR_GENERATION",
-          "sourcePublishedAt": null,
-          "expectedPeriods": 48,
-          "observedPeriods": 48,
-          "totalMWh": 49775.5,
-          "averageMW": 2073.9791666666665,
-          "from": "2026-11-12T00:00:00.000Z",
-          "to": "2026-11-13T00:00:00.000Z",
-          "errors": []
-        },
-        "embeddedWind": {
-          "status": "passed",
-          "kind": "estimated",
-          "unit": "MWh",
-          "sourceField": "EMBEDDED_WIND_GENERATION",
-          "sourcePublishedAt": null,
-          "expectedPeriods": 48,
-          "observedPeriods": 48,
-          "totalMWh": 42424,
-          "averageMW": 1767.6666666666667,
-          "from": "2026-11-12T00:00:00.000Z",
-          "to": "2026-11-13T00:00:00.000Z",
-          "errors": []
-        },
-        "carbon": {
-          "status": "passed",
-          "actualPeriods": 48,
-          "expectedPeriods": 48,
-          "meanActualGCO2PerKWh": 117.89583333333333,
-          "aggregation": "Time-average of reported half-hour actual intensity; not consumption-weighted",
-          "errors": []
-        }
-      },
-      "sourceErrors": {}
-    },
     {
       "date": "2026-11-13",
       "bounds": {
@@ -279,7 +202,7 @@
           "renewableShare": 34.72004844265469,
           "signedStorageMWh": -1440,
           "revisions": 0,
-          "duplicates": 10,
+          "duplicates": 0,
           "sourcePublishedAt": "2026-11-16T00:00:00.000Z",
           "errors": []
         },
@@ -356,7 +279,7 @@
           "renewableShare": 31.47561424383757,
           "signedStorageMWh": -2643,
           "revisions": 0,
-          "duplicates": 0,
+          "duplicates": 10,
           "sourcePublishedAt": "2026-11-17T00:00:00.000Z",
           "errors": []
         },
@@ -522,8 +445,8 @@
           "sourcePublishedAt": null,
           "expectedPeriods": 48,
           "observedPeriods": 48,
-          "totalMWh": 17600.5,
-          "averageMW": 733.3541666666666,
+          "totalMWh": 17360.5,
+          "averageMW": 723.3541666666666,
           "from": "2026-11-18T00:00:00.000Z",
           "to": "2026-11-19T00:00:00.000Z",
           "errors": []
@@ -546,7 +469,84 @@
           "status": "passed",
           "actualPeriods": 48,
           "expectedPeriods": 48,
-          "meanActualGCO2PerKWh": 160.83333333333334,
+          "meanActualGCO2PerKWh": 160.72916666666666,
+          "aggregation": "Time-average of reported half-hour actual intensity; not consumption-weighted",
+          "errors": []
+        }
+      },
+      "sourceErrors": {}
+    },
+    {
+      "date": "2026-11-19",
+      "bounds": {
+        "from": "2026-11-19T00:00:00.000Z",
+        "to": "2026-11-20T00:00:00.000Z",
+        "count": 48,
+        "basis": "Europe/London"
+      },
+      "status": "passed",
+      "modules": {
+        "metered": {
+          "status": "passed",
+          "kind": "measured",
+          "publicationStatus": "revisable",
+          "unit": "MWh",
+          "expectedPeriods": 48,
+          "observedPeriods": 48,
+          "fuelMWh": {
+            "BIOMASS": 44420.5,
+            "CCGT": 357865.5,
+            "COAL": 0,
+            "NPSHYD": 7636.5,
+            "NUCLEAR": 123105.5,
+            "OCGT": 57.5,
+            "OIL": 0,
+            "OTHER": 18117.5,
+            "PS": -8991,
+            "WIND": 201884
+          },
+          "totalMWh": 753087,
+          "averageMW": 31378.625,
+          "renewableShare": 27.821553153885276,
+          "signedStorageMWh": -8991,
+          "revisions": 0,
+          "duplicates": 0,
+          "sourcePublishedAt": "2026-11-20T00:00:00.000Z",
+          "errors": []
+        },
+        "solar": {
+          "status": "passed",
+          "kind": "estimated",
+          "unit": "MWh",
+          "sourceField": "EMBEDDED_SOLAR_GENERATION",
+          "sourcePublishedAt": null,
+          "expectedPeriods": 48,
+          "observedPeriods": 48,
+          "totalMWh": 15152,
+          "averageMW": 631.3333333333334,
+          "from": "2026-11-19T00:00:00.000Z",
+          "to": "2026-11-20T00:00:00.000Z",
+          "errors": []
+        },
+        "embeddedWind": {
+          "status": "passed",
+          "kind": "estimated",
+          "unit": "MWh",
+          "sourceField": "EMBEDDED_WIND_GENERATION",
+          "sourcePublishedAt": null,
+          "expectedPeriods": 48,
+          "observedPeriods": 48,
+          "totalMWh": 28213.5,
+          "averageMW": 1175.5625,
+          "from": "2026-11-19T00:00:00.000Z",
+          "to": "2026-11-20T00:00:00.000Z",
+          "errors": []
+        },
+        "carbon": {
+          "status": "passed",
+          "actualPeriods": 48,
+          "expectedPeriods": 48,
+          "meanActualGCO2PerKWh": 180.25,
           "aggregation": "Time-average of reported half-hour actual intensity; not consumption-weighted",
           "errors": []
         }
@@ -559,144 +559,144 @@
       "status": "passed",
       "completeDays": 7,
       "expectedDays": 7,
-      "totalMWh": 4671092,
-      "averageMW": 27804.119047619046,
-      "renewableShare": 35.90262191367672,
-      "signedStorageMWh": -14909
+      "totalMWh": 4699939,
+      "averageMW": 27975.82738095238,
+      "renewableShare": 33.845258417183715,
+      "signedStorageMWh": -19566
     },
     "solar": {
       "status": "passed",
       "completeDays": 7,
       "expectedDays": 7,
-      "totalMWh": 224443.5,
-      "averageMW": 1335.9732142857142
+      "totalMWh": 189580,
+      "averageMW": 1128.452380952381
     },
     "embeddedWind": {
       "status": "passed",
       "completeDays": 7,
       "expectedDays": 7,
-      "totalMWh": 284103,
-      "averageMW": 1691.0892857142858
+      "totalMWh": 269892.5,
+      "averageMW": 1606.5029761904761
     },
     "carbon": {
       "status": "passed",
       "completeDays": 7,
       "expectedDays": 7,
-      "meanActualGCO2PerKWh": 132.1577380952381
+      "meanActualGCO2PerKWh": 141.05059523809524
     }
   },
   "artifacts": [
     {
       "file": "elexon-0.json.gz",
-      "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH?publishDateTimeFrom=2026-11-12T00%3A00%3A00.000Z&publishDateTimeTo=2026-11-16T00%3A00%3A00.000Z&format=json",
-      "retrievedAt": "2026-11-19T16:04:29.319Z",
-      "sha256": "d2ead81d8b40f4f11c1019903319e9d4e1de6536dd5bdecd084f9d7ed8f14411",
-      "bytes": 700091
+      "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH?publishDateTimeFrom=2026-11-13T00%3A00%3A00.000Z&publishDateTimeTo=2026-11-17T00%3A00%3A00.000Z&format=json",
+      "retrievedAt": "2026-11-20T15:46:23.831Z",
+      "sha256": "c9cf114cf554c0c6e0578ffbbc3f76d0f02aba09d606a2373c45043abf90a771",
+      "bytes": 700056
     },
     {
       "file": "elexon-1.json.gz",
-      "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH?publishDateTimeFrom=2026-11-16T00%3A00%3A00.000Z&publishDateTimeTo=2026-11-19T16%3A04%3A28.391Z&format=json",
-      "retrievedAt": "2026-11-19T16:04:29.808Z",
-      "sha256": "6457ca6f985f592fa2ec6c159c7e7c5b60c6790434c89d50641717ac2807a08a",
-      "bytes": 642324
-    },
-    {
-      "file": "2026-11-12-neso.json.gz",
-      "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22177f6fa4-ae49-4182-81ea-0c6b35f26ca6%22%20WHERE%20%22SETTLEMENT_DATE%22%20%3D%20'2026-11-12'%20ORDER%20BY%20%22SETTLEMENT_PERIOD%22",
-      "retrievedAt": "2026-11-19T16:04:30.484Z",
-      "sha256": "421cd7f70976abd88fe91dfa815941ffacfaf0b25d0ea684fb967913f6c79125",
-      "bytes": 40076
-    },
-    {
-      "file": "2026-11-12-carbon.json.gz",
-      "url": "https://api.carbonintensity.org.uk/intensity/2026-11-12T00:00:00.000Z/2026-11-13T00:00:00.000Z",
-      "retrievedAt": "2026-11-19T16:04:30.924Z",
-      "sha256": "69264a0c7768c4ac5d357632f5cd6330b605be50ab18df3248131d6d8a1bcde6",
-      "bytes": 5614
+      "url": "https://data.elexon.co.uk/bmrs/api/v1/datasets/FUELHH?publishDateTimeFrom=2026-11-17T00%3A00%3A00.000Z&publishDateTimeTo=2026-11-20T15%3A46%3A22.752Z&format=json",
+      "retrievedAt": "2026-11-20T15:46:24.377Z",
+      "sha256": "1e2d8a7b6e94ad4b42a5cf2d0e05ec08a55e1deeb05dc94aaa6e11041abb88ff",
+      "bytes": 638772
     },
     {
       "file": "2026-11-13-neso.json.gz",
       "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22177f6fa4-ae49-4182-81ea-0c6b35f26ca6%22%20WHERE%20%22SETTLEMENT_DATE%22%20%3D%20'2026-11-13'%20ORDER%20BY%20%22SETTLEMENT_PERIOD%22",
-      "retrievedAt": "2026-11-19T16:04:31.214Z",
+      "retrievedAt": "2026-11-20T15:46:25.233Z",
       "sha256": "e905ed603e468f1b7ada21de2f7c0313f139fd8d4a95fc659389710832a967ec",
       "bytes": 40007
     },
     {
       "file": "2026-11-13-carbon.json.gz",
       "url": "https://api.carbonintensity.org.uk/intensity/2026-11-13T00:00:00.000Z/2026-11-14T00:00:00.000Z",
-      "retrievedAt": "2026-11-19T16:04:31.401Z",
+      "retrievedAt": "2026-11-20T15:46:25.784Z",
       "sha256": "db7906b66a13879a2a32573f4afa7fb122d55100e5436cd2cc2372b345b55a41",
       "bytes": 5510
     },
     {
       "file": "2026-11-14-neso.json.gz",
       "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22177f6fa4-ae49-4182-81ea-0c6b35f26ca6%22%20WHERE%20%22SETTLEMENT_DATE%22%20%3D%20'2026-11-14'%20ORDER%20BY%20%22SETTLEMENT_PERIOD%22",
-      "retrievedAt": "2026-11-19T16:04:31.688Z",
+      "retrievedAt": "2026-11-20T15:46:26.260Z",
       "sha256": "6bcdcda0906c122caec90324398b3c431230326e34d7d9d716adf8ad25b4fbec",
       "bytes": 39606
     },
     {
       "file": "2026-11-14-carbon.json.gz",
       "url": "https://api.carbonintensity.org.uk/intensity/2026-11-14T00:00:00.000Z/2026-11-15T00:00:00.000Z",
-      "retrievedAt": "2026-11-19T16:04:32.040Z",
+      "retrievedAt": "2026-11-20T15:46:26.725Z",
       "sha256": "9c3623d02f620b895f0f04adf2230c8fea016ce6169f737e0f9789cccb19e9f8",
       "bytes": 5575
     },
     {
       "file": "2026-11-15-neso.json.gz",
       "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22177f6fa4-ae49-4182-81ea-0c6b35f26ca6%22%20WHERE%20%22SETTLEMENT_DATE%22%20%3D%20'2026-11-15'%20ORDER%20BY%20%22SETTLEMENT_PERIOD%22",
-      "retrievedAt": "2026-11-19T16:04:32.310Z",
+      "retrievedAt": "2026-11-20T15:46:27.222Z",
       "sha256": "fae5788918762a6816b9078bf40391bf838097c6ba7f40af9acae351ad92b839",
       "bytes": 39913
     },
     {
       "file": "2026-11-15-carbon.json.gz",
       "url": "https://api.carbonintensity.org.uk/intensity/2026-11-15T00:00:00.000Z/2026-11-16T00:00:00.000Z",
-      "retrievedAt": "2026-11-19T16:04:32.658Z",
+      "retrievedAt": "2026-11-20T15:46:27.714Z",
       "sha256": "90d67dbcfa00f4b087be51e6d1c76e1e18992fb141402551e64b3463223fd019",
       "bytes": 5576
     },
     {
       "file": "2026-11-16-neso.json.gz",
       "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22177f6fa4-ae49-4182-81ea-0c6b35f26ca6%22%20WHERE%20%22SETTLEMENT_DATE%22%20%3D%20'2026-11-16'%20ORDER%20BY%20%22SETTLEMENT_PERIOD%22",
-      "retrievedAt": "2026-11-19T16:04:32.948Z",
+      "retrievedAt": "2026-11-20T15:46:28.161Z",
       "sha256": "562b990df7684d6bbab944627d1c3570dd633d33d762103eb977578e996bf290",
       "bytes": 39820
     },
     {
       "file": "2026-11-16-carbon.json.gz",
       "url": "https://api.carbonintensity.org.uk/intensity/2026-11-16T00:00:00.000Z/2026-11-17T00:00:00.000Z",
-      "retrievedAt": "2026-11-19T16:04:33.307Z",
+      "retrievedAt": "2026-11-20T15:46:28.657Z",
       "sha256": "d3e59cee45dddc84d0bfc928d5c7bda21f7ec72df40512780acd70cc2ce0a427",
       "bytes": 5485
     },
     {
       "file": "2026-11-17-neso.json.gz",
       "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22177f6fa4-ae49-4182-81ea-0c6b35f26ca6%22%20WHERE%20%22SETTLEMENT_DATE%22%20%3D%20'2026-11-17'%20ORDER%20BY%20%22SETTLEMENT_PERIOD%22",
-      "retrievedAt": "2026-11-19T16:04:33.595Z",
+      "retrievedAt": "2026-11-20T15:46:29.114Z",
       "sha256": "47e82abc319ba92027ccfc5097f6eb256bad70d28e977e74a25d728c3db2d63f",
       "bytes": 40158
     },
     {
       "file": "2026-11-17-carbon.json.gz",
       "url": "https://api.carbonintensity.org.uk/intensity/2026-11-17T00:00:00.000Z/2026-11-18T00:00:00.000Z",
-      "retrievedAt": "2026-11-19T16:04:34.060Z",
+      "retrievedAt": "2026-11-20T15:46:29.601Z",
       "sha256": "239cbfcbaba4fadbd40dfc88e2da52ad8efeeb9733cad30ab6e70cccabb412a3",
       "bytes": 5558
     },
     {
       "file": "2026-11-18-neso.json.gz",
       "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22177f6fa4-ae49-4182-81ea-0c6b35f26ca6%22%20WHERE%20%22SETTLEMENT_DATE%22%20%3D%20'2026-11-18'%20ORDER%20BY%20%22SETTLEMENT_PERIOD%22",
-      "retrievedAt": "2026-11-19T16:04:34.350Z",
-      "sha256": "d8cddf3180cd8da6e6f2cc3c391c17cd8304083ce480e836b5014fa0623d563d",
-      "bytes": 40183
+      "retrievedAt": "2026-11-20T15:46:30.060Z",
+      "sha256": "83da717cc450c2b1419d0e83f381e403334d785949c24cf35d4398d9f6d4df86",
+      "bytes": 40177
     },
     {
       "file": "2026-11-18-carbon.json.gz",
       "url": "https://api.carbonintensity.org.uk/intensity/2026-11-18T00:00:00.000Z/2026-11-19T00:00:00.000Z",
-      "retrievedAt": "2026-11-19T16:04:34.700Z",
-      "sha256": "a7ab65b933474e80d02a9bf1c0fa6caf72adb15d919fab1e1f996c6f950cd89f",
-      "bytes": 5479
+      "retrievedAt": "2026-11-20T15:46:30.538Z",
+      "sha256": "ea85cc7a2436d557c435c78c5b6f8294a505ffdea62eb2385fde0c179d952629",
+      "bytes": 5483
+    },
+    {
+      "file": "2026-11-19-neso.json.gz",
+      "url": "https://api.neso.energy/api/3/action/datastore_search_sql?sql=SELECT%20*%20FROM%20%22177f6fa4-ae49-4182-81ea-0c6b35f26ca6%22%20WHERE%20%22SETTLEMENT_DATE%22%20%3D%20'2026-11-19'%20ORDER%20BY%20%22SETTLEMENT_PERIOD%22",
+      "retrievedAt": "2026-11-20T15:46:30.968Z",
+      "sha256": "07b346949e10b1ec3fc9fb4b9679181a916c5e64347295b3d34d747e715e90df",
+      "bytes": 40160
+    },
+    {
+      "file": "2026-11-19-carbon.json.gz",
+      "url": "https://api.carbonintensity.org.uk/intensity/2026-11-19T00:00:00.000Z/2026-11-20T00:00:00.000Z",
+      "retrievedAt": "2026-11-20T15:46:31.439Z",
+      "sha256": "c6bcf5beae643a379ca503161ea1a8e14e6291f9d8c4de201f40ff1cfd1175e9",
+      "bytes": 5513
     }
   ],
   "limitations": [
@@ -710,7 +710,7 @@
     "NESO Demand Data Update, National Energy System Operator Open Data.",
     "Carbon Intensity API: https://carbonintensity.org.uk/"
   ],
-  "evidencePath": "/data/validation/reports/2026-11-18/005ebe766b29385c5094/manifest.json",
-  "dailyCsv": "/data/validation/reports/2026-11-18/005ebe766b29385c5094/daily.csv",
-  "localManifest": "/home/runner/work/energy-pulse-uk/energy-pulse-uk/public/data/validation/reports/2026-11-18/005ebe766b29385c5094/manifest.json"
+  "evidencePath": "/data/validation/reports/2026-11-19/a0be0b72c1db0bcc2102/manifest.json",
+  "dailyCsv": "/data/validation/reports/2026-11-19/a0be0b72c1db0bcc2102/daily.csv",
+  "localManifest": "/home/runner/work/energy-pulse-uk/energy-pulse-uk/public/data/validation/reports/2026-11-19/a0be0b72c1db0bcc2102/manifest.json"
 }
