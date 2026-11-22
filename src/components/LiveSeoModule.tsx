@@ -8,6 +8,8 @@ import { carbonPresentation } from '@/lib/evidence/carbon.mjs';
 import { londonTimestamp } from '@/lib/evidence/timeLabels.mjs';
 
 type Focus =
+  | 'wind'
+  | 'solar'
   | 'mix'
   | 'carbon'
   | 'renewables'
@@ -39,6 +41,8 @@ function getMixValue(mix: GenerationItem[], names: string[]) {
 }
 
 const focusCopy: Record<Focus, { title: string; description: string }> = {
+  wind: {title:'Transmission-metered wind',description:'Published GB wind output; embedded estimates and installed capacity are separate.'},
+  solar: {title:'Solar estimate availability',description:'Solar is largely embedded generation. A missing estimate is not zero and is not part of the metered total.'},
   mix: {
     title: 'Live mix snapshot',
     description: 'Current Great Britain electricity mix from public grid data, grouped into the sources people actually search for.',
@@ -108,6 +112,18 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
   if (!data) return <StaticGridSnapshot compact />;
 
   const cardsByFocus: Record<Focus, Array<{ label: string; value: string; note: string }>> = {
+    wind: [
+      {label:'Metered wind',value:fmtGW(wind),note:'completed-half-hour average'},
+      {label:'Metered generation',value:fmtGW(totalMix),note:'excludes embedded estimates, imports and pumped storage'},
+      {label:'Wind share',value:pct(wind,totalMix),note:'of this metered generation basis only'},
+      {label:'Basis',value:'Measured',note:'not installed capacity or intended output'},
+    ],
+    solar: [
+      {label:'Solar estimate',value:'Unavailable',note:'not supplied in the canonical metered snapshot'},
+      {label:'Missing ≠ zero',value:'Estimate',note:'see the separately dated NESO report context below'},
+      {label:'Coverage',value:'GB',note:'England, Scotland and Wales'},
+      {label:'Basis',value:'Separate',note:'never added to metered totals without aligned coverage'},
+    ],
     mix: [
       { label: 'Demand', value: fmtGW(displayDemandMW), note: 'GB grid demand' },
       { label: 'Generation', value: fmtGW(data?.totalGenerationMW), note: 'domestic generation' },
@@ -171,7 +187,7 @@ export function LiveSeoModule({ focus = 'mix' }: { focus?: Focus }) {
           <p className="text-xs uppercase tracking-[0.24em] text-cosmic-cyan/80">Live data module</p>
           <h2 className="text-2xl font-semibold text-primary mt-1">{copy.title}</h2>
         </div>
-        <p className="text-sm text-foreground/60">{data?.asOf?.endISO ? `Generation interval ended ${fmtTime(data.asOf.endISO)} · ${sourceState(data.asOf.endISO,30,now).label}` : loading ? 'Loading live data…' : 'Latest available'}</p>
+        <p className="text-sm text-foreground/60">{focus === 'solar' ? 'Current solar observation unavailable; historical context is dated below.' : focus === 'carbon' ? carbonNote : data?.asOf?.endISO ? `Generation interval ended ${fmtTime(data.asOf.endISO)} · ${sourceState(data.asOf.endISO,30,now).label}` : loading ? 'Loading live data…' : 'Latest available'}</p>
       </div>
 
       <p className="text-foreground/80 mb-5">{copy.description}</p>

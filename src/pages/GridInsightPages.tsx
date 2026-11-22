@@ -2,8 +2,8 @@ import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { StaticPageLayout } from '@/components/StaticPageLayout';
 import { LiveSeoModule } from '@/components/LiveSeoModule';
-import { absoluteDailySummary } from '@/lib/initialEvidence.mjs';
 import generated from '@/data/energyMixGenerated.json';
+import { topicEvidence } from '@/lib/topicEvidence.mjs';
 
 interface InsightPage {
   slug: string;
@@ -42,7 +42,7 @@ const pages: Record<string, InsightPage> = {
     title: 'UK Wind Power Today',
     metaTitle: 'UK Wind Power Today | Live GB Wind Generation',
     description: 'Track UK wind power today with current GB wind generation, renewable-share context and plain-English electricity mix analysis.',
-    intro: "Check wind generation in Great Britain's electricity mix. Live source readings and their periods are shown when available; historical report context is dated separately.",
+    intro: "Wind output is the power generated during a specified observation period, not installed capacity. Energy Mix distinguishes transmission-metered GB wind from embedded-wind estimates; historical report context is dated separately.",
     sections: [
       {
         heading: 'What wind power means for the grid today',
@@ -54,7 +54,7 @@ const pages: Record<string, InsightPage> = {
       {
         heading: 'Recent wind context',
         body: [
-          `${weeklyReport.highlights[0].value} ${weeklyReport.summary}`,
+          topicEvidence(weeklyReport, 'wind'),
           'Wind output varies with weather systems, so daily and weekly comparisons are more useful than a single instant when judging whether today is especially windy.',
         ],
       },
@@ -76,7 +76,7 @@ const pages: Record<string, InsightPage> = {
     title: 'UK Solar Power Today',
     metaTitle: 'UK Solar Power Today | Live GB Solar Generation',
     description: 'Track UK solar power today with current GB solar generation, renewable-share context and plain-English electricity mix analysis.',
-    intro: "A guide to checking how much solar power is contributing to Britain's electricity mix today, with current-grid context and settled report links.",
+    intro: "A guide to checking how much solar power is contributing to Britain's electricity mix today, using published estimates, observation times and separately dated report evidence. Solar estimates are not direct metering of every rooftop.",
     sections: [
       {
         heading: 'How to read solar power today',
@@ -88,7 +88,7 @@ const pages: Record<string, InsightPage> = {
       {
         heading: 'Recent solar context',
         body: [
-          `${weeklyReport.highlights[1].value} The latest settled daily summary says: ${absoluteDailySummary(generated.yesterday)}`,
+          topicEvidence(weeklyReport, 'solar'),
           'Use solar alongside wind, demand and gas generation rather than reading it as a standalone cleanliness signal.',
         ],
       },
@@ -122,7 +122,7 @@ const pages: Record<string, InsightPage> = {
       {
         heading: 'Recent gas context',
         body: [
-          `${weeklyReport.highlights[2].value}`,
+          topicEvidence(weeklyReport, 'gas'),
           'Gas-heavy periods are useful to watch for flexible demand: EV charging, appliance use and battery charging may have cleaner alternatives when wind, solar or lower demand improve the mix.',
         ],
       },
@@ -183,7 +183,7 @@ const pages: Record<string, InsightPage> = {
       {
         heading: 'What carbon intensity means today',
         body: [
-          'Electricity carbon intensity estimates the grams of CO2-equivalent emitted for each kilowatt-hour consumed. Lower values usually appear when wind, solar, nuclear and other low-carbon sources make up more of the mix.',
+          'Electricity carbon intensity estimates the grams of CO₂ per kilowatt-hour (gCO₂/kWh), following the Carbon Intensity API’s published unit. It is not a marginal-emissions measure. Lower values usually appear when wind, solar, nuclear and other low-carbon sources make up more of the mix.',
           "Today's carbon intensity can move from one settlement period to the next, so it is best read alongside renewable share, gas share and demand.",
         ],
       },
@@ -196,8 +196,8 @@ const pages: Record<string, InsightPage> = {
       },
     ],
     faqs: [
-      { question: 'What is a good carbon intensity today?', answer: 'There is no single fixed threshold. Lower is better, and the most useful comparison is against nearby periods today and settled daily or weekly reports.' },
-      { question: 'Is carbon intensity live or settled?', answer: 'The dashboard signal is live or near-live. Settled historical summaries are more stable for comparison and citation.' },
+      { question: 'What is a good carbon intensity today?', answer: 'There is no single fixed threshold. Lower is better, and the most useful comparison is against nearby periods today and dated daily or rolling seven-day reports.' },
+      { question: 'Is carbon intensity live or settled?', answer: 'The dashboard signal is live or near-live. Dated historical summaries can be cited with their source evidence, but remain provisional and source-revisable.' },
     ],
     related: [
       { to: '/renewables-share-today', label: 'Renewables share today' },
@@ -235,13 +235,14 @@ const InsightPage = ({ page }: { page: InsightPage }) => (
     </Helmet>
 
     <StaticPageLayout eyebrow={page.eyebrow} title={page.title} intro={page.intro}>
-      <LiveSeoModule focus={page.slug.includes('carbon') ? 'carbon' : page.slug.includes('gas') ? 'gas' : 'renewables'} />
+      <LiveSeoModule focus={page.slug.includes('wind') ? 'wind' : page.slug.includes('solar') ? 'solar' : page.slug.includes('carbon') ? 'carbon' : page.slug.includes('gas') ? 'gas' : 'renewables'} />
 
       {page.sections.map((section) => (
         <section key={section.heading}>
           <h2 className="text-2xl font-semibold text-primary mb-3">{section.heading}</h2>
           <div className="space-y-3">
             {section.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+            <p><a href={page.slug.includes('carbon') ? 'https://carbonintensity.org.uk/' : page.slug.includes('solar') ? 'https://www.neso.energy/data-portal/demand-data-update' : 'https://bmrs.elexon.co.uk/'}>Official source and definitions</a> · <Link to={weeklyReport.slug + '/'}>Dated report and source evidence</Link></p>
           </div>
         </section>
       ))}

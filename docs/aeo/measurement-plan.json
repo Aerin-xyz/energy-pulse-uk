@@ -1,0 +1,38 @@
+{
+  "baselineDate": "2026-11-22",
+  "status": "Perplexity baseline observed; other providers unmeasured",
+  "questions": [
+    "What sources generate Great Britain's electricity?",
+    "Does GB electricity mix data include Northern Ireland?",
+    "How much wind power is Great Britain generating now?",
+    "How is transmission-metered wind different from embedded wind?",
+    "How much solar power is Great Britain generating now?",
+    "Why is national solar generation estimated?",
+    "Why does Britain import electricity?",
+    "Can Britain import and export electricity at the same time?",
+    "What is Great Britain's electricity carbon intensity now?",
+    "Does the lowest-carbon electricity period have the lowest household price?"
+  ],
+  "protocol": "Repeat the same questions in fresh sessions on the same search-enabled products, locale and mode. Retain date, exact answer, citations, source URLs, observation-time correctness and access errors. Do not join sessions or treat missing access as absence of citations.",
+  "review": "Compare weekly samples over 4\u20136 weeks after release; no recurring job enabled.",
+  "metrics": [
+    "observed citation presence",
+    "cited canonical URL",
+    "correct period and GB scope",
+    "GSC per-page impressions/clicks",
+    "verified Bing search data where accessible",
+    "identifiable AI referrals",
+    "engaged sessions",
+    "source clicks",
+    "evidence downloads"
+  ],
+  "caveats": "AI answers vary; citations are not visits. GA4 direct traffic is not proof of AI referrals. GA4/GTM history-tracking account changes remain separate.",
+  "observed": {
+    "provider": "Perplexity public web, anonymous fresh sessions",
+    "date": "2026-11-22",
+    "questions": 10,
+    "answersObserved": 10,
+    "energyMixCitations": 0,
+    "artifact": "perplexity-panel.json"
+  }
+}
