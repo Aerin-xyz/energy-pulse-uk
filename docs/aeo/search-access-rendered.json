@@ -1,0 +1,74 @@
+[
+  {
+    "url": "https://www.perplexity.ai/",
+    "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nNo recent sessions\nView plans\nSign In\nWhat do you want to know?\nWhat should we work on?\nWhat do you want to know?\n\n\n\n\nAsk anything…\nType @ for connectors\nSearch\nComputer\nModel\nSearch anything\nGet fast and accurate answers from the most trusted sources.\nGet work done with Computer\nNEW\nHand off your projects to get polished, reliable deliverables around the clock.\nTerms of Service\n·\nPrivacy Notice\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary",
+    "inputs": [
+      {
+        "tag": "DIV",
+        "placeholder": null,
+        "role": "textbox"
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "role": null
+      }
+    ]
+  },
+  {
+    "url": "https://www.bing.com/search?q=energymix.info+electricity",
+    "text": "Skip to content\nAccessibility Feedback\nRewards\nAllAI ModeImagesVideosMapsNewsMore\nAbout 50 results\nskims.com\nhttps://skims.com\nSKIMS | Solutions For Every Body\n\nSKIMS is a solutions oriented brand creating the next generation of underwear, loungewear and shapewear.\n\n \nskims.com\nhttps://skims.com › en-gb › collections › eu-pajamas\nWomen’s Pajamas | Sleepwear for Women | SKIMS\n\nShop SKIMS pajamas and women’s sleepwear collection. Find dreamy pajama shorts, women’s sleep shirts, and other sleepwear …Read more\n\nskims.com\nhttps://skims.com › en-gb › collections › long-sleeve-tops\nWomen's Long Sleeve Tops | Buttery-Soft Layering Styles | SKIMS\n\nShop women's long sleeve tops at SKIMS, designed to layer, lounge, & move with you. Choose from crop tops, relaxed tees, & wraps.\n\nskims.com\nhttps://skims.com › collections › pajamas\nWomen's Pajamas | Sets, Robes & Sleepwear | SKIMS\n\nWomen's pajamas at SKIMS are crafted from buttery-soft, cooling fabrics for all-night comfort. Shop sleep shirts, pajama shorts, & more.\n\nskims.com\nhttps://skims.com › collections › nikeskims\nNikeSKIMS | Sculpting, Supportive Activewear | SKIMS\n\nNikeSKIMS apparel is engineered to sculpt, support, & perform. Shop styles built for compression, fit, & function.\n\nskims.com\nhttps://skims.com › pages › contact-us\nContact Us - SKIMS\n\nOrdering, shipping, returns, international & size guides. Contact customer service.\n\nskims.com\nhttps://skims.com › collections › the-north-face-x-skims-jackets-vests\nThe North Face X SKIMS Jackets & Vests\n\nLayer up in these high-performing pieces for unmatched warmth\n\nskims.com\nhttps://skims.com › en-gb › collections › mens\nMen's Clothing | Soft, Comfortable Essentials | SKIMS\n\nMen's clothing at SKIMS is designed for comfort, fit, & everyday wear. Shop essential styles in soft, premium fabrics.\n\nskims.com\nhttps://skims.com › collections › nikeskims-jackets\nNikeSKIMS Active Jackets | SKIMS\n\nWomen's active jackets at SKIMS are designed to flatter & layer effortlessly. Shop sleek styles built for on-the-go wear.\n\nskims.com\nhttps://skims.com › pages › store-locator\nStore Locator - SKIMS\n\nUse the finder above to check your nearest SKIMS Stockist locations.\n\nSearches you might like\nuk energy mix\nelectric mixer\nelectricity prices\nelectricity comparison\nelectricity supply\nelectricity facts\ncompare electricity suppliers\ncheck my electricity supplier",
+    "inputs": [
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "role": null
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "role": null
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "role": null
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "role": null
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": "paste image link to search",
+        "role": null
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "role": null
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": "Paste image or URL",
+        "role": null
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "role": null
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "role": null
+      },
+      {
+        "tag": "INPUT",
+        "placeholder": null,
+        "role": null
+      }
+    ]
+  }
+]

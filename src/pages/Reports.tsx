@@ -42,7 +42,7 @@ export const ReportsIndex = () => (
 
     <StaticPageLayout eyebrow="Reports" title="UK Electricity Mix Reports" intro="A growing archive of plain-English reports on Britain’s electricity mix, carbon intensity, renewables, gas, demand and practical clean-electricity windows.">
       <section className="rounded-lg border border-primary/20 bg-background/40 p-5">
-        <h2 className="text-2xl font-semibold text-primary mb-3">Latest weekly report</h2>
+        <h2 className="text-2xl font-semibold text-primary mb-3">Latest seven-day report</h2>
         <p className="text-foreground/75 mb-4">
           Start with the latest weekly grid summary, then subscribe if you want the same plain-English brief when new reports are published.
         </p>
@@ -66,7 +66,7 @@ export const ReportsIndex = () => (
       <section>
         <h2 className="text-2xl font-semibold text-primary mb-3">Latest reports</h2>
         <p className="mb-4 text-foreground/75">
-          These reports are generated from the available historical generation feed, then linked back to the live dashboard and source notes so the public numbers can be checked rather than treated as a black box.
+          These reports are generated from the available historical generation feed, with separately validated estimates and carbon where available, then linked back to retained evidence and source notes so the public numbers can be checked rather than treated as a black box.
         </p>
         <div className="grid gap-4">
           {reports.map((report) => (
@@ -88,17 +88,17 @@ export const ReportsIndex = () => (
         <h2 className="text-2xl font-semibold text-primary mb-3">What reports track</h2>
         <ul className="space-y-2 list-disc pl-5">
           <li>Average and peak carbon intensity as the reporting feed expands.</li>
-          <li>Highest renewable share and strongest wind/solar periods.</li>
-          <li>Gas generation highs and demand peaks.</li>
-          <li>Cleanest and highest-carbon electricity windows.</li>
-          <li>Practical takeaways for EV charging, appliances, batteries and business load shifting.</li>
+          <li>Wind-plus-natural-hydro share of metered energy; dated daily-average wind and gas highs.</li>
+          <li>Embedded solar and wind estimates, validated separately and excluded from metered totals.</li>
+          <li>Published actual carbon-intensity averages when complete source coverage is available.</li>
+          <li>Historical context, not a forecast of the cheapest or cleanest time to use electricity.</li>
         </ul>
       </section>
 
       <section>
         <h2 className="text-2xl font-semibold text-primary mb-3">How the report engine works</h2>
         <p>
-          Weekly reports compile public generation data into summaries calculated by Energy Mix, with source notes and links back to the live dashboard. Validation coverage varies; a published report is not independent certification of its source data. The aim is to build an indexable record of what happened on Britain’s electricity grid without inventing precision the data does not support.
+          Rolling seven-day reports compile public generation data into summaries calculated by Energy Mix, with source notes and links back to the live dashboard. Validation coverage varies; a published report is not independent certification of its source data. The aim is to build an indexable record of what happened on Britain’s electricity grid without inventing precision the data does not support.
         </p>
       </section>
     </StaticPageLayout>

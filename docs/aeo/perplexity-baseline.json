@@ -1,0 +1,105 @@
+{
+  "provider": "Perplexity public web",
+  "question": "Where can I find current Great Britain electricity generation by source, with observation timestamps and source evidence?",
+  "checkedAt": "2026-11-22T16:38:11.489Z",
+  "url": "https://www.perplexity.ai/session/62d4a9f2-8a34-453c-b224-70409044466a",
+  "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nWhere can I find current Great Britain electricity generation by source, with observation timestamps and source evidence?\nView all\nView plans\nSign In\nAnswer\nLinks\nImages\nShare\n4:37 PM\n\nWhere can I find current Great Britain electricity generation by source, with observation timestamps and source evidence?\n\nFinished\n\nFor current, timestamped Great Britain generation by fuel, the best primary source is Elexon’s BMRS “Generation” page. It reports actual aggregated net output in MW by production type and settlement period, so you can verify both the value and its observation/settlement timestamp.\nbmrs.elexon.co\n\nPrimary source: Elexon BMRS\n\nWhere: \nElexon BMRS — Generation\n\nWhat it provides: Actual aggregated generation by fuel type for Great Britain, including wind and solar output, interconnector flows, and forecasts versus actuals.\nbmrs.elexon.co\n\nTimestamps: Data are organised by settlement period; the site’s “Generation By Fuel type” report gives actual net generation output per period and production type.\nbmrs.elexon.co\n\nSource evidence: Elexon is the UK’s electricity settlement system operator, and its BMRS is the underlying feed used by several live dashboards.\npurelyenergy.co\n+1\n\nUse this when you need defensible, near-real-time figures rather than a pre-aggregated chart.\n\nConvenient live dashboards\nSite\tWhat you get\tTimestamp / evidence\n\nEnergy Dashboard — Live GB\n\tGB generation mix, demand, carbon intensity and price; updates every 5 minutes. \nenergydashboard.co\n\tShows the latest generation mix and half-hourly time series; its methodology/source page identifies underlying data sources. \nenergydashboard.co\n\n\nenergy.org.uk — Live\n\tGB generation by source, imports, storage, demand and carbon; explicitly labels delayed observations. \nenergy.org\n\tDisplays an observation time (for example, “06:55 UK time”), status, coverage, and cites Elexon BMRS and NESO. \nenergy.org\n\n\nPurely Energy — Grid map\n\tLive fuel-by-fuel output and share, plus plant and interconnector context. \npurelyenergy.co\n\tStates that data come from Elexon’s settlement feed, the NESO Data Portal, and the Carbon Intensity API. \npurelyenergy.co\n\nFor example, energy.org.uk’s live page reports its generation breakdown from Elexon BMRS’s five-minute FUELINST feed, shows the observation time, and marks the data as delayed when the latest valid observation is not current.\nenergy.org\n\nImportant scope caveat\n\nMost live “UK” dashboards are actually showing Great Britain only, not Northern Ireland; energy.org.uk explicitly labels its coverage as Great Britain. If you need the whole UK, use DESNZ’s official Electricity statistics collection, which includes monthly and quarterly UK generation, fuel use, trade and consumption statistics.\ngov\n+2\n\nRecommended workflow\n\nOpen Elexon BMRS Generation for the authoritative current GB output by fuel and settlement period.\nbmrs.elexon.co\n\nCross-check the headline mix on Energy Dashboard or energy.org.uk, recording their displayed observation time and “delayed” status if present.\nenergy.org\n+1\n\nFor official historical or UK-wide analysis, use GOV.UK Electricity statistics and Energy Trends; these are published with defined reporting lags rather than live timestamps.\ngov\n+1\n\n10 sources\nShow me how to access Elexon BMRS API data\nCompare live generation with historical averages\nHow do settlement periods work on Elexon BMRS\nExplain how gas and wind share the grid now\nShow how carbon intensity is calculated here\nSources\n10\n⠹\nSign in to save your history and access more features\nSign in\n\n\n\n\nAsk a follow-up\nSearch\nComputer\nModel\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary",
+  "links": [
+    {
+      "text": "",
+      "url": "https://www.perplexity.ai/"
+    },
+    {
+      "text": "",
+      "url": "https://www.perplexity.ai/"
+    },
+    {
+      "text": "",
+      "url": "https://www.perplexity.ai/automations"
+    },
+    {
+      "text": "",
+      "url": "https://www.perplexity.ai/artifacts"
+    },
+    {
+      "text": "",
+      "url": "https://www.perplexity.ai/computer/plugins"
+    },
+    {
+      "text": "",
+      "url": "https://www.perplexity.ai/projects"
+    },
+    {
+      "text": "",
+      "url": "https://www.perplexity.ai/library"
+    },
+    {
+      "text": "",
+      "url": "https://www.perplexity.ai/session/62d4a9f2-8a34-453c-b224-70409044466a"
+    },
+    {
+      "text": "",
+      "url": "https://www.perplexity.ai/library"
+    },
+    {
+      "text": "bmrs.elexon.co",
+      "url": "https://bmrs.elexon.co.uk/generation"
+    },
+    {
+      "text": "Elexon BMRS — Generation",
+      "url": "https://bmrs.elexon.co.uk/generation"
+    },
+    {
+      "text": "bmrs.elexon.co",
+      "url": "https://bmrs.elexon.co.uk/generation"
+    },
+    {
+      "text": "bmrs.elexon.co",
+      "url": "https://bmrs.elexon.co.uk/generation"
+    },
+    {
+      "text": "Energy Dashboard — Live GB",
+      "url": "https://www.energydashboard.co.uk/live"
+    },
+    {
+      "text": "energydashboard.co",
+      "url": "https://www.energydashboard.co.uk/live"
+    },
+    {
+      "text": "energydashboard.co",
+      "url": "https://www.energydashboard.co.uk/live"
+    },
+    {
+      "text": "energy.org.uk — Live",
+      "url": "https://energy.org.uk/live"
+    },
+    {
+      "text": "energy.org",
+      "url": "https://energy.org.uk/live"
+    },
+    {
+      "text": "energy.org",
+      "url": "https://energy.org.uk/live"
+    },
+    {
+      "text": "Purely Energy — Grid map",
+      "url": "https://www.purelyenergy.co.uk/tools/grid-map"
+    },
+    {
+      "text": "purelyenergy.co",
+      "url": "https://www.purelyenergy.co.uk/tools/grid-map"
+    },
+    {
+      "text": "purelyenergy.co",
+      "url": "https://www.purelyenergy.co.uk/tools/grid-map"
+    },
+    {
+      "text": "energy.org",
+      "url": "https://energy.org.uk/live"
+    },
+    {
+      "text": "bmrs.elexon.co",
+      "url": "https://bmrs.elexon.co.uk/generation"
+    }
+  ]
+}

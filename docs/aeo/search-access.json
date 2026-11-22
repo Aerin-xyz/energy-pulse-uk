@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Bing",
+    "status": 200,
+    "title": "energymix.info electricity - Search",
+    "sample": "Skip to content\nAccessibility Feedback\nAllWeb ModeAI ModeImagesVideosMapsNews\nMore\nPrivacy\nTerms"
+  },
+  {
+    "name": "ChatGPT",
+    "status": 403,
+    "title": "",
+    "sample": ""
+  },
+  {
+    "name": "Perplexity",
+    "status": 200,
+    "title": "Perplexity",
+    "sample": ""
+  }
+]

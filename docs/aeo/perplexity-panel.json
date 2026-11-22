@@ -1,0 +1,512 @@
+[
+  {
+    "question": "What sources generate Great Britain's electricity?",
+    "checkedAt": "2026-11-22T16:39:03.684Z",
+    "state": "answer-observed",
+    "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nWhat sources generate Great Britain's electricity?\nView all\nView plans\nSign In\nAnswer\nLinks\nImages\nShare\n4:39 PM\n\nWhat sources generate Great Britain's electricity?\n\nFinished\n1s\n\nGreat Britain’s electricity comes mainly from wind, natural gas, nuclear, solar, biomass, hydro, storage, and imports. In 2025, wind was the largest single source, while renewables overall supplied a record 44% of generation.\nneso\n\nCurrent generation mix\nSource\tApproximate share of 2025 GB generation\nWind\t29.7% \nneso\n\nNatural gas\t26.8% \nneso\n\nImports\t15.1% \nwikipedia\n\nNuclear\t11.8%\nSources\n10\nSign in to save your history and access more features\nSign in\n\n\n\n\nAsk a follow-up\nSearch\nComputer\nModel\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary",
+    "links": [
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/automations"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/artifacts"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/computer/plugins"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/projects"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/session/e3003151-9ae0-43d4-8051-94780d5f22aa"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "neso",
+        "url": "https://www.neso.energy/news/britains-energy-explained-2025-review"
+      },
+      {
+        "text": "neso",
+        "url": "https://www.neso.energy/news/britains-energy-explained-2025-review"
+      },
+      {
+        "text": "neso",
+        "url": "https://www.neso.energy/news/britains-energy-explained-2025-review"
+      },
+      {
+        "text": "wikipedia",
+        "url": "https://en.wikipedia.org/wiki/Electricity_in_Great_Britain"
+      },
+      {
+        "text": "wikipedia",
+        "url": "https://en.wikipedia.org/wiki/Electricity_in_Great_Britain"
+      }
+    ],
+    "energyMixLink": false
+  },
+  {
+    "question": "Does GB electricity mix data include Northern Ireland?",
+    "checkedAt": "2026-11-22T16:39:08.077Z",
+    "state": "answer-observed",
+    "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nDoes GB electricity mix data include Northern Ireland?\nView all\nView plans\nSign In\nAnswer\nLinks\nImages\nShare\n4:39 PM\n\nDoes GB electricity mix data include Northern Ireland?\n\nFinished\n\nNo—“GB electricity mix” normally means Great Britain only: England, Scotland, and Wales. It excludes Northern Ireland. Northern Ireland is part of the UK but operates on the all-island Ireland grid, so it is generally reported separately.\nassets.publishing.service.gov\n+1\n\nWhy it is excluded\n\nGreat Britain’s transmission system is operated separately from Northern Ireland’s, which is integrated with the Republic of Ireland’s grid. National Grid’s operational metering data therefore does not include generation units connected in Northern Ireland, although electricity imported through the Northern Ireland–Scotland interconnector can appear in GB figures.\nassets.publishing.service.gov\n\nWhat the data covers\nDataset label\tCoverage\nGB electricity mix / Carbon Intensity API\tEngland, Scotland, and Wales; Northern Ireland is excluded. \nenergycount.co\n+1\n\nUK-wide government generation\nSources\n10\n⠹\nSign in to save your history and access more features\nSign in\n\n\n\n\nAsk a follow-up\nSearch\nComputer\nModel\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary",
+    "links": [
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/automations"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/artifacts"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/computer/plugins"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/projects"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/session/eca57433-e6d6-47e1-a8c3-fb7463d96a9d"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "assets.publishing.service.gov",
+        "url": "https://assets.publishing.service.gov.uk/government/uploads/system/uploads/attachment_data/file/65923/6487-nat-grid-metering-data-et-article-sep12.pdf"
+      }
+    ],
+    "energyMixLink": false
+  },
+  {
+    "question": "How much wind power is Great Britain generating now?",
+    "checkedAt": "2026-11-22T16:39:13.351Z",
+    "state": "answer-observed",
+    "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nHow much wind power is Great Britain generating now?\nView all\nView plans\nSign In\nAnswer\nLinks\nImages\nShare\n4:39 PM\n\nHow much wind power is Great Britain generating now?\n\nFinished\n1s\n\nGreat Britain’s wind fleet is currently producing about 13.3 GW of electricity—roughly 31% of UK electricity demand—according to the live Winderful tracker.\nwinderful\n\nWhat that means\n\n13.3 GW equals about 13,300 MW of instantaneous wind generation.\nwinderful\n\nIt is enough to supply roughly 31% of the UK’s electricity demand at that moment, though demand and output change every few minutes.\nwinderful\n\nGreat Britain has about 38.8\n\nSources\n10\nSign in to save your history and access more features\nSign in\n\n\n\n\nAsk a follow-up\nSearch\nComputer\nModel\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary",
+    "links": [
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/automations"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/artifacts"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/computer/plugins"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/projects"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/session/f6a7d2dc-26fe-415b-b02f-b1cbe9fd1745"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "winderful",
+        "url": "https://winderful.uk/"
+      },
+      {
+        "text": "winderful",
+        "url": "https://winderful.uk/"
+      },
+      {
+        "text": "winderful",
+        "url": "https://winderful.uk/"
+      }
+    ],
+    "energyMixLink": false
+  },
+  {
+    "question": "How is transmission-metered wind different from embedded wind?",
+    "checkedAt": "2026-11-22T16:39:17.331Z",
+    "state": "answer-observed",
+    "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nHow is transmission-metered wind different from embedded wind?\nView all\nView plans\nSign In\nAnswer\nLinks\nImages\nShare\n4:39 PM\n\nHow is transmission-metered wind different from embedded wind?\n\nFinished\n\nTransmission-metered wind is wind generation directly visible to the electricity system operator through the high-voltage transmission network. Embedded wind is distribution-connected wind that is largely invisible to that system and must be estimated from models and demand effects.\nneso\n+1\n\nCore distinction\nFeature\tTransmission-metered wind\tEmbedded wind\nGrid connection\tConnected directly to the transmission network, usually at high voltage. \nassets.publishing.service.gov\n+1\n\tConnected to the local distribution network, typically at lower voltage. \nonlinelibrary.wiley\n+1\nSources\n10\nSign in to save your history and access more features\nSign in\n\n\n\n\nAsk a follow-up\nSearch\nComputer\nModel\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary",
+    "links": [
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/automations"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/artifacts"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/computer/plugins"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/projects"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/session/57e659c1-1774-43c3-b1db-f897f4050704"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      }
+    ],
+    "energyMixLink": false
+  },
+  {
+    "question": "How much solar power is Great Britain generating now?",
+    "checkedAt": "2026-11-22T16:39:23.875Z",
+    "state": "answer-observed",
+    "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nHow much solar power is Great Britain generating now?\nView all\nView plans\nSign In\nAnswer\nLinks\nImages\nShare\n4:39 PM\n\nHow much solar power is Great Britain generating now?\n\nFinished\n3s\n\nSign up and repeat your request.\n\nSources\nSign in to save your history and access more features\nSign in\n\n\n\n\nAsk a follow-up\nSearch\nComputer\nModel\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary",
+    "links": [
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/automations"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/artifacts"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/computer/plugins"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/projects"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/session/2d7d9fe6-251a-4d71-9d7e-30b4f4bd4089"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      }
+    ],
+    "energyMixLink": false
+  },
+  {
+    "question": "Why is national solar generation estimated?",
+    "checkedAt": "2026-11-22T16:39:30.330Z",
+    "state": "answer-observed",
+    "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nWhy is national solar generation estimated?\nView all\nView plans\nSign In\nAnswer\nLinks\nImages\nShare\n4:39 PM\n\nWhy is national solar generation estimated?\n\nFinished\n3s\n\nSign up and repeat your request.\n\nSources\nSign in to save your history and access more features\nSign in\n\n\n\n\nAsk a follow-up\nSearch\nComputer\nModel\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary",
+    "links": [
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/automations"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/artifacts"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/computer/plugins"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/projects"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/session/4d55eebd-83ed-4042-abc6-339c3a8c4488"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      }
+    ],
+    "energyMixLink": false
+  },
+  {
+    "question": "Why does Britain import electricity?",
+    "checkedAt": "2026-11-22T16:39:36.996Z",
+    "state": "answer-observed",
+    "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nWhy does Britain import electricity?\nView all\nView plans\nSign In\nAnswer\nLinks\nImages\nShare\n4:39 PM\n\nWhy does Britain import electricity?\n\nFinished\n3s\n\nSign up and repeat your request.\n\nSources\nSign in to save your history and access more features\nSign in\n\n\n\n\nAsk a follow-up\nSearch\nComputer\nModel\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary",
+    "links": [
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/automations"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/artifacts"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/computer/plugins"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/projects"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/session/ce218c6f-990f-4a9a-a862-105688ffe1de"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      }
+    ],
+    "energyMixLink": false
+  },
+  {
+    "question": "Can Britain import and export electricity at the same time?",
+    "checkedAt": "2026-11-22T16:39:43.503Z",
+    "state": "answer-observed",
+    "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nCan Britain import and export electricity at the same time?\nView all\nView plans\nSign In\nAnswer\nLinks\nImages\nShare\n4:39 PM\n\nCan Britain import and export electricity at the same time?\n\nFinished\n3s\n\nSign up and repeat your request.\n\nSources\n\n\n\n\nAsk a follow-up\nSearch\nComputer\nModel\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary\nSign in to continue using Perplexity\nBack home\nContinue with Google\nContinue with Apple\nContinue with email\nSingle sign-on (SSO)\nBy continuing, you agree to the\nPerplexity Terms of Service and Privacy Notice",
+    "links": [
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/automations"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/artifacts"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/computer/plugins"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/projects"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/session/c86a02c8-eb51-4a31-9ae4-441a1b290721"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "Perplexity Terms of Service",
+        "url": "https://www.perplexity.ai/hub/legal/terms-of-service"
+      },
+      {
+        "text": "Privacy Notice",
+        "url": "https://www.perplexity.ai/hub/legal/privacy-notice"
+      }
+    ],
+    "energyMixLink": false
+  },
+  {
+    "question": "What is Great Britain's electricity carbon intensity now?",
+    "checkedAt": "2026-11-22T16:39:50.349Z",
+    "state": "answer-observed",
+    "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nWhat is Great Britain's electricity carbon intensity now?\nView all\nView plans\nSign In\nAnswer\nLinks\nImages\nShare\n4:39 PM\n\nWhat is Great Britain's electricity carbon intensity now?\n\nFinished\n3s\n\nSign up and repeat your request.\n\nSources\n\n\n\n\nAsk a follow-up\nSearch\nComputer\nModel\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary\nSign in to continue using Perplexity\nBack home\nContinue with Google\nContinue with Apple\nContinue with email\nSingle sign-on (SSO)\nBy continuing, you agree to the\nPerplexity Terms of Service and Privacy Notice",
+    "links": [
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/automations"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/artifacts"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/computer/plugins"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/projects"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/session/1e9a3463-1871-410f-9606-33f7281c64ab"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "Perplexity Terms of Service",
+        "url": "https://www.perplexity.ai/hub/legal/terms-of-service"
+      },
+      {
+        "text": "Privacy Notice",
+        "url": "https://www.perplexity.ai/hub/legal/privacy-notice"
+      }
+    ],
+    "energyMixLink": false
+  },
+  {
+    "question": "Does the lowest-carbon electricity period have the lowest household price?",
+    "checkedAt": "2026-11-22T16:39:56.873Z",
+    "state": "answer-observed",
+    "text": "New\nCtrl+I\nAutomations\nArtifacts\nPlugins\nTeammates\nHire your first teammate\n\nPersistent agents that work for you.\n\nCreate new teammate\nProjects\nNo projects\nSessions\nDoes the lowest-carbon electricity period have the lowest household price?\nView all\nView plans\nSign In\nAnswer\nLinks\nImages\nShare\n4:39 PM\n\nDoes the lowest-carbon electricity period have the lowest household price?\n\nFinished\n3s\n\nSign up and repeat your request.\n\nSources\n\n\n\n\nAsk a follow-up\nSearch\nComputer\nModel\nCookie Policy\n\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\n\nCookie Policy\nWe use cookies, pixels, SDKs, APIs, and server-to-server integrations for the correct functioning of our website. You can choose to allow us to use these technologies to measure our ad performance on third party partner websites and to improve our services. Perplexity will not use these technologies to sell third party ads on our services.\nAllow all\nOnly necessary\nSign in to continue using Perplexity\nBack home\nContinue with Google\nContinue with Apple\nContinue with email\nSingle sign-on (SSO)\nBy continuing, you agree to the\nPerplexity Terms of Service and Privacy Notice",
+    "links": [
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/automations"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/artifacts"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/computer/plugins"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/projects"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/session/04a697b1-6deb-4dd3-9b5d-bc6803d29ce8"
+      },
+      {
+        "text": "",
+        "url": "https://www.perplexity.ai/library"
+      },
+      {
+        "text": "Perplexity Terms of Service",
+        "url": "https://www.perplexity.ai/hub/legal/terms-of-service"
+      },
+      {
+        "text": "Privacy Notice",
+        "url": "https://www.perplexity.ai/hub/legal/privacy-notice"
+      }
+    ],
+    "energyMixLink": false
+  }
+]
