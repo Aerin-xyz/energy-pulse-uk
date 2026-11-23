@@ -1,0 +1,162 @@
+[
+  {
+    "name": "REMIT",
+    "url": "https://bmrs.elexon.co.uk/remit"
+  },
+  {
+    "name": "Generation forecast for wind & solar",
+    "url": "https://bmrs.elexon.co.uk/generation-forecast-for-wind-and-solar"
+  },
+  {
+    "name": "Wind generation",
+    "url": "https://bmrs.elexon.co.uk/wind-generation"
+  },
+  {
+    "name": "Actual or estimated wind and solar power generation",
+    "url": "https://bmrs.elexon.co.uk/actual-or-estimated-wind-and-solar-power-generation"
+  },
+  {
+    "name": "Short Term Operating Reserve (STOR) Availability Window",
+    "url": "https://www.elexon.co.uk/bsc/data/short-term-operating-reserve-stor-availability-window"
+  },
+  {
+    "name": "Actual Or Estimated Wind And Solar Power Generation (AGWS / B1630)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/AGWS"
+  },
+  {
+    "name": "Actual Or Estimated Wind And Solar Power Generation (AGWS / B1630) stream",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/AGWS/stream"
+  },
+  {
+    "name": "Bid-Offer Data (BOD) stream",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/BOD/stream"
+  },
+  {
+    "name": "Day-Ahead Generation For Wind And Solar (DGWS / B1440)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/DGWS"
+  },
+  {
+    "name": "Day-Ahead Generation For Wind And Solar (DGWS / B1440) stream",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/DGWS/stream"
+  },
+  {
+    "name": "Physical Notifications (PN)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/PN"
+  },
+  {
+    "name": "Physical Notifications (PN) stream",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/PN/stream"
+  },
+  {
+    "name": "Quiescent Physical Notifications (QPN)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/QPN"
+  },
+  {
+    "name": "Quiescent Physical Notifications (QPN) stream",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/QPN/stream"
+  },
+  {
+    "name": "The Regulation on Wholesale Energy Markets Integrity and Transparency (REMIT)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/REMIT"
+  },
+  {
+    "name": "The Regulation on Wholesale Energy Markets Integrity and Transparency (REMIT) stream",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/REMIT/stream"
+  },
+  {
+    "name": "Wind generation forecast (WINDFOR)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/WINDFOR"
+  },
+  {
+    "name": "Wind generation forecast (WINDFOR) stream",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/datasets/WINDFOR/stream"
+  },
+  {
+    "name": "Market-wide physical data (PN, QPN, MILS, MELS)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/balancing/physical/all"
+  },
+  {
+    "name": "Physical data per BMU (PN, QPN, MILS, MELS)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/balancing/physical"
+  },
+  {
+    "name": "Bid-offer data per BMU (BOD)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/balancing/bid-offer"
+  },
+  {
+    "name": "Market-wide bid-offer data (BOD)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/balancing/bid-offer/all"
+  },
+  {
+    "name": "Bid-Offer acceptances by acceptance id",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/balancing/acceptances/%7BacceptanceNumber%7D"
+  },
+  {
+    "name": "Bid-offer acceptances per BMU (BOALF)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/balancing/acceptances"
+  },
+  {
+    "name": "Latest market-wide bid-offer acceptances (BOALF)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/balancing/acceptances/all/latest"
+  },
+  {
+    "name": "Market-wide bid-offer acceptances (BOALF)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/balancing/acceptances/all"
+  },
+  {
+    "name": "Status of ingested PN Data",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/data-status/PN"
+  },
+  {
+    "name": "Status of ingested REMIT Data",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/data-status/REMIT"
+  },
+  {
+    "name": "Historic actual or estimated wind and solar power generation (AGWS/B1630)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/generation/actual/per-type/wind-and-solar"
+  },
+  {
+    "name": "Current wind generation forecast (WINDFOR)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/forecast/generation/wind"
+  },
+  {
+    "name": "Day-ahead generation forecast for wind and solar (DGWS/B1440)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/forecast/generation/wind-and-solar/day-ahead"
+  },
+  {
+    "name": "Evolution of the wind generation forecast over time (WINDFOR)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/forecast/generation/wind/evolution"
+  },
+  {
+    "name": "Historic view of the earliest forecasted wind generation (WINDFOR)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/forecast/generation/wind/earliest"
+  },
+  {
+    "name": "Historic view of the earliest forecasted wind generation (WINDFOR) stream",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/forecast/generation/wind/earliest/stream"
+  },
+  {
+    "name": "Historic view of the latest forecasted wind generation (WINDFOR)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/forecast/generation/wind/latest"
+  },
+  {
+    "name": "Historic view of the latest forecasted wind generation (WINDFOR) stream",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/forecast/generation/wind/latest/stream"
+  },
+  {
+    "name": "History of the wind generation forecast (WINDFOR)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/forecast/generation/wind/history"
+  },
+  {
+    "name": "Peak wind generation forecast for each day (WINDFOR)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/forecast/generation/wind/peak"
+  },
+  {
+    "name": "Settlement bid-offer stacks by settlement period (ISPSTACK)",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/balancing/settlement/stack/all/%7BbidOffer%7D/%7BsettlementDate%7D/%7BsettlementPeriod%7D"
+  },
+  {
+    "name": "REMIT fuel types",
+    "url": "https://bmrs.elexon.co.uk/api-documentation/endpoint/reference/remit/fueltypes/all"
+  }
+]

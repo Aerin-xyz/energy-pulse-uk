@@ -1,0 +1,33 @@
+[
+  {
+    "name": "grid",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "name": "energy",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "name": "operations",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "name": "home",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "name": "carbon",
+    "error": "HTTP Error 403: Forbidden"
+  },
+  {
+    "name": "elexon-schema",
+    "error": "HTTP Error 404: Resource Not Found"
+  },
+  {
+    "name": "prices",
+    "url": "https://data.elexon.co.uk/bmrs/api/v1/balancing/settlement/system-prices/2026-10-25?format=json",
+    "status": 200,
+    "bytes": 44215,
+    "retrievedAt": "2026-10-26T16:10:13.998184+00:00"
+  }
+]

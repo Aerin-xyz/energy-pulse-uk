@@ -1,0 +1,203 @@
+Services
+Programmes
+Elexon Support
+Log In
+INSIGHTS
+REMIT
+Generation
+Demand
+Balancing
+Notices
+Transmission
+Data Services & Reports
+Login to Insights
+Search by endpoint
+Getting Started
+What's New
+Browse All
+BMRS Datasets
+Balancing Mechanism Dynamic
+Balancing Mechanism Physical
+Balancing Services Adjustment - Disaggregated
+Balancing Services Adjustment - Net
+Bid-Offer
+Bid-Offer Acceptances
+Bid-Offer acceptances by acceptance id
+Bid-offer acceptances per BMU (BOALF)
+Latest market-wide bid-offer acceptances (BOALF)
+Market-wide bid-offer acceptances (BOALF)
+Data Status
+Demand
+Demand Forecast
+Generation
+Generation Forecast
+Health Check
+Indicated Forecast
+Indicative Imbalance Settlement
+Load Shape
+Margin Forecast
+Market Index
+Non-BM STOR
+Non-BM Volumes
+REMIT
+Reference
+SAA Datasets
+SAA Market Reports
+SAA Settlement Reports (I014)
+SO-SO Prices
+Surplus Forecast
+System
+System forecast
+Temperature
+Bid-Offer Acceptances
+Market-wide bid-offer acceptances (BOALF)
+
+This endpoint provides the bid-offer acceptance data (BOALF) for multiple requested BMUs or all BMUs. It returns the data valid for a single settlement period.
+
+The settlement period must be specified as a date and settlement period. The date parameter must be provided in the exact format yyyy-MM-dd.
+
+GET
+/balancing/acceptances/all
+Market-wide bid-offer acceptances (BOALF)
+Parameters
+Try it out
+Name	Description
+
+settlementDate *
+string($date)
+(query)
+
+
+The settlement date for the filter.
+
+Example : 2023-01-24
+
+
+
+settlementPeriod *
+integer($int32)
+(query)
+
+
+The settlement period for the filter. This should be an integer from 1-50 inclusive.
+
+Example : 39
+
+
+
+bmUnit
+array<string>
+(query)
+
+
+The BM Units to query. Elexon or NGC BMU IDs can be used. If omitted, results for all BM units will be returned.
+
+Example : List [ "T_DINO-2", "HUMR-1" ]
+
+
+
+format
+string
+(query)
+
+
+Response data format. Use json/xml to include metadata.
+
+Available values : json, xml, csv
+
+--
+json
+xml
+csv
+Responses
+Code	Description	Links
+200
+
+Data retrieved
+
+Media type
+text/plain
+application/json
+text/json
+application/xml
+text/xml
+text/csv
+Controls Accept header.
+Example Value
+Schema
+{
+  "data": [
+    {
+      "settlementDate": "2022-06-25",
+      "settlementPeriodFrom": 29,
+      "settlementPeriodTo": 32,
+      "timeFrom": "2022-06-25T13:34:00Z",
+      "timeTo": "2022-06-25T13:37:00Z",
+      "levelFrom": 5,
+      "levelTo": 46,
+      "nationalGridBmUnit": "ABRBO-1",
+      "bmUnit": "T_ABRBO-1",
+      "acceptanceNumber": 1234567,
+      "acceptanceTime": "2022-06-25T13:30:00Z",
+      "deemedBoFlag": true,
+      "soFlag": false,
+      "storFlag": true,
+      "rrFlag": false
+    }
+  ],
+  "metadata": {
+    "datasets": [
+      "DATASET"
+    ]
+  }
+}
+	No links
+400
+
+Error with query parameters - see response for details
+
+	No links
+429
+
+Too many requests
+
+	No links
+500
+
+Server error - please try again later
+
+	No links
+BSC
+CMAG
+DIP
+EMRS
+FM
+MHHS
+NCC
+SSES
+Corporate Policies
+Privacy Policy
+Cookie Policy
+Contact Elexon
+Service Status Dashboard
+A-Z Index
+Glossary
+Linkedin
+X
+Glassdoor
+Copyright © 2026 Elexon
+×
+This website uses cookies
+We use necessary cookies to enable our website to work, functionality cookies that allow you to create an individual experience on the website, and analytics cookies that record anonymised information about how you use the website. Functionality and analytics cookies will only be set if you accept.
+
+We'd like to set Google Analytics cookies to help us improve our website by collecting and reporting information on how you use it. The cookies collect information in a way that does not directly identify anyone. Analytics cookies will only be set if you accept.
+
+We never include marketing cookies. For more information about the cookies we use, see our Cookies page.
+
+Manage consent preferences
+Necessary
+Analytics
+Targeting
+Functional
+ACCEPT ALL
+ VIEW COOKIES LIST

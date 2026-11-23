@@ -1,0 +1,63 @@
+{
+  "checkedAt": "2026-10-26T16:32:15.973Z",
+  "date": "2026-10-25",
+  "expectedPeriods": 50,
+  "returnedPeriods": 50,
+  "priceCoverage": "complete",
+  "comparisons": [
+    {
+      "period": 1,
+      "status": "matched",
+      "bidMWh": -2443.5383484375,
+      "offerMWh": 2613.6334914182694,
+      "sourceBidMWh": -2443.5383484375,
+      "sourceOfferMWh": 2613.6334914182694,
+      "toleranceMWh": 0.01,
+      "note": "Compare only the same settlement period and source creation/run timestamp; not measured generation, curtailment or total balancing cost",
+      "bids": 196,
+      "offers": 196,
+      "instructions": 362,
+      "bytes": 362790
+    },
+    {
+      "period": 25,
+      "status": "matched",
+      "bidMWh": -1387.808345237646,
+      "offerMWh": 1865.8833311572037,
+      "sourceBidMWh": -1387.8083452376463,
+      "sourceOfferMWh": 1865.8833311572048,
+      "toleranceMWh": 0.01,
+      "note": "Compare only the same settlement period and source creation/run timestamp; not measured generation, curtailment or total balancing cost",
+      "bids": 376,
+      "offers": 376,
+      "instructions": 827,
+      "bytes": 779423
+    },
+    {
+      "period": 50,
+      "status": "matched",
+      "bidMWh": -3139.073160833333,
+      "offerMWh": 2609.31073291423,
+      "sourceBidMWh": -3139.0731608333335,
+      "sourceOfferMWh": 2609.31073291423,
+      "toleranceMWh": 0.01,
+      "note": "Compare only the same settlement period and source creation/run timestamp; not measured generation, curtailment or total balancing cost",
+      "bids": 200,
+      "offers": 200,
+      "instructions": 335,
+      "bytes": 356898
+    }
+  ],
+  "reference": {
+    "unmapped": 2951,
+    "reviewed-existing": 173,
+    "review-required": 3
+  },
+  "sourceIdentityHash": "9235a9d82ae608c76f1d55ee3e6107aa6f2f74d4253cf468916641713bb61eb1",
+  "limitations": [
+    "Selected official periods cross-reconciled; not independent certification of Elexon.",
+    "BOALF levels are instructions, never converted into metered output or accepted volume.",
+    "Unknown mappings remain unmapped.",
+    "A complete day price series does not imply a complete action history."
+  ]
+}

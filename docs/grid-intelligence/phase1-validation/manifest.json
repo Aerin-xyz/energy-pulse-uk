@@ -1,0 +1,249 @@
+{
+  "files": [
+    {
+      "path": "phase1-fixtures/acceptances.json",
+      "bytes": 120432,
+      "sha256": "8332fcfec84c40f37f269987a603f6c402aaf614d49e840b609546f551109965"
+    },
+    {
+      "path": "phase1-fixtures/boav-bid.json",
+      "bytes": 118423,
+      "sha256": "25f598a757333a95aab978d651da76a09969d384553d7c86132cebf36ecb3e76"
+    },
+    {
+      "path": "phase1-fixtures/boav-offer.json",
+      "bytes": 118043,
+      "sha256": "f604253cf285bd487582b78a4a4761b8c8644cc5f6a29eb25aa112b6c949df3b"
+    },
+    {
+      "path": "phase1-fixtures/dayAhead.json",
+      "bytes": 7400,
+      "sha256": "336b2f75f72b7e3c92b4d6c6a4f2b7a5d531a86c11384e5bff10250122c854c3"
+    },
+    {
+      "path": "phase1-fixtures/doc-acceptances.txt",
+      "bytes": 3857,
+      "sha256": "ace75457f352c7df3633e758d984f667107348e56c550e5b20bed0a4b635bd1e"
+    },
+    {
+      "path": "phase1-fixtures/doc-boav.txt",
+      "bytes": 4834,
+      "sha256": "8f72aa49f51215b954724007369ac4575101a353cdb499b94556b4d443d1d946"
+    },
+    {
+      "path": "phase1-fixtures/doc-settlement.txt",
+      "bytes": 4734,
+      "sha256": "b72e802be9a8dd34b99ced708666d30da4b290b131b3fbd4d0ecc8ab2fdb5c4f"
+    },
+    {
+      "path": "phase1-fixtures/neso-boundary-head.json",
+      "bytes": 3173,
+      "sha256": "99825e8bb07ee4170574929ec3c83927a8432e935f738c4462dee37a283f197e"
+    },
+    {
+      "path": "phase1-fixtures/prices-2026-03-29.json",
+      "bytes": 40755,
+      "sha256": "a2713209a88c299b665e60b50976bef25265fb14009e03937d9e5dc20968fee2"
+    },
+    {
+      "path": "phase1-fixtures/prices-2026-10-24.json",
+      "bytes": 42581,
+      "sha256": "d79253e90bb5050a1a2702345598dc916438f67beefaf045600a3a4f593ba591"
+    },
+    {
+      "path": "phase1-fixtures/probe-2.json",
+      "bytes": 72698,
+      "sha256": "6f2400c4acb3262dc9a94c92c5625c3aeb952607290eee7c213312ba54894959"
+    },
+    {
+      "path": "phase1-fixtures/probe-3.json",
+      "bytes": 28701,
+      "sha256": "7e239271a3ab6a27f430e7565998ad9d710070d40e6d72252ff831177a84f9da"
+    },
+    {
+      "path": "phase1-fixtures/reference.json.gz",
+      "bytes": 124664,
+      "sha256": "632e9c05e4de85fe95f645dfa2efab2d86b6b204749ac38e7e428ad2c40c4daf"
+    },
+    {
+      "path": "phase1-validation/BMUNITS-reference.json.gz",
+      "bytes": 204189,
+      "sha256": "9b55fbec50626088de0f5e9e4f4342cdb97e10b3d7fd80805d84fb531149a567"
+    },
+    {
+      "path": "phase1-validation/BOALF-1.json.gz",
+      "bytes": 16868,
+      "sha256": "3c44489b69ace837bb9932a641cbaa206931ea997329ee088ecbba35717d642b"
+    },
+    {
+      "path": "phase1-validation/BOALF-25.json.gz",
+      "bytes": 30228,
+      "sha256": "a31f552123b51a5e2a098ae5a89ef12819f653b916ed42761ffe7b460d3d9be2"
+    },
+    {
+      "path": "phase1-validation/BOALF-50.json.gz",
+      "bytes": 16041,
+      "sha256": "f7c8a1eb38c8ff193cc7c521f7ffa04acc7e0c73f64ee917173a2c790da3266e"
+    },
+    {
+      "path": "phase1-validation/BOAV-bid-1.json.gz",
+      "bytes": 10265,
+      "sha256": "186b7c8103431601768f61ba052a90b19b77ec05286fe0d330d09b956cda73a2"
+    },
+    {
+      "path": "phase1-validation/BOAV-bid-25.json.gz",
+      "bytes": 13060,
+      "sha256": "d3e4aa209d0de2aebace6d170360ff1daec56ed7b6ad251eacaf97c57fe6cc0a"
+    },
+    {
+      "path": "phase1-validation/BOAV-bid-50.json.gz",
+      "bytes": 10140,
+      "sha256": "be77c5c8f7735b51346e96dd7e60720ed2798fac655792e7022f29db4f0ddbda"
+    },
+    {
+      "path": "phase1-validation/BOAV-offer-1.json.gz",
+      "bytes": 8915,
+      "sha256": "5ceb8204dfc99d21e611924335a0fca73f20c53804d3c4d53968f7cc08f84d68"
+    },
+    {
+      "path": "phase1-validation/BOAV-offer-25.json.gz",
+      "bytes": 17557,
+      "sha256": "23404c39a45146e14eb32bb62540355eaf6164fba8d6add3fa3480478c1ba87a"
+    },
+    {
+      "path": "phase1-validation/BOAV-offer-50.json.gz",
+      "bytes": 8705,
+      "sha256": "393f2cf1a16cfe328ac69b5806606abda67f9856ab4ad471098279b22c4e4c98"
+    },
+    {
+      "path": "phase1-validation/DISEBSP-2026-10-25.json",
+      "bytes": 93521,
+      "sha256": "df4bf0c3f6168c7f9d1279347e96a9291302b116dfb2ba3df6b7cd73ef7e32f5"
+    },
+    {
+      "path": "phase1-validation/browser-tests.txt",
+      "bytes": 838,
+      "sha256": "6af623b749fa62d367363e7e2bc6b16b56690a22f4d0ed1226a11d94831bed51"
+    },
+    {
+      "path": "phase1-validation/build.txt",
+      "bytes": 4716,
+      "sha256": "59363387c444cdd454af0d150240d42980eb6882a23f62e580a126f562ad4ee6"
+    },
+    {
+      "path": "phase1-validation/cost-reconciliation.json",
+      "bytes": 150,
+      "sha256": "dbe210f56830aa78417bb974dff9db76da3a5ae4bf941742473974cf43c73c79"
+    },
+    {
+      "path": "phase1-validation/costs-1366.png",
+      "bytes": 492092,
+      "sha256": "5ddfd3d37b66d89b9e533cc522cc065895124d7c261a72ff479dc84303aa01f2"
+    },
+    {
+      "path": "phase1-validation/costs-390.png",
+      "bytes": 259505,
+      "sha256": "e8bde8d27ba37b0033a2fd52ab32df6d61e1649c764e4c971866934fd85905da"
+    },
+    {
+      "path": "phase1-validation/cycle/BMUNITS%7Creference.json.gz",
+      "bytes": 194461,
+      "sha256": "abc28357cc5ea30d917cc4b21d6b039e326496e0a7858817ffa2633c368762f1"
+    },
+    {
+      "path": "phase1-validation/cycle/BOALF%7C2026-10-26%2F32.json.gz",
+      "bytes": 16612,
+      "sha256": "3c41fb0ea2cfa85f76615b7c6dda13ed48e5b9ea6a1acf23418626afe88eb3ca"
+    },
+    {
+      "path": "phase1-validation/cycle/BOAV-bid%7C2026-10-25%2F32.json.gz",
+      "bytes": 10973,
+      "sha256": "7a7feab91a4e44dd7b55d22afe6a6208aa409483817e2570a3e42bafaec50d1f"
+    },
+    {
+      "path": "phase1-validation/cycle/BOAV-bid%7C2026-10-26%2F32.json.gz",
+      "bytes": 10557,
+      "sha256": "906a4153e1f872fdb87dcf16703067220154993662abd2639f836338acef21ee"
+    },
+    {
+      "path": "phase1-validation/cycle/BOAV-offer%7C2026-10-25%2F32.json.gz",
+      "bytes": 9335,
+      "sha256": "c9415ad1c2f3a659a586aa9e3cabe2c9f82754e8267707e0ceb59b0431fe4baa"
+    },
+    {
+      "path": "phase1-validation/cycle/BOAV-offer%7C2026-10-26%2F32.json.gz",
+      "bytes": 8827,
+      "sha256": "00b4f92d0a5cce8e6e0bce4c210affed4457f865ef34f7c0234fefba5a9e338b"
+    },
+    {
+      "path": "phase1-validation/cycle/DISEBSP%7C2026-10-25.json",
+      "bytes": 71933,
+      "sha256": "7f3abedad28dc1a6bf6607ee1e67e152c987a6e293181ad4838f851c5e8b235e"
+    },
+    {
+      "path": "phase1-validation/cycle/DISEBSP%7C2026-10-26.json",
+      "bytes": 46272,
+      "sha256": "763ddee7fe2bb973ed85715e986ae150701c19bbd951b9d6638751b7e4375b6c"
+    },
+    {
+      "path": "phase1-validation/cycle/exercise-summary.json",
+      "bytes": 2612,
+      "sha256": "ba1429bfdcecec1debc70713aeb33255b8102b011837634cdf49f14e9661cf2c"
+    },
+    {
+      "path": "phase1-validation/cycle/public-snapshot.json.gz",
+      "bytes": 38952,
+      "sha256": "8e0e94c8ceb638b52cef34d3d1202c71393884b341438ffc7724d95b337774bf"
+    },
+    {
+      "path": "phase1-validation/database-checks.json",
+      "bytes": 351,
+      "sha256": "596559e11506ecbc50ab74bf25690e759bb8b8ac2969c482fd5c9b921f16fc18"
+    },
+    {
+      "path": "phase1-validation/deno-check.txt",
+      "bytes": 57,
+      "sha256": "c691af2e8e0729d6bf6fcea3bcc1284bdd4435385f636fe333734dbabefc89ea"
+    },
+    {
+      "path": "phase1-validation/feature-flag.json",
+      "bytes": 61,
+      "sha256": "5f339c266b48ed5a8f0578ecfbd7ae16ab9e8bf89fd4efe955a61ca047efc070"
+    },
+    {
+      "path": "phase1-validation/official-endpoint-inventory.json",
+      "bytes": 6514,
+      "sha256": "b4554d7e831dae2b2c349b3dd9b2547bfcd96fde8fc2f77dafd59313ba6b5488"
+    },
+    {
+      "path": "phase1-validation/payload-budget.json",
+      "bytes": 1255,
+      "sha256": "4e7033307ecabda71bb92a447f35448258395639ae91efbaad2bcd44afd8a6c4"
+    },
+    {
+      "path": "phase1-validation/repaired-grid-evidence.json.gz",
+      "bytes": 53362,
+      "sha256": "8e86c11fe7ee0defd812d5017dfee90c1b565fada990d98e95c5e4f593528695"
+    },
+    {
+      "path": "phase1-validation/source-health.json",
+      "bytes": 1286,
+      "sha256": "ae6c71d0509a0cefe8dd4bb210dd93a8addeab6383f84bd9bc7721cb34bac4e4"
+    },
+    {
+      "path": "phase1-validation/summary.json",
+      "bytes": 2154,
+      "sha256": "ac31073a21479c0d2351bf8039106ced3c59e59c727dcd5060cbf1c7ae8ef083"
+    },
+    {
+      "path": "phase1-validation/tests.txt",
+      "bytes": 29307,
+      "sha256": "8d30f6ff21a11f140f6be351e6882597dd9b5991e1965bf89c740e7962dc4389"
+    },
+    {
+      "path": "phase1-validation/types.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}
