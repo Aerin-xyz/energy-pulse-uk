@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
   "metadata": {
-    "retrievedAt": "2026-11-16T13:46:25.771Z",
+    "retrievedAt": "2026-11-23T16:08:09.667Z",
     "repd": {
       "url": "https://assets.publishing.service.gov.uk/media/6af42ff0a4004bdbe54e54a5/REPD_Publication_Q3_2026.csv",
       "revision": "b511c78af20ac2fe1784b40aa1728b258e08ee5a60ec378203f5192e957485a9",
-      "checkedAt": "2026-11-16T13:46:22.818Z"
+      "checkedAt": "2026-11-23T16:08:06.270Z"
     },
     "dukes": {
       "url": "https://assets.publishing.service.gov.uk/media/6a6a365b0ddb7e4831c629f3/DUKES_5.11.xlsx",
