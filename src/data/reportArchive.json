@@ -1,5 +1,122 @@
 [
   {
+    "slug": "/reports/weekly/2026-11-23",
+    "date": "2026-11-24",
+    "title": "GB Metered Electricity Generation: 2026-11-17–2026-11-23",
+    "period": "2026-11-17 to 2026-11-23",
+    "intro": "Seven complete Europe/London reporting days. Provisional, source-revisable readings; this is not a whole-system generation total.",
+    "summary": "Transmission-metered generation excluding pumped storage averaged 28.82 GW. Wind and natural hydro supplied 27.25% of that metered energy. Embedded estimates and imports are excluded.",
+    "takeaway": "Historical generation comparisons do not establish the cheapest or lowest-carbon time to use electricity today.",
+    "metrics": [
+      [
+        "Average transmission-metered generation",
+        "28.82 GW"
+      ],
+      [
+        "Metered energy excluding pumped storage",
+        "4840966.00 MWh"
+      ],
+      [
+        "Wind + natural hydro share of metered generation",
+        "27.25%"
+      ],
+      [
+        "Highest daily-average metered wind",
+        "13.12 GW on 2026-11-17"
+      ],
+      [
+        "Highest daily-average metered gas",
+        "16.96 GW on 2026-11-23"
+      ]
+    ],
+    "drivers": [
+      "Highest daily-average metered wind: 13.12 GW on 2026-11-17.",
+      "Highest daily-average metered gas: 16.96 GW on 2026-11-23.",
+      "Pumped storage is separate: -18513.00 MWh signed net energy across the window; excluded from the generation denominator."
+    ],
+    "cleanestPeriods": [],
+    "higherCarbonPeriods": [],
+    "highlights": [
+      {
+        "label": "Embedded solar estimate",
+        "value": "Embedded solar: 0.97 GW average across 2026-11-17–2026-11-23; NESO estimate, not included in metered totals."
+      },
+      {
+        "label": "Embedded wind estimate",
+        "value": "Embedded wind: 1.40 GW average across 2026-11-17–2026-11-23; NESO estimate, not included in metered totals."
+      },
+      {
+        "label": "Carbon intensity",
+        "value": "Published actual carbon intensity averaged 167.3 gCO₂/kWh (time-weighted). This is not a marginal-emissions or consumption-weighted measure."
+      }
+    ],
+    "methodologyNote": "Elexon transmission-metered generation; excludes imports, embedded estimates and pumped storage. Renewable share is wind plus natural hydro, excluding biomass. MW interval averages are integrated over half-hour durations. Optional estimates are not added to the denominator. Every included module requires all intervals across the entire window. Latest published Elexon revisions at retrieval are selected; conflicting equal-timestamp records fail validation. Original source responses and hashes are retained. Source-faithful validation is not independent certification. Publication remains provisional; later collections retain revised source evidence without silently rewriting archived reports.",
+    "coverage": {
+      "from": "2026-11-17",
+      "to": "2026-11-23",
+      "days": 7,
+      "reportingDates": [
+        "2026-11-17",
+        "2026-11-18",
+        "2026-11-19",
+        "2026-11-20",
+        "2026-11-21",
+        "2026-11-22",
+        "2026-11-23"
+      ],
+      "timeBasis": "Europe/London",
+      "definitionVersion": "authoritative-report-v3",
+      "aggregation": "Energy divided by observed duration; shares are energy-weighted, not averages of percentages."
+    },
+    "validation": {
+      "status": "passed",
+      "days": 7,
+      "timeBasis": "Europe/London",
+      "evidencePath": "/data/validation/reports/2026-11-23/445070ff0cdc642a1bb1/manifest.json",
+      "dailyCsv": "/data/validation/reports/2026-11-23/445070ff0cdc642a1bb1/daily.csv",
+      "checkedAt": "2026-11-24T18:20:36.961Z"
+    },
+    "modules": {
+      "metered": {
+        "status": "passed",
+        "completeDays": 7,
+        "expectedDays": 7,
+        "totalMWh": 4840966,
+        "averageMW": 28815.27380952381,
+        "renewableShare": 27.247671229254657,
+        "signedStorageMWh": -18513
+      },
+      "solar": {
+        "status": "passed",
+        "completeDays": 7,
+        "expectedDays": 7,
+        "totalMWh": 162578,
+        "averageMW": 967.7261904761905
+      },
+      "embeddedWind": {
+        "status": "passed",
+        "completeDays": 7,
+        "expectedDays": 7,
+        "totalMWh": 235696.5,
+        "averageMW": 1402.955357142857
+      },
+      "carbon": {
+        "status": "passed",
+        "completeDays": 7,
+        "expectedDays": 7,
+        "meanActualGCO2PerKWh": 167.33333333333334
+      }
+    },
+    "publicationStatus": "provisional; source records may be revised",
+    "archiveProvenance": {
+      "archivedAt": "2026-11-24T18:20:36.961Z",
+      "definition": "authoritative-report-v3",
+      "timeBasis": "Europe/London",
+      "validationStatus": "passed",
+      "coverage": "7 complete local reporting days"
+    }
+  },
+  {
     "slug": "/reports/weekly/2026-11-22",
     "date": "2026-11-23",
     "title": "GB Metered Electricity Generation: 2026-11-16–2026-11-22",
