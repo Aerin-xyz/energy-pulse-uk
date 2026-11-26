@@ -1,0 +1,8 @@
+date,time_basis,periods,metered_status,metered_mwh,metered_average_mw,wind_hydro_share_percent,solar_status,solar_estimate_mwh,embedded_wind_status,embedded_wind_estimate_mwh,carbon_status,mean_actual_gco2_per_kwh
+2026-11-19,Europe/London,48,passed,753087,31378.625,27.821553153885276,passed,15453,passed,28213.5,passed,180.20833333333334
+2026-11-20,Europe/London,48,passed,694921.5,28955.0625,15.270142023235717,passed,26424,passed,15663.5,passed,205.125
+2026-11-21,Europe/London,48,passed,597294,24887.25,13.190656527606171,passed,37827.5,passed,17019,passed,193.5625
+2026-11-22,Europe/London,48,passed,618896,25787.333333333332,39.45299371784597,passed,18601,passed,45076.5,passed,118.91666666666667
+2026-11-23,Europe/London,48,passed,793436.5,33059.854166666664,21.357537748767545,passed,29265,passed,28331,passed,199.35416666666666
+2026-11-24,Europe/London,48,passed,957139,39880.791666666664,37.59333806270563,passed,11201,passed,63537.5,passed,157.64583333333334
+2026-11-25,Europe/London,48,passed,892761,37198.375,35.98001032751207,passed,17645.5,passed,31150,passed,167.97916666666666
