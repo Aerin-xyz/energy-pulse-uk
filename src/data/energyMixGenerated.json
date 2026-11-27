@@ -1,26 +1,26 @@
 {
-  "generatedAt": "2026-11-26T17:20:01.717Z",
+  "generatedAt": "2026-11-27T16:59:24.345Z",
   "reports": [
     {
-      "slug": "/reports/weekly/2026-11-25",
-      "date": "2026-11-26",
-      "title": "GB Metered Electricity Generation: 2026-11-19–2026-11-25",
-      "period": "2026-11-19 to 2026-11-25",
+      "slug": "/reports/weekly/2026-11-26",
+      "date": "2026-11-27",
+      "title": "GB Metered Electricity Generation: 2026-11-20–2026-11-26",
+      "period": "2026-11-20 to 2026-11-26",
       "intro": "Seven complete Europe/London reporting days. Provisional, source-revisable readings; this is not a whole-system generation total.",
-      "summary": "Transmission-metered generation excluding pumped storage averaged 31.59 GW. Wind and natural hydro supplied 28.06% of that metered energy. Embedded estimates and imports are excluded.",
+      "summary": "Transmission-metered generation excluding pumped storage averaged 32.67 GW. Wind and natural hydro supplied 29.03% of that metered energy. Embedded estimates and imports are excluded.",
       "takeaway": "Historical generation comparisons do not establish the cheapest or lowest-carbon time to use electricity today.",
       "metrics": [
         [
           "Average transmission-metered generation",
-          "31.59 GW"
+          "32.67 GW"
         ],
         [
           "Metered energy excluding pumped storage",
-          "5307535.00 MWh"
+          "5488006.00 MWh"
         ],
         [
           "Wind + natural hydro share of metered generation",
-          "28.06%"
+          "29.03%"
         ],
         [
           "Highest daily-average metered wind",
@@ -28,43 +28,43 @@
         ],
         [
           "Highest daily-average metered gas",
-          "16.96 GW on 2026-11-23"
+          "17.32 GW on 2026-11-26"
         ]
       ],
       "drivers": [
         "Highest daily-average metered wind: 14.71 GW on 2026-11-24.",
-        "Highest daily-average metered gas: 16.96 GW on 2026-11-23.",
-        "Pumped storage is separate: -12905.00 MWh signed net energy across the window; excluded from the generation denominator."
+        "Highest daily-average metered gas: 17.32 GW on 2026-11-26.",
+        "Pumped storage is separate: -7119.00 MWh signed net energy across the window; excluded from the generation denominator."
       ],
       "cleanestPeriods": [],
       "higherCarbonPeriods": [],
       "highlights": [
         {
           "label": "Embedded solar estimate",
-          "value": "Embedded solar: 0.93 GW average across 2026-11-19–2026-11-25; NESO estimate, not included in metered totals."
+          "value": "Embedded solar: 0.92 GW average across 2026-11-20–2026-11-26; NESO estimate, not included in metered totals."
         },
         {
           "label": "Embedded wind estimate",
-          "value": "Embedded wind: 1.36 GW average across 2026-11-19–2026-11-25; NESO estimate, not included in metered totals."
+          "value": "Embedded wind: 1.43 GW average across 2026-11-20–2026-11-26; NESO estimate, not included in metered totals."
         },
         {
           "label": "Carbon intensity",
-          "value": "Published actual carbon intensity averaged 174.7 gCO₂/kWh (time-weighted). This is not a marginal-emissions or consumption-weighted measure."
+          "value": "Published actual carbon intensity averaged 174.9 gCO₂/kWh (time-weighted). This is not a marginal-emissions or consumption-weighted measure."
         }
       ],
       "methodologyNote": "Elexon transmission-metered generation; excludes imports, embedded estimates and pumped storage. Renewable share is wind plus natural hydro, excluding biomass. MW interval averages are integrated over half-hour durations. Optional estimates are not added to the denominator. Every included module requires all intervals across the entire window. Latest published Elexon revisions at retrieval are selected; conflicting equal-timestamp records fail validation. Original source responses and hashes are retained. Source-faithful validation is not independent certification. Publication remains provisional; later collections retain revised source evidence without silently rewriting archived reports.",
       "coverage": {
-        "from": "2026-11-19",
-        "to": "2026-11-25",
+        "from": "2026-11-20",
+        "to": "2026-11-26",
         "days": 7,
         "reportingDates": [
-          "2026-11-19",
           "2026-11-20",
           "2026-11-21",
           "2026-11-22",
           "2026-11-23",
           "2026-11-24",
-          "2026-11-25"
+          "2026-11-25",
+          "2026-11-26"
         ],
         "timeBasis": "Europe/London",
         "definitionVersion": "authoritative-report-v3",
@@ -74,66 +74,66 @@
         "status": "passed",
         "days": 7,
         "timeBasis": "Europe/London",
-        "evidencePath": "/data/validation/reports/2026-11-25/75b8a282828840d33188/manifest.json",
-        "dailyCsv": "/data/validation/reports/2026-11-25/75b8a282828840d33188/daily.csv",
-        "checkedAt": "2026-11-26T17:20:01.717Z"
+        "evidencePath": "/data/validation/reports/2026-11-26/c75645c71dca403afe1e/manifest.json",
+        "dailyCsv": "/data/validation/reports/2026-11-26/c75645c71dca403afe1e/daily.csv",
+        "checkedAt": "2026-11-27T16:59:24.345Z"
       },
       "modules": {
         "metered": {
           "status": "passed",
           "completeDays": 7,
           "expectedDays": 7,
-          "totalMWh": 5307535,
-          "averageMW": 31592.470238095237,
-          "renewableShare": 28.056159780387695,
-          "signedStorageMWh": -12905
+          "totalMWh": 5488006,
+          "averageMW": 32666.70238095238,
+          "renewableShare": 29.0273370692379,
+          "signedStorageMWh": -7119
         },
         "solar": {
           "status": "passed",
           "completeDays": 7,
           "expectedDays": 7,
-          "totalMWh": 156417,
-          "averageMW": 931.0535714285714
+          "totalMWh": 153818.5,
+          "averageMW": 915.5863095238095
         },
         "embeddedWind": {
           "status": "passed",
           "completeDays": 7,
           "expectedDays": 7,
-          "totalMWh": 228991,
-          "averageMW": 1363.0416666666667
+          "totalMWh": 240220.5,
+          "averageMW": 1429.8839285714287
         },
         "carbon": {
           "status": "passed",
           "completeDays": 7,
           "expectedDays": 7,
-          "meanActualGCO2PerKWh": 174.6845238095238
+          "meanActualGCO2PerKWh": 174.89285714285714
         }
       },
       "publicationStatus": "provisional; source records may be revised"
     }
   ],
-  "latestReportSlug": "/reports/weekly/2026-11-25",
+  "latestReportSlug": "/reports/weekly/2026-11-26",
   "yesterday": {
     "slug": "/yesterday",
-    "date": "2026-11-25",
-    "title": "GB Metered Electricity Summary: 2026-11-25",
-    "summary": "On 2026-11-25, transmission-metered generation excluding pumped storage averaged 37.20 GW. Wind and natural hydro supplied 35.98% of metered energy. Imports and embedded estimates are excluded; source data may be revised.",
+    "date": "2026-11-26",
+    "title": "GB Metered Electricity Summary: 2026-11-26",
+    "summary": "On 2026-11-26, transmission-metered generation excluding pumped storage averaged 38.90 GW. Wind and natural hydro supplied 33.58% of metered energy. Imports and embedded estimates are excluded; source data may be revised.",
     "metrics": [
       [
         "Average transmission-metered generation",
-        "37.20 GW"
+        "38.90 GW"
       ],
       [
         "Wind + natural hydro share",
-        "35.98%"
+        "33.58%"
       ],
       [
         "Average metered wind",
-        "12.98 GW"
+        "12.68 GW"
       ],
       [
         "Embedded solar estimate (separate)",
-        "0.74 GW"
+        "0.41 GW"
       ]
     ]
   },
@@ -141,22 +141,22 @@
     "highestRenewableShare": {
       "value": "39.45%",
       "date": "2026-11-22",
-      "text": "Window 2026-11-19–2026-11-25: highest daily wind + natural hydro share of metered generation was 39.45% on 2026-11-22. Excludes embedded estimates, biomass and pumped storage."
+      "text": "Window 2026-11-20–2026-11-26: highest daily wind + natural hydro share of metered generation was 39.45% on 2026-11-22. Excludes embedded estimates, biomass and pumped storage."
     },
     "highestWindGeneration": {
       "value": "14.71 GW",
       "date": "2026-11-24",
-      "text": "Window 2026-11-19–2026-11-25: highest daily-average metered wind was 14.71 GW on 2026-11-24."
+      "text": "Window 2026-11-20–2026-11-26: highest daily-average metered wind was 14.71 GW on 2026-11-24."
     },
     "highestGasGeneration": {
-      "value": "16.96 GW",
-      "date": "2026-11-23",
-      "text": "Window 2026-11-19–2026-11-25: highest daily-average metered gas was 16.96 GW on 2026-11-23."
+      "value": "17.32 GW",
+      "date": "2026-11-26",
+      "text": "Window 2026-11-20–2026-11-26: highest daily-average metered gas was 17.32 GW on 2026-11-26."
     },
     "highestSolarGeneration": {
       "value": "1.58 GW",
       "date": "2026-11-21",
-      "text": "Window 2026-11-19–2026-11-25: highest daily-average embedded solar estimate was 1.58 GW on 2026-11-21, from NESO. Not metered generation."
+      "text": "Window 2026-11-20–2026-11-26: highest daily-average embedded solar estimate was 1.58 GW on 2026-11-21, from NESO. Not metered generation."
     }
   },
   "socialPosts": []
